@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Owin.Hosting;
+using Sean.World;
 
-namespace Sean.World
+namespace WorldServer
 {
-
-
     static class MainClass
 	{
 		static public void Main(String[] args)
@@ -52,40 +51,20 @@ namespace Sean.World
             //
             //}
 
-            WorldSettings.LoadSettings ();
-
-            WorldData.WorldMap.Generate();
-
-            /*
-            int x = WorldData.WorldMap.MaxXPosition / 2;
-            int y = 0;
-            int z = WorldData.WorldMap.MaxZPosition / 2;
-
-            var cursor = new Position (x, y, z);
-            while (true)
-            {
-                Console.Clear ();
-                var chunk = WorldData.WorldMap.Chunk (cursor);
-                chunk.Render (y);
-                var key = Console.ReadKey ();
-                switch (key.KeyChar)
-                {
-                case 'q': cursor.Z -= Chunk.CHUNK_SIZE; break;
-                case 'a': cursor.Z += Chunk.CHUNK_SIZE; break;
-                case 'p': cursor.X += Chunk.CHUNK_SIZE; break;
-                case 'o': cursor.X -= Chunk.CHUNK_SIZE; break;
-                case '>': cursor.Y += Chunk.CHUNK_SIZE; break;
-                case '<': cursor.Y -= Chunk.CHUNK_SIZE; break;
-                }
-            }
-            */
+            IWorldGenerator world = WorldsManager.GetInstance (0);
+            world.Generate ();           
 
             //var otpServer = new OtpServer();
             //otpServer.Start();
 
             //ClientSocket.SendMessage ();
+            //ServerSocketListener.Run();
 
-            ServerSocketListener.Run();
+            // Rest web server
+            string baseUri = "http://localhost:8080";
+            Console.WriteLine("Starting web Server...");
+            WebApp.Start<WebHostStartup>(baseUri);
+            Console.WriteLine("Server running at {0}", baseUri);
 
             Console.WriteLine("Press any key to exit");
             Console.ReadKey();

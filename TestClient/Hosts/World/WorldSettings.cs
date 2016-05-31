@@ -8,13 +8,13 @@ using Hexpoint.Blox.GameObjects.Units;
 namespace Hexpoint.Blox.Hosts.World
 {
 	// ReSharper disable PossibleNullReferenceException
-	internal static class WorldSettings
+	public static class WorldSettings
 	{
 		#region Load
 		/// <summary>Load world settings from a byte array in XML format that comes from the zipped world save file or sent from the server in multiplayer.</summary>
 		/// <remarks>Remember XML xpaths are case sensitive.</remarks>
 		/// <param name="settings">xml byte array</param>
-		internal static void LoadSettings(byte[] settings)
+        public static void LoadSettings(byte[] settings)
 		{
 			Debug.WriteLine("Loading world settings...");
 			try
@@ -91,7 +91,7 @@ namespace Hexpoint.Blox.Hosts.World
 		/// <summary>Get world settings in an XML format and return as a byte array to be written in the zipped world save file or sent to clients in multiplayer.</summary>
 		/// <remarks>Remember XML xpaths are case sensitive.</remarks>
 		/// <returns>xml byte array</returns>
-		internal static byte[] GetXmlByteArray()
+        public static byte[] GetXmlByteArray()
 		{
 			try
 			{

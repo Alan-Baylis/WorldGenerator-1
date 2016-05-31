@@ -4,7 +4,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProjectGuid>{ED9CDEB6-5F1F-4C58-8F57-F216266F4B79}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>Sean.World</RootNamespace>
     <AssemblyName>WorldServer</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
@@ -61,7 +61,6 @@
     <Compile Include="World\Settings.cs" />
     <Compile Include="World\WorldData.cs" />
     <Compile Include="World\WorldHost.cs" />
-    <Compile Include="World\WorldSettings.cs" />
     <Compile Include="World\Generator\Generator.cs" />
     <Compile Include="World\Generator\PerlinNoise.cs" />
     <Compile Include="World\Generator\TreeGenerator.cs" />
@@ -73,12 +72,12 @@
     <Compile Include="World\Objects\CharacterManager.cs" />
     <Compile Include="World\Generator\Array.cs" />
     <Compile Include="World\Map\WorldMap.cs" />
-    <Compile Include="WorldServer.cs" />
     <Compile Include="Shared\Vector3.cs" />
     <Compile Include="Shared\Vector4.cs" />
     <Compile Include="Shared\Matrix4.cs" />
     <Compile Include="Shared\MathHelper.cs" />
     <Compile Include="temp.cs" />
+    <Compile Include="WorldGenerator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

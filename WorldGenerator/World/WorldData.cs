@@ -26,6 +26,13 @@ namespace Sean.World
 		{
 			//Mobs = new ConcurrentDictionary<int, Mob>();
 			GameItems = new ConcurrentDictionary<int, GameItemDynamic>();
+            WorldMap = new WorldMap(chunkSize:32, initialSize:80);
+
+            RawSeed = "123456"; //settingsNode.Attributes["RawSeed"].Value;
+            GeneratorVersion = "1.0";// settingsNode.Attributes["GeneratorVersion"].Value;
+            GameObjectIdSeq = 1; //int.Parse(settingsNode.Attributes["GameObjectIdSeq"].Value);
+            WorldType = WorldType.Grass;// (WorldType)Convert.ToInt32(settingsNode.Attributes["WorldType"].Value);
+
 		}
 
 		#region Properties (Saved)

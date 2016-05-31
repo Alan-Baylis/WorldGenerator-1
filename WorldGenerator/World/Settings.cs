@@ -8,7 +8,7 @@ namespace Sean.World
     /// Use Config class for values that can be altered and saved.
     /// Use Constants class for values that cannot be altered.
     /// </summary>
-    internal static class Settings
+    public static class Settings
     {
         public static Random Random = new Random();
 
@@ -25,16 +25,16 @@ namespace Sean.World
         }
         
         /// <summary>Version in the format: major.minor.build</summary>
-        internal static string VersionDisplay { get; private set; }
-        
+        public static string VersionDisplay { get; private set; }
+
         /// <summary>UI can be toggled for screenshots, videos, etc. by pressing alt-Z</summary>
-        internal static bool UiDisabled { get; set; }
+        public static bool UiDisabled { get; set; }
         /// <summary>UI debug info can be toggled by pressing F3</summary>
-        internal static bool UiDebugDisabled { get; set; }
+        public static bool UiDebugDisabled { get; set; }
         
         private static bool _chunkUpdatesDisabled;
         /// <summary>For tracking performance issues. Useful test to disable once all chunks have been initially loaded and buffered.</summary>
-        internal static bool ChunkUpdatesDisabled
+        public static bool ChunkUpdatesDisabled
         { 
             get { return _chunkUpdatesDisabled; }
             set
@@ -46,7 +46,7 @@ namespace Sean.World
         
         /// <summary>Directly corresponds to how many blocks away you can see because we use a block size of 1.</summary>
         private static float _zFar;
-        internal static float ZFar
+        public static float ZFar
         {
             get { return _zFar; }
             set
@@ -58,10 +58,10 @@ namespace Sean.World
         }
         
         /// <summary>Distance at which chunks will be queued for VBO build. Ideally we want to build before they enter ZFar.</summary>
-        internal static float ZFarForChunkLoad { get; private set; }
+        public static float ZFarForChunkLoad { get; private set; }
         
         /// <summary>Distance at which chunks will have their VBOs dropped. Leave a decent buffer from ZFarForChunkLoad so minor movements don't cause constant load/unload.</summary>
-        internal static float ZFarForChunkUnload { get; private set; }
+        public static float ZFarForChunkUnload { get; private set; }
         
         /// <summary>Use for debugging. When true all chunk edges will highlight blocks on either side. The actual chunk edge line is the line between the 2 yellow block strips.</summary>
         //internal static bool OutlineChunks;
