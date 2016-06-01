@@ -8,58 +8,30 @@ namespace CmdLineClient
         {
             Console.WriteLine ("Hello World!");
 
-
-
-            int x = WorldData.WorldMap.MaxXPosition / 2;
-            int y = 0;
-            int z = WorldData.WorldMap.MaxZPosition / 2;
-
-            var cursor = new Position (x, y, z);
+            var worldClient = new WorldClient("http://localhost:8080", 1);
+            Location cursor = new Location (100,0,100);
+            int stepSize = 5;
             while (true)
             {
+                worldClient.LookingAt (cursor);
                 Console.Clear ();
-                var chunk = WorldData.WorldMap.Chunk (cursor);
-                chunk.Render (y);
+                //var chunk = WorldData.WorldMap.Chunk (cursor);
+                //chunk.Render (y);
                 var key = Console.ReadKey ();
                 switch (key.KeyChar)
                 {
-                case 'q': cursor.Z -= Chunk.CHUNK_SIZE; break;
-                case 'a': cursor.Z += Chunk.CHUNK_SIZE; break;
-                case 'p': cursor.X += Chunk.CHUNK_SIZE; break;
-                case 'o': cursor.X -= Chunk.CHUNK_SIZE; break;
-                case '>': cursor.Y += Chunk.CHUNK_SIZE; break;
-                case '<': cursor.Y -= Chunk.CHUNK_SIZE; break;
+                case 'q': cursor.Z -= stepSize; break;
+                case 'a': cursor.Z += stepSize; break;
+                case 'p': cursor.X += stepSize; break;
+                case 'o': cursor.X -= stepSize; break;
+                case '>': cursor.Y += stepSize; break;
+                case '<': cursor.Y -= stepSize; break;
                 }
             }
 
-
-
-
-            Console.WriteLine("Read all the companies...");
-            var companyClient = new CompanyClient("http://localhost:8080");
-
-            int nextId  = (from c in companies select c.Id).Max() + 1;
-
-            Console.WriteLine("Add a new company...");
-            var result = companyClient.AddCompany(
-                new Company 
-                { 
-                    Id = nextId, 
-                    Name = string.Format("New Company #{0}", nextId) 
-                });
-            WriteStatusCodeResult(result);
+            //WriteStatusCodeResult(result);
 
         }
-
-        static void WriteCompaniesList(IEnumerable<Company> companies)
-        {
-            foreach(var company in companies)
-            {
-                Console.WriteLine("Id: {0} Name: {1}", company.Id, company.Name);
-            }
-            Console.WriteLine("");
-        }
-
 
         static void WriteStatusCodeResult(System.Net.HttpStatusCode statusCode)
         {
