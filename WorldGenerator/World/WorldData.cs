@@ -6,8 +6,9 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
+using Sean.Shared;
 
-namespace Sean.World
+namespace Sean.WorldGenerator
 {
 	/// <summary>
 	/// World environment type. Integer value is saved in world settings XML, so these integer values cannot be changed without breaking existing worlds.
@@ -135,6 +136,129 @@ namespace Sean.World
 			       (z > 0 && GetHeightMapLevel(x, z - 1) <= y);
 		}
 
+
+
+        public static bool IsValidItemLocation(Position position)
+        {
+            return IsValidBlockLocation(position.X, 0, position.Z) && position.Y >= 0; 
+        }
+
+        public static bool IsOnChunkBorder(Position position)
+        {
+            return IsOnChunkBorder(position.X, position.Z);
+        }
+
+
+        /// <summary>
+        /// Get a List of chunks this block is bordering. Result count must be in the range 0-2 because a block can border at most 2 chunks at a time.
+        /// Accounts for world edges and does not add results in those cases.
+        /// </summary>
+        public static List<Chunk> BorderChunks(Position position)
+        {
+            var chunks = new List<Chunk>();
+            //check in X direction
+            if (position.X > 0 && position.X % Chunk.CHUNK_SIZE == 0)
+            {
+                chunks.Add(WorldMap.Chunk((position.X - 1) / Chunk.CHUNK_SIZE, position.Z / Chunk.CHUNK_SIZE)); //add left chunk
+            }
+            else if (position.X < SizeInBlocksX - 1 && position.X % Chunk.CHUNK_SIZE == Chunk.CHUNK_SIZE - 1)
+            {
+                chunks.Add(WorldMap.Chunk((position.X + 1) / Chunk.CHUNK_SIZE, position.Z / Chunk.CHUNK_SIZE)); //add right chunk
+            }
+            //check in Z direction
+            if (position.Z > 0 && position.Z % Chunk.CHUNK_SIZE == 0)
+            {
+                chunks.Add(WorldMap.Chunk(position.X / Chunk.CHUNK_SIZE, (position.Z - 1) / Chunk.CHUNK_SIZE)); //add back chunk
+            }
+            else if (position.Z < SizeInBlocksZ - 1 && position.Z % Chunk.CHUNK_SIZE == Chunk.CHUNK_SIZE - 1)
+            {
+                chunks.Add(WorldMap.Chunk(position.X / Chunk.CHUNK_SIZE, (position.Z + 1) / Chunk.CHUNK_SIZE)); //add front chunk
+            }
+            return chunks;
+        }
+
+        public static bool IsValidBlockLocation(Position position)
+        {
+            return IsValidBlockLocation(position.X, position.Y, position.Z); 
+        }
+        public static bool IsValidBlockLocation(Coords coords)
+        {
+            return IsValidBlockLocation(coords.Xblock, coords.Yblock, coords.Zblock); 
+        }
+
+        public static bool IsValidPlayerLocation(Coords coords)
+        {
+            return coords.Xf >= 0 && coords.Xf < SizeInBlocksX
+                && coords.Yf >= 0 && coords.Yf <= 600 //can't see anything past 600
+                && coords.Zf >= 0 && coords.Zf < SizeInBlocksZ
+                && (coords.Yf >= Chunk.CHUNK_HEIGHT || !GetBlock(coords.ToPosition()).IsSolid)
+                && (coords.Yf + 1 >= Chunk.CHUNK_HEIGHT || !GetBlock(coords.Xblock, coords.Yblock + 1, coords.Zblock).IsSolid)
+                && (coords.Yf % 1 < Constants.PLAYER_HEADROOM || coords.Yf + 2 >= Chunk.CHUNK_HEIGHT || !GetBlock(coords.Xblock, coords.Yblock + 2, coords.Zblock).IsSolid); //the player can occupy 3 blocks
+        }
+
+        public static bool IsValidItemLocation(Coords coords)
+        {
+            return IsValidBlockLocation(coords.Xblock, 0, coords.Zblock) && coords.Yf >= 0;
+        }
+
+        [Obsolete("Only usages moved to Position.")]
+        public static bool IsOnChunkBorder(Coords coords)
+        {
+            return IsOnChunkBorder(coords.Xblock, coords.Zblock);
+        }
+
+        /// <summary>Get a List of the 6 directly adjacent positions. Exclude positions that are outside the world or on the base of the world.</summary>
+        public static List<Position> AdjacentPositions(Position position)
+        {
+            var positions = new List<Position>();
+            var left = new Position(position.X - 1, position.Y, position.Z);
+            if (IsValidBlockLocation(left) && left.Y >= 1) positions.Add(left);
+            var right = new Position(position.X + 1, position.Y, position.Z);
+            if (IsValidBlockLocation(right) && right.Y >= 1) positions.Add(right);
+            var front = new Position(position.X, position.Y, position.Z + 1);
+            if (IsValidBlockLocation(front) && front.Y >= 1) positions.Add(front);
+            var back = new Position(position.X, position.Y, position.Z - 1);
+            if (IsValidBlockLocation(back) && back.Y >= 1) positions.Add(back);
+            var top = new Position(position.X, position.Y + 1, position.Z);
+            if (IsValidBlockLocation(top) && top.Y >= 1) positions.Add(top);
+            var bottom = new Position(position.X, position.Y - 1, position.Z);
+            if (IsValidBlockLocation(bottom) && bottom.Y >= 1) positions.Add(bottom);
+            return positions;
+        }
+
+        /// <summary>Get a List of the 6 directly adjacent positions and corresponding faces. Exclude positions that are outside the world or on the base of the world.</summary>
+        public static List<Tuple<Position, Face>> AdjacentPositionFaces(Position position)
+        {
+            var positions = new List<Tuple<Position, Face>>();
+            var left = new Position(position.X - 1, position.Y, position.Z);
+            if (IsValidBlockLocation(left) && left.Y >= 1) positions.Add(new Tuple<Position, Face>(left, Face.Left));
+            var right = new Position(position.X + 1, position.Y, position.Z);
+            if (IsValidBlockLocation(right) && right.Y >= 1) positions.Add(new Tuple<Position, Face>(right, Face.Right));
+            var front = new Position(position.X, position.Y, position.Z + 1);
+            if (IsValidBlockLocation(front) && front.Y >= 1) positions.Add(new Tuple<Position, Face>(front, Face.Front));
+            var back = new Position(position.X, position.Y, position.Z - 1);
+            if (IsValidBlockLocation(back) && back.Y >= 1) positions.Add(new Tuple<Position, Face>(back, Face.Back));
+            var top = new Position(position.X, position.Y + 1, position.Z);
+            if (IsValidBlockLocation(top) && top.Y >= 1) positions.Add(new Tuple<Position, Face>(top, Face.Top));
+            var bottom = new Position(position.X, position.Y - 1, position.Z);
+            if (IsValidBlockLocation(bottom) && bottom.Y >= 1) positions.Add(new Tuple<Position, Face>(bottom, Face.Bottom));
+            return positions;
+        }
+
+        /// <summary>Get a List of the 6 directly adjacent positions. Exclude positions that are outside the world or on the base of the world.</summary>
+        public static List<Position> AdjacentPositions(Coords coord)
+        {
+            return AdjacentPositions(coord.ToPosition());
+        }
+
+        /// <summary>
+        /// Get a block using world coords. Looks up the chunk from the world chunks array and then the block in the chunk blocks array.
+        /// Therefore if you have a chunk and chunk relative xyz its faster to get the block straight from the chunk blocks array.
+        /// </summary>
+        public static Block GetBlock(Position position)
+        {
+            return WorldMap.Chunk(position).Blocks[position];
+        }
 		#endregion
 
 		#region Block Place
@@ -144,7 +268,7 @@ namespace Sean.World
 		/// <param name="isMultipleBlockPlacement">Use this when placing multiple blocks at once so lighting and chunk queueing only happens once.</param>
         internal static void PlaceBlock(Position position, Block.BlockType type, bool isMultipleBlockPlacement = false)
 		{
-			if (!position.IsValidBlockLocation || position.Y <= 0) return;
+            if (!WorldData.IsValidBlockLocation(position) || position.Y <= 0) return;
 
 			//this was a multiple block placement, prevent placing blocks on yourself and getting stuck; used to be able to place cuboids on yourself and get stuck
 			//only check in single player for now because in multiplayer this could allow the blocks on different clients to get out of sync and placements of multiple blocks in multiplayer will be rare
@@ -157,7 +281,7 @@ namespace Sean.World
 			}
 
             var chunk = WorldMap.Chunk(position);
-			var block = position.GetBlock();
+            var block = WorldData.GetBlock(position);
 			var oldType = block.Type;
 			block.Type = type; //assign the new type
 			var isTransparentBlock = Block.IsBlockTypeTransparent(type);
@@ -172,7 +296,7 @@ namespace Sean.World
 				below.Y--;
 				if (below.Y > 0)
 				{
-					if (below.GetBlock().Type == Block.BlockType.Grass || below.GetBlock().Type == Block.BlockType.Snow)
+                    if (WorldData.GetBlock(below).Type == Block.BlockType.Grass || WorldData.GetBlock(below).Type == Block.BlockType.Snow)
 					{
 						PlaceBlock(below, Block.BlockType.Dirt, true); //dont queue with this dirt block change, the source block changing takes care of it, prevents double queueing the chunk and playing sound twice
 					}
@@ -208,7 +332,7 @@ namespace Sean.World
 									adjacent = new Position(position.X, position.Y, position.Z - 1);
 									break;
 							}
-							if (adjacent.IsValidBlockLocation && adjacent.GetBlock().Type == Block.BlockType.Water)
+                        if (WorldData.IsValidBlockLocation(adjacent) && WorldData.GetBlock(adjacent).Type == Block.BlockType.Water)
 							{
                             WorldMap.Chunk(adjacent).WaterExpanding = true;
 							}
@@ -225,9 +349,9 @@ namespace Sean.World
 			if (!isTransparentBlock || (type == Block.BlockType.Air && !isTransparentOldBlock))
 			{
 				chunk.GrassGrowing = true;
-				if (position.IsOnChunkBorder)
+                if (WorldData.IsOnChunkBorder(position))
 				{
-					foreach (var adjacentChunk in position.BorderChunks) adjacentChunk.GrassGrowing = true;
+                    foreach (var adjacentChunk in WorldData.BorderChunks(position)) adjacentChunk.GrassGrowing = true;
 				}
 			}
 
@@ -260,10 +384,10 @@ namespace Sean.World
                 */            
 
 				//look on ALL 6 adjacent blocks for static items, and those only get destroyed if its on the matching opposite attached to face
-				var adjacentPositions = position.AdjacentPositionFaces;
+                var adjacentPositions = WorldData.AdjacentPositionFaces(position);
 				foreach (var tuple in adjacentPositions)
 				{
-					var adjBlock = tuple.Item1.GetBlock();
+                    var adjBlock = WorldData.GetBlock(tuple.Item1);
 					if (adjBlock.Type != Block.BlockType.Air) continue; //position cannot contain an item if the block is not air
                     var adjChunk = tuple.Item2 == Face.Top || tuple.Item2 == Face.Bottom ? chunk : WorldMap.Chunk(tuple.Item1); //get the chunk in case the adjacent position crosses a chunk boundary
 					var lightSourceToRemove = adjChunk.LightSources.FirstOrDefault(lightSource => tuple.Item1.IsOnBlock(ref lightSource.Value.Coords));

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using Sean.Shared;
 
-namespace Sean.World
+namespace Sean.WorldGenerator
 {
     internal class WorldMap
     {

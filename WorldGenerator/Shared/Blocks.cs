@@ -1,6 +1,7 @@
 ﻿using System;
+using Sean.Shared;
 
-namespace Sean.World
+namespace Sean.WorldGenerator
 {
 	/// <summary>
 	/// Note that the data is stored as [Y,X,Z]. When we Buffer.BlockCopy, we want the data accessed Y-by-Y. This improves compression and results in a ~10% smaller world

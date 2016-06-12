@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System;
 
-namespace Sean.World
+namespace Sean.Shared
 {
 	/// <summary>
 	/// Used for mobs, objects, etc. that need more specific positioning then just block position.
@@ -108,43 +108,6 @@ namespace Sean.World
 			return bytes;
 		}
 
-
-		public bool IsValidBlockLocation
-		{
-			get { return WorldData.IsValidBlockLocation(Xblock, Yblock, Zblock); }
-		}
- 
-		public bool IsValidPlayerLocation
-		{
-			get
-			{
-				return Xf >= 0 && Xf < WorldData.SizeInBlocksX
-				       && Yf >= 0 && Yf <= 600 //can't see anything past 600
-				       && Zf >= 0 && Zf < WorldData.SizeInBlocksZ
-				       && (Yf >= Chunk.CHUNK_HEIGHT || !WorldData.GetBlock(ref this).IsSolid)
-				       && (Yf + 1 >= Chunk.CHUNK_HEIGHT || !WorldData.GetBlock(Xblock, Yblock + 1, Zblock).IsSolid)
-				       && (Yf % 1 < Constants.PLAYER_HEADROOM || Yf + 2 >= Chunk.CHUNK_HEIGHT || !WorldData.GetBlock(Xblock, Yblock + 2, Zblock).IsSolid); //the player can occupy 3 blocks
-			}
-		}
-
-		public bool IsValidItemLocation
-		{
-			get { return WorldData.IsValidBlockLocation(Xblock, 0, Zblock) && Yf >= 0; }
-		}
-
-		[Obsolete("Only usages moved to Position.")]
-		public bool IsOnChunkBorder
-		{
-			get { return WorldData.IsOnChunkBorder(Xblock, Zblock); }
-		}
-     
-
-		/// <summary>Get a List of the 6 directly adjacent positions. Exclude positions that are outside the world or on the base of the world.</summary>
-		public List<Position> AdjacentPositions
-		{
-			get { return this.ToPosition().AdjacentPositions; }
-		}
-
 		/// <summary>Get the exact distance from the supplied coords.</summary>
 		public float GetDistanceExact(ref Coords coords)
 		{
@@ -159,7 +122,7 @@ namespace Sean.World
 			return Xblock == compare.Xblock && Yblock == compare.Yblock && Zblock == compare.Zblock;
 		}
 
-		internal Position ToPosition()
+        public Position ToPosition()
 		{
 			return new Position(Xblock, Yblock, Zblock);
 		}

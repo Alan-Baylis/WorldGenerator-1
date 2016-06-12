@@ -1,7 +1,7 @@
 ﻿using Owin;
 using System.Web.Http;
 
-namespace WorldServer
+namespace Sean.WorldServer
 {
     public class WebHostStartup
     {

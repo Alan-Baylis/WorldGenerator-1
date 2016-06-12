@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProjectGuid>{D8025598-D6B8-41CE-9CF4-22B67C29203E}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>WorldServer</RootNamespace>
+    <RootNamespace>Sean.WorldServer</RootNamespace>
     <AssemblyName>WorldServer</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <StartupObject>WorldServer.MainClass</StartupObject>
@@ -71,8 +71,9 @@
     <Compile Include="ServerSocketListener.cs" />
     <Compile Include="MessageParser.cs" />
     <Compile Include="Main.cs" />
-    <Compile Include="WorldController.cs" />
     <Compile Include="WebHostStartup.cs" />
+    <Compile Include="Controllers\WorldController.cs" />
+    <Compile Include="Controllers\JobsController.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -80,8 +81,19 @@
       <Project>{ED9CDEB6-5F1F-4C58-8F57-F216266F4B79}</Project>
       <Name>WorldGenerator</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GameObjects\GameObjects.csproj">
+      <Project>{21ADEBE6-C7AA-415D-B97A-F119C83390E0}</Project>
+      <Name>GameObjects</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Shared\Shared.csproj">
+      <Project>{4D280CA6-39A9-4400-B365-688930CE654D}</Project>
+      <Name>Shared</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controllers\" />
   </ItemGroup>
 </Project>

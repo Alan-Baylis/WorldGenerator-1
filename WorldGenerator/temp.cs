@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Sean.World
+namespace Sean.WorldGenerator
 {
     class FrameEventArgs
     {

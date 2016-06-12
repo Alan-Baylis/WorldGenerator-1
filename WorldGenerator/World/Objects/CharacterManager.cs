@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Sean.World
+namespace Sean.WorldGenerator
 {
     public class CharacterManager
     {

@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace Sean.World
+namespace Sean.WorldServer
 {
     public static class MessageParser
     {

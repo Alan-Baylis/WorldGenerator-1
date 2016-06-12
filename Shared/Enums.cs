@@ -1,4 +1,4 @@
-namespace Sean
+namespace Sean.Shared
 {
     [System.Reflection.Obfuscation(Exclude = true)] //gm: prevent obfuscation because these enum names are implicitly used with .ToString such as in string.Format
     public enum Face : byte { Front, Right, Top, Left, Bottom, Back }
@@ -7,10 +7,10 @@ namespace Sean
     [System.Reflection.Obfuscation(Exclude = true)] //gm: prevent obfuscation because these enum names are implicitly used with .ToString such as in string.Format
     public enum Facing : byte { North, East, South, West }
     
-    internal static class Enums
+    public static class Enums
     {
         #region Enum Extensions
-        internal static Face ToOpposite(this Face face)
+        public static Face ToOpposite(this Face face)
         {
             switch (face)
             {
@@ -29,7 +29,7 @@ namespace Sean
             }
         }
         
-        internal static Facing ToOpposite(this Facing facing)
+        public static Facing ToOpposite(this Facing facing)
         {
             switch (facing)
             {
@@ -44,7 +44,7 @@ namespace Sean
             }
         }
         
-        internal static Face ToFace(this Facing facing)
+        public static Face ToFace(this Facing facing)
         {
             switch (facing)
             {

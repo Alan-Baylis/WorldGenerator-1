@@ -4,7 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
-namespace Sean.World
+namespace Sean.WorldServer
 {
     public static class ClientSocket
     {

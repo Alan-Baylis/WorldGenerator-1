@@ -1,7 +1,7 @@
 using System;
-using Sean.World;
+using Sean.WorldGenerator;
 
-namespace Sean.World
+namespace Sean.WorldGenerator
 {
     /// <summary>
     /// Use Settings class for values that can be altered but not saved.

@@ -1,6 +1,7 @@
 ﻿using System;
+using Sean.Shared;
 
-namespace Sean.World
+namespace Sean.WorldGenerator
 {
 	internal class AddBlock : GameAction
 	{

@@ -1,6 +1,4 @@
-﻿using Sean.Textures;
-
-namespace Sean.World
+﻿namespace Sean.Shared
 {
 	public struct Block
 	{
@@ -288,7 +286,7 @@ namespace Sean.World
 			}
 		}
 
-		internal bool IsDirty
+        public bool IsDirty
 		{
 			get { return (BlockData & 0x8000) != 0; }
 		}

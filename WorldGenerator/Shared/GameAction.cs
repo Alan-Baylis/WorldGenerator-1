@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Diagnostics;
+using Sean.Shared;
 
-namespace Sean.World
+namespace Sean.WorldGenerator
 {
 	internal enum ActionType : ushort
 	{

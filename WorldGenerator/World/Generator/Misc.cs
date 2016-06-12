@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Sean.World
+namespace Sean.WorldGenerator
 {
     public static class Misc
     {

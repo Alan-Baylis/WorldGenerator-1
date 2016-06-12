@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Sean.Shared;
 
-namespace Sean.World
+namespace Sean.WorldGenerator
 {
 	internal static class Generator
 	{

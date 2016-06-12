@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Sean.Shared;
 
-namespace Sean.World
+namespace Sean.WorldGenerator
 {
 
     public interface IWorldGenerator

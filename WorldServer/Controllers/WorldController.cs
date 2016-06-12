@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Net.Http;
 
-namespace WorldServer
+namespace Sean.WorldServer
 {
     public class WorldController : ApiController
     {
@@ -16,6 +16,20 @@ namespace WorldServer
         {
             Console.WriteLine ("Player {0} at {1},{2}", playerId, x,z);
             return Ok ();
+        }
+
+        public int GetObjectId(int playerId, int x,int y,int z)
+        {
+            return 0;
+        }
+
+        public HttpResponseMessage QueryObject(int playerId, int objectId)
+        {
+            return Ok ();
+        }
+
+        public HttpResponseMessage DoAction(int playerId, int objectId, Action action)
+        {
         }
 
         /*

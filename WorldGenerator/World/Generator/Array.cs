@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Sean.World
+namespace Sean.WorldGenerator
 {
     public struct Vector2
     {

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Xml.Serialization;
+using Sean.Shared;
 
-namespace Sean.World
+namespace Sean.WorldGenerator
 {
     /// <summary>Represents a 4D vector using four single-precision floating-point numbers.</summary>
     /// <remarks>
@@ -172,7 +173,7 @@ namespace Sean.World
 
         /// <summary>Add the Vector passed as parameter to this instance.</summary>
         /// <param name="right">Right operand. This parameter is only read from.</param>
-        [CLSCompliant(false)]
+        //[CLSCompliant(false)]
         [Obsolete("Use static Add() method instead.")]
         public void Add(ref Vector4 right)
         {
@@ -199,7 +200,7 @@ namespace Sean.World
 
         /// <summary>Subtract the Vector passed as parameter from this instance.</summary>
         /// <param name="right">Right operand. This parameter is only read from.</param>
-        [CLSCompliant(false)]
+        //[CLSCompliant(false)]
         [Obsolete("Use static Subtract() method instead.")]
         public void Sub(ref Vector4 right)
         {
@@ -364,7 +365,7 @@ namespace Sean.World
 
         /// <summary>Scales this instance by the given parameter.</summary>
         /// <param name="scale">The scaling of the individual components.</param>
-        [CLSCompliant(false)]
+        //[CLSCompliant(false)]
         [Obsolete("Use static Multiply() method instead.")]
         public void Scale(ref Vector4 scale)
         {
@@ -1104,7 +1105,7 @@ namespace Sean.World
         /// </summary>
         /// <param name="v">The instance.</param>
         /// <returns>A pointer to the first element of v.</returns>
-        [CLSCompliant(false)]
+        //[CLSCompliant(false)]
         unsafe public static explicit operator float*(Vector4 v)
         {
             return &v.X;

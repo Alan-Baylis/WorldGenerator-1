@@ -1,4 +1,4 @@
-﻿namespace Sean.World.Render
+﻿namespace Sean.WorldGenerator.Render
 {
 	/// <summary>Used for buffering tex coord data to a VBO.</summary>
 	/// <remarks>Using short uses the smallest amount of memory possible for tex coord data.</remarks>

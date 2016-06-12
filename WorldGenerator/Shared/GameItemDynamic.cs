@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Xml;
+using Sean.Shared;
 
-namespace Sean.World
+namespace Sean.WorldGenerator
 {
 	internal enum GameItemType
 	{
@@ -120,7 +121,7 @@ namespace Sean.World
 			if (!Equals(Velocity.X, 0f))
 			{
 				proposedCoords.Xf += Velocity.X * (float)e.Time;
-				if (!proposedCoords.IsValidItemLocation || (proposedCoords.IsValidBlockLocation && WorldData.GetBlock(ref proposedCoords).IsSolid))
+                if (!WorldData.IsValidItemLocation(proposedCoords) || (WorldData.IsValidBlockLocation(proposedCoords) && WorldData.GetBlock(ref proposedCoords).IsSolid))
 				{
 					//Bounce
 					bounced = true;
@@ -133,7 +134,7 @@ namespace Sean.World
 			if (!Equals(Velocity.Z, 0f))
 			{
 				proposedCoords.Zf += Velocity.Z * (float)e.Time;
-				if (!proposedCoords.IsValidItemLocation || (proposedCoords.IsValidBlockLocation && WorldData.GetBlock(ref proposedCoords).IsSolid))
+                if (!WorldData.IsValidItemLocation(proposedCoords) || (WorldData.IsValidBlockLocation(proposedCoords) && WorldData.GetBlock(ref proposedCoords).IsSolid))
 				{
 					//Bounce
 					bounced = true;
@@ -145,7 +146,7 @@ namespace Sean.World
 
 			Velocity.Y += Constants.GRAVITY * (float)e.Time;
 			proposedCoords.Yf = proposedCoords.Yf + Velocity.Y * (float)e.Time;
-			if (!proposedCoords.IsValidItemLocation || (proposedCoords.IsValidBlockLocation && WorldData.GetBlock(ref proposedCoords).IsSolid))
+            if (!WorldData.IsValidItemLocation(proposedCoords) || (WorldData.IsValidBlockLocation(proposedCoords) && WorldData.GetBlock(ref proposedCoords).IsSolid))
 			{
 				var currentVelocityY = Velocity.Y + Constants.GRAVITY * (float)e.Time;
 				if (Velocity.LengthFast > 3f)
@@ -171,7 +172,7 @@ namespace Sean.World
 					do
 					{
 						proposedCoords.Yf++;
-					} while (!proposedCoords.IsValidItemLocation || (proposedCoords.IsValidBlockLocation && WorldData.GetBlock(ref proposedCoords).IsSolid));
+                    } while (!WorldData.IsValidItemLocation(proposedCoords) || (WorldData.IsValidBlockLocation(proposedCoords) && WorldData.GetBlock(ref proposedCoords).IsSolid));
 					proposedCoords.Yf = (float)Math.Floor(proposedCoords.Yf) + Constants.ITEM_HOVER_DIST;
 					IsMoving = false;
 					if (Stop != null) Stop(e);

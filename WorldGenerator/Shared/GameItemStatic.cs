@@ -1,6 +1,7 @@
 ﻿using System.Xml;
+using Sean.Shared;
 
-namespace Sean.World
+namespace Sean.WorldGenerator
 {
 	public enum StaticItemType { Clutter, LightSource }
 

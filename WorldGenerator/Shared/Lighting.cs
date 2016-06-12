@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Sean.World
+namespace Sean.WorldGenerator
 {
 	internal static class Lighting
 	{

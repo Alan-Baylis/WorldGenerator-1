@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Sean.Shared;
 
-namespace Sean.World
+namespace Sean.WorldGenerator
 {
 	internal static class TreeGenerator
 	{
@@ -60,7 +61,7 @@ namespace Sean.World
 							if (Math.Sqrt(leafX * leafX + leafZ * leafZ + Math.Pow(treeHeight - leafRadius - yTrunkLevel + 1, 2)) > leafRadius) continue;
 							var leafPosition = new Position(xProposedInWorld + leafX, yProposed + yTrunkLevel, zProposedInWorld + leafZ);
                             var leafCoords = leafPosition.ToCoords();
-                            if (leafPosition.IsValidBlockLocation && WorldData.GetBlock(ref leafCoords).Type == Block.BlockType.Air)
+                            if (WorldData.IsValidBlockLocation(leafPosition) && WorldData.GetBlock(ref leafCoords).Type == Block.BlockType.Air)
 							{
 								//need to get the chunk because this block could be expanding into an adjacent chunk
                                 WorldData.WorldMap.Chunk(leafPosition).Blocks[leafPosition] = new Block(WorldData.WorldType == WorldType.Winter ? Block.BlockType.SnowLeaves : Block.BlockType.Leaves);

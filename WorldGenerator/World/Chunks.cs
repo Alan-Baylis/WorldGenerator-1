@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Diagnostics;
 using System.Collections.Concurrent;
+using Sean.Shared;
 
-namespace Sean.World
+namespace Sean.WorldGenerator
 {
 	internal class Chunks : IEnumerable
 	{

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Sean.World
+namespace Sean.Shared
 {
     /// <summary>
     /// Contains common mathematical functions and constants.

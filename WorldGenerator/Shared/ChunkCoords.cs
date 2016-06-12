@@ -1,4 +1,6 @@
-﻿namespace Sean.World
+﻿using Sean.Shared;
+
+namespace Sean.WorldGenerator
 {
 	public struct ChunkCoords
 	{

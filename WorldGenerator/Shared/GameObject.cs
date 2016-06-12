@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Xml;
+using Sean.Shared;
 
-namespace Sean.World
+namespace Sean.WorldGenerator
 {
 	internal abstract class GameObject
 	{
@@ -13,7 +14,7 @@ namespace Sean.World
 		protected GameObject(ref Coords coords, int id = -1)
 		{
 			if (//!(this is Player) && 
-                !coords.IsValidItemLocation) throw new Exception(string.Format("Invalid item location: {0}", coords));
+                !WorldData.IsValidItemLocation(coords)) throw new Exception(string.Format("Invalid item location: {0}", coords));
 			Id = WorldData.NextGameObjectId; //if this is a server we need to select our own IDs, ignore what the client said
 			Coords = coords;
 		}

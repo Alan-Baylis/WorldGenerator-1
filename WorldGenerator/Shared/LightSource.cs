@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Xml;
+using Sean.Shared;
 
-namespace Sean.World
+namespace Sean.WorldGenerator
 {
 	internal enum LightSourceType { PlaceholderTorch, Lantern }
 

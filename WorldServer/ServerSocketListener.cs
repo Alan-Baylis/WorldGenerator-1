@@ -6,7 +6,7 @@ using System.Threading;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Sean.World
+namespace Sean.WorldServer
 {
 
 	// State object for reading client data asynchronously

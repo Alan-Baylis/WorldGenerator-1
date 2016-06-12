@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Xml;
+using Sean.Shared;
 
-namespace Sean.World
+namespace Sean.WorldGenerator
 {
 	public class Chunk
 	{
@@ -388,8 +389,8 @@ namespace Sean.World
 							if (newWater.Contains(adjacent)) continue;
 
 							//if there's air or water below the current block, don't spread sideways
-							if (q != 0 && belowCurrent.IsValidBlockLocation && (Blocks[belowCurrent].Type == Block.BlockType.Air || Blocks[belowCurrent].Type == Block.BlockType.Water)) continue;
-							if (adjacent.IsValidBlockLocation && adjacent.GetBlock().Type == Block.BlockType.Air) newWater.Add(adjacent);
+                            if (q != 0 && WorldData.IsValidBlockLocation(belowCurrent) && (Blocks[belowCurrent].Type == Block.BlockType.Air || Blocks[belowCurrent].Type == Block.BlockType.Water)) continue;
+                            if (WorldData.IsValidBlockLocation(adjacent) && WorldData.GetBlock(adjacent).Type == Block.BlockType.Air) newWater.Add(adjacent);
 						}
 					}
 				}
@@ -404,7 +405,7 @@ namespace Sean.World
 
 			var addBlocks = new List<AddBlock>();
 			Settings.ChunkUpdatesDisabled = true; //change blocks while updates are disabled so chunk is only rebuilt once
-			foreach (var newWaterPosition in newWater.Where(newWaterCoords => newWaterCoords.GetBlock().Type != Block.BlockType.Water))
+            foreach (var newWaterPosition in newWater.Where(newWaterCoords => WorldData.GetBlock(newWaterCoords).Type != Block.BlockType.Water))
 			{
 				WorldData.PlaceBlock(newWaterPosition, Block.BlockType.Water);
 			    var temp = newWaterPosition;

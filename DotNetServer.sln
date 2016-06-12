@@ -9,12 +9,24 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorldServer", "WorldServer\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmdLineClient", "CmdLineClient\CmdLineClient.csproj", "{C33A69D0-8B46-47D3-A39F-F8D90A4ED637}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameObjects", "GameObjects\GameObjects.csproj", "{21ADEBE6-C7AA-415D-B97A-F119C83390E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{4D280CA6-39A9-4400-B365-688930CE654D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{21ADEBE6-C7AA-415D-B97A-F119C83390E0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{21ADEBE6-C7AA-415D-B97A-F119C83390E0}.Debug|x86.Build.0 = Debug|Any CPU
+		{21ADEBE6-C7AA-415D-B97A-F119C83390E0}.Release|x86.ActiveCfg = Release|Any CPU
+		{21ADEBE6-C7AA-415D-B97A-F119C83390E0}.Release|x86.Build.0 = Release|Any CPU
+		{4D280CA6-39A9-4400-B365-688930CE654D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4D280CA6-39A9-4400-B365-688930CE654D}.Debug|x86.Build.0 = Debug|Any CPU
+		{4D280CA6-39A9-4400-B365-688930CE654D}.Release|x86.ActiveCfg = Release|Any CPU
+		{4D280CA6-39A9-4400-B365-688930CE654D}.Release|x86.Build.0 = Release|Any CPU
 		{7301AA7C-790E-4765-9036-D2A11BF47E92}.Debug|x86.ActiveCfg = Debug|x86
 		{7301AA7C-790E-4765-9036-D2A11BF47E92}.Debug|x86.Build.0 = Debug|x86
 		{7301AA7C-790E-4765-9036-D2A11BF47E92}.Release|x86.ActiveCfg = Release|x86
