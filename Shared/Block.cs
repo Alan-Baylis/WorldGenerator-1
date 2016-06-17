@@ -1,4 +1,6 @@
-﻿namespace Sean.Shared
+﻿using Sean.Shared.Textures;
+
+namespace Sean.Shared
 {
 	public struct Block
 	{

@@ -15,7 +15,7 @@ namespace Sean.WorldServer
         public HttpResponseMessage LookingAt(int playerId, int x, int z)
         {
             Console.WriteLine ("Player {0} at {1},{2}", playerId, x,z);
-            return Ok ();
+            return this.Request.CreateResponse( System.Net.HttpStatusCode.OK);
         }
 
         public int GetObjectId(int playerId, int x,int y,int z)
@@ -25,11 +25,12 @@ namespace Sean.WorldServer
 
         public HttpResponseMessage QueryObject(int playerId, int objectId)
         {
-            return Ok ();
+            return this.Request.CreateResponse( System.Net.HttpStatusCode.OK);
         }
 
         public HttpResponseMessage DoAction(int playerId, int objectId, Action action)
         {
+            return this.Request.CreateResponse( System.Net.HttpStatusCode.OK);
         }
 
         /*

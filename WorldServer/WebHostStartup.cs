@@ -18,10 +18,10 @@ namespace Sean.WorldServer
         private HttpConfiguration ConfigureWebApi()
         {
             var config = new HttpConfiguration();
-            config.Routes.MapHttpRoute(
+            config.Routes.MapHttpRoute (
                 "DefaultApi",
-                "{controller}/{playerId}",
-                new { playerId = RouteParameter.Optional });
+                "{controller}/Player/{playerId}");//,
+                //new { playerId = RouteParameter.Optional });
             return config;
         }
     }

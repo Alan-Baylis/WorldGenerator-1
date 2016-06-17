@@ -38,7 +38,7 @@ namespace Sean.WorldServer
         [Route("Player/{playerId}/Jobs")]
         public async Task<List<Job>> GetJobs(int playerId, [FromUri] int objectId)
         {
-            return new Job ();
+            return new List<Job> ();
         }
 
     }

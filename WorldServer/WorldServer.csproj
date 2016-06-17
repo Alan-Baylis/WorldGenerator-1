@@ -8,7 +8,7 @@
     <RootNamespace>Sean.WorldServer</RootNamespace>
     <AssemblyName>WorldServer</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
-    <StartupObject>WorldServer.MainClass</StartupObject>
+    <StartupObject>Sean.WorldServer.MainClass</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>

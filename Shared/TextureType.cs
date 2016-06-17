@@ -1,6 +1,6 @@
 using System;
 
-namespace Sean.Shared
+namespace Sean.Shared.Textures
 {
     #region Texture Enums
     /// <summary>Block texture index. The order can be changed without affecting anything, so keep this alphabetical with Air always at 0 and water last.</summary>

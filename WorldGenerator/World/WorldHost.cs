@@ -28,15 +28,15 @@ namespace Sean.WorldGenerator
         private static void PerformanceHost_OnHalfSecondElapsed ()
         {
             WaterCycleTextureId++;
-            if (WaterCycleTextureId > (int)Textures.BlockTextureType.Water4)
-                WaterCycleTextureId = (int)Textures.BlockTextureType.Water;
+            if (WaterCycleTextureId > (int)Sean.Shared.Textures.BlockTextureType.Water4)
+                WaterCycleTextureId = (int)Sean.Shared.Textures.BlockTextureType.Water;
         }
    #endregion
 
    #region Properties
         //internal static int RotationCounter;
         /// <summary>Current water texture id for the water animation cycle. Incremented in the performance host.</summary>
-        internal static int WaterCycleTextureId = (int)Textures.BlockTextureType.Water;
+        internal static int WaterCycleTextureId = (int)Sean.Shared.Textures.BlockTextureType.Water;
    #endregion
 
    #region Build World
