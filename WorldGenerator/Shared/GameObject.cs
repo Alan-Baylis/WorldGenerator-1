@@ -4,7 +4,7 @@ using Sean.Shared;
 
 namespace Sean.WorldGenerator
 {
-	internal abstract class GameObject
+	public abstract class GameObject
 	{
 		protected GameObject()
 		{
@@ -27,14 +27,14 @@ namespace Sean.WorldGenerator
 			Coords = new Coords(float.Parse(xmlNode.Attributes["X"].Value), float.Parse(xmlNode.Attributes["Y"].Value), float.Parse(xmlNode.Attributes["Z"].Value));
 		}
 
-		internal readonly int Id;
+		public readonly int Id;
 		public override int GetHashCode()
 		{
 			return Id;
 		}
 
 		/// <summary>Coords of the game object. Field instead of property so that individual components of the struct can be set directly.</summary>
-		internal Coords Coords;
+		public Coords Coords;
 
 		/// <summary>Is this game object affected by light. Can be overridden with false for objects that are not affected.</summary>
 		protected virtual bool IsAffectedByLight { get { return true; } }
@@ -44,8 +44,8 @@ namespace Sean.WorldGenerator
 
 		/// <summary>Reset GL color and currently set game object color so it does not interfere with the next set of game objects rendered.</summary>
 		
-		internal abstract string XmlElementName { get; }
-		internal virtual XmlNode GetXml(XmlDocument xmlDocument)
+		public abstract string XmlElementName { get; }
+		public virtual XmlNode GetXml(XmlDocument xmlDocument)
 		{
 			var xmlNode = xmlDocument.CreateNode(XmlNodeType.Element, XmlElementName, string.Empty);
 			if (xmlNode.Attributes == null) throw new Exception("Node attributes is null.");

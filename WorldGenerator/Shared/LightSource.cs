@@ -4,9 +4,9 @@ using Sean.Shared;
 
 namespace Sean.WorldGenerator
 {
-	internal enum LightSourceType { PlaceholderTorch, Lantern }
+	public enum LightSourceType { PlaceholderTorch, Lantern }
 
-	internal class LightSource : GameItemStatic
+	public class LightSource : GameItemStatic
 	{
 		#region Constructors
 		/// <summary>Use this constructor to create already existing Light Sources, such as would come from the server. Use the constructor that accepts Position to create a brand new Light Source.</summary>
@@ -79,14 +79,14 @@ namespace Sean.WorldGenerator
 		// ReSharper restore PossibleNullReferenceException
 		#endregion
 
-		internal override StaticItemType StaticItemType
+		public override StaticItemType StaticItemType
 		{
 			get { return StaticItemType.LightSource; }
 		}
 
 
 		private LightSourceType _type;
-		internal LightSourceType Type
+		public LightSourceType Type
 		{
 			get { return _type; }
 			private set
@@ -105,7 +105,7 @@ namespace Sean.WorldGenerator
 
 		//private ItemTextureType _textureType;
 
-		internal byte LightStrength; //1-15
+		public byte LightStrength; //1-15
 
 		private byte GetLightSourceStrength()
 		{
@@ -121,12 +121,12 @@ namespace Sean.WorldGenerator
 		}
 
 
-		internal override string XmlElementName
+		public override string XmlElementName
 		{
 			get { return "LS"; }
 		}
 
-		internal override XmlNode GetXml(XmlDocument xmlDocument)
+		public override XmlNode GetXml(XmlDocument xmlDocument)
 		{
 			var xmlNode = base.GetXml(xmlDocument);
 			if (xmlNode.Attributes == null) throw new Exception("Node attributes is null.");

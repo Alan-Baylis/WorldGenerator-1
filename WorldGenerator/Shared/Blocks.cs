@@ -8,18 +8,18 @@ namespace Sean.WorldGenerator
 	/// </summary>
 	public struct Blocks
 	{
-		internal Blocks(int chunkSizeX, int chunkHeight, int chunkSizeZ)
+		public Blocks(int chunkSizeX, int chunkHeight, int chunkSizeZ)
 		{
 			Array = new ushort[chunkHeight, chunkSizeX, chunkSizeZ];
 		}
 
-		internal Block this[Coords coords]
+		public Block this[Coords coords]
 		{
 			get { return new Block(Array[coords.Yblock, coords.Xblock % Chunk.CHUNK_SIZE, coords.Zblock % Chunk.CHUNK_SIZE]); }
 			set { Array[coords.Yblock, coords.Xblock % Chunk.CHUNK_SIZE, coords.Zblock % Chunk.CHUNK_SIZE] = value.BlockData; }
 		}
 
-		internal Block this[Position position]
+		public Block this[Position position]
 		{
 			get { return new Block(Array[position.Y, position.X % Chunk.CHUNK_SIZE, position.Z % Chunk.CHUNK_SIZE]); }
 			set { Array[position.Y, position.X % Chunk.CHUNK_SIZE, position.Z % Chunk.CHUNK_SIZE] = value.BlockData; }
@@ -29,16 +29,16 @@ namespace Sean.WorldGenerator
 		/// <param name="x">Chunk relative X.</param>
 		/// <param name="y">Chunk relative Y.</param>
 		/// <param name="z">Chunk relative Z.</param>
-		internal Block this[int x, int y, int z]
+		public Block this[int x, int y, int z]
 		{
 			get { return new Block(Array[y, x, z]); }
 			set { Array[y, x, z] = value.BlockData; }
 		}
 
-		internal readonly ushort[, ,] Array;
+		public readonly ushort[, ,] Array;
 
 		[Obsolete("This was for world diffs. Not being used currently.")]
-		internal ushort[,,] DiffArray
+		public ushort[,,] DiffArray
 		{
 			get
 			{

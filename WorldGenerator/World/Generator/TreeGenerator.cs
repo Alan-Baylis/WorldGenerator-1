@@ -5,7 +5,7 @@ using Sean.Shared;
 
 namespace Sean.WorldGenerator
 {
-	internal static class TreeGenerator
+	public static class TreeGenerator
 	{
 		private const byte MIN_TREES_PER_CHUNK = 2;
 		private const byte MAX_TREES_PER_CHUNK = 5;
@@ -13,7 +13,7 @@ namespace Sean.WorldGenerator
 		private const byte MAX_TRUNK_HEIGHT = 9;
 		private const byte DISTANCE_TOLERANCE = 4;
 
-		internal static void Generate(Chunk chunk, List<Position> takenPositions)
+		public static void Generate(Chunk chunk, List<Position> takenPositions)
 		{
 			int numberOfTreesToGenerate = Settings.Random.Next(MIN_TREES_PER_CHUNK, MAX_TREES_PER_CHUNK + 1);
 			for (int tree = 0; tree < numberOfTreesToGenerate; tree++)
@@ -73,7 +73,7 @@ namespace Sean.WorldGenerator
 		}
 
 		/// <summary>Check if the proposed position has already been taken or would be within the distance tolerance of another taken position.</summary>
-		internal static bool IsPositionTaken(List<Position> takenPositions, int xProposed, int zProposed, byte distanceTolerance)
+		public static bool IsPositionTaken(List<Position> takenPositions, int xProposed, int zProposed, byte distanceTolerance)
 		{
 			//dont use the Y in this check
 			return takenPositions.Any(takenPosition => Math.Abs(xProposed - takenPosition.X) + Math.Abs(zProposed - takenPosition.Z) <= distanceTolerance);

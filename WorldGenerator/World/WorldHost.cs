@@ -34,13 +34,13 @@ namespace Sean.WorldGenerator
    #endregion
 
    #region Properties
-        //internal static int RotationCounter;
+        //public static int RotationCounter;
         /// <summary>Current water texture id for the water animation cycle. Incremented in the performance host.</summary>
-        internal static int WaterCycleTextureId = (int)Sean.Shared.Textures.BlockTextureType.Water;
+        public static int WaterCycleTextureId = (int)Sean.Shared.Textures.BlockTextureType.Water;
    #endregion
 
    #region Build World
-        internal void BuildWorld ()
+        public void BuildWorld ()
         {
             const int INITIAL_CHUNK_RENDER_DISTANCE = 5;
             var stopwatch = new Stopwatch ();

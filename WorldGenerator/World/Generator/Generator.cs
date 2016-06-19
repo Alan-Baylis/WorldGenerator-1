@@ -5,13 +5,13 @@ using Sean.Shared;
 
 namespace Sean.WorldGenerator
 {
-	internal static class Generator
+	public static class Generator
 	{
 		private const int WATER_LEVEL = Chunk.CHUNK_HEIGHT / 2 - 24;
 
 		/// <summary>Use the raw seed string to come up with an integer based seed.</summary>
 		/// <remarks>Maximum seed using 12 characters is '~~~~~~~~~~~~' resulting in 812250, smallest is '!' resulting in -380</remarks>
-		internal static int GetNumericSeed()
+		public static int GetNumericSeed()
 		{
 			long seed = 0;
 			for (int position = 1; position <= WorldData.RawSeed.Length; position++)

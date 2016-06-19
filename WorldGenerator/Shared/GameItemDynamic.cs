@@ -5,7 +5,7 @@ using Sean.Shared;
 
 namespace Sean.WorldGenerator
 {
-	internal enum GameItemType
+	public enum GameItemType
 	{
 		BlockItem,
 		GameItem,
@@ -16,10 +16,10 @@ namespace Sean.WorldGenerator
 	/// Game items that are dynamic and can move and/or decay.
 	/// Stored at the chunk and world levels.
 	/// </summary>
-	internal abstract class GameItemDynamic : GameObject
+	public abstract class GameItemDynamic : GameObject
 	{
 		#region Constructors
-		internal GameItemDynamic(ref Coords coords, GameItemType type, bool allowBounce, Vector3? velocity = null, int id = -1) : base(ref coords, id)
+		public GameItemDynamic(ref Coords coords, GameItemType type, bool allowBounce, Vector3? velocity = null, int id = -1) : base(ref coords, id)
 		{
 			Type = type;
 			AllowBounce = allowBounce;
@@ -30,7 +30,7 @@ namespace Sean.WorldGenerator
 			if (!chunk.GameItems.ContainsKey(Id)) chunk.GameItems.TryAdd(Id, this);
 		}
 
-		internal GameItemDynamic(XmlNode xmlNode) : base(xmlNode)
+		public GameItemDynamic(XmlNode xmlNode) : base(xmlNode)
 		{
 			if (xmlNode.Attributes == null) throw new Exception("Node attributes is null.");
 			Type = (GameItemType)int.Parse(xmlNode.Attributes["T"].Value);
@@ -51,23 +51,23 @@ namespace Sean.WorldGenerator
 		#endregion
 
 		#region Events
-        internal delegate void BounceEventHandler(FrameEventArgs e);
-		internal event BounceEventHandler Bounce;
+        public delegate void BounceEventHandler(FrameEventArgs e);
+		public event BounceEventHandler Bounce;
 
-        internal delegate void StopEventHandler(FrameEventArgs e);
-		internal event StopEventHandler Stop;
+        public delegate void StopEventHandler(FrameEventArgs e);
+		public event StopEventHandler Stop;
 
-        internal delegate void DecayEventHandler(FrameEventArgs e);
-		internal event DecayEventHandler Decay;
+        public delegate void DecayEventHandler(FrameEventArgs e);
+		public event DecayEventHandler Decay;
 		#endregion
 
 		#region Properties
-		internal virtual GameItemType Type { get; private set; }
+		public virtual GameItemType Type { get; private set; }
 		/// <summary>Game items bounce by default when running into anything that causes collision. Is not saved to the xml file because so far projectiles are the only items that might not bounce and they arent saved.</summary>
-		internal bool AllowBounce { get; set; }
+		public bool AllowBounce { get; set; }
 
 		private bool _isMoving;
-		internal bool IsMoving
+		public bool IsMoving
 		{
 			get { return _isMoving; }
 			set
@@ -78,24 +78,24 @@ namespace Sean.WorldGenerator
 			}
 		}
 
-		internal DateTime LastUpdate;
+		public DateTime LastUpdate;
 		//private bool _queuedForDecay;
-		internal Vector3 Velocity = new Vector3((float)Settings.Random.NextDouble(), 5f, (float)Settings.Random.NextDouble());
+		public Vector3 Velocity = new Vector3((float)Settings.Random.NextDouble(), 5f, (float)Settings.Random.NextDouble());
 		/// <summary>
 		/// Items decay from the world when the item has not been updated for longer than the decay seconds.
 		/// The last update time is not saved, therefore when a world is loaded the update time of each item is reset which also results in the decay logic being reset.
 		/// Items that require a decay time different then the default can override this property.
 		/// </summary>
-		internal virtual int DecaySeconds { get { return 900; } } //15min
+		public virtual int DecaySeconds { get { return 900; } } //15min
 		
-		internal override string XmlElementName
+		public override string XmlElementName
 		{
 			get { return "GI"; }
 		}
 		#endregion
 
 		#region Operations
-		internal override XmlNode GetXml(XmlDocument xmlDocument)
+		public override XmlNode GetXml(XmlDocument xmlDocument)
 		{
 			var xmlNode = base.GetXml(xmlDocument);
 			if (xmlNode.Attributes == null) throw new Exception("Node attributes is null.");
@@ -106,7 +106,7 @@ namespace Sean.WorldGenerator
 			return xmlNode;
 		}
 
-		internal void Update(FrameEventArgs e)
+		public void Update(FrameEventArgs e)
 		{
 			//if (!_queuedForDecay && (Config.IsSinglePlayer || Config.IsServer || Type == GameItemType.Projectile) && !IsMoving && (DateTime.Now - LastUpdate).TotalSeconds >= DecaySeconds)
 			//{
@@ -209,7 +209,7 @@ namespace Sean.WorldGenerator
 
 		#region Static (should maybe move to a static Lib class)
 		private static readonly ConcurrentQueue<GameItemDynamic> DecayQueue = new ConcurrentQueue<GameItemDynamic>();
-		internal static void UpdateAll(FrameEventArgs e)
+		public static void UpdateAll(FrameEventArgs e)
 		{
 			foreach (var gameItem in WorldData.GameItems.Values)
 			{

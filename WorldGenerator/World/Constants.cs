@@ -7,7 +7,7 @@ namespace Sean
     /// Use Config class for values that can be altered and saved.
     /// Use Constants class for values that cannot be altered.
     /// </summary>
-    internal static class Constants
+    public static class Constants
     {
         #region Game
         /// <summary>Game now starts maximized, so this default will be the size if the user restores down. Resize also prevents game window from getting any smaller than this.</summary>
@@ -76,14 +76,14 @@ namespace Sean
         
         #region Chars
         /// <summary>Lowest ASCII char we allow to be entered in chat and displayed. Note: 32 is a space, 33 is '!', 8 is backspace.</summary>
-        internal const int LOWEST_ASCII_CHAR = 32;
+        public const int LOWEST_ASCII_CHAR = 32;
         
         /// <summary>Highest ASCII char we allow to be entered in chat and displayed. Note: 126 is '~', 127 is delete and everything > 127 is the extended ASCII table.</summary>
-        internal const int HIGHEST_ASCII_CHAR = 126;
+        public const int HIGHEST_ASCII_CHAR = 126;
         
-        internal const int TOTAL_ASCII_CHARS = HIGHEST_ASCII_CHAR - LOWEST_ASCII_CHAR + 1;
+        public const int TOTAL_ASCII_CHARS = HIGHEST_ASCII_CHAR - LOWEST_ASCII_CHAR + 1;
         
-        internal const double CHAR_ATLAS_RATIO = 1d / TOTAL_ASCII_CHARS;
+        public const double CHAR_ATLAS_RATIO = 1d / TOTAL_ASCII_CHARS;
 #endregion
     }
 }

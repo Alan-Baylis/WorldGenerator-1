@@ -5,22 +5,22 @@ using System.Linq;
 
 namespace Sean.WorldGenerator
 {
-	internal static class Lighting
+	public static class Lighting
 	{
 		/// <summary>
 		/// Table uses a non linear scale by dropping each level to x% of the previous.
 		/// Allows for wider range of 'darks'. Using the array table prevents needing to calculate these same values repeatedly.
 		/// </summary>
-		internal static readonly byte[] LightTable = new[] { (byte)37, (byte)43, (byte)48, (byte)55, (byte)62, (byte)71, (byte)81, (byte)92, (byte)104, (byte)118, (byte)135, (byte)153, (byte)174, (byte)197, (byte)224, (byte)255 }; //this table drops by *0.88 without the large initial drop (better for day/night cycle)
-		internal const byte DARKEST_COLOR = 37;
-        internal const int BRIGHTEST_SKYLIGHT_STRENGTH = 100;
+		public static readonly byte[] LightTable = new[] { (byte)37, (byte)43, (byte)48, (byte)55, (byte)62, (byte)71, (byte)81, (byte)92, (byte)104, (byte)118, (byte)135, (byte)153, (byte)174, (byte)197, (byte)224, (byte)255 }; //this table drops by *0.88 without the large initial drop (better for day/night cycle)
+		public const byte DARKEST_COLOR = 37;
+        public const int BRIGHTEST_SKYLIGHT_STRENGTH = 100;
 
 		/// <summary>
 		/// Check 6 adjacent neighbor blocks and propagate recursively as needed within this Chunk. This propagate is used for initial world loading only.
 		/// Updates the chunk level arrays. Light map can be sky or item.
 		/// </summary>
 		/// <remarks>Changes here may need to be duplicated in PropagateLightDynamic</remarks>
-		internal static void PropagateLightInitial(int x, int y, int z, byte lightStrength, Chunk chunk, byte[, ,] lightMap)
+		public static void PropagateLightInitial(int x, int y, int z, byte lightStrength, Chunk chunk, byte[, ,] lightMap)
 		{
 			lightMap[x, y, z] = lightStrength;
 
@@ -51,7 +51,7 @@ namespace Sean.WorldGenerator
 		/// Done by looping through all blocks on chunk border, look at adjacent block to determine if light needs to be "pulled" across.
 		/// Propagate any cases where pulling is needed.
 		/// </summary>
-		internal static void InitializeCrossChunkPulling(Chunk chunk)
+		public static void InitializeCrossChunkPulling(Chunk chunk)
 		{
 			for (int x = 0; x < Chunk.CHUNK_SIZE; x++)
 			{

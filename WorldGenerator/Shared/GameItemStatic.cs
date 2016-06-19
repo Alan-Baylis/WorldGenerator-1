@@ -9,7 +9,7 @@ namespace Sean.WorldGenerator
 	/// Game items that cannot move and are static in the world unless destroyed.
 	/// Stored at the chunk level only.
 	/// </summary>
-	internal abstract class GameItemStatic : GameObject
+	public abstract class GameItemStatic : GameObject
 	{
 		#region Constructors
 		/// <summary>Use this constructor to create brand new items that will have the Coords shifted accordingly during creation.</summary>
@@ -38,12 +38,12 @@ namespace Sean.WorldGenerator
 		}
 		#endregion
 
-		internal abstract StaticItemType StaticItemType { get; }
+		public abstract StaticItemType StaticItemType { get; }
 
 		/// <summary>
 		/// The face this item is attached to 'inside' this block. Needed to determine if the item is destroyed because the attached block gets destroyed.
 		/// Can also be used to render extra features in the correct direction.
 		/// </summary>
-		internal Face AttachedToFace;
+		public Face AttachedToFace;
 	}
 }

@@ -11,7 +11,7 @@ namespace Sean.WorldGenerator
 	public class Chunk
 	{
 		#region Constructors
-		internal Chunk(ChunkCoords chunkCoords)
+		public Chunk(ChunkCoords chunkCoords)
 		{
             Coords = chunkCoords;
 			Blocks = new Blocks(CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE);
@@ -41,17 +41,17 @@ namespace Sean.WorldGenerator
 
 		/// <summary>Clutter contained in this chunk. Clutter can be stored at the chunk level only because it can never move off the chunk.</summary>
 		/// <remarks>HashSet because currently Clutter cannot be added outside of initial world generation. Collection is locked during removal.</remarks>
-		//internal HashSet<Clutter> Clutters;
+		//public HashSet<Clutter> Clutters;
 
 		/// <summary>
 		/// Light sources contained in this chunk. Light sources can be stored at the chunk level only because they can never move off the chunk.
 		/// TBD: when a light source is destroyed, does it become a GameItem?
 		/// </summary>
-		internal ConcurrentDictionary<int, LightSource> LightSources;
+		public ConcurrentDictionary<int, LightSource> LightSources;
 
-		//internal HashSet<Mob> Mobs; //also stored at World level in ConcurrentDictionary
+		//public HashSet<Mob> Mobs; //also stored at World level in ConcurrentDictionary
 		
-		internal ConcurrentDictionary<int, GameItemDynamic> GameItems; //also stored at World level
+		public ConcurrentDictionary<int, GameItemDynamic> GameItems; //also stored at World level
 
 		/// <summary>Distance of the chunk from the player in number of blocks.</summary>
         public double DistanceFromPlayer(Coords coords)
@@ -63,10 +63,10 @@ namespace Sean.WorldGenerator
 		//private readonly ChunkVbo[] _chunkVbos = new ChunkVbo[Enum.GetNames(typeof(BlockTextureType)).Length];
 
 		/// <summary>Total number of vbo's being rendered for blocks in this chunk.</summary>
-		//internal int VboCount { get { return _chunkVbos.Count(chunkVbo => chunkVbo != null); } }
+		//public int VboCount { get { return _chunkVbos.Count(chunkVbo => chunkVbo != null); } }
 
 		/// <summary>Total number of primitives being rendered for blocks in this chunk.</summary>
-		//internal int PrimitiveCount { get { return _chunkVbos.Where(chunkVbo => chunkVbo != null).Sum(chunkVbo => chunkVbo.PrimitiveCount); } }
+		//public int PrimitiveCount { get { return _chunkVbos.Where(chunkVbo => chunkVbo != null).Sum(chunkVbo => chunkVbo.PrimitiveCount); } }
 
 		/// <summary>
 		/// The build state of this chunk. When a chunk gets built it is set to 'Built' state and then marked dirty so the vbo will then get created/recreated.
@@ -74,7 +74,7 @@ namespace Sean.WorldGenerator
 		/// set to QueuedInitialFrustum because they dont need to be pushed to the ChangedChunkQueue. Chunks that should be built in order in the distance are
 		/// set to QueuedFar and placed on the FarChunkQueue.
 		/// </summary>
-		internal enum BuildState : byte
+		public enum BuildState : byte
 		{
 			/// <summary>Chunk is not loaded.</summary>
 			NotLoaded,
@@ -100,7 +100,7 @@ namespace Sean.WorldGenerator
 
         /*
 		private volatile BuildState _chunkBuildState = BuildState.NotLoaded;
-		internal BuildState ChunkBuildState
+		public BuildState ChunkBuildState
 		{
 			get { return _chunkBuildState; }
 			set
@@ -133,23 +133,23 @@ namespace Sean.WorldGenerator
 		/// The buffer state of this chunk. Refers to whether a vbo is created 'VboBuffered', needs to be created or recreated 'VboDirty' or has not yet been buffered 'VboNotBuffered'.
 		/// The reason the buffer state and build state are different enums is because the chunk needs to wait to be 'Built' before it can be buffered to a vbo.
 		/// </summary>
-		internal enum BufferState { VboNotBuffered, VboDirty, VboBuffered }
-		internal volatile BufferState ChunkBufferState = BufferState.VboNotBuffered;
+		public enum BufferState { VboNotBuffered, VboDirty, VboBuffered }
+		public volatile BufferState ChunkBufferState = BufferState.VboNotBuffered;
 		#endregion
 
 		#region Height Map
 		/// <summary>Y level of the deepest transparent block in this chunk. When building the vbo, we only need to start at 1 level below this.</summary>
-		internal int DeepestTransparentLevel { get; set; }
+		public int DeepestTransparentLevel { get; set; }
 
 		/// <summary>Y level of the highest non air block. Improves chunk build times. Nothing is rendered higher then this so when building the chunk vbo theres no need to go any higher.</summary>
-		internal int HighestNonAirLevel { get; set; }
+		public int HighestNonAirLevel { get; set; }
 
 		/// <summary>
 		/// Build a heightmap for this chunk. This is the highest non transparent block in each vertical column.
 		/// Leaves, water and other transparent blocks that light can shine through do not count.
 		/// </summary>
 		/// <remarks>The height map is used for lighting. Its also used to determine the players starting Y position.</remarks>
-		internal void BuildHeightMap()
+		public void BuildHeightMap()
 		{
 			DeepestTransparentLevel = CHUNK_HEIGHT; //initialize to top of chunk until this gets calculated
 			HighestNonAirLevel = 0; //initialize to bottom of chunk until this gets calculated
@@ -177,7 +177,7 @@ namespace Sean.WorldGenerator
 		}
 
 		/// <summary>Updates the heightmap following a block placement. Usually a lot quicker then re-building the heightmap.</summary>
-		internal void UpdateHeightMap(ref Block block, int chunkRelativeX, int yLevel, int chunkRelativeZ)
+		public void UpdateHeightMap(ref Block block, int chunkRelativeX, int yLevel, int chunkRelativeZ)
 		{
 			var currentHeight = HeightMap[chunkRelativeX, chunkRelativeZ];
 			if (block.IsTransparent) //transparent block
@@ -238,7 +238,7 @@ namespace Sean.WorldGenerator
 
 		/// <summary>Is this chunk in the players view frustum.</summary>
 		/// <seealso cref="http://www.crownandcutlass.com/features/technicaldetails/frustum.html"/>
-        internal bool IsInFrustum(Vector4d nearFrustum, Vector4d farFrustum, Vector4d leftFrustum, Vector4d rightFrustum, Vector4d topFrustum, Vector4d bottomFrustum)
+        public bool IsInFrustum(Vector4d nearFrustum, Vector4d farFrustum, Vector4d leftFrustum, Vector4d rightFrustum, Vector4d topFrustum, Vector4d bottomFrustum)
 		{
 				float minX = Coords.WorldCoordsX;
 				var maxX = minX + CHUNK_SIZE;
@@ -348,7 +348,7 @@ namespace Sean.WorldGenerator
 
         private const int UPDATES_PER_SECOND = 1;
         private const int CHUNK_UPDATE_INTERVAL = 1;
-		internal bool WaterExpanding { get; set; }
+		public bool WaterExpanding { get; set; }
         private const int WATER_UPDATE_INTERVAL = (int)(UPDATES_PER_SECOND * 1.5) / CHUNK_UPDATE_INTERVAL; //1.5s
 		/// <summary>Only called for SinglePlayer and Servers.</summary>
 		private void WaterExpand()
@@ -427,7 +427,7 @@ namespace Sean.WorldGenerator
 			}
 		}
 
-		internal bool GrassGrowing { get; set; }
+		public bool GrassGrowing { get; set; }
 		private const int GRASS_UPDATE_INTERVAL = UPDATES_PER_SECOND * 75 / CHUNK_UPDATE_INTERVAL; //75s
 		//private readonly int _grassOffset = Settings.Random.Next(0, GRASS_UPDATE_INTERVAL); //stagger grass growth randomly for each chunk
 		/// <summary>Only called for SinglePlayer and Servers.</summary>
@@ -608,7 +608,7 @@ namespace Sean.WorldGenerator
         }
 
         #region Xml
-        internal XmlNode GetXml(XmlDocument xmlDocument)
+        public XmlNode GetXml(XmlDocument xmlDocument)
 		{
 			var xmlNode = xmlDocument.CreateNode(XmlNodeType.Element, "C", string.Empty);
 			if (xmlNode.Attributes == null) throw new Exception("Node attributes is null.");

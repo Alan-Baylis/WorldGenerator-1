@@ -3,7 +3,7 @@ using Sean.Shared;
 
 namespace Sean.WorldGenerator
 {
-	internal class AddBlock : GameAction
+	public class AddBlock : GameAction
 	{
 		public AddBlock()
 		{
@@ -22,7 +22,7 @@ namespace Sean.WorldGenerator
 			return String.Format("AddBlock {0} {1}", BlockType, Position);
 		}
 
-		internal override ActionType ActionType { get { return ActionType.AddBlock; } }
+		public override ActionType ActionType { get { return ActionType.AddBlock; } }
 		public Position Position;
 		public Block.BlockType BlockType;
 
@@ -33,7 +33,7 @@ namespace Sean.WorldGenerator
 			Write((ushort)BlockType);
 		}
 
-		internal override void Receive()
+		public override void Receive()
 		{
 			lock (TcpClient)
 			{

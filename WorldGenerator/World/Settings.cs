@@ -14,7 +14,7 @@ namespace Sean.WorldGenerator
 
         private static Version _version;
         /// <summary>Store the version here so the game window can still know what version we are running.</summary>
-        internal static Version Version
+        public static Version Version
         {
             get { return _version; }
             set
@@ -64,7 +64,7 @@ namespace Sean.WorldGenerator
         public static float ZFarForChunkUnload { get; private set; }
         
         /// <summary>Use for debugging. When true all chunk edges will highlight blocks on either side. The actual chunk edge line is the line between the 2 yellow block strips.</summary>
-        //internal static bool OutlineChunks;
+        //public static bool OutlineChunks;
 
         private static string _worldFilePath;
         /// <summary>File path for the world. Full directory and file extension are added in the setter.</summary>

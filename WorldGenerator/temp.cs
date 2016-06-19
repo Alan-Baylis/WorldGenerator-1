@@ -2,7 +2,7 @@
 
 namespace Sean.WorldGenerator
 {
-    class FrameEventArgs
+    public class FrameEventArgs
     {
         public int Time;
     }

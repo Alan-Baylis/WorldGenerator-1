@@ -5,7 +5,7 @@ using Sean.Shared;
 
 namespace Sean.WorldGenerator
 {
-	internal class Chunks : IEnumerable
+	public class Chunks : IEnumerable
 	{
 		public Chunks()
 		{
@@ -60,7 +60,7 @@ namespace Sean.WorldGenerator
             //private set { _chunks[XzToChunkHash(x, z)] = value; }
 		}
 
-		//internal uint UpdateCounter;
+		//public uint UpdateCounter;
 
 		public IEnumerator GetEnumerator()
 		{

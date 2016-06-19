@@ -5,7 +5,7 @@ using Sean.Shared;
 
 namespace Sean.WorldGenerator
 {
-	internal enum ActionType : ushort
+	public enum ActionType : ushort
 	{
 		Error, //Reserve this to make debugging easier by letting unassigned 0 be an error
 		Connect, //Don't move this - Connect checks the connecting client's version. If it moves between versions that check won't work.
@@ -32,7 +32,7 @@ namespace Sean.WorldGenerator
 		AddStaticItem
 	}
 
-	internal abstract class GameAction
+	public abstract class GameAction
 	{
 		protected GameAction()
 		{
@@ -41,7 +41,7 @@ namespace Sean.WorldGenerator
 		/*
         private Server.NetworkPlayer _connectedPlayer;
 		/// <summary>Player the GameAction is being sent to. Only used by Servers.</summary>
-		internal Server.NetworkPlayer ConnectedPlayer
+		public Server.NetworkPlayer ConnectedPlayer
 		{
 			get { return _connectedPlayer; }
 			set
@@ -51,11 +51,11 @@ namespace Sean.WorldGenerator
 				if (Config.IsServer) TcpClient = _connectedPlayer.TcpClient;
 			}
 		}*/
-		//internal bool IsAdmin { get { return _connectedPlayer.IsAdmin; } }
+		//public bool IsAdmin { get { return _connectedPlayer.IsAdmin; } }
 		public TcpClient TcpClient { get; protected set; }
-		internal abstract ActionType ActionType { get; }
+		public abstract ActionType ActionType { get; }
 		public abstract override string ToString();
-		internal int DataLength;
+		public int DataLength;
 
 		#region Send
 		private byte[] _byteQueue;
@@ -71,8 +71,8 @@ namespace Sean.WorldGenerator
 			Write(BitConverter.GetBytes(DataLength), sizeof(int));
 		}
 
-		//internal bool Immediate;
-		internal virtual void Send()
+		//public bool Immediate;
+		public virtual void Send()
 		{
 			if (!_isQueued)
 			{
@@ -151,7 +151,7 @@ namespace Sean.WorldGenerator
 		#endregion
 
 		#region Receive
-		internal virtual void Receive()
+		public virtual void Receive()
 		{
 			if (TcpClient == null) throw new Exception("Server forgot to set TcpClient.");
 

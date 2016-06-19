@@ -5,7 +5,7 @@ using Sean.Shared;
 
 namespace Sean.WorldGenerator
 {
-    internal class WorldMap
+    public class WorldMap
     {
         public WorldMap(int chunkSize, int initialSize)
         {
