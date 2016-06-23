@@ -48,7 +48,7 @@ namespace Sean.WorldGenerator
 					}
 					else //place leaves on the top 2 blocks of the trunk instead of more trunk pieces
 					{
-						chunk.Blocks[trunkPosition] = new Block(WorldData.WorldType == WorldType.Winter ? Block.BlockType.SnowLeaves : Block.BlockType.Leaves);
+						chunk.Blocks[trunkPosition] = new Block(World.WorldType == WorldType.Winter ? Block.BlockType.SnowLeaves : Block.BlockType.Leaves);
 					}
 
 					//place leaves at this trunk level
@@ -61,10 +61,10 @@ namespace Sean.WorldGenerator
 							if (Math.Sqrt(leafX * leafX + leafZ * leafZ + Math.Pow(treeHeight - leafRadius - yTrunkLevel + 1, 2)) > leafRadius) continue;
 							var leafPosition = new Position(xProposedInWorld + leafX, yProposed + yTrunkLevel, zProposedInWorld + leafZ);
                             var leafCoords = leafPosition.ToCoords();
-                            if (WorldData.IsValidBlockLocation(leafPosition) && WorldData.GetBlock(ref leafCoords).Type == Block.BlockType.Air)
+                            if (World.IsValidBlockLocation(leafPosition) && World.GetBlock(ref leafCoords).Type == Block.BlockType.Air)
 							{
-								//need to get the chunk because this block could be expanding into an adjacent chunk
-                                WorldData.WorldMap.Chunk(leafPosition).Blocks[leafPosition] = new Block(WorldData.WorldType == WorldType.Winter ? Block.BlockType.SnowLeaves : Block.BlockType.Leaves);
+                                //need to get the chunk because this block could be expanding into an adjacent chunk
+                                World.WorldMap.Chunk(leafPosition).Blocks[leafPosition] = new Block(World.WorldType == WorldType.Winter ? Block.BlockType.SnowLeaves : Block.BlockType.Leaves);
 							}
 						}
 					}

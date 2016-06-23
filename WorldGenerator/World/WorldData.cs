@@ -32,6 +32,9 @@ namespace Sean.WorldGenerator
             GeneratorVersion = "1.0";// settingsNode.Attributes["GeneratorVersion"].Value;
             GameObjectIdSeq = 1; //int.Parse(settingsNode.Attributes["GameObjectIdSeq"].Value);
             WorldType = WorldType.Grass;// (WorldType)Convert.ToInt32(settingsNode.Attributes["WorldType"].Value);
+
+            ChunkSize = 32;
+            InitialSize = 80;
 		}
 
 		#region Properties (Saved)
@@ -41,6 +44,9 @@ namespace Sean.WorldGenerator
 		/// <summary>Original program version used when this world was generated.</summary>
         public string GeneratorVersion { get; set; }
    
+        public int ChunkSize { get; set; } 
+        public int InitialSize { get; set; }
+
         public int GameObjectIdSeq;
         public int NextGameObjectId
 		{

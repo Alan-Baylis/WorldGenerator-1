@@ -33,8 +33,8 @@ namespace Sean.WorldGenerator
 		public ChunkCoords Coords;
 		public Blocks Blocks;
 
-		/// <summary>Heighest level in each vertical column containing a non transparent block. Sky light does not shine through this point. Used in rendering and lighting calculations.</summary>
-		public Array<int> HeightMap;
+        /// <summary>Heighest level in each vertical column containing a non transparent block. Sky light does not shine through this point. Used in rendering and lighting calculations.</summary>
+        public Array<int> HeightMap;
 		public Array<float> MineralMap;
 		public byte[,,] SkyLightMapInitial;
 		public byte[,,] ItemLightMapInitial;
@@ -389,8 +389,8 @@ namespace Sean.WorldGenerator
 							if (newWater.Contains(adjacent)) continue;
 
 							//if there's air or water below the current block, don't spread sideways
-                            if (q != 0 && WorldData.IsValidBlockLocation(belowCurrent) && (Blocks[belowCurrent].Type == Block.BlockType.Air || Blocks[belowCurrent].Type == Block.BlockType.Water)) continue;
-                            if (WorldData.IsValidBlockLocation(adjacent) && WorldData.GetBlock(adjacent).Type == Block.BlockType.Air) newWater.Add(adjacent);
+                            if (q != 0 && World.IsValidBlockLocation(belowCurrent) && (Blocks[belowCurrent].Type == Block.BlockType.Air || Blocks[belowCurrent].Type == Block.BlockType.Water)) continue;
+                            if (World.IsValidBlockLocation(adjacent) && World.GetBlock(adjacent).Type == Block.BlockType.Air) newWater.Add(adjacent);
 						}
 					}
 				}
@@ -405,9 +405,9 @@ namespace Sean.WorldGenerator
 
 			var addBlocks = new List<AddBlock>();
 			Settings.ChunkUpdatesDisabled = true; //change blocks while updates are disabled so chunk is only rebuilt once
-            foreach (var newWaterPosition in newWater.Where(newWaterCoords => WorldData.GetBlock(newWaterCoords).Type != Block.BlockType.Water))
+            foreach (var newWaterPosition in newWater.Where(newWaterCoords => World.GetBlock(newWaterCoords).Type != Block.BlockType.Water))
 			{
-				WorldData.PlaceBlock(newWaterPosition, Block.BlockType.Water);
+				World.PlaceBlock(newWaterPosition, Block.BlockType.Water);
 			    var temp = newWaterPosition;
 				addBlocks.Add(new AddBlock(ref temp, Block.BlockType.Water));
 			}
@@ -457,9 +457,9 @@ namespace Sean.WorldGenerator
 						}
 
 						bool hasAirAbove = y >= CHUNK_HEIGHT - 1 || Blocks[x, y + 1, z].Type == Block.BlockType.Air;
-						bool isReceivingSunlight = y > HeightMap[x, z] || (hasAirAbove && WorldData.HasAdjacentBlockReceivingDirectSunlight(worldX, y, worldZ));
+						bool isReceivingSunlight = y > HeightMap[x, z] || (hasAirAbove && World.HasAdjacentBlockReceivingDirectSunlight(worldX, y, worldZ));
 
-						switch (WorldData.WorldType)
+						switch (World.WorldType)
 						{
 							case WorldType.Grass:
 								if (isReceivingSunlight)
@@ -574,7 +574,7 @@ namespace Sean.WorldGenerator
 
 					changesMade++;
 					var changePosition = change.Item2;
-					WorldData.PlaceBlock(changePosition, change.Item1);
+                    World.PlaceBlock(changePosition, change.Item1);
 					addBlocks.Add(new AddBlock(ref changePosition, change.Item1));
 				}
 			}

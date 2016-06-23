@@ -5,14 +5,16 @@ using Sean.Shared;
 
 namespace Sean.WorldGenerator
 {
-    public class WorldMap
+    internal class WorldMap
     {
-        public WorldMap(int chunkSize, int initialSize)
+        public WorldMap(WorldData worldData)
         {
-            MapScale = chunkSize;
-            MaxXBlock = initialSize;
-            MaxZBlock = initialSize;
+            MapScale = worldData.ChunkSize;
+            MaxXBlock = worldData.InitialSize;
+            MaxZBlock = worldData.InitialSize;
             mapChunks = new MapChunk[MaxXBlock, MaxZBlock];
+            this.worldData = worldData;
+            this.generator = new Generator(worldData);
         }
             
         public void Generate()
@@ -59,7 +61,7 @@ namespace Sean.WorldGenerator
                 mapChunk = new MapChunk();
                 var chunkCoords = new ChunkCoords(x, z);
                 mapChunk.Chunk = new Chunk(chunkCoords);
-                Generator.Generate(mapChunk.Chunk);
+                generator.Generate(mapChunk.Chunk);
                 mapChunks[x, z] = mapChunk;
             }
             return mapChunk.Chunk;
@@ -89,6 +91,9 @@ namespace Sean.WorldGenerator
         private MapChunk[,] mapChunks;
 
         private Array<int> heightMap;
+
+        private WorldData worldData;
+        private Generator generator;
     }
 }
 

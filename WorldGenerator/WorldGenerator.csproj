@@ -69,7 +69,7 @@
     <Compile Include="Shared\Vector4.cs" />
     <Compile Include="Shared\Matrix4.cs" />
     <Compile Include="temp.cs" />
-    <Compile Include="WorldGenerator.cs" />
+    <Compile Include="World.cs" />
     <Compile Include="Shared\GameItemDynamic.cs" />
     <Compile Include="Shared\GameItemStatic.cs" />
   </ItemGroup>

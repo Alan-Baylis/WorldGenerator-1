@@ -6,7 +6,7 @@ using System.Collections.Concurrent;
 namespace Sean.WorldGenerator
 {
 
-    public interface IWorldGenerator
+    public interface IWorld
     {
         void Generate();
 
@@ -60,7 +60,7 @@ namespace Sean.WorldGenerator
         Update       
     }
         
-    public class WorldGenerator : IWorldGenerator
+    public class World : IWorld
     {
         public delegate void WorldEventHandler(WorldEventArgs e);
         public event WorldEventHandler WorldEvents;
@@ -71,11 +71,11 @@ namespace Sean.WorldGenerator
         //public ConcurrentDictionary<int, Mob> Mobs { get; private set; }
         public ConcurrentDictionary<int, GameItemDynamic> GameItems { get; private set; }
 
-        public WorldGenerator ()
+        public World ()
         {
             registrations = new Dictionary<ChunkCoords, List<int> > ();
             worldData = new WorldData ();
-            worldMap = new WorldMap(chunkSize:32, initialSize:80);
+            worldMap = new WorldMap(worldData);
         }
 
         public void Generate()
@@ -142,7 +142,7 @@ namespace Sean.WorldGenerator
         /// </summary>
         internal bool IsValidBlockLocation(int x, int y, int z)
         {
-            return x >= 0 && x < SizeInBlocksX && y >= 0 && y < Chunk.CHUNK_HEIGHT && z >= 0 && z < SizeInBlocksZ;
+            return x >= 0 && x < this.worldData.SizeInBlocksX && y >= 0 && y < Chunk.CHUNK_HEIGHT && z >= 0 && z < this.worldData.SizeInBlocksZ;
         }
 
         internal bool IsOnChunkBorder(int x, int z)
@@ -158,9 +158,9 @@ namespace Sean.WorldGenerator
         /// <summary>Check if any of 4 directly adjacent blocks receive direct sunlight. Uses the heightmap so that the server can also use this method. If the server stored light info then it could be used instead.</summary>
         internal bool HasAdjacentBlockReceivingDirectSunlight(int x, int y, int z)
         {
-            return (x < SizeInBlocksX - 1 && GetHeightMapLevel(x + 1, z) <= y) ||
+            return (x < this.worldData.SizeInBlocksX - 1 && GetHeightMapLevel(x + 1, z) <= y) ||
                 (x > 0 && GetHeightMapLevel(x - 1, z) <= y) ||
-                (z < SizeInBlocksZ - 1 && GetHeightMapLevel(x, z + 1) <= y) ||
+                (z < this.worldData.SizeInBlocksZ - 1 && GetHeightMapLevel(x, z + 1) <= y) ||
                 (z > 0 && GetHeightMapLevel(x, z - 1) <= y);
         }
 
@@ -189,7 +189,7 @@ namespace Sean.WorldGenerator
             {
                 chunks.Add(worldMap.Chunk((position.X - 1) / Chunk.CHUNK_SIZE, position.Z / Chunk.CHUNK_SIZE)); //add left chunk
             }
-            else if (position.X < SizeInBlocksX - 1 && position.X % Chunk.CHUNK_SIZE == Chunk.CHUNK_SIZE - 1)
+            else if (position.X < this.worldData.SizeInBlocksX - 1 && position.X % Chunk.CHUNK_SIZE == Chunk.CHUNK_SIZE - 1)
             {
                 chunks.Add(worldMap.Chunk((position.X + 1) / Chunk.CHUNK_SIZE, position.Z / Chunk.CHUNK_SIZE)); //add right chunk
             }
@@ -198,7 +198,7 @@ namespace Sean.WorldGenerator
             {
                 chunks.Add(worldMap.Chunk(position.X / Chunk.CHUNK_SIZE, (position.Z - 1) / Chunk.CHUNK_SIZE)); //add back chunk
             }
-            else if (position.Z < SizeInBlocksZ - 1 && position.Z % Chunk.CHUNK_SIZE == Chunk.CHUNK_SIZE - 1)
+            else if (position.Z < this.worldData.SizeInBlocksZ - 1 && position.Z % Chunk.CHUNK_SIZE == Chunk.CHUNK_SIZE - 1)
             {
                 chunks.Add(worldMap.Chunk(position.X / Chunk.CHUNK_SIZE, (position.Z + 1) / Chunk.CHUNK_SIZE)); //add front chunk
             }
@@ -216,9 +216,9 @@ namespace Sean.WorldGenerator
 
         internal bool IsValidPlayerLocation(Coords coords)
         {
-            return coords.Xf >= 0 && coords.Xf < SizeInBlocksX
+            return coords.Xf >= 0 && coords.Xf < this.worldData.SizeInBlocksX
                 && coords.Yf >= 0 && coords.Yf <= 600 //can't see anything past 600
-                && coords.Zf >= 0 && coords.Zf < SizeInBlocksZ
+                && coords.Zf >= 0 && coords.Zf < this.worldData.SizeInBlocksZ
                 && (coords.Yf >= Chunk.CHUNK_HEIGHT || !GetBlock(coords.ToPosition()).IsSolid)
                 && (coords.Yf + 1 >= Chunk.CHUNK_HEIGHT || !GetBlock(coords.Xblock, coords.Yblock + 1, coords.Zblock).IsSolid)
                 && (coords.Yf % 1 < Constants.PLAYER_HEADROOM || coords.Yf + 2 >= Chunk.CHUNK_HEIGHT || !GetBlock(coords.Xblock, coords.Yblock + 2, coords.Zblock).IsSolid); //the player can occupy 3 blocks
@@ -324,7 +324,7 @@ namespace Sean.WorldGenerator
                 below.Y--;
                 if (below.Y > 0)
                 {
-                    if (GetBlock(below).Type == Block.BlockType.Grass || WorldData.GetBlock(below).Type == Block.BlockType.Snow)
+                    if (GetBlock(below).Type == Block.BlockType.Grass || GetBlock(below).Type == Block.BlockType.Snow)
                     {
                         PlaceBlock(below, Block.BlockType.Dirt, true); //dont queue with this dirt block change, the source block changing takes care of it, prevents double queueing the chunk and playing sound twice
                     }

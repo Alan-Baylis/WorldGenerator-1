@@ -51,7 +51,7 @@ namespace Sean.WorldServer
             //
             //}
 
-            var world = new WorldGenerator.WorldGenerator ();
+            var world = new WorldGenerator.World ();
             world.Generate ();           
 
             //var otpServer = new OtpServer();

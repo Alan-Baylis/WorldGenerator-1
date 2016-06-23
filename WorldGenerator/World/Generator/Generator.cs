@@ -5,27 +5,32 @@ using Sean.Shared;
 
 namespace Sean.WorldGenerator
 {
-	public static class Generator
+	internal class Generator
 	{
 		private const int WATER_LEVEL = Chunk.CHUNK_HEIGHT / 2 - 24;
+        private WorldData worldData;
 
+        public Generator(WorldData worldData)
+        {
+            this.worldData = worldData;
+        }
 		/// <summary>Use the raw seed string to come up with an integer based seed.</summary>
 		/// <remarks>Maximum seed using 12 characters is '~~~~~~~~~~~~' resulting in 812250, smallest is '!' resulting in -380</remarks>
-		public static int GetNumericSeed()
+		public int GetNumericSeed()
 		{
 			long seed = 0;
-			for (int position = 1; position <= WorldData.RawSeed.Length; position++)
+			for (int position = 1; position <= worldData.RawSeed.Length; position++)
 			{
-				var charValue = Convert.ToInt32(WorldData.RawSeed[position - 1]);
+				var charValue = Convert.ToInt32(worldData.RawSeed[position - 1]);
 				if (charValue < 32 || charValue > 126) continue; //toss out any chars not in this range, 32=space, 126='~'
 				seed += ((charValue - 31) * (position + 1) * 95); //add the ascii value (minus 31 so spaces end up as 1) * char position * possible chars
 			}
-			if (WorldData.RawSeed.Length % 2 != 0) seed *= -1; //if the raw seed had an odd number of chars, make the seed negative
+			if (worldData.RawSeed.Length % 2 != 0) seed *= -1; //if the raw seed had an odd number of chars, make the seed negative
 			var finalSeed = unchecked((int)seed); //gm: unchecked is the default, but using it here anyway for clarity
 			return finalSeed;
 		}
 
-		public static void Generate(Chunk chunk)
+		public void Generate(Chunk chunk)
 		{
             Debug.WriteLine("Generating new chunk: " + chunk.Coords);
 
@@ -80,7 +85,7 @@ namespace Sean.WorldGenerator
 			//Debug.WriteLine("New world save complete.");
 		}
 
-		private static void GenerateChunk(Chunk chunk)
+		private void GenerateChunk(Chunk chunk)
 		{
 			for (var x = chunk.Coords.WorldCoordsX; x < chunk.Coords.WorldCoordsX + Chunk.CHUNK_SIZE; x++)
 			{
@@ -102,7 +107,7 @@ namespace Sean.WorldGenerator
 						{
 							if (y > WATER_LEVEL)
 							{
-								switch (WorldData.WorldType)
+								switch (worldData.WorldType)
 								{
 									case WorldType.Winter: blockType = Block.BlockType.Snow; break;
 									case WorldType.Desert: blockType = Block.BlockType.Sand; break;
@@ -131,7 +136,7 @@ namespace Sean.WorldGenerator
 						}
                         else if (y > chunk.HeightMap[x, z] && y <= WATER_LEVEL)
 						{
-                            blockType = (WorldData.WorldType == WorldType.Winter && y == WATER_LEVEL && y - chunk.HeightMap[x, z] <= 3) ? Block.BlockType.Ice : Block.BlockType.Water;
+                            blockType = (worldData.WorldType == WorldType.Winter && y == WATER_LEVEL && y - chunk.HeightMap[x, z] <= 3) ? Block.BlockType.Ice : Block.BlockType.Water;
 						}
                         else if (y > chunk.HeightMap[x, z] - 5) //within 5 blocks of the surface
 						{
@@ -196,13 +201,13 @@ namespace Sean.WorldGenerator
 							switch (nextRandom % 6)
 							{
 								case 0:
-									mineralPosition.X = Math.Min(mineralPosition.X + 1, WorldData.SizeInBlocksX - 1);
+									mineralPosition.X = Math.Min(mineralPosition.X + 1, worldData.SizeInBlocksX - 1);
 									break;
 								case 1:
 									mineralPosition.X = Math.Max(mineralPosition.X - 1, 0);
 									break;
 								case 2:
-									mineralPosition.Z = Math.Min(mineralPosition.Z + 1, WorldData.SizeInBlocksZ - 1);
+									mineralPosition.Z = Math.Min(mineralPosition.Z + 1, worldData.SizeInBlocksZ - 1);
 									break;
 								case 3:
 									mineralPosition.Z = Math.Max(mineralPosition.Z - 1, 0);
@@ -214,8 +219,8 @@ namespace Sean.WorldGenerator
 									mineralPosition.Y = Math.Max(mineralPosition.Y - 1, 0);
 									break;
 							}
-							//need to get the chunk because this block could be expanding into an adjacent chunk
-                            WorldData.WorldMap.Chunk(mineralPosition).Blocks[mineralPosition] = new Block(mineralType);
+                            //need to get via the chunk because this block could be expanding into an adjacent chunk
+                            World.WorldMap.Chunk(mineralPosition).Blocks[mineralPosition] = new Block(mineralType);
 						}
 					}
 				}
