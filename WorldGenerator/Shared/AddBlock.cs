@@ -43,7 +43,7 @@ namespace Sean.WorldGenerator
 				BlockType = (Block.BlockType)BitConverter.ToUInt16(bytes, Position.SIZE);
 			}
 
-			WorldData.PlaceBlock(Position, BlockType);
+			World.PlaceBlock(Position, BlockType);
 			
 			//bm: this has to wait until the server can manage who's in creative mode
 			//if (ConnectedPlayer.Inventory[(int)BlockType] <= 0) return;

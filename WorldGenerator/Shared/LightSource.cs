@@ -14,7 +14,7 @@ namespace Sean.WorldGenerator
 		{
 			Type = type;
 			LightStrength = GetLightSourceStrength();
-            WorldData.WorldMap.Chunk(Coords).LightSources.TryAdd(Id, this);
+            World.WorldMap.Chunk(Coords).LightSources.TryAdd(Id, this);
 		}
 
 		/// <summary>Use this constructor when creating a brand new light source. Accounts for the type and modifies the coords accordingly.</summary>
@@ -74,7 +74,7 @@ namespace Sean.WorldGenerator
 		{
 			Type = (LightSourceType)int.Parse(xmlNode.Attributes["T"].Value);
 			LightStrength = GetLightSourceStrength();
-            WorldData.WorldMap.Chunk(Coords).LightSources.TryAdd(Id, this);
+            World.WorldMap.Chunk(Coords).LightSources.TryAdd(Id, this);
 		}
 		// ReSharper restore PossibleNullReferenceException
 		#endregion

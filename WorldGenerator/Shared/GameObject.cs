@@ -8,14 +8,14 @@ namespace Sean.WorldGenerator
 	{
 		protected GameObject()
 		{
-			Id = WorldData.NextGameObjectId;
+            Id = World.NextGameObjectId;
 		}
 
 		protected GameObject(ref Coords coords, int id = -1)
 		{
 			if (//!(this is Player) && 
-                !WorldData.IsValidItemLocation(coords)) throw new Exception(string.Format("Invalid item location: {0}", coords));
-			Id = WorldData.NextGameObjectId; //if this is a server we need to select our own IDs, ignore what the client said
+                !World.IsValidItemLocation(coords)) throw new Exception(string.Format("Invalid item location: {0}", coords));
+            Id = World.NextGameObjectId; //if this is a server we need to select our own IDs, ignore what the client said
 			Coords = coords;
 		}
 
@@ -23,7 +23,7 @@ namespace Sean.WorldGenerator
 		{
 			if (xmlNode.Attributes == null) throw new Exception("Node attributes is null.");
 			Id = int.Parse(xmlNode.Attributes["ID"].Value);
-			if (Id >= WorldData.GameObjectIdSeq) System.Threading.Interlocked.Add(ref WorldData.GameObjectIdSeq, Id + 1); //ensure this loaded objects id will not conflict with the sequence
+            if (Id >= World.GameObjectIdSeq) System.Threading.Interlocked.Add(ref World.GameObjectIdSeq, Id + 1); //ensure this loaded objects id will not conflict with the sequence
 			Coords = new Coords(float.Parse(xmlNode.Attributes["X"].Value), float.Parse(xmlNode.Attributes["Y"].Value), float.Parse(xmlNode.Attributes["Z"].Value));
 		}
 

@@ -52,7 +52,6 @@
     <Compile Include="World\Constants.cs" />
     <Compile Include="World\Map\MapChunk.cs" />
     <Compile Include="World\Settings.cs" />
-    <Compile Include="World\WorldData.cs" />
     <Compile Include="World\WorldHost.cs" />
     <Compile Include="World\Generator\Generator.cs" />
     <Compile Include="World\Generator\PerlinNoise.cs" />

@@ -7,14 +7,13 @@ namespace Sean.WorldGenerator
 {
     internal class WorldMap
     {
-        public WorldMap(WorldData worldData)
+        public WorldMap()
         {
-            MapScale = worldData.ChunkSize;
-            MaxXBlock = worldData.InitialSize;
-            MaxZBlock = worldData.InitialSize;
+            MapScale = World.ChunkSize;
+            MaxXBlock = World.InitialSize;
+            MaxZBlock = World.InitialSize;
             mapChunks = new MapChunk[MaxXBlock, MaxZBlock];
-            this.worldData = worldData;
-            this.generator = new Generator(worldData);
+            this.generator = new Generator();
         }
             
         public void Generate()
@@ -92,7 +91,6 @@ namespace Sean.WorldGenerator
 
         private Array<int> heightMap;
 
-        private WorldData worldData;
         private Generator generator;
     }
 }

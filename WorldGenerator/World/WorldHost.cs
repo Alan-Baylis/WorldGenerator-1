@@ -51,7 +51,7 @@ namespace Sean.WorldGenerator
 /*
             //immediately render up to INITIAL_CHUNK_RENDER_DISTANCE chunks away within the initial view frustum
             var immediateChunkTasks = new List<Task> ();
-            foreach (Chunk chunk in WorldData.WorldMap.Chunks)
+            foreach (Chunk chunk in World.WorldMap.Chunks)
             {
 
                 var dist = chunk.DistanceFromPlayer ();
@@ -60,8 +60,8 @@ namespace Sean.WorldGenerator
                     //chunk is close enough to the player and in the initial view frustum so it needs to be renderable before the game starts
                     int taskX = chunk.Coords.X, taskZ = chunk.Coords.Z;
                     immediateChunkTasks.Add (Task.Factory.StartNew (() => {
-                        WorldData.Chunks [taskX, taskZ].ChunkBuildState = Chunk.BuildState.QueuedInitialFrustum;
-                        WorldData.Chunks [taskX, taskZ].BuildData (); }));
+                        World.Chunks [taskX, taskZ].ChunkBuildState = Chunk.BuildState.QueuedInitialFrustum;
+                        World.Chunks [taskX, taskZ].BuildData (); }));
                 }
                 else
                 {

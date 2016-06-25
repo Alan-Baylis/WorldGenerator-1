@@ -8,24 +8,22 @@ namespace Sean.WorldGenerator
 	internal class Generator
 	{
 		private const int WATER_LEVEL = Chunk.CHUNK_HEIGHT / 2 - 24;
-        private WorldData worldData;
 
-        public Generator(WorldData worldData)
+        public Generator()
         {
-            this.worldData = worldData;
         }
 		/// <summary>Use the raw seed string to come up with an integer based seed.</summary>
 		/// <remarks>Maximum seed using 12 characters is '~~~~~~~~~~~~' resulting in 812250, smallest is '!' resulting in -380</remarks>
 		public int GetNumericSeed()
 		{
 			long seed = 0;
-			for (int position = 1; position <= worldData.RawSeed.Length; position++)
+			for (int position = 1; position <= World.RawSeed.Length; position++)
 			{
-				var charValue = Convert.ToInt32(worldData.RawSeed[position - 1]);
+				var charValue = Convert.ToInt32(World.RawSeed[position - 1]);
 				if (charValue < 32 || charValue > 126) continue; //toss out any chars not in this range, 32=space, 126='~'
 				seed += ((charValue - 31) * (position + 1) * 95); //add the ascii value (minus 31 so spaces end up as 1) * char position * possible chars
 			}
-			if (worldData.RawSeed.Length % 2 != 0) seed *= -1; //if the raw seed had an odd number of chars, make the seed negative
+			if (World.RawSeed.Length % 2 != 0) seed *= -1; //if the raw seed had an odd number of chars, make the seed negative
 			var finalSeed = unchecked((int)seed); //gm: unchecked is the default, but using it here anyway for clarity
 			return finalSeed;
 		}
@@ -59,7 +57,7 @@ namespace Sean.WorldGenerator
 			//loop through chunks again for actions that require the neighboring chunks to be built
 			Debug.WriteLine("Completing growth in chunks and building heightmaps...");
             Debug.WriteLine("Completing growth in chunks...", 0, 0);
-			foreach (Chunk chunk in WorldData.Chunks)
+			foreach (Chunk chunk in World.Chunks)
 			{
 				//build heightmap here only so we know where to place trees/clutter (it will get built again on world load anyway)
 				chunk.BuildHeightMap();
@@ -67,7 +65,7 @@ namespace Sean.WorldGenerator
 				var takenPositions = new List<Position>(); //positions taken by tree or clutter, ensures neither spawn on top of or directly touching another
 
 				//generate trees
-				if (WorldData.GenerateWithTrees) TreeGenerator.Generate(chunk, takenPositions);
+				if (World.GenerateWithTrees) TreeGenerator.Generate(chunk, takenPositions);
 
 				//generate clutter
 				//ClutterGenerator.Generate(chunk, takenPositions);
@@ -81,7 +79,7 @@ namespace Sean.WorldGenerator
 			//SkyHost.SunLightStrength = SkyHost.BRIGHTEST_SKYLIGHT_STRENGTH;
 
 			//Debug.WriteLine("New world saving...");
-			//WorldData.SaveToDisk();
+			//World.SaveToDisk();
 			//Debug.WriteLine("New world save complete.");
 		}
 
@@ -107,7 +105,7 @@ namespace Sean.WorldGenerator
 						{
 							if (y > WATER_LEVEL)
 							{
-								switch (worldData.WorldType)
+								switch (World.WorldType)
 								{
 									case WorldType.Winter: blockType = Block.BlockType.Snow; break;
 									case WorldType.Desert: blockType = Block.BlockType.Sand; break;
@@ -136,7 +134,7 @@ namespace Sean.WorldGenerator
 						}
                         else if (y > chunk.HeightMap[x, z] && y <= WATER_LEVEL)
 						{
-                            blockType = (worldData.WorldType == WorldType.Winter && y == WATER_LEVEL && y - chunk.HeightMap[x, z] <= 3) ? Block.BlockType.Ice : Block.BlockType.Water;
+                            blockType = (World.WorldType == WorldType.Winter && y == WATER_LEVEL && y - chunk.HeightMap[x, z] <= 3) ? Block.BlockType.Ice : Block.BlockType.Water;
 						}
                         else if (y > chunk.HeightMap[x, z] - 5) //within 5 blocks of the surface
 						{
@@ -201,13 +199,13 @@ namespace Sean.WorldGenerator
 							switch (nextRandom % 6)
 							{
 								case 0:
-									mineralPosition.X = Math.Min(mineralPosition.X + 1, worldData.SizeInBlocksX - 1);
+									mineralPosition.X = Math.Min(mineralPosition.X + 1, World.SizeInBlocksX - 1);
 									break;
 								case 1:
 									mineralPosition.X = Math.Max(mineralPosition.X - 1, 0);
 									break;
 								case 2:
-									mineralPosition.Z = Math.Min(mineralPosition.Z + 1, worldData.SizeInBlocksZ - 1);
+									mineralPosition.Z = Math.Min(mineralPosition.Z + 1, World.SizeInBlocksZ - 1);
 									break;
 								case 3:
 									mineralPosition.Z = Math.Max(mineralPosition.Z - 1, 0);

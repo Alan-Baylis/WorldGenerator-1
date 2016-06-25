@@ -25,8 +25,8 @@ namespace Sean.WorldGenerator
 			AllowBounce = allowBounce;
 			if (velocity.HasValue) Velocity = velocity.Value;
 			IsMoving = true;
-			if (!WorldData.GameItems.ContainsKey(Id)) WorldData.GameItems.TryAdd(Id, this);
-            var chunk = WorldData.WorldMap.Chunk(coords);
+			if (!World.GameItems.ContainsKey(Id)) World.GameItems.TryAdd(Id, this);
+            var chunk = World.WorldMap.Chunk(coords);
 			if (!chunk.GameItems.ContainsKey(Id)) chunk.GameItems.TryAdd(Id, this);
 		}
 
@@ -39,14 +39,14 @@ namespace Sean.WorldGenerator
 			IsMoving = true;
 			try
 			{
-                var chunk = WorldData.WorldMap.Chunk(Coords);
+                var chunk = World.WorldMap.Chunk(Coords);
 				if (!chunk.GameItems.ContainsKey(Id)) chunk.GameItems.TryAdd(Id, this);
 			}
 			catch (Exception)
 			{
 				throw new Exception(string.Format("Tried to load GameItem outside the world. Id: {0} {1}", Id, Coords));
 			}
-			if (!WorldData.GameItems.ContainsKey(Id)) WorldData.GameItems.TryAdd(Id, this);
+			if (!World.GameItems.ContainsKey(Id)) World.GameItems.TryAdd(Id, this);
 		}
 		#endregion
 
@@ -121,7 +121,7 @@ namespace Sean.WorldGenerator
 			if (!Equals(Velocity.X, 0f))
 			{
 				proposedCoords.Xf += Velocity.X * (float)e.Time;
-                if (!WorldData.IsValidItemLocation(proposedCoords) || (WorldData.IsValidBlockLocation(proposedCoords) && WorldData.GetBlock(ref proposedCoords).IsSolid))
+                if (!World.IsValidItemLocation(proposedCoords) || (World.IsValidBlockLocation(proposedCoords) && World.GetBlock(ref proposedCoords).IsSolid))
 				{
 					//Bounce
 					bounced = true;
@@ -134,7 +134,7 @@ namespace Sean.WorldGenerator
 			if (!Equals(Velocity.Z, 0f))
 			{
 				proposedCoords.Zf += Velocity.Z * (float)e.Time;
-                if (!WorldData.IsValidItemLocation(proposedCoords) || (WorldData.IsValidBlockLocation(proposedCoords) && WorldData.GetBlock(ref proposedCoords).IsSolid))
+                if (!World.IsValidItemLocation(proposedCoords) || (World.IsValidBlockLocation(proposedCoords) && World.GetBlock(ref proposedCoords).IsSolid))
 				{
 					//Bounce
 					bounced = true;
@@ -146,7 +146,7 @@ namespace Sean.WorldGenerator
 
 			Velocity.Y += Constants.GRAVITY * (float)e.Time;
 			proposedCoords.Yf = proposedCoords.Yf + Velocity.Y * (float)e.Time;
-            if (!WorldData.IsValidItemLocation(proposedCoords) || (WorldData.IsValidBlockLocation(proposedCoords) && WorldData.GetBlock(ref proposedCoords).IsSolid))
+            if (!World.IsValidItemLocation(proposedCoords) || (World.IsValidBlockLocation(proposedCoords) && World.GetBlock(ref proposedCoords).IsSolid))
 			{
 				var currentVelocityY = Velocity.Y + Constants.GRAVITY * (float)e.Time;
 				if (Velocity.LengthFast > 3f)
@@ -172,7 +172,7 @@ namespace Sean.WorldGenerator
 					do
 					{
 						proposedCoords.Yf++;
-                    } while (!WorldData.IsValidItemLocation(proposedCoords) || (WorldData.IsValidBlockLocation(proposedCoords) && WorldData.GetBlock(ref proposedCoords).IsSolid));
+                    } while (!World.IsValidItemLocation(proposedCoords) || (World.IsValidBlockLocation(proposedCoords) && World.GetBlock(ref proposedCoords).IsSolid));
 					proposedCoords.Yf = (float)Math.Floor(proposedCoords.Yf) + Constants.ITEM_HOVER_DIST;
 					IsMoving = false;
 					if (Stop != null) Stop(e);
@@ -181,11 +181,11 @@ namespace Sean.WorldGenerator
 			if (new ChunkCoords(ref Coords) != new ChunkCoords(ref proposedCoords))
 			{
 				//Moving to a new chunk
-                var oldChunk = WorldData.WorldMap.Chunk(Coords);
+                var oldChunk = World.WorldMap.Chunk(Coords);
 				GameItemDynamic remove;
 				oldChunk.GameItems.TryRemove(Id, out remove);
 
-                var newChunk = WorldData.WorldMap.Chunk(proposedCoords);
+                var newChunk = World.WorldMap.Chunk(proposedCoords);
 				if (!newChunk.GameItems.ContainsKey(Id)) newChunk.GameItems.TryAdd(Id, this);
 			}
 			Coords = proposedCoords;
@@ -211,7 +211,7 @@ namespace Sean.WorldGenerator
 		private static readonly ConcurrentQueue<GameItemDynamic> DecayQueue = new ConcurrentQueue<GameItemDynamic>();
 		public static void UpdateAll(FrameEventArgs e)
 		{
-			foreach (var gameItem in WorldData.GameItems.Values)
+			foreach (var gameItem in World.GameItems.Values)
 			{
 				gameItem.Update(e);
 			}
@@ -226,10 +226,10 @@ namespace Sean.WorldGenerator
 						//new GameActions.RemoveBlockItem(decayItem.Id, true).Receive();
 						break;
 					case GameItemType.Projectile:
-                    var chunk = WorldData.WorldMap.Chunk(decayItem.Coords);
+                    var chunk = World.WorldMap.Chunk(decayItem.Coords);
 						GameItemDynamic remove;
 						chunk.GameItems.TryRemove(decayItem.Id, out remove);
-						WorldData.GameItems.TryRemove(decayItem.Id, out remove);
+						World.GameItems.TryRemove(decayItem.Id, out remove);
 						break;
 				}
 				if (decayItem.Decay != null) decayItem.Decay(e);

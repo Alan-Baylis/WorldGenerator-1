@@ -274,8 +274,8 @@ namespace Sean.WorldGenerator
 					int worldZ = chunk.Coords.WorldCoordsZ + z;
 					for (int y = 0; y < Chunk.CHUNK_HEIGHT; y++)
 					{
-						WorldData.SkyLightMap[worldX, y, worldZ] = chunk.SkyLightMapInitial[x, y, z];
-						WorldData.ItemLightMap[worldX, y, worldZ] = chunk.ItemLightMapInitial[x, y, z];
+						World.SkyLightMap[worldX, y, worldZ] = chunk.SkyLightMapInitial[x, y, z];
+						World.ItemLightMap[worldX, y, worldZ] = chunk.ItemLightMapInitial[x, y, z];
 					}
 				}
 			}
