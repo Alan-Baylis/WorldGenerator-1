@@ -60,7 +60,6 @@ namespace Sean.WorldGenerator
         public static string GeneratorVersion { get; set; }
 
         public static int ChunkSize { get; set; } 
-        public static int InitialSize { get; set; }
 
         public static int GameObjectIdSeq;
         public static int NextGameObjectId
@@ -124,15 +123,9 @@ namespace Sean.WorldGenerator
             WorldType = WorldType.Grass;// (WorldType)Convert.ToInt32(settingsNode.Attributes["WorldType"].Value);
 
             ChunkSize = 32;
-            InitialSize = 80;
 
             registrations = new Dictionary<ChunkCoords, List<int> > ();
             worldMap = new WorldMap();
-        }
-
-        public static void Generate()
-        {
-            worldMap.Generate ();
         }
 
         public static int GetChunkSize()

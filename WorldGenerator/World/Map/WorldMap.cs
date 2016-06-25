@@ -7,15 +7,31 @@ namespace Sean.WorldGenerator
 {
     internal class WorldMap
     {
+        public int MaxXBlock { get; set; }
+        public int MinXBlock { get; set; }
+        public int MaxZBlock { get; set; }
+        public int MinZBlock { get; set; }
+        public int MaxXPosition { get { return MaxXBlock * World.ChunkSize; } }
+        public int MinXPosition { get { return MinXBlock * World.ChunkSize; } }
+        public int MaxZPosition { get { return MaxZBlock * World.ChunkSize; } }
+        public int MinZPosition { get { return MinZBlock * World.ChunkSize; } }
+
+        private Dictionary<int, MapChunk> mapChunks;
+        private Generator generator;
+        private static int MaxBlockLimit = (int)Math.Sqrt(int.MaxValue);
+
         public WorldMap()
         {
-            MapScale = World.ChunkSize;
-            MaxXBlock = World.InitialSize;
-            MaxZBlock = World.InitialSize;
-            mapChunks = new MapChunk[MaxXBlock, MaxZBlock];
+            MaxXBlock = 0;
+            MinXBlock = 0;
+            MaxZBlock = 0;
+            MinZBlock = 0;
+            mapChunks = new Dictionary<int, MapChunk> ();
             this.generator = new Generator();
         }
-            
+         
+        /*
+        // TODO generate low-res map
         public void Generate()
         {
             var size = new ArraySize(){
@@ -23,6 +39,9 @@ namespace Sean.WorldGenerator
                 scale=MapScale};
             heightMap = PerlinNoise.GetIntMap(size, 3);
         }
+
+        //private Array<int> heightMap;
+        */
 
         /// <summary>Get a chunk from the array. Based on the x,z of the chunk in the world. Note these are chunk coords not block coords.</summary>
         public Chunk Chunk(int x, int z)
@@ -38,32 +57,34 @@ namespace Sean.WorldGenerator
         /// <summary>Get a chunk from the array. Based on world block coords.</summary>
         public Chunk Chunk(Position position)
         {
-            int x = (position.X / MapScale);
-            int z = (position.Z / MapScale);
+            int x = (position.X / World.ChunkSize);
+            int z = (position.Z / World.ChunkSize);
             return GetOrCreate(x, z);
         }
 
         /// <summary>Get a chunk from the array. Based on more accurate world object coords.</summary>
         public Chunk Chunk(Coords coords)
         {
-            int x = (coords.Xblock / MapScale);
-            int z = (coords.Zblock / MapScale);
+            int x = (coords.Xblock / World.ChunkSize);
+            int z = (coords.Zblock / World.ChunkSize);
             return GetOrCreate(x, z);
         }
+
+
         private Chunk GetOrCreate(int x, int z)
         {
             Console.WriteLine ($"Getting {x},{z}");
-            var mapChunk = mapChunks[x, z];
-            if (mapChunk == null)
+            int idx = x * MaxBlockLimit + z;
+            if (!mapChunks.ContainsKey(idx))
             {
                 Console.WriteLine ($"Generating {x},{z}");
-                mapChunk = new MapChunk();
+                var mapChunk = new MapChunk();
                 var chunkCoords = new ChunkCoords(x, z);
                 mapChunk.Chunk = new Chunk(chunkCoords);
                 generator.Generate(mapChunk.Chunk);
-                mapChunks[x, z] = mapChunk;
+                mapChunks[idx] = mapChunk;
             }
-            return mapChunk.Chunk;
+            return mapChunks[isx];
         }
 
         /*
@@ -82,16 +103,6 @@ namespace Sean.WorldGenerator
         }
         */
 
-        public int MaxXBlock { get; set; }
-        public int MaxZBlock { get; set; }
-        public int MaxXPosition { get { return MaxXBlock * MapScale; } }
-        public int MaxZPosition { get { return MaxZBlock * MapScale; } }
-        public int MapScale { get; set; }
-        private MapChunk[,] mapChunks;
-
-        private Array<int> heightMap;
-
-        private Generator generator;
     }
 }
 
