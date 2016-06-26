@@ -22,10 +22,10 @@ namespace Sean.WorldGenerator
 
         public WorldMap()
         {
-            MaxXBlock = 0;
-            MinXBlock = 0;
-            MaxZBlock = 0;
-            MinZBlock = 0;
+            MaxXBlock = int.MinValue;
+            MinXBlock = int.MaxValue;
+            MaxZBlock = int.MinValue;
+            MinZBlock = int.MaxValue;
             mapChunks = new Dictionary<int, MapChunk> ();
             this.generator = new Generator();
         }
@@ -43,11 +43,13 @@ namespace Sean.WorldGenerator
         //private Array<int> heightMap;
         */
 
+
         /// <summary>Get a chunk from the array. Based on the x,z of the chunk in the world. Note these are chunk coords not block coords.</summary>
         public Chunk Chunk(int x, int z)
         {
             return GetOrCreate(x, z); 
         }
+
 
         public Chunk Chunk(ChunkCoords chunkCoords)
         {
@@ -74,6 +76,7 @@ namespace Sean.WorldGenerator
         private Chunk GetOrCreate(int x, int z)
         {
             Console.WriteLine ($"Getting {x},{z}");
+            if (x > MaxBlockLimit || x < -MaxBlockLimit || z > MaxBlockLimit || z < -MaxBlockLimit) throw new ArgumentException ("Chunk index exceeded");
             int idx = x * MaxBlockLimit + z;
             if (!mapChunks.ContainsKey(idx))
             {
@@ -83,16 +86,25 @@ namespace Sean.WorldGenerator
                 mapChunk.Chunk = new Chunk(chunkCoords);
                 generator.Generate(mapChunk.Chunk);
                 mapChunks[idx] = mapChunk;
+
+                if (x > MaxXBlock)
+                    MaxXBlock = x;
+                if (x < MinXBlock)
+                    MinXBlock = x;
+                if (z > MaxZBlock)
+                    MaxZBlock = z;
+                if (z < MinZBlock)
+                    MinZBlock = z;
             }
-            return mapChunks[isx];
+            return mapChunks[idx].Chunk;
         }
 
-        /*
+
         public void Render ()
         {
-            for (int x = 0; x < MapX; x++) {
+            for (int x = MinZBlock; x < MaxXBlock; x++) {
                 System.Text.StringBuilder builder = new System.Text.StringBuilder ();
-                for (int z = 0; z < MapZ; z++) {
+                for (int z = MinZBlock; z < MaxZBlock; z++) {
                     if (Cursor.WorldX == x && Cursor.WorldZ == z)
                         builder.Append ("*");
                     else
@@ -101,7 +113,7 @@ namespace Sean.WorldGenerator
                 Console.WriteLine (builder.ToString ());
             }
         }
-        */
+
 
     }
 }

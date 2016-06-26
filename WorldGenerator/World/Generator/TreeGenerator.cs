@@ -25,8 +25,8 @@ namespace Sean.WorldGenerator
 
 				var block = chunk.Blocks[xProposedInChunk, yProposed, zProposedInChunk];
 				if (block.Type != Block.BlockType.Grass && block.Type != Block.BlockType.Snow) continue;
-				int xProposedInWorld = chunk.Coords.WorldCoordsX + xProposedInChunk;
-				int zProposedInWorld = chunk.Coords.WorldCoordsZ + zProposedInChunk;
+				int xProposedInWorld = chunk.ChunkCoords.WorldCoordsX + xProposedInChunk;
+				int zProposedInWorld = chunk.ChunkCoords.WorldCoordsZ + zProposedInChunk;
 
 				//ensure tree is not placed too close to another taken coord, otherwise skip it
 				if (IsPositionTaken(takenPositions, xProposedInWorld, zProposedInWorld, DISTANCE_TOLERANCE)) continue;

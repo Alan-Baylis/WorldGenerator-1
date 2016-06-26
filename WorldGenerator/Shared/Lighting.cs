@@ -55,9 +55,9 @@ namespace Sean.WorldGenerator
 		{
 			for (int x = 0; x < Chunk.CHUNK_SIZE; x++)
 			{
-				if (chunk.Coords.Z > 0) //can skip when on this world edge
+				if (chunk.ChunkCoords.Z > 0) //can skip when on this world edge
 				{
-                    var adjacentChunk = World.WorldMap.Chunk(chunk.Coords.X, chunk.Coords.Z - 1);
+                    var adjacentChunk = World.WorldMap.Chunk(chunk.ChunkCoords.X, chunk.ChunkCoords.Z - 1);
 					for (int y = Chunk.CHUNK_HEIGHT - 1; y > 0; y--) //note: this used to loop from the heightmap down, however that wouldnt work with item light sources and because this is for initial pulling on edges only, it was only a tiny benefit
 					{
 						if (!chunk.Blocks[x, y, 0].IsTransparent) continue; //no need to pull light for non transparent blocks
@@ -84,9 +84,9 @@ namespace Sean.WorldGenerator
 					}
 				}
 
-				if (chunk.Coords.Z < World.SizeInChunksZ - 1) //can skip when on this world edge
+				if (chunk.ChunkCoords.Z < World.SizeInChunksZ - 1) //can skip when on this world edge
 				{
-                    var adjacentChunk = World.WorldMap.Chunk(chunk.Coords.X, chunk.Coords.Z + 1);
+                    var adjacentChunk = World.WorldMap.Chunk(chunk.ChunkCoords.X, chunk.ChunkCoords.Z + 1);
 					for (int y = Chunk.CHUNK_HEIGHT - 1; y > 0; y--) //note: this used to loop from the heightmap down, however that wouldnt work with item light sources and because this is for initial pulling on edges only, it was only a tiny benefit
 					{
 						if (!chunk.Blocks[x, y, Chunk.CHUNK_SIZE - 1].IsTransparent) continue; //no need to pull light for non transparent blocks
@@ -116,9 +116,9 @@ namespace Sean.WorldGenerator
 
 			for (int z = 0; z < Chunk.CHUNK_SIZE; z++)
 			{
-				if (chunk.Coords.X > 0) //can skip when on this world edge
+				if (chunk.ChunkCoords.X > 0) //can skip when on this world edge
 				{
-                    var adjacentChunk = World.WorldMap.Chunk(chunk.Coords.X - 1, chunk.Coords.Z);
+                    var adjacentChunk = World.WorldMap.Chunk(chunk.ChunkCoords.X - 1, chunk.ChunkCoords.Z);
 					for (int y = Chunk.CHUNK_HEIGHT - 1; y > 0; y--) //note: this used to loop from the heightmap down, however that wouldnt work with item light sources and because this is for initial pulling on edges only, it was only a tiny benefit
 					{
 						if (!chunk.Blocks[0, y, z].IsTransparent) continue; //no need to pull light for non transparent blocks
@@ -145,9 +145,9 @@ namespace Sean.WorldGenerator
 					}
 				}
 
-				if (chunk.Coords.X < World.SizeInChunksX - 1) //can skip when on this world edge
+				if (chunk.ChunkCoords.X < World.SizeInChunksX - 1) //can skip when on this world edge
 				{
-                    var adjacentChunk = World.WorldMap.Chunk(chunk.Coords.X + 1, chunk.Coords.Z);
+                    var adjacentChunk = World.WorldMap.Chunk(chunk.ChunkCoords.X + 1, chunk.ChunkCoords.Z);
 					for (int y = Chunk.CHUNK_HEIGHT - 1; y > 0; y--) //note: this used to loop from the heightmap down, however that wouldnt work with item light sources and because this is for initial pulling on edges only, it was only a tiny benefit
 					{
 						if (!chunk.Blocks[Chunk.CHUNK_SIZE - 1, y, z].IsTransparent) continue; //no need to pull light for non transparent blocks
@@ -178,12 +178,12 @@ namespace Sean.WorldGenerator
 			#region Diagonal Corners
 			//need to look over up to 4 diagonal corners to potentially pull from those chunks
 			//subtract 2 from light strengths when looking diagonally because light does not spread directly diagonally
-			if (chunk.Coords.X > 0)
+			if (chunk.ChunkCoords.X > 0)
 			{
-				if (chunk.Coords.Z > 0)
+				if (chunk.ChunkCoords.Z > 0)
 				{
 					//check left/back diagonal
-                    var chunkDiagonal = World.WorldMap.Chunk(chunk.Coords.X - 1, chunk.Coords.Z - 1);
+                    var chunkDiagonal = World.WorldMap.Chunk(chunk.ChunkCoords.X - 1, chunk.ChunkCoords.Z - 1);
 					for (int y = Chunk.CHUNK_HEIGHT - 1; y > 0; y--)
 					{
 						var diagonalSkyLightStrength = chunkDiagonal.SkyLightMapInitial[Chunk.CHUNK_SIZE - 1, y, Chunk.CHUNK_SIZE - 1];
@@ -199,10 +199,10 @@ namespace Sean.WorldGenerator
 						}
 					}
 				}
-				if (chunk.Coords.Z < World.SizeInChunksZ - 1)
+				if (chunk.ChunkCoords.Z < World.SizeInChunksZ - 1)
 				{
 					//check left/front diagonal
-                    var chunkDiagonal = World.WorldMap.Chunk(chunk.Coords.X - 1, chunk.Coords.Z + 1);
+                    var chunkDiagonal = World.WorldMap.Chunk(chunk.ChunkCoords.X - 1, chunk.ChunkCoords.Z + 1);
 					for (int y = Chunk.CHUNK_HEIGHT - 1; y > 0; y--)
 					{
 						var diagonalSkyLightStrength = chunkDiagonal.SkyLightMapInitial[Chunk.CHUNK_SIZE - 1, y, 0];
@@ -219,12 +219,12 @@ namespace Sean.WorldGenerator
 					}
 				}
 			}
-			if (chunk.Coords.X < World.SizeInChunksX - 1)
+			if (chunk.ChunkCoords.X < World.SizeInChunksX - 1)
 			{
-				if (chunk.Coords.Z > 0)
+				if (chunk.ChunkCoords.Z > 0)
 				{
 					//check right/back diagonal
-                    var chunkDiagonal = World.WorldMap.Chunk(chunk.Coords.X + 1, chunk.Coords.Z - 1);
+                    var chunkDiagonal = World.WorldMap.Chunk(chunk.ChunkCoords.X + 1, chunk.ChunkCoords.Z - 1);
 					for (int y = Chunk.CHUNK_HEIGHT - 1; y > 0; y--)
 					{
 						var diagonalSkyLightStrength = chunkDiagonal.SkyLightMapInitial[0, y, Chunk.CHUNK_SIZE - 1];
@@ -240,10 +240,10 @@ namespace Sean.WorldGenerator
 						}
 					}
 				}
-				if (chunk.Coords.Z < World.SizeInChunksZ - 1)
+				if (chunk.ChunkCoords.Z < World.SizeInChunksZ - 1)
 				{
 					//check right/front diagonal
-                    var chunkDiagonal = World.WorldMap.Chunk(chunk.Coords.X + 1, chunk.Coords.Z + 1);
+                    var chunkDiagonal = World.WorldMap.Chunk(chunk.ChunkCoords.X + 1, chunk.ChunkCoords.Z + 1);
 					for (int y = Chunk.CHUNK_HEIGHT - 1; y > 0; y--)
 					{
 						var diagonalSkyLightStrength = chunkDiagonal.SkyLightMapInitial[0, y, 0];

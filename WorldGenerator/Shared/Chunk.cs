@@ -13,7 +13,7 @@ namespace Sean.WorldGenerator
 		#region Constructors
 		public Chunk(ChunkCoords chunkCoords)
 		{
-            Coords = chunkCoords;
+            ChunkCoords = chunkCoords;
 			Blocks = new Blocks(CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE);
             //HeightMap = new Array<int>(CHUNK_SIZE, CHUNK_SIZE);
 			//Clutters = new HashSet<Clutter>();
@@ -30,7 +30,7 @@ namespace Sean.WorldGenerator
 		private const int CLUTTER_RENDER_DISTANCE = CHUNK_SIZE * 4;
 		private const int GAME_ITEM_RENDER_DISTANCE = CLUTTER_RENDER_DISTANCE;
 
-		public ChunkCoords Coords;
+		public ChunkCoords ChunkCoords;
 		public Blocks Blocks;
 
         /// <summary>Heighest level in each vertical column containing a non transparent block. Sky light does not shine through this point. Used in rendering and lighting calculations.</summary>
@@ -56,7 +56,7 @@ namespace Sean.WorldGenerator
 		/// <summary>Distance of the chunk from the player in number of blocks.</summary>
         public double DistanceFromPlayer(Coords coords)
 		{
-			return Math.Sqrt(Math.Pow(coords.Xf - Coords.WorldCoordsX, 2) + Math.Pow(coords.Zf - Coords.WorldCoordsZ, 2));
+			return Math.Sqrt(Math.Pow(coords.Xf - ChunkCoords.WorldCoordsX, 2) + Math.Pow(coords.Zf - ChunkCoords.WorldCoordsZ, 2));
 		}
 		
 		/// <summary>Lookup for the Chunk Vbo containing the position, normal and texCoords Vbo's for this chunk and texture type.</summary>
@@ -353,7 +353,7 @@ namespace Sean.WorldGenerator
 		/// <summary>Only called for SinglePlayer and Servers.</summary>
 		private void WaterExpand()
 		{
-			Debug.WriteLine("Water expanding in chunk {0}...", Coords);
+			Debug.WriteLine("Water expanding in chunk {0}...", ChunkCoords);
 			var newWater = new List<Position>();
 			for (var i = 0; i < CHUNK_SIZE; i++)
 			{
@@ -369,20 +369,20 @@ namespace Sean.WorldGenerator
 							switch (q)
 							{
 								case 0:
-									adjacent = new Position(Coords.WorldCoordsX + i, j - 1, Coords.WorldCoordsZ + k);
+									adjacent = new Position(ChunkCoords.WorldCoordsX + i, j - 1, ChunkCoords.WorldCoordsZ + k);
 									belowCurrent = adjacent;
 									break;
 								case 1:
-									adjacent = new Position(Coords.WorldCoordsX + i + 1, j, Coords.WorldCoordsZ + k);
+									adjacent = new Position(ChunkCoords.WorldCoordsX + i + 1, j, ChunkCoords.WorldCoordsZ + k);
 									break;
 								case 2:
-									adjacent = new Position(Coords.WorldCoordsX + i - 1, j, Coords.WorldCoordsZ + k);
+									adjacent = new Position(ChunkCoords.WorldCoordsX + i - 1, j, ChunkCoords.WorldCoordsZ + k);
 									break;
 								case 3:
-									adjacent = new Position(Coords.WorldCoordsX + i, j, Coords.WorldCoordsZ + k + 1);
+									adjacent = new Position(ChunkCoords.WorldCoordsX + i, j, ChunkCoords.WorldCoordsZ + k + 1);
 									break;
 								default:
-									adjacent = new Position(Coords.WorldCoordsX + i, j, Coords.WorldCoordsZ + k - 1);
+									adjacent = new Position(ChunkCoords.WorldCoordsX + i, j, ChunkCoords.WorldCoordsZ + k - 1);
 									break;
 							}
 
@@ -399,7 +399,7 @@ namespace Sean.WorldGenerator
 			if (newWater.Count == 0)
 			{
 				WaterExpanding = false;
-				Debug.WriteLine("Water finished expanding in chunk {0}", Coords);
+				Debug.WriteLine("Water finished expanding in chunk {0}", ChunkCoords);
 				return;
 			}
 
@@ -436,10 +436,10 @@ namespace Sean.WorldGenerator
 			var possibleChanges = new List<Tuple<Block.BlockType, Position>>();
 			for (var x = 0; x < CHUNK_SIZE; x++)
 			{
-				int worldX = Coords.WorldCoordsX + x;
+				int worldX = ChunkCoords.WorldCoordsX + x;
 				for (var z = 0; z < CHUNK_SIZE; z++)
 				{
-					int worldZ = Coords.WorldCoordsZ + z;
+					int worldZ = ChunkCoords.WorldCoordsZ + z;
 					for (var y = 0; y <= Math.Min(CHUNK_HEIGHT - 1, HeightMap[x, z] + 1); y++) //look +1 above heightmap as water directly above heightmap could change to ice
 					{
 						var blockType = Blocks[x, y, z].Type;
@@ -543,10 +543,10 @@ namespace Sean.WorldGenerator
 			{
 				//this happens after a change is made in the chunk that did not cause any possible grass grow style changes
 				GrassGrowing = false;
-				Debug.WriteLine("Grass finished growing in chunk {0} No possible changes found", Coords);
+				Debug.WriteLine("Grass finished growing in chunk {0} No possible changes found", ChunkCoords);
 				return;
 			}
-			Debug.WriteLine("Grass growing in chunk {0} {1} possible change(s)", Coords, possibleChanges.Count);
+			Debug.WriteLine("Grass growing in chunk {0} {1} possible change(s)", ChunkCoords, possibleChanges.Count);
 
 			var changesMade = 0;
 			var addBlocks = new List<AddBlock>(); //only gets used for servers
@@ -598,7 +598,7 @@ namespace Sean.WorldGenerator
 			{
 				//when all possible changes have been made we can stop GrassGrowing here without waiting for the next iteration to confirm it
 				GrassGrowing = false;
-				Debug.WriteLine("Grass finished growing in chunk {0} All possible changes made", Coords);
+				Debug.WriteLine("Grass finished growing in chunk {0} All possible changes made", ChunkCoords);
 			}
 		}
 
@@ -612,8 +612,8 @@ namespace Sean.WorldGenerator
 		{
 			var xmlNode = xmlDocument.CreateNode(XmlNodeType.Element, "C", string.Empty);
 			if (xmlNode.Attributes == null) throw new Exception("Node attributes is null.");
-			xmlNode.Attributes.Append(xmlDocument.CreateAttribute("X")).Value = Coords.X.ToString();
-			xmlNode.Attributes.Append(xmlDocument.CreateAttribute("Z")).Value = Coords.Z.ToString();
+			xmlNode.Attributes.Append(xmlDocument.CreateAttribute("X")).Value = ChunkCoords.X.ToString();
+			xmlNode.Attributes.Append(xmlDocument.CreateAttribute("Z")).Value = ChunkCoords.Z.ToString();
 			xmlNode.Attributes.Append(xmlDocument.CreateAttribute("WaterExpanding")).Value = WaterExpanding.ToString();
 			xmlNode.Attributes.Append(xmlDocument.CreateAttribute("GrassGrowing")).Value = GrassGrowing.ToString();
 			return xmlNode;

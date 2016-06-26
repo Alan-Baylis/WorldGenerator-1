@@ -138,14 +138,12 @@ namespace Sean.WorldGenerator
         }
         public static Chunk GetChunk(ChunkCoords chunkCoords, int id)
         {
-            // Ensure chunk loaded or generated
-            var chunk = worldMap.Chunk (chunkCoords.X, chunkCoords.Z);
+            var chunk = worldMap.Chunk(chunkCoords);
             if (!registrations.ContainsKey (chunkCoords)) {
                 registrations [chunkCoords] = new List<int> ();
             }
             registrations[chunkCoords].Add(id);
-
-            return worldMap.Chunk(chunkCoords);
+            return chunk;
         }
         public static void ChunkIgnore(ChunkCoords chunkCoords, int id)
         {

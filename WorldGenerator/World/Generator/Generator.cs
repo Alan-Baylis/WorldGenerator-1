@@ -30,17 +30,17 @@ namespace Sean.WorldGenerator
 
 		public void Generate(Chunk chunk)
 		{
-            Debug.WriteLine("Generating new chunk: " + chunk.Coords);
+            Debug.WriteLine("Generating new chunk: " + chunk.ChunkCoords);
 
             const int MIN_SURFACE_HEIGHT = Chunk.CHUNK_HEIGHT / 2 - 40; //max amount below half
 			const int MAX_SURFACE_HEIGHT = Chunk.CHUNK_HEIGHT / 2 + 8; //max amount above half
 
             var worldSize = new ArraySize()
             {
-                minZ = chunk.Coords.WorldCoordsZ,
-                maxZ = chunk.Coords.WorldCoordsZ + Chunk.CHUNK_SIZE,
-                minX = chunk.Coords.WorldCoordsX,
-                maxX = chunk.Coords.WorldCoordsX + Chunk.CHUNK_SIZE,
+                minZ = chunk.ChunkCoords.WorldCoordsZ,
+                maxZ = chunk.ChunkCoords.WorldCoordsZ + Chunk.CHUNK_SIZE,
+                minX = chunk.ChunkCoords.WorldCoordsX,
+                maxX = chunk.ChunkCoords.WorldCoordsX + Chunk.CHUNK_SIZE,
                 minY = 0,
                 maxY = 10,
                 scale = 1,
@@ -85,9 +85,9 @@ namespace Sean.WorldGenerator
 
 		private void GenerateChunk(Chunk chunk)
 		{
-			for (var x = chunk.Coords.WorldCoordsX; x < chunk.Coords.WorldCoordsX + Chunk.CHUNK_SIZE; x++)
+			for (var x = chunk.ChunkCoords.WorldCoordsX; x < chunk.ChunkCoords.WorldCoordsX + Chunk.CHUNK_SIZE; x++)
 			{
-				for (var z = chunk.Coords.WorldCoordsZ; z < chunk.Coords.WorldCoordsZ + Chunk.CHUNK_SIZE; z++)
+				for (var z = chunk.ChunkCoords.WorldCoordsZ; z < chunk.ChunkCoords.WorldCoordsZ + Chunk.CHUNK_SIZE; z++)
 				{
                     for (var y = 0; y <= Math.Max(chunk.HeightMap[x,z], WATER_LEVEL); y++)
 					{
