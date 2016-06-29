@@ -51,8 +51,8 @@ namespace Sean.WorldServer
             //
             //}
 
-            var chunk = World.GetChunk(new ChunkCoords(100,100),1);           
-            chunk.Render (0);
+            var chunk = World.GetChunk(new ChunkCoords(100, 100), 1);
+            World.RenderMap();
             //var otpServer = new OtpServer();
             //otpServer.Start();
 

@@ -156,7 +156,13 @@ namespace Sean.WorldGenerator
                 }
             }
         }
-            
+
+        public static void RenderMap()
+        {
+            worldMap.Render();
+        }
+
+
         public static void PutBlock(Position position, Block.BlockType blockType)
         {
             PlaceBlock(position, blockType);

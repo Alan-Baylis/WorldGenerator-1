@@ -7,25 +7,25 @@ namespace Sean.WorldGenerator
 {
     internal class WorldMap
     {
-        public int MaxXBlock { get; set; }
-        public int MinXBlock { get; set; }
-        public int MaxZBlock { get; set; }
-        public int MinZBlock { get; set; }
-        public int MaxXPosition { get { return MaxXBlock * World.ChunkSize; } }
-        public int MinXPosition { get { return MinXBlock * World.ChunkSize; } }
-        public int MaxZPosition { get { return MaxZBlock * World.ChunkSize; } }
-        public int MinZPosition { get { return MinZBlock * World.ChunkSize; } }
+        public int MaxXChunk { get; set; }
+        public int MinXChunk { get; set; }
+        public int MaxZChunk { get; set; }
+        public int MinZChunk { get; set; }
+        public int MaxXPosition { get { return MaxXChunk * World.ChunkSize; } }
+        public int MinXPosition { get { return MinXChunk * World.ChunkSize; } }
+        public int MaxZPosition { get { return MaxZChunk * World.ChunkSize; } }
+        public int MinZPosition { get { return MinZChunk * World.ChunkSize; } }
 
         private Dictionary<int, MapChunk> mapChunks;
         private Generator generator;
-        private static int MaxBlockLimit = (int)Math.Sqrt(int.MaxValue);
+        private static int MaxChunkLimit = (int)Math.Sqrt(int.MaxValue);
 
         public WorldMap()
         {
-            MaxXBlock = int.MinValue;
-            MinXBlock = int.MaxValue;
-            MaxZBlock = int.MinValue;
-            MinZBlock = int.MaxValue;
+            MaxXChunk = int.MinValue;
+            MinXChunk = int.MaxValue;
+            MaxZChunk = int.MinValue;
+            MinZChunk = int.MaxValue;
             mapChunks = new Dictionary<int, MapChunk> ();
             this.generator = new Generator();
         }
@@ -72,12 +72,11 @@ namespace Sean.WorldGenerator
             return GetOrCreate(x, z);
         }
 
-
         private Chunk GetOrCreate(int x, int z)
         {
-            Console.WriteLine ($"Getting {x},{z}");
-            if (x > MaxBlockLimit || x < -MaxBlockLimit || z > MaxBlockLimit || z < -MaxBlockLimit) throw new ArgumentException ("Chunk index exceeded");
-            int idx = x * MaxBlockLimit + z;
+            Console.WriteLine ($"Getting chunk {x},{z}");
+            if (x > MaxChunkLimit || x < -MaxChunkLimit || z > MaxChunkLimit || z < -MaxChunkLimit) throw new ArgumentException ("Chunk index exceeded");
+            int idx = x * MaxChunkLimit + z;
             if (!mapChunks.ContainsKey(idx))
             {
                 Console.WriteLine ($"Generating {x},{z}");
@@ -87,14 +86,14 @@ namespace Sean.WorldGenerator
                 generator.Generate(mapChunk.Chunk);
                 mapChunks[idx] = mapChunk;
 
-                if (x > MaxXBlock)
-                    MaxXBlock = x;
-                if (x < MinXBlock)
-                    MinXBlock = x;
-                if (z > MaxZBlock)
-                    MaxZBlock = z;
-                if (z < MinZBlock)
-                    MinZBlock = z;
+                if (x > MaxXChunk)
+                    MaxXChunk = x;
+                if (x < MinXChunk)
+                    MinXChunk = x;
+                if (z > MaxZChunk)
+                    MaxZChunk = z;
+                if (z < MinZChunk)
+                    MinZChunk = z;
             }
             return mapChunks[idx].Chunk;
         }
@@ -102,15 +101,14 @@ namespace Sean.WorldGenerator
 
         public void Render ()
         {
-            for (int x = MinZBlock; x < MaxXBlock; x++) {
+            for (int x = MinZChunk; x < MaxXChunk; x++) {
                 System.Text.StringBuilder builder = new System.Text.StringBuilder ();
-                for (int z = MinZBlock; z < MaxZBlock; z++) {
-                    if (Cursor.WorldX == x && Cursor.WorldZ == z)
-                        builder.Append ("*");
-                    else
-                        builder.Append (chunks [x,z].Render ());
+                for (int z = MinZChunk; z < MaxZChunk; z++)
+                {
+                    int idx = x * MaxChunkLimit + z;
+                    if (!mapChunks.ContainsKey(idx)) continue;
+                    mapChunks[idx].Chunk.Render();
                 }
-                Console.WriteLine (builder.ToString ());
             }
         }
 

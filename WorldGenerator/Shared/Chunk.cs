@@ -39,15 +39,17 @@ namespace Sean.WorldGenerator
 		public byte[,,] SkyLightMapInitial;
 		public byte[,,] ItemLightMapInitial;
 
-		/// <summary>Clutter contained in this chunk. Clutter can be stored at the chunk level only because it can never move off the chunk.</summary>
-		/// <remarks>HashSet because currently Clutter cannot be added outside of initial world generation. Collection is locked during removal.</remarks>
-		//public HashSet<Clutter> Clutters;
+        public int ChunkSize {  get { return CHUNK_SIZE; } }
 
-		/// <summary>
-		/// Light sources contained in this chunk. Light sources can be stored at the chunk level only because they can never move off the chunk.
-		/// TBD: when a light source is destroyed, does it become a GameItem?
-		/// </summary>
-		public ConcurrentDictionary<int, LightSource> LightSources;
+        /// <summary>Clutter contained in this chunk. Clutter can be stored at the chunk level only because it can never move off the chunk.</summary>
+        /// <remarks>HashSet because currently Clutter cannot be added outside of initial world generation. Collection is locked during removal.</remarks>
+        //public HashSet<Clutter> Clutters;
+
+        /// <summary>
+        /// Light sources contained in this chunk. Light sources can be stored at the chunk level only because they can never move off the chunk.
+        /// TBD: when a light source is destroyed, does it become a GameItem?
+        /// </summary>
+        public ConcurrentDictionary<int, LightSource> LightSources;
 
 		//public HashSet<Mob> Mobs; //also stored at World level in ConcurrentDictionary
 		
@@ -602,7 +604,7 @@ namespace Sean.WorldGenerator
 			}
 		}
 
-        public void Render(int y)
+        public void Render()
         {
             HeightMap.Render();
         }
