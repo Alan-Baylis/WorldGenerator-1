@@ -46,12 +46,12 @@ namespace WorldViewer
 
             var xSize = width / chunk.ChunkSize;
             var zSize = height / chunk.ChunkSize;
-            for (int x=0;x<chunk.ChunkSize;x++)
+            for (int x=0;  x<chunk.ChunkSize; x++)
             {
-                for (int z=0;z<chunk.ChunkSize;z++)
+                for (int z=0; z<chunk.ChunkSize; z++)
                 {
-                    var pt = chunk.HeightMap[x,z];
-                    graphics.FillRectangle(new SolidBrush(Color.FromArgb(255,pt,0,0)), x*xSize, z*zSize, xSize, zSize);
+                    var pt = chunk.HeightMap[x+chunk.HeightMap.Size.minX, z+chunk.HeightMap.Size.minZ];
+                    graphics.FillRectangle(new SolidBrush(Color.FromArgb(255,0,pt*255/chunk.HeightMap.Size.maxY,0)), x*xSize, z*zSize, xSize, zSize);
                 }
             }
 
