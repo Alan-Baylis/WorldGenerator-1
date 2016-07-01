@@ -99,6 +99,11 @@ namespace Sean.WorldGenerator
         public static int SizeInBlocksZ { get; private set; }
 
 
+        public static int MaxXChunk { get { return WorldMap.MaxXChunk; } }
+        public static int MinXChunk { get { return WorldMap.MinXChunk; } }
+        public static int MaxZChunk { get { return WorldMap.MaxZChunk; } }
+        public static int MinZChunk { get { return WorldMap.MinZChunk; } }
+
         #endregion
 
         #region Properties (Dynamic)
@@ -127,6 +132,9 @@ namespace Sean.WorldGenerator
             registrations = new Dictionary<ChunkCoords, List<int> > ();
             worldMap = new WorldMap();
         }
+
+        public static bool IsChunkLoaded(ChunkCoords chunkCoords)
+        { return worldMap.IsChunkLoaded(chunkCoords); }
 
         public static int GetChunkSize()
         {

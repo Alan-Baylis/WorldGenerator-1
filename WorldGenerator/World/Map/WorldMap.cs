@@ -50,6 +50,12 @@ namespace Sean.WorldGenerator
             return GetOrCreate(x, z); 
         }
 
+        public bool IsChunkLoaded(ChunkCoords chunkCoords)
+        {
+            if (chunkCoords.X > MaxChunkLimit || chunkCoords.X < -MaxChunkLimit || chunkCoords.Z > MaxChunkLimit || chunkCoords.Z < -MaxChunkLimit) throw new ArgumentException("Chunk index exceeded");
+            int idx = chunkCoords.X * MaxChunkLimit + chunkCoords.Z;
+            return mapChunks.ContainsKey(idx);
+        }
 
         public Chunk Chunk(ChunkCoords chunkCoords)
         {
