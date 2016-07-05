@@ -6,13 +6,13 @@ namespace Sean.WorldGenerator
 
 	public class PerlinNoise
 	{
-        static PerlinNoise()
+        public PerlinNoise(int seed, int unitSize = 20)
         {
-            WorldSeed = 4321;
-            PerlinUnitSize = 10;
+            WorldSeed = seed;
+            PerlinUnitSize = unitSize;
         }
 
-        private static Array<float> GenerateSmoothNoise(Array<float> baseNoise, int octave)
+        private Array<float> GenerateSmoothNoise(Array<float> baseNoise, int octave)
 		{
             var smoothNoise = new Array<float> (baseNoise.Size);
             int samplePeriod = 1 << (octave + baseNoise.Size.scale); // calculates 2 ^ k
@@ -47,29 +47,27 @@ namespace Sean.WorldGenerator
 			return smoothNoise;
 		}
 
-        public static Array<int> GetIntMap(ArraySize size, int octaveCount)
+        public Array<int> GetIntMap(ArraySize size, int octaveCount)
         {
-            var perlin = new PerlinNoise();
             var noise = new Array<int>(size);
             for (int z = size.minZ; z < size.maxZ; z += size.scale)
             {
                 for (int x = size.minX; x < size.maxX; x += size.scale)
                 {
-                    double height = perlin.OctavePerlin (size, x,1,z, octaveCount, 1.0);
+                    double height = OctavePerlin (size, x,1,z, octaveCount, 1.0);
                     noise.Set (x, z, (int)(height * size.maxY));
                 }
             }
             return noise;
         }
 
-        public static Array<float> GetFloatMap(ArraySize size, int octaveCount)
+        public Array<float> GetFloatMap(ArraySize size, int octaveCount)
         {
-            var perlin = new PerlinNoise();
             var noise = new Array<float>(size);
             for (int z = size.minZ; z < size.maxZ; z += size.scale)
             {
                 for (int x = size.minX; x < size.maxX; x += size.scale) {
-                    double height = perlin.OctavePerlin (noise.Size, x, 1, z, octaveCount, 1.0);
+                    double height = OctavePerlin (noise.Size, x, 1, z, octaveCount, 1.0);
                     noise.Set (x, z, (float)(height * size.maxY));
                 }
             }
@@ -171,22 +169,22 @@ namespace Sean.WorldGenerator
             }
         }
 
-        private static float Lerp(float a, float b, float w)
+        private float Lerp(float a, float b, float w)
         {
             return a + w * (b - a);
         }
-        public static double Lerp(double a, double b, double w)
+        public double Lerp(double a, double b, double w)
         {
             return a + w * (b - a);
         }
 
-        private static int Lerp(int minY, int maxY, float t)
+        private int Lerp(int minY, int maxY, float t)
         {
             float u = 1 - t;
             return (int)(minY * u + maxY * t);
         }
 
-        private static double Fade(double t)
+        private double Fade(double t)
         {
             // Fade function as defined by Ken Perlin.  This eases coordinate values
             // so that they will "ease" towards integral values.  This ends up smoothing
@@ -194,9 +192,9 @@ namespace Sean.WorldGenerator
             return t * t * t * (t * (t * 6 - 15) + 10);         // 6t^5 - 15t^4 + 10t^3
         }
 
-        public static int WorldSeed { get; set; }
+        public int WorldSeed { get; set; }
 
-        public static int PerlinUnitSize { get; set; }
+        public int PerlinUnitSize { get; set; }
         //public int repeat;
     }
 }

@@ -20,14 +20,14 @@ namespace Sean.WorldGenerator
         private Generator generator;
         private static int MaxChunkLimit = (int)Math.Sqrt(int.MaxValue);
 
-        public WorldMap()
+        public WorldMap(int seed)
         {
             MaxXChunk = int.MinValue;
             MinXChunk = int.MaxValue;
             MaxZChunk = int.MinValue;
             MinZChunk = int.MaxValue;
             mapChunks = new Dictionary<int, MapChunk> ();
-            this.generator = new Generator();
+            this.generator = new Generator(seed);
         }
          
         /*

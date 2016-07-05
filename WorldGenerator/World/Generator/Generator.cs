@@ -8,25 +8,12 @@ namespace Sean.WorldGenerator
 	internal class Generator
 	{
 		private const int WATER_LEVEL = Chunk.CHUNK_HEIGHT / 2 - 24;
+        private PerlinNoise perlinNoise;
 
-        public Generator()
+        public Generator(int seed)
         {
+            perlinNoise = new PerlinNoise(seed);
         }
-		/// <summary>Use the raw seed string to come up with an integer based seed.</summary>
-		/// <remarks>Maximum seed using 12 characters is '~~~~~~~~~~~~' resulting in 812250, smallest is '!' resulting in -380</remarks>
-		public int GetNumericSeed()
-		{
-			long seed = 0;
-			for (int position = 1; position <= World.RawSeed.Length; position++)
-			{
-				var charValue = Convert.ToInt32(World.RawSeed[position - 1]);
-				if (charValue < 32 || charValue > 126) continue; //toss out any chars not in this range, 32=space, 126='~'
-				seed += ((charValue - 31) * (position + 1) * 95); //add the ascii value (minus 31 so spaces end up as 1) * char position * possible chars
-			}
-			if (World.RawSeed.Length % 2 != 0) seed *= -1; //if the raw seed had an odd number of chars, make the seed negative
-			var finalSeed = unchecked((int)seed); //gm: unchecked is the default, but using it here anyway for clarity
-			return finalSeed;
-		}
 
 		public void Generate(Chunk chunk)
 		{
@@ -48,8 +35,8 @@ namespace Sean.WorldGenerator
                 maxHeight = MAX_SURFACE_HEIGHT,
             };
 
-            chunk.HeightMap = PerlinNoise.GetIntMap(worldSize, 4);
-            chunk.MineralMap = PerlinNoise.GetFloatMap(worldSize, 2);
+            chunk.HeightMap = perlinNoise.GetIntMap(worldSize, 4);
+            chunk.MineralMap = perlinNoise.GetFloatMap(worldSize, 2);
 
         	GenerateChunk(chunk);
 

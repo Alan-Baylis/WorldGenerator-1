@@ -55,7 +55,7 @@ namespace Sean.WorldGenerator
         #region Properties (Saved)
         public static WorldType WorldType { get; set; }
         /// <summary>Original Raw Seed used to generate this world. Blank if no seed was used.</summary>
-        public static string RawSeed { get; set; }
+        public static int RawSeed { get; set; }
         /// <summary>Original program version used when this world was generated.</summary>
         public static string GeneratorVersion { get; set; }
 
@@ -122,7 +122,7 @@ namespace Sean.WorldGenerator
             //Mobs = new ConcurrentDictionary<int, Mob>();
             GameItems = new ConcurrentDictionary<int, GameItemDynamic>();
 
-            RawSeed = "123456"; //settingsNode.Attributes["RawSeed"].Value;
+            RawSeed = 123456; //settingsNode.Attributes["RawSeed"].Value;
             GeneratorVersion = "1.0";// settingsNode.Attributes["GeneratorVersion"].Value;
             GameObjectIdSeq = 1; //int.Parse(settingsNode.Attributes["GameObjectIdSeq"].Value);
             WorldType = WorldType.Grass;// (WorldType)Convert.ToInt32(settingsNode.Attributes["WorldType"].Value);
@@ -130,7 +130,7 @@ namespace Sean.WorldGenerator
             ChunkSize = 32;
 
             registrations = new Dictionary<ChunkCoords, List<int> > ();
-            worldMap = new WorldMap();
+            worldMap = new WorldMap(RawSeed);
         }
 
         public static bool IsChunkLoaded(ChunkCoords chunkCoords)
