@@ -165,6 +165,11 @@ namespace Sean.WorldGenerator
             }
         }
 
+        public static Array<int> GetGlobalMap()
+        {
+            return worldMap.GetGlobalMap();
+        }
+
         public static void RenderMap()
         {
             worldMap.Render();

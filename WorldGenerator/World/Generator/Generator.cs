@@ -7,20 +7,45 @@ namespace Sean.WorldGenerator
 {
 	internal class Generator
 	{
-		private const int WATER_LEVEL = Chunk.CHUNK_HEIGHT / 2 - 24;
+		private const int waterLevel = 5;
+        private const int globalMapSize = 256;
         private PerlinNoise perlinNoise;
+        private PerlinNoise globalMapPerlinNoise;
 
         public Generator(int seed)
         {
             perlinNoise = new PerlinNoise(seed);
+            globalMapPerlinNoise = new PerlinNoise(seed, 50);
         }
 
-		public void Generate(Chunk chunk)
+        public Array<int> GenerateGlobalMap()
+        {
+            Debug.WriteLine("Generating global map");
+
+            const int MIN_SURFACE_HEIGHT = Chunk.CHUNK_HEIGHT / 2 - 40; //max amount below half
+            const int MAX_SURFACE_HEIGHT = Chunk.CHUNK_HEIGHT / 2 + 8; //max amount above half
+
+            var worldSize = new ArraySize()
+            {
+                minZ = 0,
+                maxZ = globalMapSize,
+                minX = 0,
+                maxX = globalMapSize,
+                minY = MIN_SURFACE_HEIGHT,
+                maxY = MAX_SURFACE_HEIGHT,
+                scale = 1,
+            };
+
+            var heightMap = globalMapPerlinNoise.GetIntMap(worldSize, 1);
+            return heightMap;
+        }
+
+		public void Generate(Array<int> globalMap, Chunk chunk)
 		{
             Debug.WriteLine("Generating new chunk: " + chunk.ChunkCoords);
 
-            const int MIN_SURFACE_HEIGHT = Chunk.CHUNK_HEIGHT / 2 - 40; //max amount below half
-			const int MAX_SURFACE_HEIGHT = Chunk.CHUNK_HEIGHT / 2 + 8; //max amount above half
+            const int minNoiseHeight = 0;// Chunk.CHUNK_HEIGHT / 2 - 40; //max amount below half
+            const int maxNoiseHeight = 10;// Chunk.CHUNK_HEIGHT / 2 + 8; //max amount above half
 
             var worldSize = new ArraySize()
             {
@@ -28,14 +53,12 @@ namespace Sean.WorldGenerator
                 maxZ = chunk.ChunkCoords.WorldCoordsZ + Chunk.CHUNK_SIZE,
                 minX = chunk.ChunkCoords.WorldCoordsX,
                 maxX = chunk.ChunkCoords.WorldCoordsX + Chunk.CHUNK_SIZE,
-                minY = 0,
-                maxY = 10,
+                minY = minNoiseHeight,
+                maxY = maxNoiseHeight,
                 scale = 1,
-                minHeight = MIN_SURFACE_HEIGHT,
-                maxHeight = MAX_SURFACE_HEIGHT,
             };
 
-            chunk.HeightMap = perlinNoise.GetIntMap(worldSize, 4);
+            chunk.HeightMap = perlinNoise.GetIntMap(worldSize, 3);
             chunk.MineralMap = perlinNoise.GetFloatMap(worldSize, 2);
 
         	GenerateChunk(chunk);
@@ -76,7 +99,7 @@ namespace Sean.WorldGenerator
 			{
 				for (var z = chunk.ChunkCoords.WorldCoordsZ; z < chunk.ChunkCoords.WorldCoordsZ + Chunk.CHUNK_SIZE; z++)
 				{
-                    for (var y = 0; y <= Math.Max(chunk.HeightMap[x,z], WATER_LEVEL); y++)
+                    for (var y = 0; y <= Math.Max(chunk.HeightMap[x,z], waterLevel); y++)
 					{
 						Block.BlockType blockType;
 						if (y == 0) //world base
@@ -90,7 +113,7 @@ namespace Sean.WorldGenerator
 						}
                         else if (y == chunk.HeightMap[x, z]) //ground level
 						{
-							if (y > WATER_LEVEL)
+							if (y > waterLevel)
 							{
 								switch (World.WorldType)
 								{
@@ -101,7 +124,7 @@ namespace Sean.WorldGenerator
 							}
 							else
 							{
-								switch (WATER_LEVEL - y)
+								switch (waterLevel - y)
 								{
 									case 0:
 									case 1:
@@ -119,9 +142,9 @@ namespace Sean.WorldGenerator
 								}
 							}
 						}
-                        else if (y > chunk.HeightMap[x, z] && y <= WATER_LEVEL)
+                        else if (y > chunk.HeightMap[x, z] && y <= waterLevel)
 						{
-                            blockType = (World.WorldType == WorldType.Winter && y == WATER_LEVEL && y - chunk.HeightMap[x, z] <= 3) ? Block.BlockType.Ice : Block.BlockType.Water;
+                            blockType = (World.WorldType == WorldType.Winter && y == waterLevel && y - chunk.HeightMap[x, z] <= 3) ? Block.BlockType.Ice : Block.BlockType.Water;
 						}
                         else if (y > chunk.HeightMap[x, z] - 5) //within 5 blocks of the surface
 						{

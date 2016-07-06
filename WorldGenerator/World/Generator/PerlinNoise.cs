@@ -6,7 +6,7 @@ namespace Sean.WorldGenerator
 
 	public class PerlinNoise
 	{
-        public PerlinNoise(int seed, int unitSize = 20)
+        public PerlinNoise(int seed, int unitSize = 100)
         {
             WorldSeed = seed;
             PerlinUnitSize = unitSize;
@@ -54,7 +54,7 @@ namespace Sean.WorldGenerator
             {
                 for (int x = size.minX; x < size.maxX; x += size.scale)
                 {
-                    double height = OctavePerlin (size, x,1,z, octaveCount, 1.0);
+                    double height = OctavePerlin (size, x,1,z, octaveCount, 0.5);
                     noise.Set (x, z, (int)(height * size.maxY));
                 }
             }
@@ -67,7 +67,7 @@ namespace Sean.WorldGenerator
             for (int z = size.minZ; z < size.maxZ; z += size.scale)
             {
                 for (int x = size.minX; x < size.maxX; x += size.scale) {
-                    double height = OctavePerlin (noise.Size, x, 1, z, octaveCount, 1.0);
+                    double height = OctavePerlin (noise.Size, x, 1, z, octaveCount, 0.5);
                     noise.Set (x, z, (float)(height * size.maxY));
                 }
             }
@@ -83,7 +83,7 @@ namespace Sean.WorldGenerator
             double amplitude = 1;
             double maxValue = 0;            // Used for normalizing result to 0.0 - 1.0
             for(int i=0;i<octaves;i++) {
-                total += Perlin(size, xf, yf, zf) * amplitude;
+                total += Perlin(size, xf, yf, zf, i) * amplitude;
 
                 maxValue += amplitude;
 
@@ -94,17 +94,11 @@ namespace Sean.WorldGenerator
             return total/maxValue;
         }
 
-        private int p(int x, int y, int z) {
-            return (int)(Misc.GetDeterministicInt (x, y, z, WorldSeed) % 256);
+        private int p(int x, int y, int z, int octave) {
+            return (int)(Misc.GetDeterministicInt (x, y, z, octave, WorldSeed) % 256);
         }
 
-        public double Perlin(ArraySize size, double x, double y, double z) {
-            //if(repeat > 0) {                                    // If we have any repeat on, change the coordinates to their "local" repetitions
-            //    x = x%repeat;
-            //    y = y%repeat;
-            //    z = z%repeat;
-            //}
-
+        public double Perlin(ArraySize size, double x, double y, double z, int octave) {
             int xi = (int)x;// & 255;                     // Calculate the "unit cube" that the point asked will be located in
             int yi = (int)y;// & 255;                     // The left bound is ( |_x_|,|_y_|,|_z_| ) and the right bound is that
             int zi = (int)z;// & 255;                     // plus 1.  Next we calculate the location (from 0.0 to 1.0) in that cube.
@@ -113,14 +107,14 @@ namespace Sean.WorldGenerator
             double zf = Math.Round(z-Math.Floor(z),15);
 
             int aaa, aba, aab, abb, baa, bba, bab, bbb;
-            aaa = p(    xi ,    yi ,    zi );
-            aba = p(    xi , (yi+1),    zi );
-            aab = p(    xi ,    yi , (zi+1));
-            abb = p(    xi , (yi+1), (zi+1));
-            baa = p( (xi+1),    yi ,    zi );
-            bba = p( (xi+1), (yi+1),    zi );
-            bab = p( (xi+1),    yi , (zi+1));
-            bbb = p( (xi+1), (yi+1), (zi+1));
+            aaa = p(    xi ,    yi ,    zi ,octave);
+            aba = p(    xi,  (yi+1),    zi ,octave);
+            aab = p(    xi ,    yi , (zi+1),octave);
+            abb = p(    xi , (yi+1), (zi+1),octave);
+            baa = p( (xi+1),    yi ,    zi ,octave);
+            bba = p( (xi+1), (yi+1),    zi ,octave);
+            bab = p( (xi+1),    yi , (zi+1),octave);
+            bbb = p( (xi+1), (yi+1), (zi+1),octave);
 
             double u = xf;//fade(xf);
             double v = yf;//fade(yf);
@@ -195,6 +189,5 @@ namespace Sean.WorldGenerator
         public int WorldSeed { get; set; }
 
         public int PerlinUnitSize { get; set; }
-        //public int repeat;
     }
 }

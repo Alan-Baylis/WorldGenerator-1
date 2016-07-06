@@ -15,15 +15,18 @@ namespace WorldViewer
 {
     public partial class Form1 : Form
     {
+        private const int waterLevel = 25;
+
         public Form1()
         {
             InitializeComponent();
             currentChunk = new ChunkCoords(100, 100);
             textBox1.Text = "Keys: W,A,S,D";
-            Refresh();
+            DrawMaps();
+            this.globalPictureBox.Image = this.DrawGlobalMap(this.globalPictureBox.Width, this.globalPictureBox.Height);
         }
 
-        private void Refresh()
+        private void DrawMaps()
         {
             this.localPictureBox.Image = this.DrawLocal(this.localPictureBox.Width, this.localPictureBox.Height);
             this.worldPictureBox.Image = this.DrawWorld(this.worldPictureBox.Width, this.worldPictureBox.Height);
@@ -55,7 +58,7 @@ namespace WorldViewer
             }
             if (update)
             {
-                Refresh();
+                DrawMaps();
             }
         }
 
@@ -122,6 +125,25 @@ namespace WorldViewer
                     graphics.FillRectangle(new SolidBrush(Color.FromArgb(255, 0, pt * 255 / chunk.HeightMap.Size.maxY, 0)), xOri + x, zOri + z, 1, 1);
                 }
             }
+        }
+
+        private Bitmap DrawGlobalMap(int width, int height)
+        {
+            var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+            var graphics = Graphics.FromImage(bitmap);
+            graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
+            var map = World.GetGlobalMap();
+            for (int x = 0; x < map.Size.xHeight; x++)
+            {
+                for (int z = 0; z < map.Size.zWidth; z++)
+                {
+                    var pt = map[x,z];
+                    var color = (pt < waterLevel) ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
+                    graphics.FillRectangle(new SolidBrush(color), x, z, 1,1);
+                }
+            }
+            return bitmap;
         }
 
         private void Form1_Resize(object sender, EventArgs e)

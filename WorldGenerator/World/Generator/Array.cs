@@ -26,8 +26,6 @@ namespace Sean.WorldGenerator
         public int maxY;
 
         public int scale = 1;
-        public int minHeight;
-        public int maxHeight;
         public int zWidth { get { return maxZ - minZ; } }
         public int xHeight { get { return maxX - minX; } }
 
