@@ -47,6 +47,7 @@ namespace Sean.WorldGenerator
         public static event WorldEventHandler WorldEvents;
 
         private static Dictionary<ChunkCoords, List<int> > registrations;
+        private static LocalMap localMap;
         private static WorldMap worldMap;
         //public ConcurrentDictionary<int, Mob> Mobs { get; private set; }
         public static ConcurrentDictionary<int, GameItemDynamic> GameItems { get; private set; }
@@ -99,10 +100,10 @@ namespace Sean.WorldGenerator
         public static int SizeInBlocksZ { get; private set; }
 
 
-        public static int MaxXChunk { get { return WorldMap.MaxXChunk; } }
-        public static int MinXChunk { get { return WorldMap.MinXChunk; } }
-        public static int MaxZChunk { get { return WorldMap.MaxZChunk; } }
-        public static int MinZChunk { get { return WorldMap.MinZChunk; } }
+        public static int MaxXChunk { get { return LocalMap.MaxXChunk; } }
+        public static int MinXChunk { get { return LocalMap.MinXChunk; } }
+        public static int MaxZChunk { get { return LocalMap.MaxZChunk; } }
+        public static int MinZChunk { get { return LocalMap.MinZChunk; } }
 
         #endregion
 
@@ -115,6 +116,7 @@ namespace Sean.WorldGenerator
 
 
 
+        internal static LocalMap LocalMap { get { return localMap; } }
         internal static WorldMap WorldMap { get { return worldMap; } }
 
         static World ()
@@ -130,11 +132,12 @@ namespace Sean.WorldGenerator
             ChunkSize = 32;
 
             registrations = new Dictionary<ChunkCoords, List<int> > ();
+            localMap = new LocalMap(RawSeed);
             worldMap = new WorldMap(RawSeed);
         }
 
         public static bool IsChunkLoaded(ChunkCoords chunkCoords)
-        { return worldMap.IsChunkLoaded(chunkCoords); }
+        { return localMap.IsChunkLoaded(chunkCoords); }
 
         public static int GetChunkSize()
         {
@@ -146,7 +149,7 @@ namespace Sean.WorldGenerator
         }
         public static Chunk GetChunk(ChunkCoords chunkCoords, int id)
         {
-            var chunk = worldMap.Chunk(chunkCoords);
+            var chunk = localMap.Chunk(chunkCoords);
             if (!registrations.ContainsKey (chunkCoords)) {
                 registrations [chunkCoords] = new List<int> ();
             }
@@ -167,12 +170,12 @@ namespace Sean.WorldGenerator
 
         public static Array<int> GetGlobalMap()
         {
-            return worldMap.GetGlobalMap();
+            return localMap.GetGlobalMap();
         }
 
         public static void RenderMap()
         {
-            worldMap.Render();
+            localMap.Render();
         }
 
 
@@ -187,14 +190,14 @@ namespace Sean.WorldGenerator
         /// <summary>Get a block using world coords.</summary>
         internal static Block GetBlock(ref Coords coords)
         {
-            return worldMap.Chunk(coords).Blocks[coords];
+            return localMap.Chunk(coords).Blocks[coords];
         }
 
         /// <summary>Get a block using world x,y,z. Use this overload to avoid constructing coords when they arent needed.</summary>
         /// <remarks>For example, this provided ~40% speed increase in the World.PropagateLight function compared to constructing coords and calling the above overload.</remarks>
         internal static Block GetBlock(int x, int y, int z)
         {
-            return worldMap.Chunk(x / Chunk.CHUNK_SIZE, z / Chunk.CHUNK_SIZE).Blocks[x % Chunk.CHUNK_SIZE, y, z % Chunk.CHUNK_SIZE];
+            return localMap.Chunk(x / Chunk.CHUNK_SIZE, z / Chunk.CHUNK_SIZE).Blocks[x % Chunk.CHUNK_SIZE, y, z % Chunk.CHUNK_SIZE];
         }
 
         /// <summary>
@@ -214,7 +217,7 @@ namespace Sean.WorldGenerator
 
         internal static int GetHeightMapLevel(int x, int z)
         {
-            return WorldMap.Chunk(x / Chunk.CHUNK_SIZE, z / Chunk.CHUNK_SIZE).HeightMap[x % Chunk.CHUNK_SIZE, z % Chunk.CHUNK_SIZE];
+            return LocalMap.Chunk(x / Chunk.CHUNK_SIZE, z / Chunk.CHUNK_SIZE).HeightMap[x % Chunk.CHUNK_SIZE, z % Chunk.CHUNK_SIZE];
         }
 
         /// <summary>Check if any of 4 directly adjacent blocks receive direct sunlight. Uses the heightmap so that the server can also use this method. If the server stored light info then it could be used instead.</summary>
@@ -249,20 +252,20 @@ namespace Sean.WorldGenerator
             //check in X direction
             if (position.X > 0 && position.X % Chunk.CHUNK_SIZE == 0)
             {
-                chunks.Add(worldMap.Chunk((position.X - 1) / Chunk.CHUNK_SIZE, position.Z / Chunk.CHUNK_SIZE)); //add left chunk
+                chunks.Add(localMap.Chunk((position.X - 1) / Chunk.CHUNK_SIZE, position.Z / Chunk.CHUNK_SIZE)); //add left chunk
             }
             else if (position.X < World.SizeInBlocksX - 1 && position.X % Chunk.CHUNK_SIZE == Chunk.CHUNK_SIZE - 1)
             {
-                chunks.Add(worldMap.Chunk((position.X + 1) / Chunk.CHUNK_SIZE, position.Z / Chunk.CHUNK_SIZE)); //add right chunk
+                chunks.Add(localMap.Chunk((position.X + 1) / Chunk.CHUNK_SIZE, position.Z / Chunk.CHUNK_SIZE)); //add right chunk
             }
             //check in Z direction
             if (position.Z > 0 && position.Z % Chunk.CHUNK_SIZE == 0)
             {
-                chunks.Add(worldMap.Chunk(position.X / Chunk.CHUNK_SIZE, (position.Z - 1) / Chunk.CHUNK_SIZE)); //add back chunk
+                chunks.Add(localMap.Chunk(position.X / Chunk.CHUNK_SIZE, (position.Z - 1) / Chunk.CHUNK_SIZE)); //add back chunk
             }
             else if (position.Z < World.SizeInBlocksZ - 1 && position.Z % Chunk.CHUNK_SIZE == Chunk.CHUNK_SIZE - 1)
             {
-                chunks.Add(worldMap.Chunk(position.X / Chunk.CHUNK_SIZE, (position.Z + 1) / Chunk.CHUNK_SIZE)); //add front chunk
+                chunks.Add(localMap.Chunk(position.X / Chunk.CHUNK_SIZE, (position.Z + 1) / Chunk.CHUNK_SIZE)); //add front chunk
             }
             return chunks;
         }
@@ -347,7 +350,7 @@ namespace Sean.WorldGenerator
         /// </summary>
         internal static Block GetBlock(Position position)
         {
-            return worldMap.Chunk(position).Blocks[position];
+            return localMap.Chunk(position).Blocks[position];
         }
         #endregion
 
@@ -370,7 +373,7 @@ namespace Sean.WorldGenerator
                 if (position.Y + 1 < Chunk.CHUNK_HEIGHT && GetBlock(position.X, position.Y + 1, position.Z).Type == Block.BlockType.Water) type = Block.BlockType.Water;
             }
 
-            var chunk = worldMap.Chunk(position);
+            var chunk = localMap.Chunk(position);
             var block = GetBlock(position);
             var oldType = block.Type;
             block.Type = type; //assign the new type
@@ -424,7 +427,7 @@ namespace Sean.WorldGenerator
                         }
                         if (IsValidBlockLocation(adjacent) && GetBlock(adjacent).Type == Block.BlockType.Water)
                         {
-                            worldMap.Chunk(adjacent).WaterExpanding = true;
+                            localMap.Chunk(adjacent).WaterExpanding = true;
                         }
                     }
                     break;
@@ -479,7 +482,7 @@ namespace Sean.WorldGenerator
                 {
                     var adjBlock = GetBlock(tuple.Item1);
                     if (adjBlock.Type != Block.BlockType.Air) continue; //position cannot contain an item if the block is not air
-                    var adjChunk = tuple.Item2 == Face.Top || tuple.Item2 == Face.Bottom ? chunk : WorldMap.Chunk(tuple.Item1); //get the chunk in case the adjacent position crosses a chunk boundary
+                    var adjChunk = tuple.Item2 == Face.Top || tuple.Item2 == Face.Bottom ? chunk : LocalMap.Chunk(tuple.Item1); //get the chunk in case the adjacent position crosses a chunk boundary
                     var lightSourceToRemove = adjChunk.LightSources.FirstOrDefault(lightSource => tuple.Item1.IsOnBlock(ref lightSource.Value.Coords));
                     if (lightSourceToRemove.Value != null && lightSourceToRemove.Value.AttachedToFace == tuple.Item2.ToOpposite()) //remove the light source
                     {

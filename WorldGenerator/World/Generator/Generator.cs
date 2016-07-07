@@ -228,7 +228,7 @@ namespace Sean.WorldGenerator
 									break;
 							}
                             //need to get via the chunk because this block could be expanding into an adjacent chunk
-                            World.WorldMap.Chunk(mineralPosition).Blocks[mineralPosition] = new Block(mineralType);
+                            World.LocalMap.Chunk(mineralPosition).Blocks[mineralPosition] = new Block(mineralType);
 						}
 					}
 				}

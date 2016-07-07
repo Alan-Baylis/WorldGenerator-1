@@ -64,7 +64,7 @@ namespace Sean.WorldGenerator
                             if (World.IsValidBlockLocation(leafPosition) && World.GetBlock(ref leafCoords).Type == Block.BlockType.Air)
 							{
                                 //need to get the chunk because this block could be expanding into an adjacent chunk
-                                World.WorldMap.Chunk(leafPosition).Blocks[leafPosition] = new Block(World.WorldType == WorldType.Winter ? Block.BlockType.SnowLeaves : Block.BlockType.Leaves);
+                                World.LocalMap.Chunk(leafPosition).Blocks[leafPosition] = new Block(World.WorldType == WorldType.Winter ? Block.BlockType.SnowLeaves : Block.BlockType.Leaves);
 							}
 						}
 					}

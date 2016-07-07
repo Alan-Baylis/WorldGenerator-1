@@ -26,7 +26,7 @@ namespace Sean.WorldGenerator
 			if (velocity.HasValue) Velocity = velocity.Value;
 			IsMoving = true;
 			if (!World.GameItems.ContainsKey(Id)) World.GameItems.TryAdd(Id, this);
-            var chunk = World.WorldMap.Chunk(coords);
+            var chunk = World.LocalMap.Chunk(coords);
 			if (!chunk.GameItems.ContainsKey(Id)) chunk.GameItems.TryAdd(Id, this);
 		}
 
@@ -39,7 +39,7 @@ namespace Sean.WorldGenerator
 			IsMoving = true;
 			try
 			{
-                var chunk = World.WorldMap.Chunk(Coords);
+                var chunk = World.LocalMap.Chunk(Coords);
 				if (!chunk.GameItems.ContainsKey(Id)) chunk.GameItems.TryAdd(Id, this);
 			}
 			catch (Exception)
@@ -181,11 +181,11 @@ namespace Sean.WorldGenerator
 			if (new ChunkCoords(ref Coords) != new ChunkCoords(ref proposedCoords))
 			{
 				//Moving to a new chunk
-                var oldChunk = World.WorldMap.Chunk(Coords);
+                var oldChunk = World.LocalMap.Chunk(Coords);
 				GameItemDynamic remove;
 				oldChunk.GameItems.TryRemove(Id, out remove);
 
-                var newChunk = World.WorldMap.Chunk(proposedCoords);
+                var newChunk = World.LocalMap.Chunk(proposedCoords);
 				if (!newChunk.GameItems.ContainsKey(Id)) newChunk.GameItems.TryAdd(Id, this);
 			}
 			Coords = proposedCoords;
@@ -226,7 +226,7 @@ namespace Sean.WorldGenerator
 						//new GameActions.RemoveBlockItem(decayItem.Id, true).Receive();
 						break;
 					case GameItemType.Projectile:
-                    var chunk = World.WorldMap.Chunk(decayItem.Coords);
+                    var chunk = World.LocalMap.Chunk(decayItem.Coords);
 						GameItemDynamic remove;
 						chunk.GameItems.TryRemove(decayItem.Id, out remove);
 						World.GameItems.TryRemove(decayItem.Id, out remove);

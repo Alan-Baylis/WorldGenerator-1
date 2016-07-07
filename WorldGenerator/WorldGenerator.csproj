@@ -51,6 +51,7 @@
     <Compile Include="World\Chunks.cs" />
     <Compile Include="World\Constants.cs" />
     <Compile Include="World\Map\MapChunk.cs" />
+    <Compile Include="World\Map\WorldMap.cs" />
     <Compile Include="World\Settings.cs" />
     <Compile Include="World\WorldHost.cs" />
     <Compile Include="World\Generator\Generator.cs" />
@@ -63,7 +64,7 @@
     <Compile Include="World\Map\Location.cs" />
     <Compile Include="World\Objects\CharacterManager.cs" />
     <Compile Include="World\Generator\Array.cs" />
-    <Compile Include="World\Map\WorldMap.cs" />
+    <Compile Include="World\Map\LocalMap.cs" />
     <Compile Include="Shared\Vector3.cs" />
     <Compile Include="Shared\Vector4.cs" />
     <Compile Include="Shared\Matrix4.cs" />
