@@ -47,14 +47,14 @@ namespace Sean.WorldGenerator
 			return smoothNoise;
 		}
 
-        public Array<int> GetIntMap(ArraySize size, int octaveCount)
+        public Array<int> GetIntMap(ArraySize size, int octaveCount, double persistence = 0.5)
         {
             var noise = new Array<int>(size);
             for (int z = size.minZ; z < size.maxZ; z += size.scale)
             {
                 for (int x = size.minX; x < size.maxX; x += size.scale)
                 {
-                    double height = OctavePerlin (size, x,1,z, octaveCount, 0.5);
+                    double height = OctavePerlin (size, x,1,z, octaveCount, persistence);
                     noise.Set (x, z, (int)(height * size.maxY));
                 }
             }
@@ -83,7 +83,7 @@ namespace Sean.WorldGenerator
             double amplitude = 1;
             double maxValue = 0;            // Used for normalizing result to 0.0 - 1.0
             for(int i=0;i<octaves;i++) {
-                total += Perlin(size, xf, yf, zf, i) * amplitude;
+                total += Perlin(size, xf*frequency, yf*frequency, zf*frequency, i) * amplitude;
 
                 maxValue += amplitude;
 

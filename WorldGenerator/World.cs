@@ -170,7 +170,11 @@ namespace Sean.WorldGenerator
 
         public static Array<int> GetGlobalMap()
         {
-            return localMap.GetGlobalMap();
+            return worldMap.GetMap();
+        }
+        public static bool IsGlobalMapWater(int x, int z)
+        {
+            return worldMap.IsWater(x, z);
         }
 
         public static void RenderMap()

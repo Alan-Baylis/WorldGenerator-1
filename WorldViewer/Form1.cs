@@ -15,8 +15,6 @@ namespace WorldViewer
 {
     public partial class Form1 : Form
     {
-        private const int waterLevel = 25;
-
         public Form1()
         {
             InitializeComponent();
@@ -24,6 +22,7 @@ namespace WorldViewer
             textBox1.Text = "Keys: W,A,S,D";
             DrawMaps();
             this.globalPictureBox.Image = this.DrawGlobalMap(this.globalPictureBox.Width, this.globalPictureBox.Height);
+            this.terrainPictureBox.Image = this.DrawTerrain(this.terrainPictureBox.Width, this.terrainPictureBox.Height);
         }
 
         private void DrawMaps()
@@ -139,12 +138,33 @@ namespace WorldViewer
                 for (int z = 0; z < map.Size.zWidth; z++)
                 {
                     var pt = map[x,z];
-                    var color = (pt < waterLevel) ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
+                    var color = World.IsGlobalMapWater(x, z) ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
                     graphics.FillRectangle(new SolidBrush(color), x, z, 1,1);
                 }
             }
             return bitmap;
         }
+
+        private Bitmap DrawTerrain(int width, int height, int zoom=4)
+        {
+            var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+            var graphics = Graphics.FromImage(bitmap);
+            graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
+            var map = World.GetGlobalMap();
+            for (int x = 0; x < map.Size.xHeight; x++)
+            {
+                for (int z = 0; z < map.Size.zWidth; z++)
+                {
+                    var pt = map[x, z];
+                    var color = World.IsGlobalMapWater(x,z) ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
+                    graphics.FillRectangle(new SolidBrush(color), (width/2)+((x-z)*zoom), (height/4)+((x+z))-pt, zoom, pt);
+                }
+            }
+
+            return bitmap;
+        }
+
 
         private void Form1_Resize(object sender, EventArgs e)
         {

@@ -15,15 +15,15 @@ namespace Sean.WorldGenerator
         public Generator(int seed)
         {
             perlinNoise = new PerlinNoise(seed);
-            globalMapPerlinNoise = new PerlinNoise(seed, 50);
+            globalMapPerlinNoise = new PerlinNoise(seed, 20);
         }
 
         public Array<int> GenerateGlobalMap()
         {
             Debug.WriteLine("Generating global map");
 
-            const int MIN_SURFACE_HEIGHT = Chunk.CHUNK_HEIGHT / 2 - 40; //max amount below half
-            const int MAX_SURFACE_HEIGHT = Chunk.CHUNK_HEIGHT / 2 + 8; //max amount above half
+            const int minNoiseHeight = 0;// Chunk.CHUNK_HEIGHT / 2 - 40; //max amount below half
+            const int maxNoiseHeight = 255;// Chunk.CHUNK_HEIGHT / 2 + 8; //max amount above half
 
             var worldSize = new ArraySize()
             {
@@ -31,16 +31,16 @@ namespace Sean.WorldGenerator
                 maxZ = globalMapSize,
                 minX = 0,
                 maxX = globalMapSize,
-                minY = MIN_SURFACE_HEIGHT,
-                maxY = MAX_SURFACE_HEIGHT,
+                minY = minNoiseHeight,
+                maxY = maxNoiseHeight,
                 scale = 1,
             };
 
-            var heightMap = globalMapPerlinNoise.GetIntMap(worldSize, 1);
+            var heightMap = globalMapPerlinNoise.GetIntMap(worldSize, 5, 0.5);
             return heightMap;
         }
 
-		public void Generate(Array<int> globalMap, Chunk chunk)
+		public void Generate(Chunk chunk)
 		{
             Debug.WriteLine("Generating new chunk: " + chunk.ChunkCoords);
 

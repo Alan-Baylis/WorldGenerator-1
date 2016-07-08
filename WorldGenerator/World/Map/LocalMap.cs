@@ -17,6 +17,7 @@ namespace Sean.WorldGenerator
         public int MinZPosition { get { return MinZChunk * World.ChunkSize; } }
 
         private Dictionary<int, MapChunk> mapChunks;
+        private Generator generator;
         private static int MaxChunkLimit = (int)Math.Sqrt(int.MaxValue);
 
         public LocalMap(int seed)
@@ -26,6 +27,7 @@ namespace Sean.WorldGenerator
             MaxZChunk = int.MinValue;
             MinZChunk = int.MaxValue;
             mapChunks = new Dictionary<int, MapChunk> ();
+            this.generator = new Generator(seed);
         }
          
         /*
@@ -87,7 +89,7 @@ namespace Sean.WorldGenerator
                 var mapChunk = new MapChunk();
                 var chunkCoords = new ChunkCoords(x, z);
                 mapChunk.Chunk = new Chunk(chunkCoords);
-                generator.Generate(globalMap, mapChunk.Chunk);
+                generator.Generate(mapChunk.Chunk);
                 mapChunks[idx] = mapChunk;
 
                 if (x > MaxXChunk)
@@ -100,11 +102,6 @@ namespace Sean.WorldGenerator
                     MinZChunk = z;
             }
             return mapChunks[idx].Chunk;
-        }
-
-        public Array<int> GetGlobalMap()
-        {
-            return globalMap;
         }
 
         public void Render ()
