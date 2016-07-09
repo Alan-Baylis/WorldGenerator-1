@@ -21,14 +21,14 @@ namespace WorldViewer
             currentChunk = new ChunkCoords(100, 100);
             textBox1.Text = "Keys: W,A,S,D";
             DrawMaps();
-            this.globalPictureBox.Image = this.DrawGlobalMap(this.globalPictureBox.Width, this.globalPictureBox.Height);
-            //this.terrainPictureBox.Image = this.DrawTerrain(this.terrainPictureBox.Width, this.terrainPictureBox.Height);
         }
 
         private void DrawMaps()
         {
             this.localPictureBox.Image = this.DrawLocal(this.localPictureBox.Width, this.localPictureBox.Height);
             this.worldPictureBox.Image = this.DrawWorld(this.worldPictureBox.Width, this.worldPictureBox.Height);
+            this.globalPictureBox.Image = this.DrawGlobalMap(this.globalPictureBox.Width, this.globalPictureBox.Height);
+            //this.terrainPictureBox.Image = this.DrawTerrain(this.terrainPictureBox.Width, this.terrainPictureBox.Height);
         }
 
         private ChunkCoords currentChunk;
@@ -104,7 +104,7 @@ namespace WorldViewer
                     }
                     if (coords == currentChunk)
                     {
-                        graphics.DrawRectangle(new Pen(Color.FromArgb(255, 255,0,0)), xOri, zOri, World.ChunkSize, World.ChunkSize);
+                        graphics.DrawRectangle(new Pen(Color.FromArgb(255, 255,0,0)), xOri, zOri, World.ChunkSize-1, World.ChunkSize-1);
                     }
                     zOri = zOri + World.ChunkSize;
                 }

@@ -11,7 +11,6 @@ namespace Sean.WorldGenerator
         private Generator generator;
         private Array<int> globalMap;
         private Array<int> waterMap;
-        private Random rnd = new Random();
 
         private const int oceanLevel = 40;
 
@@ -21,6 +20,7 @@ namespace Sean.WorldGenerator
             globalMap = generator.GenerateGlobalMap();
             waterMap = new Array<int>(globalMap.Size);
 
+            /*
             // Quick hack to make it an island
             for(var x=globalMap.Size.minX; x<globalMap.Size.maxX; x++)
             {
@@ -35,6 +35,7 @@ namespace Sean.WorldGenerator
                     waterMap[x, z] = (globalMap[x, z] < oceanLevel) ? oceanLevel : 0;
                 }
             }
+            */
 
             /*
             // Springs

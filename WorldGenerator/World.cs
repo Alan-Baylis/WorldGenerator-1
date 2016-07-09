@@ -134,7 +134,7 @@ namespace Sean.WorldGenerator
             registrations = new Dictionary<ChunkCoords, List<int> > ();
 
             worldMap = new WorldMap(RawSeed);
-            localMap = new LocalMap(worldMap, RawSeed);
+            localMap = new LocalMap(RawSeed);
         }
 
         public static bool IsChunkLoaded(ChunkCoords chunkCoords)

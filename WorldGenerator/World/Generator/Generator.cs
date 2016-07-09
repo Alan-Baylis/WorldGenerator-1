@@ -198,6 +198,7 @@ namespace Sean.WorldGenerator
                         var mineralPosition = new Position(x, (int)chunk.MineralMap[x, z], z);
 						chunk.Blocks[mineralPosition] = new Block(mineralType);
 						
+                        /*
 						//expand this mineral node
 						for (int nextRandom = Settings.Random.Next(); nextRandom % 3600 > 1000; nextRandom = Settings.Random.Next())
 						{
@@ -225,6 +226,7 @@ namespace Sean.WorldGenerator
                             //need to get via the chunk because this block could be expanding into an adjacent chunk
                             World.LocalMap.Chunk(mineralPosition).Blocks[mineralPosition] = new Block(mineralType);
 						}
+                        */
 					}
 				}
 			}
