@@ -36,14 +36,17 @@ namespace Sean.WorldGenerator
                 }
             }
 
+            /*
             // Springs
-            for (int i=0; i<5; i++)
+            for (int i=0; i<1; i++)
             {
                 var x = rnd.Next(globalMap.Size.minX, globalMap.Size.maxX);
                 var z = rnd.Next(globalMap.Size.minZ, globalMap.Size.maxZ);
                 RecurseWaterFlow(x, z, globalMap[x,z]);
             }
+            */
         }
+        /*
         private void RecurseWaterFlow(int x,int z,int h)
         {
             if (h <= oceanLevel) return; // Hit the ocean or another river
@@ -82,7 +85,7 @@ namespace Sean.WorldGenerator
                 break;
             }
         }
-
+        */
         public Array<int> GetMap()
         {
             return globalMap;

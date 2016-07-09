@@ -132,8 +132,9 @@ namespace Sean.WorldGenerator
             ChunkSize = 32;
 
             registrations = new Dictionary<ChunkCoords, List<int> > ();
-            localMap = new LocalMap(RawSeed);
+
             worldMap = new WorldMap(RawSeed);
+            localMap = new LocalMap(worldMap, RawSeed);
         }
 
         public static bool IsChunkLoaded(ChunkCoords chunkCoords)

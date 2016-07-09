@@ -18,9 +18,10 @@ namespace Sean.WorldGenerator
 
         private Dictionary<int, MapChunk> mapChunks;
         private Generator generator;
+        private WorldMap worldMap;
         private static int MaxChunkLimit = (int)Math.Sqrt(int.MaxValue);
 
-        public LocalMap(int seed)
+        public LocalMap(WorldMap worldMap, int seed)
         {
             MaxXChunk = int.MinValue;
             MinXChunk = int.MaxValue;
@@ -28,6 +29,7 @@ namespace Sean.WorldGenerator
             MinZChunk = int.MaxValue;
             mapChunks = new Dictionary<int, MapChunk> ();
             this.generator = new Generator(seed);
+            this.worldMap = worldMap;
         }
          
         /*
