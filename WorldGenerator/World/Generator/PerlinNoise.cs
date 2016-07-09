@@ -47,7 +47,7 @@ namespace Sean.WorldGenerator
 			return smoothNoise;
 		}
 
-        public Array<int> GetIntMap(ArraySize size, int octaveCount, double persistence = 0.5)
+        public Array<int> GetIntMap(ArraySize size, int octaveCount = 3, double persistence = 0.5)
         {
             var noise = new Array<int>(size);
             for (int z = size.minZ; z < size.maxZ; z += size.scale)

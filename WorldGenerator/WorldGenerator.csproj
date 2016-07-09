@@ -72,6 +72,7 @@
     <Compile Include="World.cs" />
     <Compile Include="Shared\GameItemDynamic.cs" />
     <Compile Include="Shared\GameItemStatic.cs" />
+    <Compile Include="World\Map\Water.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

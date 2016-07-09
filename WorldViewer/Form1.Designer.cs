@@ -33,7 +33,7 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.globalPictureBox = new System.Windows.Forms.PictureBox();
-            this.terrainPictureBox = new System.Windows.Forms.PictureBox();
+            //this.terrainPictureBox = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.worldPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.localPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -41,7 +41,7 @@
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.globalPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.terrainPictureBox)).BeginInit();
+            //((System.ComponentModel.ISupportInitialize)(this.terrainPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // worldPictureBox
@@ -88,7 +88,7 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.terrainPictureBox);
+            //this.splitContainer1.Panel2.Controls.Add(this.terrainPictureBox);
             this.splitContainer1.Panel2.Controls.Add(this.localPictureBox);
             this.splitContainer1.Size = new System.Drawing.Size(794, 390);
             this.splitContainer1.SplitterDistance = 395;
@@ -105,11 +105,11 @@
             // 
             // terrainPictureBox
             // 
-            this.terrainPictureBox.Location = new System.Drawing.Point(80, 62);
-            this.terrainPictureBox.Name = "terrainPictureBox";
-            this.terrainPictureBox.Size = new System.Drawing.Size(257, 257);
-            this.terrainPictureBox.TabIndex = 2;
-            this.terrainPictureBox.TabStop = false;
+            //this.terrainPictureBox.Location = new System.Drawing.Point(80, 62);
+            //this.terrainPictureBox.Name = "terrainPictureBox";
+            //this.terrainPictureBox.Size = new System.Drawing.Size(257, 257);
+            //this.terrainPictureBox.TabIndex = 2;
+            //this.terrainPictureBox.TabStop = false;
             // 
             // Form1
             // 
@@ -129,7 +129,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.globalPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.terrainPictureBox)).EndInit();
+            //((System.ComponentModel.ISupportInitialize)(this.terrainPictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -142,7 +142,7 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.PictureBox globalPictureBox;
-        private System.Windows.Forms.PictureBox terrainPictureBox;
+        //private System.Windows.Forms.PictureBox terrainPictureBox;
     }
 }
 
