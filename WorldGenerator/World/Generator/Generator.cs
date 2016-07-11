@@ -8,7 +8,7 @@ namespace Sean.WorldGenerator
 	internal class Generator
 	{
 		public const int waterLevel = 20;
-        private const int globalMapSize = 256*Chunk.CHUNK_SIZE;
+        private const int globalMapSize = 32*Chunk.CHUNK_SIZE;
         private PerlinNoise perlinNoise;
         private const int octaves = 1;
         private const double persistence = 0.5;

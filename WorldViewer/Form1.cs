@@ -82,7 +82,8 @@ namespace WorldViewer
                 for (int z = 0; z < chunk.ChunkSize; z++)
                 {
                     var pt = chunk.HeightMap[x + chunk.HeightMap.Size.minX, z + chunk.HeightMap.Size.minZ];
-                    graphics.FillRectangle(new SolidBrush(Color.FromArgb(255, 0, pt * 255 / chunk.HeightMap.Size.maxY, 0)), x * xSize, z * zSize, xSize, zSize);
+                    var color = pt < 20 ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
+                    graphics.FillRectangle(new SolidBrush(color), x * xSize, z * zSize, xSize, zSize);
                 }
             }
             return bitmap;
@@ -123,7 +124,8 @@ namespace WorldViewer
                 for (int z = 0; z < chunk.ChunkSize; z++)
                 {
                     var pt = chunk.HeightMap[x + chunk.HeightMap.Size.minX, z + chunk.HeightMap.Size.minZ];
-                    graphics.FillRectangle(new SolidBrush(Color.FromArgb(255, 0, pt * 255 / chunk.HeightMap.Size.maxY, 0)), xOri + x, zOri + z, 1, 1);
+                    var color = pt < 20 ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
+                    graphics.FillRectangle(new SolidBrush(color), xOri + x, zOri + z, 1, 1);
                 }
             }
         }
