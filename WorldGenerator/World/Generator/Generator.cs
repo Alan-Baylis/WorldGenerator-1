@@ -7,14 +7,13 @@ namespace Sean.WorldGenerator
 {
 	internal class Generator
 	{
-		public const int waterLevel = 60;
+		public const int waterLevel = 20;
         private const int globalMapSize = 256*Chunk.CHUNK_SIZE;
         private PerlinNoise perlinNoise;
         private const int octaves = 1;
         private const double persistence = 0.5;
-        private const int minNoiseHeight = -40;// Chunk.CHUNK_HEIGHT / 2 - 40; //max amount below half
-        private const int maxNoiseHeight = 96;// Chunk.CHUNK_HEIGHT / 2 + 8; //max amount above half
-
+        private const int minNoiseHeight = -64;
+        private const int maxNoiseHeight = 64;
 
         public Generator(int seed)
         {
