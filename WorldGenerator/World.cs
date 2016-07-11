@@ -175,7 +175,7 @@ namespace Sean.WorldGenerator
         }
         public static bool IsGlobalMapWater(int x, int z)
         {
-            return worldMap.IsWater(x, z);
+            return worldMap.GetMap()[x, z] < Generator.waterLevel; // TODO - temp
         }
 
         public static void RenderMap()

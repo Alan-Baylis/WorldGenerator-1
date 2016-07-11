@@ -25,15 +25,19 @@ namespace WorldViewer
 
         private void DrawMaps()
         {
+            var currentCursor = this.Cursor;
+            this.Cursor = Cursors.WaitCursor;
             this.localPictureBox.Image = this.DrawLocal(this.localPictureBox.Width, this.localPictureBox.Height);
-            this.worldPictureBox.Image = this.DrawWorld(this.worldPictureBox.Width, this.worldPictureBox.Height);
-            this.globalPictureBox.Image = this.DrawGlobalMap(this.globalPictureBox.Width, this.globalPictureBox.Height);
+            this.worldPictureBox.Image = this.DrawAllChunks(this.worldPictureBox.Width, this.worldPictureBox.Height);
+            this.pictureBox1.Image = this.DrawGlobalMap(this.pictureBox1.Width, this.pictureBox1.Height);
             //this.terrainPictureBox.Image = this.DrawTerrain(this.terrainPictureBox.Width, this.terrainPictureBox.Height);
+
+            this.Cursor = currentCursor;
         }
 
         private ChunkCoords currentChunk;
 
-        private void splitContainer1_KeyPress(object sender, KeyPressEventArgs e)
+        private void OnKeyPress(object sender, KeyPressEventArgs e)
         {
             bool update = false;
             switch (e.KeyChar)
@@ -84,7 +88,7 @@ namespace WorldViewer
             return bitmap;
         }
 
-        public Bitmap DrawWorld(int width, int height)
+        public Bitmap DrawAllChunks(int width, int height)
         {
             var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
             var graphics = Graphics.FromImage(bitmap);
@@ -100,7 +104,7 @@ namespace WorldViewer
                     if (World.IsChunkLoaded(coords))
                     {
                         var chunk = World.GetChunk(coords, 1);
-                        DrawMiniMap(graphics, chunk, xOri, zOri);
+                        DrawWorld(graphics, chunk, xOri, zOri);
                     }
                     if (coords == currentChunk)
                     {
@@ -112,7 +116,7 @@ namespace WorldViewer
             }
             return bitmap;
         }
-        private void DrawMiniMap(Graphics graphics, Chunk chunk, int xOri, int zOri)
+        private void DrawWorld(Graphics graphics, Chunk chunk, int xOri, int zOri)
         {
             for (int x = 0; x < chunk.ChunkSize; x++)
             {
@@ -138,8 +142,8 @@ namespace WorldViewer
                 for (int z = map.Size.minZ; z < map.Size.maxZ; z=z+map.Size.scale)
                 {
                     var pt = map[x,z];
-                    //var color = World.IsGlobalMapWater(x, z) ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
-                    var color = Color.FromArgb(255, 0, pt, 0);
+                    var color = World.IsGlobalMapWater(x, z) ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
+                    //var color = Color.FromArgb(255, 0, pt, 0);
                     graphics.FillRectangle(new SolidBrush(color), x1, z1, 1,1);
                     if (x1 == currentChunk.X && z1 == currentChunk.Z)
                         graphics.DrawRectangle(new Pen(Color.FromArgb(255, 255,0,0)), x1, z1, 1, 1);
@@ -172,6 +176,46 @@ namespace WorldViewer
         }
         */
 
+        /*
+        private int seed = 123;
+        private int unitSize = 100;
+        private int octaveCount = 3;
+        private double persistence = 0.7;
+        private int scale = 1;
+        private Bitmap GetImage1(int width, int height)
+        {
+            int s = 4;
+            var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+            var graphics = Graphics.FromImage(bitmap);
+            graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            ArraySize size = new ArraySize()
+            {
+                minX = 0,
+                maxX = width / s,
+                minZ = 0,
+                maxZ = height / s,
+                minY = 0,
+                maxY = 255 / s,
+                scale = scale
+            };
+            PerlinNoise noise = new PerlinNoise(seed, unitSize);
+            var map = noise.GetIntMap(size, octaveCount, persistence);
+            int x1 = 1;
+            for (int x = map.Size.minX; x < map.Size.maxX; x = x + map.Size.scale)
+            {
+                int z1 = 1;
+                for (int z = map.Size.minZ; z < map.Size.maxZ; z = z + map.Size.scale)
+                {
+                    var pt = map[x, z] * s;
+                    var color = Color.FromArgb(255, 0, pt, 0);
+                    graphics.FillRectangle(new SolidBrush(color), x1 * s, z1 * s, s, s);
+                    z1++;
+                }
+                x1++;
+            }
+            return bitmap;
+        }
+        */
 
         private void Form1_Resize(object sender, EventArgs e)
         {

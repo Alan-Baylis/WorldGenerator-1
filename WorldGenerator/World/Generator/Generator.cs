@@ -7,18 +7,18 @@ namespace Sean.WorldGenerator
 {
 	internal class Generator
 	{
-		private const int waterLevel = 5;
+		public const int waterLevel = 60;
         private const int globalMapSize = 256*Chunk.CHUNK_SIZE;
         private PerlinNoise perlinNoise;
         private const int octaves = 1;
         private const double persistence = 0.5;
         private const int minNoiseHeight = -40;// Chunk.CHUNK_HEIGHT / 2 - 40; //max amount below half
-        private const int maxNoiseHeight = 128;// Chunk.CHUNK_HEIGHT / 2 + 8; //max amount above half
+        private const int maxNoiseHeight = 96;// Chunk.CHUNK_HEIGHT / 2 + 8; //max amount above half
 
 
         public Generator(int seed)
         {
-            perlinNoise = new PerlinNoise(seed);
+            perlinNoise = new PerlinNoise(seed, 200);
         }
 
         public Array<int> GenerateGlobalMap()
@@ -32,14 +32,32 @@ namespace Sean.WorldGenerator
                 maxX = globalMapSize,
                 minY = minNoiseHeight,
                 maxY = maxNoiseHeight,
-                scale = Chunk.CHUNK_SIZE,
+                scale = 8 //Chunk.CHUNK_SIZE,
             };
 
             var heightMap = perlinNoise.GetIntMap(worldSize, octaves, persistence);
+            ApplyIslandHeight(worldSize, heightMap);
             return heightMap;
         }
 
-		public void Generate(Chunk chunk)
+        private void ApplyIslandHeight(ArraySize size, Array<int> map)
+        {
+            // Quick hack to make it an island
+            for(var x=size.minX; x<size.maxX; x=x+size.scale)
+            {
+                for(var z=size.minZ; z<size.maxZ; z=z+size.scale)
+                {
+                    double dx = x - (globalMapSize / 2);
+                    double dz = z - (globalMapSize / 2);
+                    var dist = Math.Sqrt(dx * dx + dz * dz);
+                    dist = dist / (globalMapSize / 2);
+                    dist = Math.Cos((3.14/2) * dist);
+                    map[x,z] = Math.Min(map[x, z] + (int)(map.Size.maxY * dist / 3), size.maxY);
+                }
+            }
+        }
+
+        public void Generate(Chunk chunk)
 		{
             Debug.WriteLine("Generating new chunk: " + chunk.ChunkCoords);
             var worldSize = new ArraySize()
@@ -54,6 +72,7 @@ namespace Sean.WorldGenerator
             };
 
             chunk.HeightMap = perlinNoise.GetIntMap(worldSize, octaves, persistence);
+            ApplyIslandHeight(worldSize, chunk.HeightMap);
             chunk.MineralMap = perlinNoise.GetFloatMap(worldSize, 2);
 
         	GenerateChunk(chunk);

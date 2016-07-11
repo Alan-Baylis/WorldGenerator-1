@@ -21,23 +21,6 @@ namespace Sean.WorldGenerator
             waterMap = new Array<int>(globalMap.Size);
 
             /*
-            // Quick hack to make it an island
-            for(var x=globalMap.Size.minX; x<globalMap.Size.maxX; x++)
-            {
-                for(var z=globalMap.Size.minZ; z<globalMap.Size.maxZ; z++)
-                {
-                    double dx = x - (globalMap.Size.xHeight / 2);
-                    double dz = z - (globalMap.Size.zWidth / 2);
-                    var dist = Math.Sqrt(dx * dx + dz * dz);
-                    dist = Math.Min(1.0, dist / (globalMap.Size.xHeight / 2));
-                    dist = Math.Cos((3.14/2) * dist*dist*dist);
-                    globalMap[x,z] = (int)(globalMap[x, z] * dist);
-                    waterMap[x, z] = (globalMap[x, z] < oceanLevel) ? oceanLevel : 0;
-                }
-            }
-            */
-
-            /*
             // Springs
             for (int i=0; i<1; i++)
             {
@@ -92,9 +75,5 @@ namespace Sean.WorldGenerator
             return globalMap;
         }
 
-        public bool IsWater(int x, int z)
-        {
-            return waterMap[x,z] != 0;
-        }
     }
 }
