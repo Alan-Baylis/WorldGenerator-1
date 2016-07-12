@@ -83,7 +83,7 @@ namespace Sean.WorldGenerator
             double amplitude = 1;
             double maxValue = 0;            // Used for normalizing result to 0.0 - 1.0
             for(int i=0;i<octaves;i++) {
-                total += Perlin(size, xf*frequency, yf*frequency, zf*frequency, i) * amplitude;
+                total += Perlin(xf*frequency, yf*frequency, zf*frequency, i) * amplitude;
 
                 maxValue += amplitude;
 
@@ -95,10 +95,11 @@ namespace Sean.WorldGenerator
         }
 
         private int p(int x, int y, int z, int octave) {
-            return (int)(Misc.GetDeterministicInt (x, y, z, octave, WorldSeed) % 256);
+            //return (int)(Misc.GetDeterministicInt (x, y, z, octave, WorldSeed) % 256);
+            return (int)(Hashing.hash_coords_4(x, y, z, octave, (uint)WorldSeed));
         }
 
-        public double Perlin(ArraySize size, double x, double y, double z, int octave) {
+        public double Perlin(double x, double y, double z, int octave) {
             int xi = (int)x;// & 255;                     // Calculate the "unit cube" that the point asked will be located in
             int yi = (int)y;// & 255;                     // The left bound is ( |_x_|,|_y_|,|_z_| ) and the right bound is that
             int zi = (int)z;// & 255;                     // plus 1.  Next we calculate the location (from 0.0 to 1.0) in that cube.

@@ -25,7 +25,7 @@ namespace Sean.WorldGenerator
 
 		#region Properties
 		public const int CHUNK_SIZE = 32;
-		public const int CHUNK_HEIGHT = 96;
+		public const int CHUNK_HEIGHT = 128;
 		public const int SIZE_IN_BYTES = CHUNK_SIZE * CHUNK_HEIGHT * CHUNK_SIZE * sizeof(ushort);
 		private const int CLUTTER_RENDER_DISTANCE = CHUNK_SIZE * 4;
 		private const int GAME_ITEM_RENDER_DISTANCE = CLUTTER_RENDER_DISTANCE;

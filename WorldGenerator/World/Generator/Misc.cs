@@ -35,22 +35,6 @@ namespace Sean.WorldGenerator
                 return md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
             }
         }
-        public static float GetDeterministicFloat (int x, int z, int worldSeed)
-        {
-            byte[] data = GenerateDeterministicHash(x,z,worldSeed);
-            return System.BitConverter.ToSingle(data, 0);
-        }
-        public static uint GetDeterministicInt (int x, int y, int z, int w, int worldSeed)
-        {
-            byte[] data = GenerateDeterministicHash(x,y,z,w,worldSeed);
-            return System.BitConverter.ToUInt32(data, 0);
-        }
-        public static uint GetDeterministicInt (int x, int z, int worldSeed)
-        {
-            byte[] data = GenerateDeterministicHash(x,z,worldSeed);
-            return System.BitConverter.ToUInt32(data, 0);
-        }
-
     }
 }
 

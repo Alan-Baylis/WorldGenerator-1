@@ -8,16 +8,16 @@ namespace Sean.WorldGenerator
 	internal class Generator
 	{
 		public const int waterLevel = 20;
-        private const int globalMapSize = 32*Chunk.CHUNK_SIZE;
+        private const int globalMapSize = 128*Chunk.CHUNK_SIZE;
         private PerlinNoise perlinNoise;
         private const int octaves = 1;
-        private const double persistence = 0.5;
-        private const int minNoiseHeight = -64;
-        private const int maxNoiseHeight = 64;
+        private const double persistence = 0.4;
+        private const int minNoiseHeight = -127;
+        private const int maxNoiseHeight = 127;
 
         public Generator(int seed)
         {
-            perlinNoise = new PerlinNoise(seed, 200);
+            perlinNoise = new PerlinNoise(seed, 100);
         }
 
         public Array<int> GenerateGlobalMap()
@@ -35,7 +35,7 @@ namespace Sean.WorldGenerator
             };
 
             var heightMap = perlinNoise.GetIntMap(worldSize, octaves, persistence);
-            ApplyIslandHeight(worldSize, heightMap);
+            //ApplyIslandHeight(worldSize, heightMap);
             return heightMap;
         }
 
@@ -69,12 +69,28 @@ namespace Sean.WorldGenerator
                 maxY = maxNoiseHeight,
                 scale = 1,
             };
+            int octaveCount = 3;
+            double persistence = 0.5;
 
-            chunk.HeightMap = perlinNoise.GetIntMap(worldSize, octaves, persistence);
-            ApplyIslandHeight(worldSize, chunk.HeightMap);
-            chunk.MineralMap = perlinNoise.GetFloatMap(worldSize, 2);
+            //chunk.HeightMap = perlinNoise.GetIntMap(worldSize, octaves, persistence);
+            //ApplyIslandHeight(worldSize, chunk.HeightMap);
+            //chunk.MineralMap = perlinNoise.GetFloatMap(worldSize, 2);
 
-        	GenerateChunk(chunk);
+            //GenerateChunk(chunk);
+
+            for (int z = worldSize.minZ; z < worldSize.maxZ; z += worldSize.scale)
+            {
+                for (int x = worldSize.minX; x < worldSize.maxX; x += worldSize.scale)
+                {
+                    for (int y = 0; y < maxNoiseHeight; y++)
+                    {
+                        double p = perlinNoise.OctavePerlin(worldSize, x, y, z, octaveCount, persistence);
+                        var blockType = p < 0.5 ? Block.BlockType.Rock : Block.BlockType.Air;
+                        chunk.Blocks[x % Chunk.CHUNK_SIZE, y, z % Chunk.CHUNK_SIZE] = new Block(blockType);
+                    }
+                }
+            }
+
 
             /*
 			//loop through chunks again for actions that require the neighboring chunks to be built
@@ -97,14 +113,14 @@ namespace Sean.WorldGenerator
 			Debug.WriteLine("World generation complete.");
             */
 
-			//default sun to directly overhead in new worlds
-			//SkyHost.SunAngleRadians = OpenTK.MathHelper.PiOver2;
-			//SkyHost.SunLightStrength = SkyHost.BRIGHTEST_SKYLIGHT_STRENGTH;
+            //default sun to directly overhead in new worlds
+            //SkyHost.SunAngleRadians = OpenTK.MathHelper.PiOver2;
+            //SkyHost.SunLightStrength = SkyHost.BRIGHTEST_SKYLIGHT_STRENGTH;
 
-			//Debug.WriteLine("New world saving...");
-			//World.SaveToDisk();
-			//Debug.WriteLine("New world save complete.");
-		}
+            //Debug.WriteLine("New world saving...");
+            //World.SaveToDisk();
+            //Debug.WriteLine("New world save complete.");
+        }
 
 		private void GenerateChunk(Chunk chunk)
 		{

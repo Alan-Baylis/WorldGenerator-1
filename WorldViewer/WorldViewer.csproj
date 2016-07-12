@@ -80,6 +80,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Shared\Shared.csproj">
+      <Project>{4d280ca6-39a9-4400-b365-688930ce654d}</Project>
+      <Name>Shared</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WorldGenerator\WorldGenerator.csproj">
       <Project>{ED9CDEB6-5F1F-4C58-8F57-F216266F4B79}</Project>
       <Name>WorldGenerator</Name>

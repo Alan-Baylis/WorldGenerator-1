@@ -17,6 +17,10 @@ namespace Sean.WorldGenerator
         public WorldMap(int seed)
         {
             this.generator = new Generator(seed);
+        }
+
+        public void Generate()
+        { 
             globalMap = generator.GenerateGlobalMap();
             waterMap = new Array<int>(globalMap.Size);
 

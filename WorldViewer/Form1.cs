@@ -27,10 +27,10 @@ namespace WorldViewer
         {
             var currentCursor = this.Cursor;
             this.Cursor = Cursors.WaitCursor;
-            this.localPictureBox.Image = this.DrawLocal(this.localPictureBox.Width, this.localPictureBox.Height);
-            this.worldPictureBox.Image = this.DrawAllChunks(this.worldPictureBox.Width, this.worldPictureBox.Height);
-            this.pictureBox1.Image = this.DrawGlobalMap(this.pictureBox1.Width, this.pictureBox1.Height);
-            //this.terrainPictureBox.Image = this.DrawTerrain(this.terrainPictureBox.Width, this.terrainPictureBox.Height);
+            //this.localPictureBox.Image = this.DrawLocal(this.localPictureBox.Width, this.localPictureBox.Height);
+            //this.worldPictureBox.Image = this.DrawAllChunks(this.worldPictureBox.Width, this.worldPictureBox.Height);
+            //this.pictureBox1.Image = this.DrawGlobalMap(this.pictureBox1.Width, this.pictureBox1.Height);
+            this.terrainPictureBox.Image = this.DrawTerrain(this.terrainPictureBox.Width, this.terrainPictureBox.Height);
 
             this.Cursor = currentCursor;
         }
@@ -105,7 +105,7 @@ namespace WorldViewer
                     if (World.IsChunkLoaded(coords))
                     {
                         var chunk = World.GetChunk(coords, 1);
-                        DrawWorld(graphics, chunk, xOri, zOri);
+                        DrawChunk(graphics, chunk, xOri, zOri);
                     }
                     if (coords == currentChunk)
                     {
@@ -117,7 +117,7 @@ namespace WorldViewer
             }
             return bitmap;
         }
-        private void DrawWorld(Graphics graphics, Chunk chunk, int xOri, int zOri)
+        private void DrawChunk(Graphics graphics, Chunk chunk, int xOri, int zOri)
         {
             for (int x = 0; x < chunk.ChunkSize; x++)
             {
@@ -156,27 +156,37 @@ namespace WorldViewer
             return bitmap;
         }
 
-        /*
-        private Bitmap DrawTerrain(int width, int height, int zoom=4)
+        
+        private Bitmap DrawTerrain(int width, int height)
         {
+            var boxImage = imageList.Images["box_blue"];
+            var chunk = World.GetChunk(currentChunk, 1);
             var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
             var graphics = Graphics.FromImage(bitmap);
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-            var map = World.GetGlobalMap();
-            for (int x = 0; x < map.Size.xHeight; x++)
+            var xSize = width / chunk.ChunkSize;
+            var zSize = height / chunk.ChunkSize;
+            for (int x = 0; x < chunk.ChunkSize; x++)
             {
-                for (int z = 0; z < map.Size.zWidth; z++)
+                for (int z = 0; z < chunk.ChunkSize; z++)
                 {
-                    var pt = map[x, z];
-                    var color = World.IsGlobalMapWater(x,z) ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
-                    graphics.FillRectangle(new SolidBrush(color), (width/2)+((x-z)*zoom), (height/4)+((x+z))-pt, zoom, pt);
+                    for (int y = 20; y < 64; y++)
+                    {
+                        //var pt = chunk.HeightMap[x + chunk.HeightMap.Size.minX, z + chunk.HeightMap.Size.minZ];
+                        if (chunk.Blocks[x, y, z].IsSolid)
+                        {
+                            var color = Color.FromArgb(255, 0, 255, 0);
+                            graphics.FillRectangle(new SolidBrush(color), (width/2)+((x-z)*2), (height/2)+((x+z)*2)-(y-64)*2, 2, 2);
+
+                            //graphics.DrawImage(boxImage, new Point((width / 2) + ((x - z) * 8), (height / 2) + ((x + z) * 10) - (y - 64) * 10));
+                        }
+                    }
                 }
             }
-
             return bitmap;
         }
-        */
+        
 
         /*
         private int seed = 123;
