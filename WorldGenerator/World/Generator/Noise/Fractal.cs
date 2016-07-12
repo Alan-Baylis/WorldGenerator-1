@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using Sean.Shared;
 
 namespace Sean.WorldGenerator.Noise
 {
@@ -30,994 +28,865 @@ namespace Sean.WorldGenerator.Noise
     // depending on the type, and they are typically best left alone.
 
 
-
-    enum EFractalTypes
+    public enum EFractalTypes
     {
         FBM,
         RIDGEDMULTI,
         BILLOW,
         MULTI,
         HYBRIDMULTI,
-		DECARPENTIERSWISS
-};
+        DECARPENTIERSWISS
+    };
 
-
-
-    class CImplicitFractal : public CImplicitModuleBase
+    class CImplicitFractal : CImplicitModuleBase
     {
-        protected:
-        std::shared_ptr<CImplicitBasisFunction> m_basis[MaxSources];
-        CImplicitModuleBase *  m_source[MaxSources];
-        ANLFloatType m_exparray[MaxSources];
-        ANLFloatType m_correct[MaxSources][2];
+        private const int MaxSources = 20;
 
-        ANLFloatType m_offset, m_gain, m_H;
-        ANLFloatType m_frequency, m_lacunarity;
-        unsigned int m_numoctaves;
-        unsigned int m_type;
-        bool m_rotatedomain;
+        private std::shared_ptr<CImplicitBasisFunction> [] m_basis;
+        new private CImplicitModuleBase [] m_source;
+        private float [] m_exparray;
+        private float [] [] m_correct;
 
+        private float m_offset, m_gain, m_H;
+        private float m_frequency, m_lacunarity;
+        private uint m_numoctaves;
+        private EFractalTypes m_type;
+        private bool m_rotatedomain;
 
-
-CImplicitFractal::CImplicitFractal(unsigned int type, unsigned int basistype, unsigned int interptype, int octaves, ANLFloatType freq, bool rotatedomain) : CImplicitModuleBase()
-{
-    m_rotatedomain=rotatedomain;
-    setNumOctaves(octaves);
-    setFrequency(freq);
-    setLacunarity(2.0);
-    setType(type);
-    setAllSourceTypes(basistype, interptype);
-    resetAllSources();
-
-}
-
-void CImplicitFractal::setNumOctaves(int n){if(n>=MaxSources) n=MaxSources-1; m_numoctaves=n;}
-void CImplicitFractal::setFrequency(ANLFloatType f){m_frequency=f;}
-void CImplicitFractal::setLacunarity(ANLFloatType l){m_lacunarity=l;}
-void CImplicitFractal::setGain(ANLFloatType g){m_gain=g;}
-void CImplicitFractal::setOffset(ANLFloatType o){m_offset=o;}
-void CImplicitFractal::setH(ANLFloatType h){m_H=h;}
-
-void CImplicitFractal::setType(unsigned int t)
-	{
-		m_type=t;
-		switch(t)
-		{
-		case FBM:  m_H=1.0; m_gain=0.5;m_offset=0; fBm_calcWeights(); break;
-		case RIDGEDMULTI: m_H=0.9; m_gain=0.5; m_offset=1; RidgedMulti_calcWeights(); break;
-		case BILLOW: m_H=1; m_gain=0.5; m_offset=0; Billow_calcWeights(); break;
-		case MULTI: m_H=1; m_offset=0; m_gain=0; Multi_calcWeights(); break;
-		case HYBRIDMULTI: m_H=0.25; m_gain=1; m_offset=0.7; HybridMulti_calcWeights(); break;
-		case DECARPENTIERSWISS: m_H=0.9; m_gain=0.6; m_offset=0.15; DeCarpentierSwiss_calcWeights(); break;
-		default: m_H=1.0; m_gain=0;m_offset=0; fBm_calcWeights(); break;
-		};
-	}
-
-	void CImplicitFractal::setAllSourceTypes(unsigned int basis_type, unsigned int interp)
-    {
-        for(int i=0; i<MaxSources;++i)
+        CImplicitFractal (EFractalTypes type, uint basistype, uint interptype, int octaves, float freq, bool rotatedomain) : base ()
         {
-            //m_basis[i].setType(basis_type);
-            //m_basis[i].setInterp(interp);
-            m_basis[i]=std::shared_ptr<CImplicitBasisFunction>(new CImplicitBasisFunction(basis_type, interp, m_rotatedomain));
-            //if(!m_rotatedomain) m_basis[i]->setRotationAngle(1,0,0,0);
+            m_rotatedomain = rotatedomain;
+            setNumOctaves (octaves);
+            setFrequency (freq);
+            setLacunarity (2.0f);
+            setType (type);
+            setAllSourceTypes (basistype, interptype);
+            resetAllSources ();
+
+            m_basis = new std::shared_ptr<CImplicitBasisFunction> [MaxSources];
+            m_source = new CImplicitModuleBase [MaxSources];
+            m_exparray = new float [MaxSources];
+            m_correct = new float [MaxSources] [2];
         }
-    }
 
-	void CImplicitFractal::setSourceType(int which, unsigned int type, unsigned int interp)
-    {
-        if(which>=MaxSources || which<0) return;
-        if(!m_basis[which]) return;
-        m_basis[which]->setType(type);
-        m_basis[which]->setInterp(interp);
-        //if(!m_rotatedomain) m_basis[which]->setRotationAngle(1,0,0,0);
-    }
+        void setNumOctaves (int n) { if (n >= MaxSources) n = MaxSources - 1; m_numoctaves = n; }
+        void setFrequency (float f) { m_frequency = f; }
+        void setLacunarity (float l) { m_lacunarity = l; }
+        void setGain (float g) { m_gain = g; }
+        void setOffset (float o) { m_offset = o; }
+        void setH (float h) { m_H = h; }
 
-	void CImplicitFractal::overrideSource(int which, CImplicitModuleBase * b)
-	{
-		if(which<0 || which>=MaxSources) return;
-		m_source[which]=b;
-	}
-
-	void CImplicitFractal::resetSource(int which)
-	{
-		if(which<0 || which>=MaxSources) return;
-		if(!m_basis[which]) return;
-		m_source[which]=m_basis[which].get();
-	}
-
-	void CImplicitFractal::resetAllSources()
-	{
-		for(int c=0; c<MaxSources; ++c)
+        void setType (EFractalTypes t)
         {
-            m_source[c] = m_basis[c].get();
-            //if(!m_rotatedomain) m_basis[c]->setRotationAngle(1,0,0,0);
+            m_type = t;
+            switch (t) {
+            case EFractalTypes.FBM: m_H = 1.0f; m_gain = 0.5f; m_offset = 0; fBm_calcWeights (); break;
+            case EFractalTypes.RIDGEDMULTI: m_H = 0.9f; m_gain = 0.5f; m_offset = 1; RidgedMulti_calcWeights (); break;
+            case EFractalTypes.BILLOW: m_H = 1; m_gain = 0.5f; m_offset = 0; Billow_calcWeights (); break;
+            case EFractalTypes.MULTI: m_H = 1; m_offset = 0; m_gain = 0; Multi_calcWeights (); break;
+            case EFractalTypes.HYBRIDMULTI: m_H = 0.25f; m_gain = 1; m_offset = 0.7f; HybridMulti_calcWeights (); break;
+            case EFractalTypes.DECARPENTIERSWISS: m_H = 0.9f; m_gain = 0.6f; m_offset = 0.15f; DeCarpentierSwiss_calcWeights (); break;
+            default: m_H = 1.0f; m_gain = 0; m_offset = 0; fBm_calcWeights (); break;
+            };
         }
-	}
 
-
-	void CImplicitFractal::setSeed(unsigned int seed)
-	{
-		for(int c=0; c<MaxSources; ++c)
+        void setAllSourceTypes (uint basis_type, uint interp)
         {
-            m_source[c]->setSeed(seed+c*300);
-            //if(!m_rotatedomain) m_basis[c]->setRotationAngle(1,0,0,0);
-           // else m_basis[c]->setNoRotation();
+            for (int i = 0; i < MaxSources; ++i) {
+                //m_basis[i].setType(basis_type);
+                //m_basis[i].setInterp(interp);
+                m_basis [i] = std::shared_ptr<CImplicitBasisFunction> (new CImplicitBasisFunction (basis_type, interp, m_rotatedomain));
+                //if(!m_rotatedomain) m_basis[i]->setRotationAngle(1,0,0,0);
+            }
         }
-	}
 
-	CImplicitModuleBase * CImplicitFractal::getBasis(int which)
-	{
-		if(which<0 || which>=MaxSources) return 0;
-		return m_basis[which].get();
-	}
+        void setSourceType (int which, uint type, uint interp)
+        {
+            if (which >= MaxSources || which < 0) return;
+            if (!m_basis [which]) return;
+            m_basis [which]->setType (type);
+            m_basis [which]->setInterp (interp);
+            //if(!m_rotatedomain) m_basis[which]->setRotationAngle(1,0,0,0);
+        }
 
-	ANLFloatType CImplicitFractal::get(ANLFloatType x, ANLFloatType y)
-	{
-	    ANLFloatType v;
-		switch(m_type)
-		{
-		case FBM: v=fBm_get(x,y); break;
-		case RIDGEDMULTI: v=RidgedMulti_get(x,y); break;
-		case BILLOW: v=Billow_get(x,y); break;
-		case MULTI: v=Multi_get(x,y); break;
-		case HYBRIDMULTI: v=HybridMulti_get(x,y); break;
-		case DECARPENTIERSWISS: v=DeCarpentierSwiss_get(x,y); break;
-		default: v=fBm_get(x,y); break;
-		}
-		//return clamp(v,-1.0,1.0);
-		return v;
-	}
+        void overrideSource (int which, CImplicitModuleBase b)
+        {
+            if (which < 0 || which >= MaxSources) return;
+            m_source [which] = b;
+        }
 
-	ANLFloatType CImplicitFractal::get(ANLFloatType x, ANLFloatType y, ANLFloatType z)
-	{
-	    ANLFloatType val;
-	    switch(m_type)
-		{
-		case FBM: val=fBm_get(x,y,z); break;
-		case RIDGEDMULTI: val=RidgedMulti_get(x,y,z); break;
-		case BILLOW: val=Billow_get(x,y,z); break;
-		case MULTI: val=Multi_get(x,y,z); break;
-		case HYBRIDMULTI: val=HybridMulti_get(x,y,z); break;
-		case DECARPENTIERSWISS: val=DeCarpentierSwiss_get(x,y,z); break;
-		default: val=fBm_get(x,y,z); break;
-		}
-		//return clamp(val,-1.0,1.0);
-		return val;
-	}
+        void resetSource (int which)
+        {
+            if (which < 0 || which >= MaxSources) return;
+            if (!m_basis [which]) return;
+            m_source [which] = m_basis [which].get ();
+        }
 
-	ANLFloatType CImplicitFractal::get(ANLFloatType x, ANLFloatType y, ANLFloatType z, ANLFloatType w)
-	{
-	    ANLFloatType val;
-		switch(m_type)
-		{
-		case FBM: val=fBm_get(x,y,z,w); break;
-		case RIDGEDMULTI: val=RidgedMulti_get(x,y,z,w); break;
-		case BILLOW: val=Billow_get(x,y,z,w); break;
-		case MULTI: val=Multi_get(x,y,z,w); break;
-		case HYBRIDMULTI: val=HybridMulti_get(x,y,z,w); break;
-		case DECARPENTIERSWISS: val=DeCarpentierSwiss_get(x,y,z,w); break;
-		default: val=fBm_get(x,y,z,w); break;
-		}
-		return val;
-	}
+        void resetAllSources ()
+        {
+            for (int c = 0; c < MaxSources; ++c) {
+                m_source [c] = m_basis [c].get ();
+                //if(!m_rotatedomain) m_basis[c]->setRotationAngle(1,0,0,0);
+            }
+        }
 
-	ANLFloatType CImplicitFractal::get(ANLFloatType x, ANLFloatType y, ANLFloatType z, ANLFloatType w, ANLFloatType u, ANLFloatType v)
-	{
-	    ANLFloatType val;
-		switch(m_type)
-		{
-		case FBM: val=fBm_get(x,y,z,w,u,v); break;
-		case RIDGEDMULTI: val=RidgedMulti_get(x,y,z,w,u,v); break;
-		case BILLOW: val=Billow_get(x,y,z,w,u,v); break;
-		case MULTI: val=Multi_get(x,y,z,w,u,v); break;
-		case HYBRIDMULTI: val=HybridMulti_get(x,y,z,w,u,v); break;
-		case DECARPENTIERSWISS: val=DeCarpentierSwiss_get(x,y,z,w,u,v); break;
-		default: val=fBm_get(x,y,z,w,u,v); break;
-		}
+        public override void setSeed (uint seed)
+        {
+            for (int c = 0; c < MaxSources; ++c) {
+                m_source [c].setSeed ((uint)(seed + c * 300));
+                //if(!m_rotatedomain) m_basis[c]->setRotationAngle(1,0,0,0);
+                // else m_basis[c]->setNoRotation();
+            }
+        }
 
-		return val;
-	}
+        CImplicitModuleBase getBasis (int which)
+        {
+            if (which < 0 || which >= MaxSources) return null;
+            return m_basis [which].get ();
+        }
 
-void CImplicitFractal::fBm_calcWeights()
-{
-	//std::cout << "Weights: ";
-	for(int i=0; i<(int)MaxSources; ++i)
-    {
-        m_exparray[i]= pow(m_lacunarity, -i*m_H);
-    }
+        public override float get (float x, float y)
+        {
+            float v;
+            switch (m_type) {
+            case EFractalTypes.FBM: v = fBm_get (x, y); break;
+            case EFractalTypes.RIDGEDMULTI: v = RidgedMulti_get (x, y); break;
+            case EFractalTypes.BILLOW: v = Billow_get (x, y); break;
+            case EFractalTypes.MULTI: v = Multi_get (x, y); break;
+            case EFractalTypes.HYBRIDMULTI: v = HybridMulti_get (x, y); break;
+            case EFractalTypes.DECARPENTIERSWISS: v = DeCarpentierSwiss_get (x, y); break;
+            default: v = fBm_get (x, y); break;
+            }
+            //return clamp(v,-1.0,1.0);
+            return v;
+        }
 
-    // Calculate scale/bias pairs by guessing at minimum and maximum values and remapping to [-1,1]
-    ANLFloatType minvalue=0.0, maxvalue=0.0;
-    for(int i=0; i<MaxSources; ++i)
-    {
-        minvalue += -1.0 * m_exparray[i];
-        maxvalue += 1.0 * m_exparray[i];
+        public override float get (float x, float y, float z)
+        {
+            float val;
+            switch (m_type) {
+            case EFractalTypes.FBM: val = fBm_get (x, y, z); break;
+            case EFractalTypes.RIDGEDMULTI: val = RidgedMulti_get (x, y, z); break;
+            case EFractalTypes.BILLOW: val = Billow_get (x, y, z); break;
+            case EFractalTypes.MULTI: val = Multi_get (x, y, z); break;
+            case EFractalTypes.HYBRIDMULTI: val = HybridMulti_get (x, y, z); break;
+            case EFractalTypes.DECARPENTIERSWISS: val = DeCarpentierSwiss_get (x, y, z); break;
+            default: val = fBm_get (x, y, z); break;
+            }
+            //return clamp(val,-1.0,1.0);
+            return val;
+        }
 
-        ANLFloatType A=-1.0, B=1.0;
-        ANLFloatType scale = (B-A) / (maxvalue-minvalue);
-        ANLFloatType bias = A - minvalue*scale;
-        m_correct[i][0]=scale;
-        m_correct[i][1]=bias;
+        public override float get (float x, float y, float z, float w)
+        {
+            float val;
+            switch (m_type) {
+            case EFractalTypes.FBM: val = fBm_get (x, y, z, w); break;
+            case EFractalTypes.RIDGEDMULTI: val = RidgedMulti_get (x, y, z, w); break;
+            case EFractalTypes.BILLOW: val = Billow_get (x, y, z, w); break;
+            case EFractalTypes.MULTI: val = Multi_get (x, y, z, w); break;
+            case EFractalTypes.HYBRIDMULTI: val = HybridMulti_get (x, y, z, w); break;
+            case EFractalTypes.DECARPENTIERSWISS: val = DeCarpentierSwiss_get (x, y, z, w); break;
+            default: val = fBm_get (x, y, z, w); break;
+            }
+            return val;
+        }
 
-        //std::cout << minvalue << " " << maxvalue << " " << scale << " " << bias << std::endl;
-    }
-}
+        public override float get (float x, float y, float z, float w, float u, float v)
+        {
+            float val;
+            switch (m_type) {
+            case EFractalTypes.FBM: val = fBm_get (x, y, z, w, u, v); break;
+            case EFractalTypes.RIDGEDMULTI: val = RidgedMulti_get (x, y, z, w, u, v); break;
+            case EFractalTypes.BILLOW: val = Billow_get (x, y, z, w, u, v); break;
+            case EFractalTypes.MULTI: val = Multi_get (x, y, z, w, u, v); break;
+            case EFractalTypes.HYBRIDMULTI: val = HybridMulti_get (x, y, z, w, u, v); break;
+            case EFractalTypes.DECARPENTIERSWISS: val = DeCarpentierSwiss_get (x, y, z, w, u, v); break;
+            default: val = fBm_get (x, y, z, w, u, v); break;
+            }
 
-void CImplicitFractal::RidgedMulti_calcWeights()
-{
-	for(int i=0; i<(int)MaxSources; ++i)
-    {
-        m_exparray[i]= pow(m_lacunarity, -i*m_H);
-    }
+            return val;
+        }
+
+        void fBm_calcWeights ()
+        {
+            //std::cout << "Weights: ";
+            for (int i = 0; i < MaxSources; ++i) {
+                m_exparray [i] = (float)Math.Pow (m_lacunarity, -i * m_H);
+            }
+            // Calculate scale/bias pairs by guessing at minimum and maximum values and remapping to [-1,1]
+            float minvalue = 0.0f, maxvalue = 0.0f;
+            for (int i = 0; i < MaxSources; ++i) {
+                minvalue += -1.0f * m_exparray [i];
+                maxvalue += 1.0f * m_exparray [i];
+
+                float A = -1.0f, B = 1.0f;
+                float scale = (B - A) / (maxvalue - minvalue);
+                float bias = A - minvalue * scale;
+                m_correct [i] [0] = scale;
+                m_correct [i] [1] = bias;
+
+                //std::cout << minvalue << " " << maxvalue << " " << scale << " " << bias << std::endl;
+            }
+        }
+
+        void RidgedMulti_calcWeights ()
+        {
+            for (int i = 0; i < MaxSources; ++i) {
+                m_exparray [i] = (float)Math.Pow (m_lacunarity, -i * m_H);
+            }
+            // Calculate scale/bias pairs by guessing at minimum and maximum values and remapping to [-1,1]
+            float minvalue = 0.0f, maxvalue = 0.0f;
+            for (int i = 0; i < MaxSources; ++i) {
+                minvalue += (m_offset - 1.0f) * (m_offset - 1.0f) * m_exparray [i];
+                maxvalue += (m_offset) * (m_offset) * m_exparray [i];
+
+                float A = -1.0f, B = 1.0f;
+                float scale = (B - A) / (maxvalue - minvalue);
+                float bias = A - minvalue * scale;
+                m_correct [i] [0] = scale;
+                m_correct [i] [1] = bias;
+            }
+
+        }
+
+        void DeCarpentierSwiss_calcWeights ()
+        {
+            for (int i = 0; i < MaxSources; ++i) {
+                m_exparray [i] = (float)Math.Pow (m_lacunarity, -i * m_H);
+            }
+            // Calculate scale/bias pairs by guessing at minimum and maximum values and remapping to [-1,1]
+            float minvalue = 0.0f, maxvalue = 0.0f;
+            for (int i = 0; i < MaxSources; ++i) {
+                minvalue += (m_offset - 1.0f) * (m_offset - 1.0f) * m_exparray [i];
+                maxvalue += (m_offset) * (m_offset) * m_exparray [i];
+
+                float A = -1.0f, B = 1.0f;
+                float scale = (B - A) / (maxvalue - minvalue);
+                float bias = A - minvalue * scale;
+                m_correct [i] [0] = scale;
+                m_correct [i] [1] = bias;
+            }
+
+        }
+
+        void Billow_calcWeights ()
+        {
+            for (int i = 0; i < MaxSources; ++i) {
+                m_exparray [i] = (float)Math.Pow (m_lacunarity, -i * m_H);
+            }
 
             // Calculate scale/bias pairs by guessing at minimum and maximum values and remapping to [-1,1]
-    ANLFloatType minvalue=0.0, maxvalue=0.0;
-    for(int i=0; i<MaxSources; ++i)
-    {
-        minvalue += (m_offset-1.0)*(m_offset-1.0)*m_exparray[i];
-        maxvalue += (m_offset)*(m_offset) * m_exparray[i];
+            float minvalue = 0.0f, maxvalue = 0.0f;
+            for (int i = 0; i < MaxSources; ++i) {
+                minvalue += -1.0f * m_exparray [i];
+                maxvalue += 1.0f * m_exparray [i];
 
-        ANLFloatType A=-1.0, B=1.0;
-        ANLFloatType scale = (B-A) / (maxvalue-minvalue);
-        ANLFloatType bias = A - minvalue*scale;
-        m_correct[i][0]=scale;
-        m_correct[i][1]=bias;
-    }
+                float A = -1.0f, B = 1.0f;
+                float scale = (B - A) / (maxvalue - minvalue);
+                float bias = A - minvalue * scale;
+                m_correct [i] [0] = scale;
+                m_correct [i] [1] = bias;
+            }
 
-}
+        }
 
-void CImplicitFractal::DeCarpentierSwiss_calcWeights()
-{
-	for(int i=0; i<(int)MaxSources; ++i)
-    {
-        m_exparray[i]= pow(m_lacunarity, -i*m_H);
-    }
-
+        void Multi_calcWeights ()
+        {
+            for (int i = 0; i < MaxSources; ++i) {
+                m_exparray [i] = (float)Math.Pow (m_lacunarity, -i * m_H);
+            }
             // Calculate scale/bias pairs by guessing at minimum and maximum values and remapping to [-1,1]
-    ANLFloatType minvalue=0.0, maxvalue=0.0;
-    for(int i=0; i<MaxSources; ++i)
-    {
-        minvalue += (m_offset-1.0)*(m_offset-1.0)*m_exparray[i];
-        maxvalue += (m_offset)*(m_offset) * m_exparray[i];
+            float minvalue = 1.0f, maxvalue = 1.0f;
+            for (int i = 0; i < MaxSources; ++i) {
+                minvalue *= -1.0f * m_exparray [i] + 1.0f;
+                maxvalue *= 1.0f * m_exparray [i] + 1.0f;
 
-        ANLFloatType A=-1.0, B=1.0;
-        ANLFloatType scale = (B-A) / (maxvalue-minvalue);
-        ANLFloatType bias = A - minvalue*scale;
-        m_correct[i][0]=scale;
-        m_correct[i][1]=bias;
+                float A = -1.0f, B = 1.0f;
+                float scale = (B - A) / (maxvalue - minvalue);
+                float bias = A - minvalue * scale;
+                m_correct [i] [0] = scale;
+                m_correct [i] [1] = bias;
+            }
+        }
+
+        void HybridMulti_calcWeights ()
+        {
+            for (int i = 0; i < MaxSources; ++i) {
+                m_exparray [i] = (float)Math.Pow (m_lacunarity, -i * m_H);
+            }
+            // Calculate scale/bias pairs by guessing at minimum and maximum values and remapping to [-1,1]
+            float minvalue = 1.0f, maxvalue = 1.0f;
+            float weightmin, weightmax;
+            float A = -1.0f, B = 1.0f, scale, bias;
+
+            minvalue = m_offset - 1.0f;
+            maxvalue = m_offset + 1.0f;
+            weightmin = m_gain * minvalue;
+            weightmax = m_gain * maxvalue;
+
+            scale = (B - A) / (maxvalue - minvalue);
+            bias = A - minvalue * scale;
+            m_correct [0] [0] = scale;
+            m_correct [0] [1] = bias;
+
+            for (int i = 1; i < MaxSources; ++i) {
+                if (weightmin > 1.0) weightmin = 1.0f;
+                if (weightmax > 1.0) weightmax = 1.0f;
+
+                float signal = (m_offset - 1.0f) * m_exparray [i];
+                minvalue += signal * weightmin;
+                weightmin *= m_gain * signal;
+
+                signal = (m_offset + 1.0f) * m_exparray [i];
+                maxvalue += signal * weightmax;
+                weightmax *= m_gain * signal;
+
+                scale = (B - A) / (maxvalue - minvalue);
+                bias = A - minvalue * scale;
+                m_correct [i] [0] = scale;
+                m_correct [i] [1] = bias;
+            }
+        }
+
+        float fBm_get (float x, float y)
+        {
+            float sum = 0.0f;
+            float amp = 1.0f;
+            x *= m_frequency;
+            y *= m_frequency;
+            for (uint i = 0; i < m_numoctaves; ++i) {
+                float n = m_source [i].get (x, y);
+                sum += n * amp;
+                amp *= m_gain;
+                x *= m_lacunarity;
+                y *= m_lacunarity;
+            }
+            return sum;
+        }
+
+        float fBm_get (float x, float y, float z)
+        {
+            float sum = 0.0f;
+            float amp = 1.0f;
+            x *= m_frequency;
+            y *= m_frequency;
+            z *= m_frequency;
+            for (uint i = 0; i < m_numoctaves; ++i) {
+                float n = m_source [i].get (x, y, z);
+                sum += n * amp;
+                amp *= m_gain;
+                x *= m_lacunarity;
+                y *= m_lacunarity;
+                z *= m_lacunarity;
+            }
+            return sum;
+        }
+
+        float fBm_get (float x, float y, float z, float w)
+        {
+            float sum = 0.0f;
+            float amp = 1.0f;
+            x *= m_frequency;
+            y *= m_frequency;
+            z *= m_frequency;
+            w *= m_frequency;
+            for (uint i = 0; i < m_numoctaves; ++i) {
+                float n = m_source [i].get (x, y, z, w);
+                sum += n * amp;
+                amp *= m_gain;
+                x *= m_lacunarity;
+                y *= m_lacunarity;
+                z *= m_lacunarity;
+                w *= m_lacunarity;
+            }
+            return sum;
+        }
+
+        float fBm_get (float x, float y, float z, float w, float u, float v)
+        {
+            float sum = 0.0f;
+            float amp = 1.0f;
+            x *= m_frequency;
+            y *= m_frequency;
+            z *= m_frequency;
+            w *= m_frequency;
+            u *= m_frequency;
+            v *= m_frequency;
+            for (uint i = 0; i < m_numoctaves; ++i) {
+                float n = m_source [i].get (x, y, z, w);
+                sum += n * amp;
+                amp *= m_gain;
+                x *= m_lacunarity;
+                y *= m_lacunarity;
+                z *= m_lacunarity;
+                w *= m_lacunarity;
+                u *= m_lacunarity;
+                v *= m_lacunarity;
+            }
+            return sum;
+        }
+
+        float Multi_get (float x, float y)
+        {
+            float value = 1.0f;
+            x *= m_frequency;
+            y *= m_frequency;
+            for (uint i = 0; i < m_numoctaves; ++i) {
+                value *= m_source [i].get (x, y) * m_exparray [i] + 1.0f;
+                x *= m_lacunarity;
+                y *= m_lacunarity;
+            }
+            return value * m_correct [m_numoctaves - 1] [0] + m_correct [m_numoctaves - 1] [1];
+        }
+
+        float Multi_get (float x, float y, float z, float w)
+        {
+            float value = 1.0f;
+            x *= m_frequency;
+            y *= m_frequency;
+            z *= m_frequency;
+            w *= m_frequency;
+            for (uint i = 0; i < m_numoctaves; ++i) {
+                value *= m_source [i].get (x, y, z, w) * m_exparray [i] + 1.0f;
+                x *= m_lacunarity;
+                y *= m_lacunarity;
+                z *= m_lacunarity;
+                w *= m_lacunarity;
+            }
+            return value * m_correct [m_numoctaves - 1] [0] + m_correct [m_numoctaves - 1] [1];
+        }
+
+        float Multi_get (float x, float y, float z)
+        {
+            float value = 1.0f;
+            x *= m_frequency;
+            y *= m_frequency;
+            z *= m_frequency;
+            for (uint i = 0; i < m_numoctaves; ++i) {
+                value *= m_source [i].get (x, y, z) * m_exparray [i] + 1.0f;
+                x *= m_lacunarity;
+                y *= m_lacunarity;
+                z *= m_lacunarity;
+            }
+            return value * m_correct [m_numoctaves - 1] [0] + m_correct [m_numoctaves - 1] [1];
+        }
+
+        float Multi_get (float x, float y, float z, float w, float u, float v)
+        {
+            float value = 1.0f;
+            x *= m_frequency;
+            y *= m_frequency;
+            z *= m_frequency;
+            w *= m_frequency;
+            u *= m_frequency;
+            v *= m_frequency;
+            for (uint i = 0; i < m_numoctaves; ++i) {
+                value *= m_source [i].get (x, y, z, w, u, v) * m_exparray [i] + 1.0f;
+                x *= m_lacunarity;
+                y *= m_lacunarity;
+                z *= m_lacunarity;
+                w *= m_lacunarity;
+                u *= m_lacunarity;
+                v *= m_lacunarity;
+            }
+            return value * m_correct [m_numoctaves - 1] [0] + m_correct [m_numoctaves - 1] [1];
+        }
+
+        float Billow_get (float x, float y)
+        {
+            float sum = 0.0f;
+            float amp = 1.0f;
+            x *= m_frequency;
+            y *= m_frequency;
+            for (uint i = 0; i < m_numoctaves; ++i) {
+                float n = m_source [i].get (x, y);
+                sum += (2.0f * Math.Abs (n) - 1.0f) * amp;
+                amp *= m_gain;
+                x *= m_lacunarity;
+                y *= m_lacunarity;
+            }
+            return sum;
+        }
+
+        float Billow_get (float x, float y, float z, float w)
+        {
+            float sum = 0.0f;
+            float amp = 1.0f;
+            x *= m_frequency;
+            y *= m_frequency;
+            z *= m_frequency;
+            w *= m_frequency;
+            for (uint i = 0; i < m_numoctaves; ++i) {
+                float n = m_source [i].get (x, y, z, w);
+                sum += (2.0f * Math.Abs (n) - 1.0f) * amp;
+                amp *= m_gain;
+                x *= m_lacunarity;
+                y *= m_lacunarity;
+                z *= m_lacunarity;
+                w *= m_lacunarity;
+            }
+            return sum;
+        }
+
+        float Billow_get (float x, float y, float z)
+        {
+            float sum = 0.0f;
+            float amp = 1.0f;
+            x *= m_frequency;
+            y *= m_frequency;
+            z *= m_frequency;
+            for (uint i = 0; i < m_numoctaves; ++i) {
+                float n = m_source [i].get (x, y, z);
+                sum += (2.0f * Math.Abs (n) - 1.0f) * amp;
+                amp *= m_gain;
+                x *= m_lacunarity;
+                y *= m_lacunarity;
+                z *= m_lacunarity;
+            }
+            return sum;
+        }
+
+        float Billow_get (float x, float y, float z, float w, float u, float v)
+        {
+            float sum = 0.0f;
+            float amp = 1.0f;
+            x *= m_frequency;
+            y *= m_frequency;
+            z *= m_frequency;
+            w *= m_frequency;
+            u *= m_frequency;
+            v *= m_frequency;
+            for (uint i = 0; i < m_numoctaves; ++i) {
+                float n = m_source [i].get (x, y, z, w, u, v);
+                sum += (2.0f * Math.Abs (n) - 1.0f) * amp;
+                amp *= m_gain;
+                x *= m_lacunarity;
+                y *= m_lacunarity;
+                z *= m_lacunarity;
+                w *= m_lacunarity;
+                u *= m_lacunarity;
+                v *= m_lacunarity;
+            }
+            return sum;
+        }
+
+        float RidgedMulti_get (float x, float y)
+        {
+            float sum = 0;
+            float amp = 1.0f;
+            x *= m_frequency;
+            y *= m_frequency;
+            for (uint i = 0; i < m_numoctaves; ++i) {
+                float n = m_source [i].get (x, y);
+                n = 1.0f - Math.Abs (n);
+                sum += amp * n;
+                amp *= m_gain;
+                x *= m_lacunarity;
+                y *= m_lacunarity;
+            }
+            return sum;
+            /*float result=0.0, signal;
+            x*=m_frequency;
+            y*=m_frequency;
+            for(uint i=0; i<m_numoctaves; ++i)
+            {
+                signal=m_source[i]->get(x,y);
+                signal=m_offset-fabs(signal);
+                signal *= signal;
+                result +=signal*m_exparray[i];
+                x*=m_lacunarity;
+                y*=m_lacunarity;
+            }
+            return result*m_correct[m_numoctaves-1][0] + m_correct[m_numoctaves-1][1];*/
+        }
+
+        float RidgedMulti_get (float x, float y, float z, float w)
+        {
+            float result = 0.0f, signal;
+            x *= m_frequency;
+            y *= m_frequency;
+            z *= m_frequency;
+            w *= m_frequency;
+            for (uint i = 0; i < m_numoctaves; ++i) {
+                signal = m_source [i].get (x, y, z, w);
+                signal = m_offset - Math.Abs (signal);
+                signal *= signal;
+                result += signal * m_exparray [i];
+                x *= m_lacunarity;
+                y *= m_lacunarity;
+                z *= m_lacunarity;
+                w *= m_lacunarity;
+            }
+            return result * m_correct [m_numoctaves - 1] [0] + m_correct [m_numoctaves - 1] [1];
+        }
+
+        float RidgedMulti_get (float x, float y, float z)
+        {
+            float sum = 0;
+            float amp = 1.0f;
+            x *= m_frequency;
+            y *= m_frequency;
+            z *= m_frequency;
+            for (uint i = 0; i < m_numoctaves; ++i) {
+                float n = m_source [i].get (x, y, z);
+                n = 1.0f - Math.Abs (n);
+                sum += amp * n;
+                amp *= m_gain;
+                x *= m_lacunarity;
+                y *= m_lacunarity;
+                z *= m_lacunarity;
+            }
+            return sum;
+        }
+
+        float RidgedMulti_get (float x, float y, float z, float w, float u, float v)
+        {
+            float result = 0.0f, signal;
+            x *= m_frequency;
+            y *= m_frequency;
+            z *= m_frequency;
+            w *= m_frequency;
+            u *= m_frequency;
+            v *= m_frequency;
+            for (uint i = 0; i < m_numoctaves; ++i) {
+                signal = m_source [i].get (x, y, z, w, u, v);
+                signal = m_offset - Math.Abs (signal);
+                signal *= signal;
+                result += signal * m_exparray [i];
+                x *= m_lacunarity;
+                y *= m_lacunarity;
+                z *= m_lacunarity;
+                w *= m_lacunarity;
+                u *= m_lacunarity;
+                v *= m_lacunarity;
+            }
+            return result * m_correct [m_numoctaves - 1] [0] + m_correct [m_numoctaves - 1] [1];
+        }
+
+        float HybridMulti_get (float x, float y)
+        {
+            float value, signal, weight;
+            x *= m_frequency;
+            y *= m_frequency;
+            value = m_source [0].get (x, y) + m_offset;
+            weight = m_gain * value;
+            x *= m_lacunarity;
+            y *= m_lacunarity;
+            for (uint i = 1; i < m_numoctaves; ++i) {
+                if (weight > 1.0) weight = 1.0f;
+                signal = (m_source [i].get (x, y) + m_offset) * m_exparray [i];
+                value += weight * signal;
+                weight *= m_gain * signal;
+                x *= m_lacunarity;
+                y *= m_lacunarity;
+            }
+            return value * m_correct [m_numoctaves - 1] [0] + m_correct [m_numoctaves - 1] [1];
+        }
+
+        float HybridMulti_get (float x, float y, float z)
+        {
+            float value, signal, weight;
+            x *= m_frequency;
+            y *= m_frequency;
+            z *= m_frequency;
+            value = m_source [0].get (x, y, z) + m_offset;
+            weight = m_gain * value;
+            x *= m_lacunarity;
+            y *= m_lacunarity;
+            z *= m_lacunarity;
+            for (uint i = 1; i < m_numoctaves; ++i) {
+                if (weight > 1.0) weight = 1.0f;
+                signal = (m_source [i].get (x, y, z) + m_offset) * m_exparray [i];
+                value += weight * signal;
+                weight *= m_gain * signal;
+                x *= m_lacunarity;
+                y *= m_lacunarity;
+                z *= m_lacunarity;
+            }
+            return value * m_correct [m_numoctaves - 1] [0] + m_correct [m_numoctaves - 1] [1];
+        }
+
+        float HybridMulti_get (float x, float y, float z, float w)
+        {
+            float value, signal, weight;
+            x *= m_frequency;
+            y *= m_frequency;
+            z *= m_frequency;
+            w *= m_frequency;
+            value = m_source [0].get (x, y, z, w) + m_offset;
+            weight = m_gain * value;
+            x *= m_lacunarity;
+            y *= m_lacunarity;
+            z *= m_lacunarity;
+            w *= m_lacunarity;
+            for (uint i = 1; i < m_numoctaves; ++i) {
+                if (weight > 1.0) weight = 1.0f;
+                signal = (m_source [i].get (x, y, z, w) + m_offset) * m_exparray [i];
+                value += weight * signal;
+                weight *= m_gain * signal;
+                x *= m_lacunarity;
+                y *= m_lacunarity;
+                z *= m_lacunarity;
+                w *= m_lacunarity;
+            }
+            return value * m_correct [m_numoctaves - 1] [0] + m_correct [m_numoctaves - 1] [1];
+        }
+
+        float HybridMulti_get (float x, float y, float z, float w, float u, float v)
+        {
+            float value, signal, weight;
+            x *= m_frequency;
+            y *= m_frequency;
+            z *= m_frequency;
+            w *= m_frequency;
+            u *= m_frequency;
+            v *= m_frequency;
+            value = m_source [0].get (x, y, z, w, u, v) + m_offset;
+            weight = m_gain * value;
+            x *= m_lacunarity;
+            y *= m_lacunarity;
+            z *= m_lacunarity;
+            w *= m_lacunarity;
+            u *= m_lacunarity;
+            v *= m_lacunarity;
+            for (uint i = 1; i < m_numoctaves; ++i) {
+                if (weight > 1.0) weight = 1.0f;
+                signal = (m_source [i].get (x, y, z, w, u, v) + m_offset) * m_exparray [i];
+                value += weight * signal;
+                weight *= m_gain * signal;
+                x *= m_lacunarity;
+                y *= m_lacunarity;
+                z *= m_lacunarity;
+                w *= m_lacunarity;
+                u *= m_lacunarity;
+                v *= m_lacunarity;
+            }
+            return value * m_correct [m_numoctaves - 1] [0] + m_correct [m_numoctaves - 1] [1];
+        }
+
+        float DeCarpentierSwiss_get (float x, float y)
+        {
+            float sum = 0;
+            float amp = 1.0f;
+            float dx_sum = 0;
+            float dy_sum = 0;
+            x *= m_frequency;
+            y *= m_frequency;
+            for (uint i = 0; i < m_numoctaves; ++i) {
+                float n = m_source [i].get (x + m_offset * dx_sum, y + m_offset * dy_sum);
+                float dx = m_source [i].get_dx (x + m_offset * dx_sum, y + m_offset * dy_sum);
+                float dy = m_source [i].get_dy (x + m_offset * dx_sum, y + m_offset * dy_sum);
+                sum += amp * (1.0f - Math.Abs (n));
+                dx_sum += amp * dx * -n;
+                dy_sum += amp * dy * -n;
+                amp *= m_gain * Utility.clamp (sum, (float)0.0, (float)1.0);
+                x *= m_lacunarity;
+                y *= m_lacunarity;
+            }
+            return sum;
+        }
+
+        float DeCarpentierSwiss_get (float x, float y, float z, float w)
+        {
+            float sum = 0;
+            float amp = 1.0f;
+            float dx_sum = 0;
+            float dy_sum = 0;
+            float dz_sum = 0;
+            float dw_sum = 0;
+            x *= m_frequency;
+            y *= m_frequency;
+            z *= m_frequency;
+            w *= m_frequency;
+            for (uint i = 0; i < m_numoctaves; ++i) {
+                float n = m_source [i].get (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum);
+                float dx = m_source [i].get_dx (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum);
+                float dy = m_source [i].get_dy (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum);
+                float dz = m_source [i].get_dz (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum);
+                float dw = m_source [i].get_dw (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum);
+                sum += amp * (1.0f - Math.Abs (n));
+                dx_sum += amp * dx * -n;
+                dy_sum += amp * dy * -n;
+                dz_sum += amp * dz * -n;
+                dw_sum += amp * dw * -n;
+                amp *= m_gain * Utility.clamp (sum, (float)0.0, (float)1.0);
+                x *= m_lacunarity;
+                y *= m_lacunarity;
+                z *= m_lacunarity;
+                w *= m_lacunarity;
+            }
+            return sum;
+        }
+
+        float DeCarpentierSwiss_get (float x, float y, float z)
+        {
+            float sum = 0;
+            float amp = 1.0f;
+            float dx_sum = 0;
+            float dy_sum = 0;
+            float dz_sum = 0;
+            x *= m_frequency;
+            y *= m_frequency;
+            z *= m_frequency;
+            for (uint i = 0; i < m_numoctaves; ++i) {
+                float n = m_source [i].get (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum);
+                float dx = m_source [i].get_dx (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum);
+                float dy = m_source [i].get_dy (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum);
+                float dz = m_source [i].get_dz (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum);
+                sum += amp * (1.0f - Math.Abs (n));
+                dx_sum += amp * dx * -n;
+                dy_sum += amp * dy * -n;
+                dz_sum += amp * dz * -n;
+                amp *= m_gain * Utility.clamp (sum, (float)0.0, (float)1.0);
+                x *= m_lacunarity;
+                y *= m_lacunarity;
+                z *= m_lacunarity;
+            }
+            return sum;
+        }
+
+        float DeCarpentierSwiss_get (float x, float y, float z, float w, float u, float v)
+        {
+            float sum = 0;
+            float amp = 1.0f;
+            float dx_sum = 0;
+            float dy_sum = 0;
+            float dz_sum = 0;
+            float dw_sum = 0;
+            float du_sum = 0;
+            float dv_sum = 0;
+            x *= m_frequency;
+            y *= m_frequency;
+            z *= m_frequency;
+            w *= m_frequency;
+            u *= m_frequency;
+            v *= m_frequency;
+            for (uint i = 0; i < m_numoctaves; ++i) {
+                float n = m_source [i].get (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum);
+                float dx = m_source [i].get_dx (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dx_sum, w + m_offset * dw_sum, u + m_offset * du_sum, v + m_offset * dv_sum);
+                float dy = m_source [i].get_dy (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum, u + m_offset * du_sum, v + m_offset * dv_sum);
+                float dz = m_source [i].get_dz (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum, u + m_offset * du_sum, v + m_offset * dv_sum);
+                float dw = m_source [i].get_dw (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum, u + m_offset * du_sum, v + m_offset * dv_sum);
+                float du = m_source [i].get_du (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum, u + m_offset * du_sum, v + m_offset * dv_sum);
+                float dv = m_source [i].get_dv (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum, u + m_offset * du_sum, v + m_offset * dv_sum);
+                sum += amp * (1.0f - Math.Abs (n));
+                dx_sum += amp * dx * -n;
+                dy_sum += amp * dy * -n;
+                dz_sum += amp * dz * -n;
+                dw_sum += amp * dw * -n;
+                du_sum += amp * du * -n;
+                dv_sum += amp * dv * -n;
+                amp *= m_gain * Utility.clamp (sum, (float)0.0, (float)1.0);
+                x *= m_lacunarity;
+                y *= m_lacunarity;
+                z *= m_lacunarity;
+                w *= m_lacunarity;
+                u *= m_lacunarity;
+                v *= m_lacunarity;
+            }
+            return sum;
+        }
+
     }
-
-}
-
-void CImplicitFractal::Billow_calcWeights()
-{
-	for(int i=0; i<(int)MaxSources; ++i)
-    {
-        m_exparray[i]= pow(m_lacunarity, -i*m_H);
-    }
-
-    // Calculate scale/bias pairs by guessing at minimum and maximum values and remapping to [-1,1]
-    ANLFloatType minvalue=0.0, maxvalue=0.0;
-    for(int i=0; i<MaxSources; ++i)
-    {
-        minvalue += -1.0 * m_exparray[i];
-        maxvalue += 1.0 * m_exparray[i];
-
-        ANLFloatType A=-1.0, B=1.0;
-        ANLFloatType scale = (B-A) / (maxvalue-minvalue);
-        ANLFloatType bias = A - minvalue*scale;
-        m_correct[i][0]=scale;
-        m_correct[i][1]=bias;
-    }
-
-}
-
-void CImplicitFractal::Multi_calcWeights()
-{
-	for(int i=0; i<(int)MaxSources; ++i)
-    {
-        m_exparray[i]= pow(m_lacunarity, -i*m_H);
-    }
-
-    // Calculate scale/bias pairs by guessing at minimum and maximum values and remapping to [-1,1]
-    ANLFloatType minvalue=1.0, maxvalue=1.0;
-    for(int i=0; i<MaxSources; ++i)
-    {
-        minvalue *= -1.0*m_exparray[i]+1.0;
-        maxvalue *= 1.0*m_exparray[i]+1.0;
-
-        ANLFloatType A=-1.0, B=1.0;
-        ANLFloatType scale = (B-A) / (maxvalue-minvalue);
-        ANLFloatType bias = A - minvalue*scale;
-        m_correct[i][0]=scale;
-        m_correct[i][1]=bias;
-    }
-
-}
-
-void CImplicitFractal::HybridMulti_calcWeights()
-{
-	for(int i=0; i<(int)MaxSources; ++i)
-    {
-        m_exparray[i]= pow(m_lacunarity, -i*m_H);
-    }
-
-    // Calculate scale/bias pairs by guessing at minimum and maximum values and remapping to [-1,1]
-    ANLFloatType minvalue=1.0, maxvalue=1.0;
-    ANLFloatType weightmin, weightmax;
-    ANLFloatType A=-1.0, B=1.0, scale, bias;
-
-    minvalue = m_offset - 1.0;
-    maxvalue = m_offset + 1.0;
-    weightmin = m_gain*minvalue;
-    weightmax = m_gain*maxvalue;
-
-    scale = (B-A) / (maxvalue-minvalue);
-    bias = A - minvalue*scale;
-    m_correct[0][0]=scale;
-    m_correct[0][1]=bias;
-
-
-    for(int i=1; i<MaxSources; ++i)
-    {
-        if(weightmin>1.0) weightmin=1.0;
-        if(weightmax>1.0) weightmax=1.0;
-
-        ANLFloatType signal=(m_offset-1.0)*m_exparray[i];
-        minvalue += signal*weightmin;
-        weightmin *=m_gain*signal;
-
-        signal=(m_offset+1.0)*m_exparray[i];
-        maxvalue += signal*weightmax;
-        weightmax *=m_gain*signal;
-
-
-        scale = (B-A) / (maxvalue-minvalue);
-        bias = A - minvalue*scale;
-        m_correct[i][0]=scale;
-        m_correct[i][1]=bias;
-    }
-
-}
-
-
-ANLFloatType CImplicitFractal::fBm_get(ANLFloatType x, ANLFloatType y)
-{
-	ANLFloatType sum=0;
-	ANLFloatType amp=1.0;
-
-	x*=m_frequency;
-	y*=m_frequency;
-
-	for(unsigned int i=0; i<m_numoctaves; ++i)
-	{
-		ANLFloatType n=m_source[i]->get(x,y);
-		sum+=n*amp;
-		amp*=m_gain;
-
-		x*=m_lacunarity;
-		y*=m_lacunarity;
-	}
-	return sum;
-}
-
-ANLFloatType CImplicitFractal::fBm_get(ANLFloatType x, ANLFloatType y, ANLFloatType z)
-{
-    ANLFloatType sum=0;
-	ANLFloatType amp=1.0;
-
-	x*=m_frequency;
-	y*=m_frequency;
-	z*=m_frequency;
-
-	for(unsigned int i=0; i<m_numoctaves; ++i)
-	{
-		ANLFloatType n=m_source[i]->get(x,y,z);
-		sum+=n*amp;
-		amp*=m_gain;
-
-		x*=m_lacunarity;
-		y*=m_lacunarity;
-		z*=m_lacunarity;
-	}
-	return sum;
-}
-
-ANLFloatType CImplicitFractal::fBm_get(ANLFloatType x, ANLFloatType y, ANLFloatType z, ANLFloatType w)
-{
-	ANLFloatType sum=0;
-	ANLFloatType amp=1.0;
-
-	x*=m_frequency;
-	y*=m_frequency;
-	z*=m_frequency;
-	w*=m_frequency;
-
-	for(unsigned int i=0; i<m_numoctaves; ++i)
-	{
-		ANLFloatType n=m_source[i]->get(x,y,z,w);
-		sum+=n*amp;
-		amp*=m_gain;
-
-		x*=m_lacunarity;
-		y*=m_lacunarity;
-		z*=m_lacunarity;
-		w*=m_lacunarity;
-	}
-	return sum;
-}
-
-ANLFloatType CImplicitFractal::fBm_get(ANLFloatType x, ANLFloatType y, ANLFloatType z, ANLFloatType w, ANLFloatType u, ANLFloatType v)
-{
-	ANLFloatType sum=0;
-	ANLFloatType amp=1.0;
-
-	x*=m_frequency;
-	y*=m_frequency;
-	z*=m_frequency;
-	w*=m_frequency;
-	u*=m_frequency;
-	v*=m_frequency;
-
-	for(unsigned int i=0; i<m_numoctaves; ++i)
-	{
-		ANLFloatType n=m_source[i]->get(x,y,z,w);
-		sum+=n*amp;
-		amp*=m_gain;
-
-		x*=m_lacunarity;
-		y*=m_lacunarity;
-		z*=m_lacunarity;
-		w*=m_lacunarity;
-		u*=m_lacunarity;
-		v*=m_lacunarity;
-	}
-	return sum;
-}
-
-ANLFloatType CImplicitFractal::Multi_get(ANLFloatType x, ANLFloatType y)
-{
-    ANLFloatType value=1.0;
-    x*=m_frequency;
-    y*=m_frequency;
-
-    for(unsigned int i=0; i<m_numoctaves; ++i)
-    {
-        value *= m_source[i]->get(x,y)*m_exparray[i]+1.0;
-        x*=m_lacunarity;
-        y*=m_lacunarity;
-
-    }
-
-    return value*m_correct[m_numoctaves-1][0] + m_correct[m_numoctaves-1][1];
-}
-
-ANLFloatType CImplicitFractal::Multi_get(ANLFloatType x, ANLFloatType y, ANLFloatType z, ANLFloatType w)
-{
-    ANLFloatType value=1.0;
-    x*=m_frequency;
-    y*=m_frequency;
-    z*=m_frequency;
-    w*=m_frequency;
-
-    for(unsigned int i=0; i<m_numoctaves; ++i)
-    {
-        value *= m_source[i]->get(x,y,z,w)*m_exparray[i]+1.0;
-        x*=m_lacunarity;
-        y*=m_lacunarity;
-        z*=m_lacunarity;
-        w*=m_lacunarity;
-    }
-
-    return value*m_correct[m_numoctaves-1][0] + m_correct[m_numoctaves-1][1];
-}
-
-ANLFloatType CImplicitFractal::Multi_get(ANLFloatType x, ANLFloatType y, ANLFloatType z)
-{
-    ANLFloatType value=1.0;
-    x*=m_frequency;
-    y*=m_frequency;
-    z*=m_frequency;
-
-    for(unsigned int i=0; i<m_numoctaves; ++i)
-    {
-        value *= m_source[i]->get(x,y,z)*m_exparray[i]+1.0;
-        x*=m_lacunarity;
-        y*=m_lacunarity;
-        z*=m_lacunarity;
-    }
-
-    return value*m_correct[m_numoctaves-1][0] + m_correct[m_numoctaves-1][1];
-}
-
-
-ANLFloatType CImplicitFractal::Multi_get(ANLFloatType x, ANLFloatType y, ANLFloatType z, ANLFloatType w, ANLFloatType u, ANLFloatType v)
-{
-	    ANLFloatType value=1.0;
-    x*=m_frequency;
-    y*=m_frequency;
-    z*=m_frequency;
-    w*=m_frequency;
-	u*=m_frequency;
-	v*=m_frequency;
-
-    for(unsigned int i=0; i<m_numoctaves; ++i)
-    {
-        value *= m_source[i]->get(x,y,z,w,u,v)*m_exparray[i]+1.0;
-        x*=m_lacunarity;
-        y*=m_lacunarity;
-        z*=m_lacunarity;
-        w*=m_lacunarity;
-		u*=m_lacunarity;
-		v*=m_lacunarity;
-    }
-
-    return value*m_correct[m_numoctaves-1][0] + m_correct[m_numoctaves-1][1];
-}
-
-
-ANLFloatType CImplicitFractal::Billow_get(ANLFloatType x, ANLFloatType y)
-{
-    ANLFloatType sum=0.0;
-    ANLFloatType amp=1.0;
-
-    x*=m_frequency;
-    y*=m_frequency;
-
-    for(unsigned int i=0; i<m_numoctaves; ++i)
-    {
-        ANLFloatType n=m_source[i]->get(x,y);
-        sum+=(2.0 * fabs(n)-1.0)*amp;
-        amp*=m_gain;
-
-        x*=m_lacunarity;
-        y*=m_lacunarity;
-    }
-    return sum;
-}
-
-ANLFloatType CImplicitFractal::Billow_get(ANLFloatType x, ANLFloatType y, ANLFloatType z, ANLFloatType w)
-{
-	ANLFloatType sum=0.0;
-    ANLFloatType amp=1.0;
-
-    x*=m_frequency;
-    y*=m_frequency;
-    z*=m_frequency;
-    w*=m_frequency;
-
-    for(unsigned int i=0; i<m_numoctaves; ++i)
-    {
-        ANLFloatType n=m_source[i]->get(x,y,z,w);
-        sum+=(2.0 * fabs(n)-1.0)*amp;
-        amp*=m_gain;
-
-        x*=m_lacunarity;
-        y*=m_lacunarity;
-        z*=m_lacunarity;
-        w*=m_lacunarity;
-    }
-    return sum;
-}
-
-ANLFloatType CImplicitFractal::Billow_get(ANLFloatType x, ANLFloatType y, ANLFloatType z)
-{
-    ANLFloatType sum=0.0;
-    ANLFloatType amp=1.0;
-
-    x*=m_frequency;
-    y*=m_frequency;
-    z*=m_frequency;
-
-    for(unsigned int i=0; i<m_numoctaves; ++i)
-    {
-        ANLFloatType n=m_source[i]->get(x,y,z);
-        sum+=(2.0 * fabs(n)-1.0)*amp;
-        amp*=m_gain;
-
-        x*=m_lacunarity;
-        y*=m_lacunarity;
-        z*=m_lacunarity;
-    }
-    return sum;
-}
-
-ANLFloatType CImplicitFractal::Billow_get(ANLFloatType x, ANLFloatType y, ANLFloatType z, ANLFloatType w, ANLFloatType u, ANLFloatType v)
-{
-	ANLFloatType sum=0.0;
-    ANLFloatType amp=1.0;
-
-    x*=m_frequency;
-    y*=m_frequency;
-    z*=m_frequency;
-    w*=m_frequency;
-    u*=m_frequency;
-    v*=m_frequency;
-
-    for(unsigned int i=0; i<m_numoctaves; ++i)
-    {
-        ANLFloatType n=m_source[i]->get(x,y,z,w,u,v);
-        sum+=(2.0 * fabs(n)-1.0)*amp;
-        amp*=m_gain;
-
-        x*=m_lacunarity;
-        y*=m_lacunarity;
-        z*=m_lacunarity;
-        w*=m_lacunarity;
-        u*=m_lacunarity;
-        v*=m_lacunarity;
-    }
-    return sum;
-}
-
-ANLFloatType CImplicitFractal::RidgedMulti_get(ANLFloatType x, ANLFloatType y)
-{
-    ANLFloatType sum=0;
-    ANLFloatType amp=1.0;
-
-    x*=m_frequency;
-    y*=m_frequency;
-
-    for(unsigned int i=0; i<m_numoctaves; ++i)
-    {
-        ANLFloatType n=m_source[i]->get(x,y);
-        n=1.0-fabs(n);
-        sum+=amp*n;
-        amp*=m_gain;
-
-        x*=m_lacunarity;
-        y*=m_lacunarity;
-    }
-    return sum;
-	/*ANLFloatType result=0.0, signal;
-    x*=m_frequency;
-    y*=m_frequency;
-
-    for(unsigned int i=0; i<m_numoctaves; ++i)
-    {
-        signal=m_source[i]->get(x,y);
-        signal=m_offset-fabs(signal);
-        signal *= signal;
-        result +=signal*m_exparray[i];
-
-        x*=m_lacunarity;
-        y*=m_lacunarity;
-
-    }
-
-    return result*m_correct[m_numoctaves-1][0] + m_correct[m_numoctaves-1][1];*/
-}
-
-ANLFloatType CImplicitFractal::RidgedMulti_get(ANLFloatType x, ANLFloatType y, ANLFloatType z, ANLFloatType w)
-{
-	ANLFloatType result=0.0, signal;
-    x*=m_frequency;
-    y*=m_frequency;
-    z*=m_frequency;
-    w*=m_frequency;
-
-    for(unsigned int i=0; i<m_numoctaves; ++i)
-    {
-        signal=m_source[i]->get(x,y,z,w);
-        signal=m_offset-fabs(signal);
-        signal *= signal;
-        result +=signal*m_exparray[i];
-
-        x*=m_lacunarity;
-        y*=m_lacunarity;
-        z*=m_lacunarity;
-        w*=m_lacunarity;
-    }
-
-    return result*m_correct[m_numoctaves-1][0] + m_correct[m_numoctaves-1][1];
-}
-
-ANLFloatType CImplicitFractal::RidgedMulti_get(ANLFloatType x, ANLFloatType y, ANLFloatType z)
-{
-    ANLFloatType sum=0;
-    ANLFloatType amp=1.0;
-
-    x*=m_frequency;
-    y*=m_frequency;
-    z*=m_frequency;
-
-    for(unsigned int i=0; i<m_numoctaves; ++i)
-    {
-        ANLFloatType n=m_source[i]->get(x,y,z);
-        n=1.0-fabs(n);
-        sum+=amp*n;
-        amp*=m_gain;
-
-        x*=m_lacunarity;
-        y*=m_lacunarity;
-        z*=m_lacunarity;
-    }
-    return sum;
-}
-
-ANLFloatType CImplicitFractal::RidgedMulti_get(ANLFloatType x, ANLFloatType y, ANLFloatType z, ANLFloatType w, ANLFloatType u, ANLFloatType v)
-{
-	ANLFloatType result=0.0, signal;
-    x*=m_frequency;
-    y*=m_frequency;
-    z*=m_frequency;
-    w*=m_frequency;
-	u*=m_frequency;
-	v*=m_frequency;
-
-    for(unsigned int i=0; i<m_numoctaves; ++i)
-    {
-        signal=m_source[i]->get(x,y,z,w,u,v);
-        signal=m_offset-fabs(signal);
-        signal *= signal;
-        result +=signal*m_exparray[i];
-
-        x*=m_lacunarity;
-        y*=m_lacunarity;
-        z*=m_lacunarity;
-        w*=m_lacunarity;
-		u*=m_lacunarity;
-		v*=m_lacunarity;
-    }
-
-    return result*m_correct[m_numoctaves-1][0] + m_correct[m_numoctaves-1][1];
-}
-
-ANLFloatType CImplicitFractal::HybridMulti_get(ANLFloatType x, ANLFloatType y)
-{
-	ANLFloatType value, signal, weight;
-    x*=m_frequency;
-    y*=m_frequency;
-
-
-    value = m_source[0]->get(x,y) + m_offset;
-    weight = m_gain * value;
-    x*=m_lacunarity;
-    y*=m_lacunarity;
-
-    for(unsigned int i=1; i<m_numoctaves; ++i)
-    {
-        if(weight>1.0) weight=1.0;
-        signal = (m_source[i]->get(x,y)+m_offset)*m_exparray[i];
-        value += weight*signal;
-        weight *=m_gain * signal;
-        x*=m_lacunarity;
-        y*=m_lacunarity;
-
-    }
-
-    return value*m_correct[m_numoctaves-1][0] + m_correct[m_numoctaves-1][1];
-}
-
-ANLFloatType CImplicitFractal::HybridMulti_get(ANLFloatType x, ANLFloatType y, ANLFloatType z)
-{
-    ANLFloatType value, signal, weight;
-    x*=m_frequency;
-    y*=m_frequency;
-    z*=m_frequency;
-
-    value = m_source[0]->get(x,y,z) + m_offset;
-    weight = m_gain * value;
-    x*=m_lacunarity;
-    y*=m_lacunarity;
-    z*=m_lacunarity;
-
-    for(unsigned int i=1; i<m_numoctaves; ++i)
-    {
-        if(weight>1.0) weight=1.0;
-        signal = (m_source[i]->get(x,y,z)+m_offset)*m_exparray[i];
-        value += weight*signal;
-        weight *=m_gain * signal;
-        x*=m_lacunarity;
-        y*=m_lacunarity;
-        z*=m_lacunarity;
-    }
-
-    return value*m_correct[m_numoctaves-1][0] + m_correct[m_numoctaves-1][1];
-}
-
-ANLFloatType CImplicitFractal::HybridMulti_get(ANLFloatType x, ANLFloatType y, ANLFloatType z, ANLFloatType w)
-{
-	ANLFloatType value, signal, weight;
-    x*=m_frequency;
-    y*=m_frequency;
-    z*=m_frequency;
-    w*=m_frequency;
-
-    value = m_source[0]->get(x,y,z,w) + m_offset;
-    weight = m_gain * value;
-    x*=m_lacunarity;
-    y*=m_lacunarity;
-    z*=m_lacunarity;
-    w*=m_lacunarity;
-
-    for(unsigned int i=1; i<m_numoctaves; ++i)
-    {
-        if(weight>1.0) weight=1.0;
-        signal = (m_source[i]->get(x,y,z,w)+m_offset)*m_exparray[i];
-        value += weight*signal;
-        weight *=m_gain * signal;
-        x*=m_lacunarity;
-        y*=m_lacunarity;
-        z*=m_lacunarity;
-        w*=m_lacunarity;
-    }
-
-    return value*m_correct[m_numoctaves-1][0] + m_correct[m_numoctaves-1][1];
-}
-
-ANLFloatType CImplicitFractal::HybridMulti_get(ANLFloatType x, ANLFloatType y, ANLFloatType z, ANLFloatType w, ANLFloatType u, ANLFloatType v)
-{
-	ANLFloatType value, signal, weight;
-    x*=m_frequency;
-    y*=m_frequency;
-    z*=m_frequency;
-    w*=m_frequency;
-	u*=m_frequency;
-	v*=m_frequency;
-
-    value = m_source[0]->get(x,y,z,w,u,v) + m_offset;
-    weight = m_gain * value;
-    x*=m_lacunarity;
-    y*=m_lacunarity;
-    z*=m_lacunarity;
-    w*=m_lacunarity;
-	u*=m_lacunarity;
-	v*=m_lacunarity;
-
-    for(unsigned int i=1; i<m_numoctaves; ++i)
-    {
-        if(weight>1.0) weight=1.0;
-        signal = (m_source[i]->get(x,y,z,w,u,v)+m_offset)*m_exparray[i];
-        value += weight*signal;
-        weight *=m_gain * signal;
-        x*=m_lacunarity;
-        y*=m_lacunarity;
-        z*=m_lacunarity;
-        w*=m_lacunarity;
-		u*=m_lacunarity;
-		v*=m_lacunarity;
-    }
-
-    return value*m_correct[m_numoctaves-1][0] + m_correct[m_numoctaves-1][1];
-}
-
-ANLFloatType CImplicitFractal::DeCarpentierSwiss_get(ANLFloatType x, ANLFloatType y)
-{
-    ANLFloatType sum=0;
-    ANLFloatType amp=1.0;
-
-    ANLFloatType dx_sum=0;
-    ANLFloatType dy_sum=0;
-
-    x*=m_frequency;
-    y*=m_frequency;
-
-    for(unsigned int i=0; i<m_numoctaves; ++i)
-    {
-        ANLFloatType n=m_source[i]->get(x+m_offset*dx_sum,y+m_offset*dy_sum);
-        ANLFloatType dx=m_source[i]->get_dx(x+m_offset*dx_sum,y+m_offset*dy_sum);
-        ANLFloatType dy=m_source[i]->get_dy(x+m_offset*dx_sum,y+m_offset*dy_sum);
-        sum+=amp * (1.0-fabs(n));
-        dx_sum+=amp*dx*-n;
-        dy_sum+=amp*dy*-n;
-        amp*=m_gain*clamp(sum,(ANLFloatType)0.0,(ANLFloatType)1.0);
-        x*=m_lacunarity;
-        y*=m_lacunarity;
-    }
-    return sum;
-}
-
-ANLFloatType CImplicitFractal::DeCarpentierSwiss_get(ANLFloatType x, ANLFloatType y, ANLFloatType z, ANLFloatType w)
-{
-	ANLFloatType sum=0;
-    ANLFloatType amp=1.0;
-
-    ANLFloatType dx_sum=0;
-    ANLFloatType dy_sum=0;
-    ANLFloatType dz_sum=0;
-    ANLFloatType dw_sum=0;
-
-    x*=m_frequency;
-    y*=m_frequency;
-    z*=m_frequency;
-    w*=m_frequency;
-
-    for(unsigned int i=0; i<m_numoctaves; ++i)
-    {
-        ANLFloatType n=m_source[i]->get(x+m_offset*dx_sum,y+m_offset*dy_sum,z+m_offset*dz_sum, w+m_offset*dw_sum);
-        ANLFloatType dx=m_source[i]->get_dx(x+m_offset*dx_sum,y+m_offset*dy_sum,z+m_offset*dz_sum, w+m_offset*dw_sum);
-        ANLFloatType dy=m_source[i]->get_dy(x+m_offset*dx_sum,y+m_offset*dy_sum,z+m_offset*dz_sum, w+m_offset*dw_sum);
-        ANLFloatType dz=m_source[i]->get_dz(x+m_offset*dx_sum,y+m_offset*dy_sum,z+m_offset*dz_sum, w+m_offset*dw_sum);
-        ANLFloatType dw=m_source[i]->get_dw(x+m_offset*dx_sum,y+m_offset*dy_sum,z+m_offset*dz_sum, w+m_offset*dw_sum);
-        sum+=amp * (1.0-fabs(n));
-        dx_sum+=amp*dx*-n;
-        dy_sum+=amp*dy*-n;
-        dz_sum+=amp*dz*-n;
-        dw_sum+=amp*dw*-n;
-        amp*=m_gain*clamp(sum,(ANLFloatType)0.0,(ANLFloatType)1.0);
-        x*=m_lacunarity;
-        y*=m_lacunarity;
-        z*=m_lacunarity;
-        w*=m_lacunarity;
-    }
-    return sum;
-}
-
-ANLFloatType CImplicitFractal::DeCarpentierSwiss_get(ANLFloatType x, ANLFloatType y, ANLFloatType z)
-{
-    ANLFloatType sum=0;
-    ANLFloatType amp=1.0;
-
-    ANLFloatType dx_sum=0;
-    ANLFloatType dy_sum=0;
-    ANLFloatType dz_sum=0;
-
-    x*=m_frequency;
-    y*=m_frequency;
-    z*=m_frequency;
-
-    for(unsigned int i=0; i<m_numoctaves; ++i)
-    {
-        ANLFloatType n=m_source[i]->get(x+m_offset*dx_sum,y+m_offset*dy_sum,z+m_offset*dz_sum);
-        ANLFloatType dx=m_source[i]->get_dx(x+m_offset*dx_sum,y+m_offset*dy_sum,z+m_offset*dz_sum);
-        ANLFloatType dy=m_source[i]->get_dy(x+m_offset*dx_sum,y+m_offset*dy_sum,z+m_offset*dz_sum);
-        ANLFloatType dz=m_source[i]->get_dz(x+m_offset*dx_sum,y+m_offset*dy_sum,z+m_offset*dz_sum);
-        sum+=amp * (1.0-fabs(n));
-        dx_sum+=amp*dx*-n;
-        dy_sum+=amp*dy*-n;
-        dz_sum+=amp*dz*-n;
-        amp*=m_gain*clamp(sum,(ANLFloatType)0.0,(ANLFloatType)1.0);
-        x*=m_lacunarity;
-        y*=m_lacunarity;
-        z*=m_lacunarity;
-    }
-    return sum;
-}
-
-ANLFloatType CImplicitFractal::DeCarpentierSwiss_get(ANLFloatType x, ANLFloatType y, ANLFloatType z, ANLFloatType w, ANLFloatType u, ANLFloatType v)
-{
-	ANLFloatType sum=0;
-    ANLFloatType amp=1.0;
-
-    ANLFloatType dx_sum=0;
-    ANLFloatType dy_sum=0;
-    ANLFloatType dz_sum=0;
-    ANLFloatType dw_sum=0;
-    ANLFloatType du_sum=0;
-    ANLFloatType dv_sum=0;
-
-    x*=m_frequency;
-    y*=m_frequency;
-    z*=m_frequency;
-    w*=m_frequency;
-    u*=m_frequency;
-    v*=m_frequency;
-
-    for(unsigned int i=0; i<m_numoctaves; ++i)
-    {
-        ANLFloatType n=m_source[i]->get(x+m_offset*dx_sum,y+m_offset*dy_sum,z+m_offset*dz_sum);
-        ANLFloatType dx=m_source[i]->get_dx(x+m_offset*dx_sum,y+m_offset*dy_sum,z+m_offset*dx_sum, w+m_offset*dw_sum, u+m_offset*du_sum, v+m_offset*dv_sum);
-        ANLFloatType dy=m_source[i]->get_dy(x+m_offset*dx_sum,y+m_offset*dy_sum,z+m_offset*dz_sum, w+m_offset*dw_sum, u+m_offset*du_sum, v+m_offset*dv_sum);
-        ANLFloatType dz=m_source[i]->get_dz(x+m_offset*dx_sum,y+m_offset*dy_sum,z+m_offset*dz_sum, w+m_offset*dw_sum, u+m_offset*du_sum, v+m_offset*dv_sum);
-        ANLFloatType dw=m_source[i]->get_dw(x+m_offset*dx_sum,y+m_offset*dy_sum,z+m_offset*dz_sum, w+m_offset*dw_sum, u+m_offset*du_sum, v+m_offset*dv_sum);
-        ANLFloatType du=m_source[i]->get_du(x+m_offset*dx_sum,y+m_offset*dy_sum,z+m_offset*dz_sum, w+m_offset*dw_sum, u+m_offset*du_sum, v+m_offset*dv_sum);
-        ANLFloatType dv=m_source[i]->get_dv(x+m_offset*dx_sum,y+m_offset*dy_sum,z+m_offset*dz_sum, w+m_offset*dw_sum, u+m_offset*du_sum, v+m_offset*dv_sum);
-        sum+=amp * (1.0-fabs(n));
-        dx_sum+=amp*dx*-n;
-        dy_sum+=amp*dy*-n;
-        dz_sum+=amp*dz*-n;
-        dw_sum+=amp*dw*-n;
-        du_sum+=amp*du*-n;
-        dv_sum+=amp*dv*-n;
-        amp*=m_gain*clamp(sum,(ANLFloatType)0.0,(ANLFloatType)1.0);
-        x*=m_lacunarity;
-        y*=m_lacunarity;
-        z*=m_lacunarity;
-        w*=m_lacunarity;
-        u*=m_lacunarity;
-        v*=m_lacunarity;
-    }
-    return sum;
 }

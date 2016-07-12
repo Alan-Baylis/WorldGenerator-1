@@ -19,89 +19,76 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef RANDOM_GEN_H
-#define RANDOM_GEN_H
-#include <ctime>
-#include <algorithm>
-#include <climits>
-#include "../types.h"
 
-namespace anl
+namespace Sean.WorldGenerator.Noise
 {
-
-    class CBasePRNG
+    abstract public class CBasePRNG
     {
-        public:
-        CBasePRNG(){};
-        virtual ~CBasePRNG(){};
+        abstract public uint get ();
+        abstract public void setSeed (uint s);
 
-        virtual unsigned int get()=0;
-        virtual void setSeed(unsigned int s)=0;
-
-        void setSeedTime()
+        public void setSeedTime()
         {
-            setSeed(static_cast<unsigned int>(std::time(0)));
+            setSeed((uint)(System.DateTime.Now.Ticks));
         }
 
-        unsigned int getTarget(unsigned int t)
+        public uint getTarget(uint t)
         {
-            ANLFloatType v=get01();
-            return (unsigned int)(v*(ANLFloatType)t);
+            float v=get01();
+            return (uint)(v*(float)t);
         }
 
-        unsigned int getRange(unsigned int low, unsigned int high)
+        public uint getRange(uint low, uint high)
         {
-            if(high < low) std::swap(low, high);
-            ANLFloatType range = (ANLFloatType)((high - low)+1);
-            ANLFloatType val = (ANLFloatType)low + get01()*range;
-            return (unsigned int)(val);
+            if (high < low) {
+                uint temp = low;
+                low = high;
+                high = temp;
+            }
+            float range = (float)((high - low)+1);
+            float val = (float)low + get01()*range;
+            return (uint)(val);
         }
 
-        ANLFloatType get01()
+        public float get01()
         {
-            return ((ANLFloatType)get() / (ANLFloatType)(UINT_MAX));
+            return ((float)get() / (float)(uint.MaxValue));
         }
-    };
+    }
 
-    class LCG : public CBasePRNG
+    class LCG : CBasePRNG
     {
-        public:
-        LCG()
+        public LCG()
         {
             setSeed(10000);
         }
 
-        void setSeed(unsigned int s)
+        public override void setSeed(uint s)
         {
             m_state=s;
         }
 
-        unsigned int get()
+        public override uint get()
         {
             return (m_state=69069*m_state+362437);
         }
 
-        protected:
-        unsigned int m_state;
-    };
-
-
-
+        protected uint m_state;
+    }
 
     // The following generators are based on generators created by George Marsaglia
     // They use the an LCG object for seeding, to initialize various
     // state and tables. Seeding them is a bit more involved than an LCG.
-    class Xorshift : public CBasePRNG
+    public class Xorshift : CBasePRNG
     {
-        public:
-        Xorshift()
+        public Xorshift()
         {
             setSeed(10000);
         }
 
-        void setSeed(unsigned int s)
+        public override void setSeed(uint s)
         {
-			LCG lcg;
+            LCG lcg = new LCG ();
             lcg.setSeed(s);
             m_x=lcg.get();
             m_y=lcg.get();
@@ -110,29 +97,27 @@ namespace anl
             m_v=lcg.get();
         }
 
-        unsigned int get()
+        public override uint get()
         {
-            unsigned int t;
+            uint t;
             t=(m_x^(m_x>>7)); m_x=m_y; m_y=m_z; m_z=m_w; m_w=m_v;
             m_v=(m_v^(m_v<<6))^(t^(t<<13));
             return (m_y+m_y+1)*m_v;
         }
 
-        protected:
-        unsigned int m_x, m_y, m_z, m_w, m_v;
+        protected uint m_x, m_y, m_z, m_w, m_v;
     };
 
-    class MWC256 : public CBasePRNG
+    public class MWC256 : CBasePRNG
     {
-        public:
-        MWC256()
+        public MWC256()
         {
             setSeed(10000);
         }
 
-        void setSeed(unsigned int s)
+        public override void setSeed(uint s)
         {
-			LCG lcg;
+            LCG lcg = new LCG ();
             lcg.setSeed(s);
             for(int i=0; i<256; ++i)
             {
@@ -141,29 +126,28 @@ namespace anl
             c=lcg.getTarget(809430660);
         }
 
-        unsigned int get()
+        public override uint get()
         {
-            unsigned long long int t,a=809430660LL;
-            static unsigned char i=255;
-            t=a*m_Q[++i]+c; c=(t>>32);
-            return(m_Q[i]=(unsigned int)t);
+            ulong t,a=809430660;
+            byte i=255;
+            t=a*m_Q[++i]+c; c=(uint)(t>>32);
+            return(m_Q[i]=(uint)t);
         }
 
-        protected:
-        unsigned int m_Q[256], c;
-    };
+        protected uint[] m_Q = new uint[256];
+        protected uint c;
+    }
 
-    class CMWC4096 : public CBasePRNG
+    public class CMWC4096 : CBasePRNG
     {
-        public:
-        CMWC4096()
+        public CMWC4096()
         {
             setSeed(10000);
         }
 
-        void setSeed(unsigned int s)
+        public override void setSeed(uint s)
         {
-			LCG lcg;
+            LCG lcg = new LCG ();
             lcg.setSeed(s);   // Seed the global random source
 
             // Seed the table
@@ -175,34 +159,33 @@ namespace anl
             c=lcg.getTarget(18781);
         }
 
-        unsigned int get()
+        public override uint get()
         {
-            unsigned long long int t, a=18782LL, b=4294967295UL;
-            static unsigned int i=2095;
-            unsigned int r=(unsigned int)(b-1);
+            ulong t, a=18782, b=4294967295;
+            uint i=2095;
+            uint r=(uint)(b-1);
 
             i=(i+1)&4095;
             t=a*m_Q[i]+c;
-            c=(t>>32); t=(t&b)+c;
+            c=(uint)(t>>32); t=(t&b)+c;
             if(t>r) { c++; t=t-b;}
-            return (m_Q[i]=(unsigned int)(r-t));
+            return (m_Q[i]=(uint)(r-t));
         }
 
-        protected:
-        unsigned int m_Q[4096], c;
-    };
+        protected uint[] m_Q = new uint[4096];
+        protected uint c;
+    }
 
-    class KISS : public CBasePRNG
+    public class KISS : CBasePRNG
     {
-        public:
-        KISS()
+        public KISS()
         {
             setSeed(10000);
         }
 
-        void setSeed(unsigned int s)
+        public override void setSeed(uint s)
         {
-			LCG lcg;
+            LCG lcg = new LCG ();
             lcg.setSeed(s);
             z=lcg.get();
             w=lcg.get();
@@ -210,11 +193,11 @@ namespace anl
             jcong=lcg.get();
         }
 
-        unsigned int get()
+        public override uint get()
         {
             z=36969*(z&65535)+(z>>16);
             w=18000*(w&65535)+(w>>16);
-            unsigned int mwc = (z<<16)+w;
+            uint mwc = (z<<16)+w;
 
             jcong=69069*jcong+1234567;
 
@@ -223,9 +206,7 @@ namespace anl
             return ((mwc^jcong) + jsr);
         }
 
-        public:
-        unsigned int z,w,jsr,jcong;
-    };
-};
+        public uint z,w,jsr,jcong;
+    }
+}
 
-#endif

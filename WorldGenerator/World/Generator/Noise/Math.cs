@@ -1,12 +1,9 @@
-#ifndef IMPLICITMATH_H
-#define IMPLICITMATH_H
-
-#include "implicitmodulebase.h"
-
-#include <cmath>
-
-namespace anl
+using System;
+namespace Sean.WorldGenerator.Noise
 {
+   
+
+
     enum EUnaryMathOperation
     {
         ACOS,
@@ -47,31 +44,32 @@ namespace anl
 
     class CImplicitMath : public CImplicitModuleBase
     {
-        public:
-        CImplicitMath();
-        CImplicitMath(unsigned int op, ANLFloatType source=1, ANLFloatType p=1);
-        CImplicitMath(unsigned int op, CImplicitModuleBase * source=0, ANLFloatType p=1);
-        CImplicitMath(unsigned int op, ANLFloatType source=0, CImplicitModuleBase * p=0);
-        CImplicitMath(unsigned int op, CImplicitModuleBase * source=0, CImplicitModuleBase * p=0);
-        ~CImplicitMath();
+        public CImplicitMath();
+        public CImplicitMath(unsigned int op, float source=1, float p=1);
+        public CImplicitMath(unsigned int op, CImplicitModuleBase * source=0, float p=1);
+        public CImplicitMath(unsigned int op, float source=0, CImplicitModuleBase * p=0);
+        public CImplicitMath(unsigned int op, CImplicitModuleBase * source=0, CImplicitModuleBase * p=0);
 
-        void setSource(ANLFloatType v);
-        void setSource(CImplicitModuleBase * b);
-        void setParameter(ANLFloatType v);
-        void setParameter(CImplicitModuleBase * b);
-        void setOperation(unsigned int op);
+        public void setSource(float v);
+        public void setSource(CImplicitModuleBase * b);
+        public void setParameter(float v);
+        public void setParameter(CImplicitModuleBase * b);
+        public void setOperation(unsigned int op);
 
-        ANLFloatType get(ANLFloatType x, ANLFloatType y);
-        ANLFloatType get(ANLFloatType x, ANLFloatType y, ANLFloatType z);
-        ANLFloatType get(ANLFloatType x, ANLFloatType y, ANLFloatType z, ANLFloatType w);
-        ANLFloatType get(ANLFloatType x, ANLFloatType y, ANLFloatType z, ANLFloatType w, ANLFloatType u, ANLFloatType v);
+        public float get(float x, float y);
+        public float get(float x, float y, float z);
+        public float get(float x, float y, float z, float w);
+        public float get(float x, float y, float z, float w, float u, float v);
 
         protected:
         unsigned int m_op;
         CScalarParameter m_source;
         CScalarParameter m_parameter;
 
-        ANLFloatType applyOp(ANLFloatType v, ANLFloatType p);
+        float applyOp(float v, float p);
+
+
+
     };
 };
 
@@ -85,13 +83,13 @@ namespace anl
 {
     CImplicitMath::CImplicitMath() : CImplicitModuleBase(), m_op(ABS), m_source(0.0), m_parameter(0.0){}
 
-    CImplicitMath::CImplicitMath(unsigned int op, ANLFloatType source, ANLFloatType p) : CImplicitModuleBase(), m_op(op), m_source(source), m_parameter(p){}
-    CImplicitMath::CImplicitMath(unsigned int op, CImplicitModuleBase * source, ANLFloatType p) : CImplicitModuleBase(), m_op(op), m_source(source), m_parameter(p){}
-    CImplicitMath::CImplicitMath(unsigned int op, ANLFloatType source, CImplicitModuleBase * p) : CImplicitModuleBase(), m_op(op), m_source(source), m_parameter(p){}
+    CImplicitMath::CImplicitMath(unsigned int op, float source, float p) : CImplicitModuleBase(), m_op(op), m_source(source), m_parameter(p){}
+    CImplicitMath::CImplicitMath(unsigned int op, CImplicitModuleBase * source, float p) : CImplicitModuleBase(), m_op(op), m_source(source), m_parameter(p){}
+    CImplicitMath::CImplicitMath(unsigned int op, float source, CImplicitModuleBase * p) : CImplicitModuleBase(), m_op(op), m_source(source), m_parameter(p){}
     CImplicitMath::CImplicitMath(unsigned int op, CImplicitModuleBase * source, CImplicitModuleBase * p) : CImplicitModuleBase(), m_op(op), m_source(source), m_parameter(p){}
     CImplicitMath::~CImplicitMath() {}
 
-    void CImplicitMath::setSource(ANLFloatType v)
+    void CImplicitMath::setSource(float v)
     {
         m_source.set(v);
     }
@@ -101,7 +99,7 @@ namespace anl
         m_source.set(b);
     }
 
-    void CImplicitMath::setParameter(ANLFloatType v)
+    void CImplicitMath::setParameter(float v)
     {
         m_parameter.set(v);
     }
@@ -116,36 +114,36 @@ namespace anl
         m_op=op;
     }
 
-    ANLFloatType CImplicitMath::get(ANLFloatType x, ANLFloatType y)
+    float CImplicitMath::get(float x, float y)
     {
-        ANLFloatType v=m_source.get(x,y);
-        ANLFloatType p=m_parameter.get(x,y);
+        float v=m_source.get(x,y);
+        float p=m_parameter.get(x,y);
         return applyOp(v,p);
     }
 
-    ANLFloatType CImplicitMath::get(ANLFloatType x, ANLFloatType y, ANLFloatType z)
+    float CImplicitMath::get(float x, float y, float z)
     {
-        ANLFloatType v=m_source.get(x,y,z);
-        ANLFloatType p=m_parameter.get(x,y,z);
+        float v=m_source.get(x,y,z);
+        float p=m_parameter.get(x,y,z);
         return applyOp(v,p);
     }
 
-    ANLFloatType CImplicitMath::get(ANLFloatType x, ANLFloatType y, ANLFloatType z, ANLFloatType w)
+    float CImplicitMath::get(float x, float y, float z, float w)
     {
-        ANLFloatType v=m_source.get(x,y,z,w);
-        ANLFloatType p=m_parameter.get(x,y,z,w);
+        float v=m_source.get(x,y,z,w);
+        float p=m_parameter.get(x,y,z,w);
         return applyOp(v,p);
     }
 
-    ANLFloatType CImplicitMath::get(ANLFloatType x, ANLFloatType y, ANLFloatType z, ANLFloatType w, ANLFloatType u, ANLFloatType v)
+    float CImplicitMath::get(float x, float y, float z, float w, float u, float v)
     {
-        ANLFloatType val=m_source.get(x,y,z,w,u,v);
-        ANLFloatType p=m_parameter.get(x,y,z,w,u,v);
+        float val=m_source.get(x,y,z,w,u,v);
+        float p=m_parameter.get(x,y,z,w,u,v);
         return applyOp(val,p);
     }
 
 
-    ANLFloatType CImplicitMath::applyOp(ANLFloatType v, ANLFloatType p)
+    float CImplicitMath::applyOp(float v, float p)
     {
         switch(m_op)
         {
@@ -169,8 +167,8 @@ namespace anl
             case ONEMINUS: return 1.0-v; break;
             case PMINUS: return p-v; break;
             case SQRT: return sqrt(v); break;
-            case INTEGER: return (ANLFloatType)(int)v; break;
-            case FRACTIONAL: return v-(ANLFloatType)(int)v; break;
+            case INTEGER: return (float)(int)v; break;
+            case FRACTIONAL: return v-(float)(int)v; break;
 			case EASECUBIC: return hermite_blend(v); break;
 			case EASEQUINTIC: return quintic_blend(v); break;
             case SUM: return v+p; break;

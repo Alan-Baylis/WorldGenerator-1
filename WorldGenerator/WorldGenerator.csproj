@@ -50,7 +50,6 @@
     <Compile Include="Shared\UiTextGraphics.cs" />
     <Compile Include="World\Chunks.cs" />
     <Compile Include="World\Constants.cs" />
-    <Compile Include="World\Generator\Hashing.cs" />
     <Compile Include="World\Generator\Noise\AutoCorrect.cs" />
     <Compile Include="World\Generator\Noise\Cache.cs" />
     <Compile Include="World\Generator\Noise\Fractal.cs" />
@@ -83,6 +82,13 @@
     <Compile Include="Shared\GameItemDynamic.cs" />
     <Compile Include="Shared\GameItemStatic.cs" />
     <Compile Include="World\Map\Water.cs" />
+    <Compile Include="World\Generator\Noise\Hashing.cs" />
+    <Compile Include="World\Generator\Noise\DataSource.cs" />
+    <Compile Include="World\Generator\Noise\Math.cs" />
+    <Compile Include="World\Generator\Noise\Misc.cs" />
+    <Compile Include="World\Generator\Noise\Utility.cs" />
+    <Compile Include="World\Generator\Noise\BasisFunction.cs" />
+    <Compile Include="World\Generator\Noise\Random_Gen.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

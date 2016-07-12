@@ -19,70 +19,69 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef UTILITY_H
-#define UTILITY_H
-#include <cmath>
-#include "../types.h"
+using System;
+using System.Collections.Generic;
+using Sean.Shared;
 
-template<typename TYPE> TYPE clamp(TYPE v, TYPE l, TYPE h)
+namespace Sean.WorldGenerator.Noise
 {
-    if(v<l) v=l;
-    if(v>h) v=h;
-
-    return v;
-};
-
-template<typename TYPE> TYPE lerp(ANLFloatType t, TYPE a, TYPE b)
-{
-    return a+t*(b-a);
-}
-
-template<typename TYPE> bool isPowerOf2(TYPE n)
-{
-    return !((n-1) & n);
-}
-
-inline ANLFloatType hermite_blend(ANLFloatType t)
-{
-    return (t*t*(3-2*t));
-}
-
-inline ANLFloatType quintic_blend(ANLFloatType t)
-{
-    return t*t*t*(t*(t*6-15)+10);
-}
-
-inline int fast_floor(ANLFloatType t)
-{
-    return (t>0 ? (int)t : (int)t - 1);
-}
-
-inline ANLFloatType array_dot(ANLFloatType *arr, ANLFloatType a, ANLFloatType b)
-{
-    return a*arr[0] + b*arr[1];
-}
-
-inline ANLFloatType array_dot3(ANLFloatType *arr, ANLFloatType a, ANLFloatType b, ANLFloatType c)
-{
-    return a*arr[0] + b*arr[1] + c*arr[2];
-}
-
-inline ANLFloatType bias(ANLFloatType b, ANLFloatType t)
-{
-    return pow(t, log(b)/log(0.5));
-}
-
-inline ANLFloatType gain(ANLFloatType g, ANLFloatType t)
-{
-    if(t<0.5)
+    static class Utility
     {
-        return bias(1.0-g, 2.0*t)/2.0;
-    }
-    else
-    {
-        return 1.0 - bias(1.0-g, 2.0 - 2.0*t)/2.0;
+        static public float clamp (float v, float l, float h)
+        {
+            if (v < l) v = l;
+            if (v > h) v = h;
+            return v;
+        }
+
+        static float lerp (float t, float a, float b)
+        {
+            return a + t * (b - a);
+        }
+
+        static bool isPowerOf2 (int n)
+        {
+            return ((n - 1) & n) != 0;
+        }
+
+        static float hermite_blend (float t)
+        {
+            return (t * t * (3 - 2 * t));
+        }
+
+        static float quintic_blend (float t)
+        {
+            return t * t * t * (t * (t * 6 - 15) + 10);
+        }
+
+        static int fast_floor (float t)
+        {
+            return (t > 0 ? (int)t : (int)t - 1);
+        }
+
+        static float array_dot (float[] arr, float a, float b)
+        {
+            return a * arr [0] + b * arr [1];
+        }
+
+        static float array_dot3 (float[] arr, float a, float b, float c)
+        {
+            return a * arr [0] + b * arr [1] + c * arr [2];
+        }
+
+        static float bias (float b, float t)
+        {
+            return (float)(Math.Pow (t, Math.Log (b) / Math.Log (0.5)));
+        }
+
+        static float gain (float g, float t)
+        {
+            if (t < 0.5f) {
+                return bias (1.0f - g, 2.0f * t) / 2.0f;
+            } else {
+                return 1.0f - bias (1.0f - g, 2.0f - 2.0f * t) / 2.0f;
+            }
+        }
     }
 }
-
-#endif
 

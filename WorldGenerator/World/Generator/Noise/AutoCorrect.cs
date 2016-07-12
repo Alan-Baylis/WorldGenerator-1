@@ -26,21 +26,21 @@ namespace Sean.WorldGenerator.Noise
     // calculate() is called.
 
 
-    class CImplicitAutoCorrect : public CImplicitModuleBase
+    class CImplicitAutoCorrect : CImplicitModuleBase
     {
         protected:
         CImplicitModuleBase * m_source;
-        ANLFloatType m_low, m_high;
-        ANLFloatType m_scale2, m_offset2;
-        ANLFloatType m_scale3, m_offset3;
-        ANLFloatType m_scale4, m_offset4;
-        ANLFloatType m_scale6, m_offset6;
+        float m_low, m_high;
+        float m_scale2, m_offset2;
+        float m_scale3, m_offset3;
+        float m_scale4, m_offset4;
+        float m_scale6, m_offset6;
 
 
 
     CImplicitAutoCorrect::CImplicitAutoCorrect() : CImplicitModuleBase(), m_source(0), m_low(-1.0), m_high(1.0){}
-    CImplicitAutoCorrect::CImplicitAutoCorrect(ANLFloatType low, ANLFloatType high) : CImplicitModuleBase(), m_source(0), m_low(low), m_high(high){calculate();}
-    CImplicitAutoCorrect::CImplicitAutoCorrect(CImplicitModuleBase * m, ANLFloatType low, ANLFloatType high) : CImplicitModuleBase(), m_source(m), m_low(low), m_high(high){calculate();}
+    CImplicitAutoCorrect::CImplicitAutoCorrect(float low, float high) : CImplicitModuleBase(), m_source(0), m_low(low), m_high(high){calculate();}
+    CImplicitAutoCorrect::CImplicitAutoCorrect(CImplicitModuleBase * m, float low, float high) : CImplicitModuleBase(), m_source(m), m_low(low), m_high(high){calculate();}
 
     void CImplicitAutoCorrect::setSource(CImplicitModuleBase * m)
     {
@@ -48,7 +48,7 @@ namespace Sean.WorldGenerator.Noise
         calculate();
     }
 
-    void CImplicitAutoCorrect::setRange(ANLFloatType low, ANLFloatType high)
+    void CImplicitAutoCorrect::setRange(float low, float high)
     {
         m_low=low; m_high=high;
         calculate();
@@ -57,19 +57,19 @@ namespace Sean.WorldGenerator.Noise
     void CImplicitAutoCorrect::calculate()
     {
         if(!m_source) return;
-        ANLFloatType mn,mx;
+        float mn,mx;
         LCG lcg;
         //lcg.setSeedTime();
 
         // Calculate 2D
-        mn=10000.0;
-        mx=-10000.0;
+        mn=10000.0f;
+        mx=-10000.0f;
         for(int c=0; c<10000; ++c)
         {
-            ANLFloatType nx=lcg.get01()*4.0-2.0;
-            ANLFloatType ny=lcg.get01()*4.0-2.0;
+            float nx=lcg.get01()*4.0f-2.0f;
+            float ny=lcg.get01()*4.0f-2.0f;
 
-            ANLFloatType v=m_source->get(nx,ny);
+            float v=m_source->get(nx,ny);
             if(v<mn) mn=v;
             if(v>mx) mx=v;
         }
@@ -77,15 +77,15 @@ namespace Sean.WorldGenerator.Noise
         m_offset2=m_low-mn*m_scale2;
 
         // Calculate 3D
-        mn=10000.0;
-        mx=-10000.0;
+        mn=10000.0f;
+        mx=-10000.0f;
         for(int c=0; c<10000; ++c)
         {
-            ANLFloatType nx=lcg.get01()*4.0-2.0;
-            ANLFloatType ny=lcg.get01()*4.0-2.0;
-            ANLFloatType nz=lcg.get01()*4.0-2.0;
+            float nx=lcg.get01()*4.0f-2.0f;
+            float ny=lcg.get01()*4.0f-2.0f;
+            float nz=lcg.get01()*4.0f-2.0f;
 
-            ANLFloatType v=m_source->get(nx,ny,nz);
+            float v=m_source->get(nx,ny,nz);
             if(v<mn) mn=v;
             if(v>mx) mx=v;
         }
@@ -93,16 +93,16 @@ namespace Sean.WorldGenerator.Noise
         m_offset3=m_low-mn*m_scale3;
 
         // Calculate 4D
-        mn=10000.0;
-        mx=-10000.0;
+        mn=10000.0f;
+        mx=-10000.0f;
         for(int c=0; c<10000; ++c)
         {
-            ANLFloatType nx=lcg.get01()*4.0-2.0;
-            ANLFloatType ny=lcg.get01()*4.0-2.0;
-            ANLFloatType nz=lcg.get01()*4.0-2.0;
-            ANLFloatType nw=lcg.get01()*4.0-2.0;
+            float nx=lcg.get01()*4.0f-2.0f;
+            float ny=lcg.get01()*4.0f-2.0f;
+            float nz=lcg.get01()*4.0f-2.0f;
+            float nw=lcg.get01()*4.0f-2.0f;
 
-            ANLFloatType v=m_source->get(nx,ny,nz,nw);
+            float v=m_source->get(nx,ny,nz,nw);
             if(v<mn) mn=v;
             if(v>mx) mx=v;
         }
@@ -110,18 +110,18 @@ namespace Sean.WorldGenerator.Noise
         m_offset4=m_low-mn*m_scale4;
 
         // Calculate 6D
-        mn=10000.0;
-        mx=-10000.0;
+        mn=10000.0f;
+        mx=-10000.0f;
         for(int c=0; c<10000; ++c)
         {
-            ANLFloatType nx=lcg.get01()*4.0-2.0;
-            ANLFloatType ny=lcg.get01()*4.0-2.0;
-            ANLFloatType nz=lcg.get01()*4.0-2.0;
-            ANLFloatType nw=lcg.get01()*4.0-2.0;
-            ANLFloatType nu=lcg.get01()*4.0-2.0;
-            ANLFloatType nv=lcg.get01()*4.0-2.0;
+            float nx=lcg.get01()*4.0f-2.0f;
+            float ny=lcg.get01()*4.0f-2.0f;
+            float nz=lcg.get01()*4.0f-2.0f;
+            float nw=lcg.get01()*4.0f-2.0f;
+            float nu=lcg.get01()*4.0f-2.0f;
+            float nv=lcg.get01()*4.0f-2.0f;
 
-            ANLFloatType v=m_source->get(nx,ny,nz,nw,nu,nv);
+            float v=m_source->get(nx,ny,nz,nw,nu,nv);
             if(v<mn) mn=v;
             if(v>mx) mx=v;
         }
@@ -130,34 +130,34 @@ namespace Sean.WorldGenerator.Noise
     }
 
 
-    ANLFloatType CImplicitAutoCorrect::get(ANLFloatType x, ANLFloatType y)
+    float CImplicitAutoCorrect::get(float x, float y)
     {
-        if(!m_source) return 0.0;
+        if(!m_source) return 0.0f;
 
-        ANLFloatType v=m_source->get(x,y);
+        float v=m_source->get(x,y);
         return std::max(m_low, std::min(m_high, v*m_scale2+m_offset2));
     }
 
-    ANLFloatType CImplicitAutoCorrect::get(ANLFloatType x, ANLFloatType y, ANLFloatType z)
+    float CImplicitAutoCorrect::get(float x, float y, float z)
     {
-        if(!m_source) return 0.0;
+        if(!m_source) return 0.0f;
 
-        ANLFloatType v=m_source->get(x,y,z);
+        float v=m_source->get(x,y,z);
         return std::max(m_low, std::min(m_high, v*m_scale3+m_offset3));
     }
-    ANLFloatType CImplicitAutoCorrect::get(ANLFloatType x, ANLFloatType y, ANLFloatType z, ANLFloatType w)
+    float CImplicitAutoCorrect::get(float x, float y, float z, float w)
     {
-        if(!m_source) return 0.0;
+        if(!m_source) return 0.0f;
 
-        ANLFloatType v=m_source->get(x,y,z,w);
+        float v=m_source->get(x,y,z,w);
         return std::max(m_low, std::min(m_high, v*m_scale4+m_offset4));
     }
 
-    ANLFloatType CImplicitAutoCorrect::get(ANLFloatType x, ANLFloatType y, ANLFloatType z, ANLFloatType w, ANLFloatType u, ANLFloatType v)
+    float CImplicitAutoCorrect::get(float x, float y, float z, float w, float u, float v)
     {
-        if(!m_source) return 0.0;
+        if(!m_source) return 0.0f;
 
-        ANLFloatType val=m_source->get(x,y,z,w,u,v);
+        float val=m_source->get(x,y,z,w,u,v);
         return std::max(m_low, std::min(m_high, val*m_scale6+m_offset6));
     }
 };
