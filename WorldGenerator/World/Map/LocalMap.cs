@@ -18,7 +18,7 @@ namespace Sean.WorldGenerator
 
         private Dictionary<int, MapChunk> mapChunks;
         private Generator generator;
-        private static int MaxChunkLimit = (int)Math.Sqrt(int.MaxValue);
+        private static int MaxChunkLimit = (int)Math.Math.Sqrt(int.MaxValue);
 
         public LocalMap(int seed)
         {

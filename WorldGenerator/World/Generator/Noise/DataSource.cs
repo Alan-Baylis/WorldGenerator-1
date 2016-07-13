@@ -6,20 +6,20 @@ namespace Sean.WorldGenerator.Noise
         public DataSource ()
         {}
 
-        public abstract float get (float x, float y);
-        public abstract float get (float x, float y, float z);
-        public abstract float get (float x, float y, float z, float w);
-        public abstract float get (float x, float y, float z, float w, float u, float v);
+        public abstract double get (double x, double y);
+        public abstract double get (double x, double y, double z);
+        public abstract double get (double x, double y, double z, double w);
+        public abstract double get (double x, double y, double z, double w, double u, double v);
     }
 
     public class StaticDataSource : DataSource
     {
-        private float data;
+        private double data;
 
-        public override float get (float x, float y) { return data; }
-        public override float get (float x, float y, float z) { return data; }
-        public override float get (float x, float y, float z, float w) { return data; }
-        public override float get (float x, float y, float z, float w, float u, float v) { return data; }
+        public override double get (double x, double y) { return data; }
+        public override double get (double x, double y, double z) { return data; }
+        public override double get (double x, double y, double z, double w) { return data; }
+        public override double get (double x, double y, double z, double w, double u, double v) { return data; }
     }
 }
 

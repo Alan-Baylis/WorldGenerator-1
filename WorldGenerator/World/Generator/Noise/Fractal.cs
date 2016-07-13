@@ -42,18 +42,18 @@ namespace Sean.WorldGenerator.Noise
     {
         private const int MaxSources = 20;
 
-        private std::shared_ptr<CImplicitBasisFunction> [] m_basis;
+        private CImplicitBasisFunction[] m_basis;
         new private CImplicitModuleBase [] m_source;
-        private float [] m_exparray;
-        private float [] [] m_correct;
+        private double [] m_exparray;
+        private double [,] m_correct;
 
-        private float m_offset, m_gain, m_H;
-        private float m_frequency, m_lacunarity;
+        private double m_offset, m_gain, m_H;
+        private double m_frequency, m_lacunarity;
         private uint m_numoctaves;
         private EFractalTypes m_type;
         private bool m_rotatedomain;
 
-        CImplicitFractal (EFractalTypes type, uint basistype, uint interptype, int octaves, float freq, bool rotatedomain) : base ()
+        CImplicitFractal (EFractalTypes type, CImplicitBasisFunction.EBasisTypes basistype, CImplicitBasisFunction.EInterpTypes interptype, uint octaves, double freq, bool rotatedomain) : base ()
         {
             m_rotatedomain = rotatedomain;
             setNumOctaves (octaves);
@@ -63,18 +63,18 @@ namespace Sean.WorldGenerator.Noise
             setAllSourceTypes (basistype, interptype);
             resetAllSources ();
 
-            m_basis = new std::shared_ptr<CImplicitBasisFunction> [MaxSources];
+            m_basis = new CImplicitBasisFunction[MaxSources];
             m_source = new CImplicitModuleBase [MaxSources];
-            m_exparray = new float [MaxSources];
-            m_correct = new float [MaxSources] [2];
+            m_exparray = new double [MaxSources];
+            m_correct = new double [MaxSources,2];
         }
 
-        void setNumOctaves (int n) { if (n >= MaxSources) n = MaxSources - 1; m_numoctaves = n; }
-        void setFrequency (float f) { m_frequency = f; }
-        void setLacunarity (float l) { m_lacunarity = l; }
-        void setGain (float g) { m_gain = g; }
-        void setOffset (float o) { m_offset = o; }
-        void setH (float h) { m_H = h; }
+        void setNumOctaves (uint n) { if (n >= MaxSources) n = MaxSources - 1; m_numoctaves = n; }
+        void setFrequency (double f) { m_frequency = f; }
+        void setLacunarity (double l) { m_lacunarity = l; }
+        void setGain (double g) { m_gain = g; }
+        void setOffset (double o) { m_offset = o; }
+        void setH (double h) { m_H = h; }
 
         void setType (EFractalTypes t)
         {
@@ -90,22 +90,22 @@ namespace Sean.WorldGenerator.Noise
             };
         }
 
-        void setAllSourceTypes (uint basis_type, uint interp)
+        void setAllSourceTypes (CImplicitBasisFunction.EBasisTypes basis_type, CImplicitBasisFunction.EInterpTypes interp)
         {
             for (int i = 0; i < MaxSources; ++i) {
                 //m_basis[i].setType(basis_type);
                 //m_basis[i].setInterp(interp);
-                m_basis [i] = std::shared_ptr<CImplicitBasisFunction> (new CImplicitBasisFunction (basis_type, interp, m_rotatedomain));
+                m_basis [i] = new CImplicitBasisFunction (basis_type, interp, m_rotatedomain);
                 //if(!m_rotatedomain) m_basis[i]->setRotationAngle(1,0,0,0);
             }
         }
 
-        void setSourceType (int which, uint type, uint interp)
+        void setSourceType (int which, CImplicitBasisFunction.EBasisTypes type, CImplicitBasisFunction.EInterpTypes interp)
         {
             if (which >= MaxSources || which < 0) return;
-            if (!m_basis [which]) return;
-            m_basis [which]->setType (type);
-            m_basis [which]->setInterp (interp);
+            if (m_basis [which] == null) return;
+            m_basis [which].setType (type);
+            m_basis [which].setInterp (interp);
             //if(!m_rotatedomain) m_basis[which]->setRotationAngle(1,0,0,0);
         }
 
@@ -118,7 +118,7 @@ namespace Sean.WorldGenerator.Noise
         void resetSource (int which)
         {
             if (which < 0 || which >= MaxSources) return;
-            if (!m_basis [which]) return;
+            if (m_basis [which] == null) return;
             m_source [which] = m_basis [which].get ();
         }
 
@@ -145,9 +145,9 @@ namespace Sean.WorldGenerator.Noise
             return m_basis [which].get ();
         }
 
-        public override float get (float x, float y)
+        public override double get (double x, double y)
         {
-            float v;
+            double v;
             switch (m_type) {
             case EFractalTypes.FBM: v = fBm_get (x, y); break;
             case EFractalTypes.RIDGEDMULTI: v = RidgedMulti_get (x, y); break;
@@ -161,9 +161,9 @@ namespace Sean.WorldGenerator.Noise
             return v;
         }
 
-        public override float get (float x, float y, float z)
+        public override double get (double x, double y, double z)
         {
-            float val;
+            double val;
             switch (m_type) {
             case EFractalTypes.FBM: val = fBm_get (x, y, z); break;
             case EFractalTypes.RIDGEDMULTI: val = RidgedMulti_get (x, y, z); break;
@@ -177,9 +177,9 @@ namespace Sean.WorldGenerator.Noise
             return val;
         }
 
-        public override float get (float x, float y, float z, float w)
+        public override double get (double x, double y, double z, double w)
         {
-            float val;
+            double val;
             switch (m_type) {
             case EFractalTypes.FBM: val = fBm_get (x, y, z, w); break;
             case EFractalTypes.RIDGEDMULTI: val = RidgedMulti_get (x, y, z, w); break;
@@ -192,9 +192,9 @@ namespace Sean.WorldGenerator.Noise
             return val;
         }
 
-        public override float get (float x, float y, float z, float w, float u, float v)
+        public override double get (double x, double y, double z, double w, double u, double v)
         {
-            float val;
+            double val;
             switch (m_type) {
             case EFractalTypes.FBM: val = fBm_get (x, y, z, w, u, v); break;
             case EFractalTypes.RIDGEDMULTI: val = RidgedMulti_get (x, y, z, w, u, v); break;
@@ -212,19 +212,19 @@ namespace Sean.WorldGenerator.Noise
         {
             //std::cout << "Weights: ";
             for (int i = 0; i < MaxSources; ++i) {
-                m_exparray [i] = (float)Math.Pow (m_lacunarity, -i * m_H);
+                m_exparray [i] = Math.Pow (m_lacunarity, -i * m_H);
             }
             // Calculate scale/bias pairs by guessing at minimum and maximum values and remapping to [-1,1]
-            float minvalue = 0.0f, maxvalue = 0.0f;
+            double minvalue = 0.0f, maxvalue = 0.0f;
             for (int i = 0; i < MaxSources; ++i) {
                 minvalue += -1.0f * m_exparray [i];
                 maxvalue += 1.0f * m_exparray [i];
 
-                float A = -1.0f, B = 1.0f;
-                float scale = (B - A) / (maxvalue - minvalue);
-                float bias = A - minvalue * scale;
-                m_correct [i] [0] = scale;
-                m_correct [i] [1] = bias;
+                double A = -1.0f, B = 1.0f;
+                double scale = (B - A) / (maxvalue - minvalue);
+                double bias = A - minvalue * scale;
+                m_correct [i,0] = scale;
+                m_correct [i,1] = bias;
 
                 //std::cout << minvalue << " " << maxvalue << " " << scale << " " << bias << std::endl;
             }
@@ -233,19 +233,19 @@ namespace Sean.WorldGenerator.Noise
         void RidgedMulti_calcWeights ()
         {
             for (int i = 0; i < MaxSources; ++i) {
-                m_exparray [i] = (float)Math.Pow (m_lacunarity, -i * m_H);
+                m_exparray [i] = Math.Pow (m_lacunarity, -i * m_H);
             }
             // Calculate scale/bias pairs by guessing at minimum and maximum values and remapping to [-1,1]
-            float minvalue = 0.0f, maxvalue = 0.0f;
+            double minvalue = 0.0f, maxvalue = 0.0f;
             for (int i = 0; i < MaxSources; ++i) {
                 minvalue += (m_offset - 1.0f) * (m_offset - 1.0f) * m_exparray [i];
                 maxvalue += (m_offset) * (m_offset) * m_exparray [i];
 
-                float A = -1.0f, B = 1.0f;
-                float scale = (B - A) / (maxvalue - minvalue);
-                float bias = A - minvalue * scale;
-                m_correct [i] [0] = scale;
-                m_correct [i] [1] = bias;
+                double A = -1.0f, B = 1.0f;
+                double scale = (B - A) / (maxvalue - minvalue);
+                double bias = A - minvalue * scale;
+                m_correct [i,0] = scale;
+                m_correct [i,1] = bias;
             }
 
         }
@@ -253,19 +253,19 @@ namespace Sean.WorldGenerator.Noise
         void DeCarpentierSwiss_calcWeights ()
         {
             for (int i = 0; i < MaxSources; ++i) {
-                m_exparray [i] = (float)Math.Pow (m_lacunarity, -i * m_H);
+                m_exparray [i] = Math.Pow (m_lacunarity, -i * m_H);
             }
             // Calculate scale/bias pairs by guessing at minimum and maximum values and remapping to [-1,1]
-            float minvalue = 0.0f, maxvalue = 0.0f;
+            double minvalue = 0.0f, maxvalue = 0.0f;
             for (int i = 0; i < MaxSources; ++i) {
                 minvalue += (m_offset - 1.0f) * (m_offset - 1.0f) * m_exparray [i];
                 maxvalue += (m_offset) * (m_offset) * m_exparray [i];
 
-                float A = -1.0f, B = 1.0f;
-                float scale = (B - A) / (maxvalue - minvalue);
-                float bias = A - minvalue * scale;
-                m_correct [i] [0] = scale;
-                m_correct [i] [1] = bias;
+                double A = -1.0f, B = 1.0f;
+                double scale = (B - A) / (maxvalue - minvalue);
+                double bias = A - minvalue * scale;
+                m_correct [i,0] = scale;
+                m_correct [i,1] = bias;
             }
 
         }
@@ -273,20 +273,20 @@ namespace Sean.WorldGenerator.Noise
         void Billow_calcWeights ()
         {
             for (int i = 0; i < MaxSources; ++i) {
-                m_exparray [i] = (float)Math.Pow (m_lacunarity, -i * m_H);
+                m_exparray [i] = Math.Pow (m_lacunarity, -i * m_H);
             }
 
             // Calculate scale/bias pairs by guessing at minimum and maximum values and remapping to [-1,1]
-            float minvalue = 0.0f, maxvalue = 0.0f;
+            double minvalue = 0.0f, maxvalue = 0.0f;
             for (int i = 0; i < MaxSources; ++i) {
                 minvalue += -1.0f * m_exparray [i];
                 maxvalue += 1.0f * m_exparray [i];
 
-                float A = -1.0f, B = 1.0f;
-                float scale = (B - A) / (maxvalue - minvalue);
-                float bias = A - minvalue * scale;
-                m_correct [i] [0] = scale;
-                m_correct [i] [1] = bias;
+                double A = -1.0f, B = 1.0f;
+                double scale = (B - A) / (maxvalue - minvalue);
+                double bias = A - minvalue * scale;
+                m_correct [i,0] = scale;
+                m_correct [i,1] = bias;
             }
 
         }
@@ -294,31 +294,31 @@ namespace Sean.WorldGenerator.Noise
         void Multi_calcWeights ()
         {
             for (int i = 0; i < MaxSources; ++i) {
-                m_exparray [i] = (float)Math.Pow (m_lacunarity, -i * m_H);
+                m_exparray [i] = Math.Pow (m_lacunarity, -i * m_H);
             }
             // Calculate scale/bias pairs by guessing at minimum and maximum values and remapping to [-1,1]
-            float minvalue = 1.0f, maxvalue = 1.0f;
+            double minvalue = 1.0f, maxvalue = 1.0f;
             for (int i = 0; i < MaxSources; ++i) {
                 minvalue *= -1.0f * m_exparray [i] + 1.0f;
                 maxvalue *= 1.0f * m_exparray [i] + 1.0f;
 
-                float A = -1.0f, B = 1.0f;
-                float scale = (B - A) / (maxvalue - minvalue);
-                float bias = A - minvalue * scale;
-                m_correct [i] [0] = scale;
-                m_correct [i] [1] = bias;
+                double A = -1.0f, B = 1.0f;
+                double scale = (B - A) / (maxvalue - minvalue);
+                double bias = A - minvalue * scale;
+                m_correct [i,0] = scale;
+                m_correct [i,1] = bias;
             }
         }
 
         void HybridMulti_calcWeights ()
         {
             for (int i = 0; i < MaxSources; ++i) {
-                m_exparray [i] = (float)Math.Pow (m_lacunarity, -i * m_H);
+                m_exparray [i] = Math.Pow (m_lacunarity, -i * m_H);
             }
             // Calculate scale/bias pairs by guessing at minimum and maximum values and remapping to [-1,1]
-            float minvalue = 1.0f, maxvalue = 1.0f;
-            float weightmin, weightmax;
-            float A = -1.0f, B = 1.0f, scale, bias;
+            double minvalue = 1.0f, maxvalue = 1.0f;
+            double weightmin, weightmax;
+            double A = -1.0f, B = 1.0f, scale, bias;
 
             minvalue = m_offset - 1.0f;
             maxvalue = m_offset + 1.0f;
@@ -327,14 +327,14 @@ namespace Sean.WorldGenerator.Noise
 
             scale = (B - A) / (maxvalue - minvalue);
             bias = A - minvalue * scale;
-            m_correct [0] [0] = scale;
-            m_correct [0] [1] = bias;
+            m_correct [0,0] = scale;
+            m_correct [0,1] = bias;
 
             for (int i = 1; i < MaxSources; ++i) {
                 if (weightmin > 1.0) weightmin = 1.0f;
                 if (weightmax > 1.0) weightmax = 1.0f;
 
-                float signal = (m_offset - 1.0f) * m_exparray [i];
+                double signal = (m_offset - 1.0f) * m_exparray [i];
                 minvalue += signal * weightmin;
                 weightmin *= m_gain * signal;
 
@@ -344,19 +344,19 @@ namespace Sean.WorldGenerator.Noise
 
                 scale = (B - A) / (maxvalue - minvalue);
                 bias = A - minvalue * scale;
-                m_correct [i] [0] = scale;
-                m_correct [i] [1] = bias;
+                m_correct [i,0] = scale;
+                m_correct [i,1] = bias;
             }
         }
 
-        float fBm_get (float x, float y)
+        double fBm_get (double x, double y)
         {
-            float sum = 0.0f;
-            float amp = 1.0f;
+            double sum = 0.0f;
+            double amp = 1.0f;
             x *= m_frequency;
             y *= m_frequency;
             for (uint i = 0; i < m_numoctaves; ++i) {
-                float n = m_source [i].get (x, y);
+                double n = m_source [i].get (x, y);
                 sum += n * amp;
                 amp *= m_gain;
                 x *= m_lacunarity;
@@ -365,15 +365,15 @@ namespace Sean.WorldGenerator.Noise
             return sum;
         }
 
-        float fBm_get (float x, float y, float z)
+        double fBm_get (double x, double y, double z)
         {
-            float sum = 0.0f;
-            float amp = 1.0f;
+            double sum = 0.0f;
+            double amp = 1.0f;
             x *= m_frequency;
             y *= m_frequency;
             z *= m_frequency;
             for (uint i = 0; i < m_numoctaves; ++i) {
-                float n = m_source [i].get (x, y, z);
+                double n = m_source [i].get (x, y, z);
                 sum += n * amp;
                 amp *= m_gain;
                 x *= m_lacunarity;
@@ -383,16 +383,16 @@ namespace Sean.WorldGenerator.Noise
             return sum;
         }
 
-        float fBm_get (float x, float y, float z, float w)
+        double fBm_get (double x, double y, double z, double w)
         {
-            float sum = 0.0f;
-            float amp = 1.0f;
+            double sum = 0.0f;
+            double amp = 1.0f;
             x *= m_frequency;
             y *= m_frequency;
             z *= m_frequency;
             w *= m_frequency;
             for (uint i = 0; i < m_numoctaves; ++i) {
-                float n = m_source [i].get (x, y, z, w);
+                double n = m_source [i].get (x, y, z, w);
                 sum += n * amp;
                 amp *= m_gain;
                 x *= m_lacunarity;
@@ -403,10 +403,10 @@ namespace Sean.WorldGenerator.Noise
             return sum;
         }
 
-        float fBm_get (float x, float y, float z, float w, float u, float v)
+        double fBm_get (double x, double y, double z, double w, double u, double v)
         {
-            float sum = 0.0f;
-            float amp = 1.0f;
+            double sum = 0.0f;
+            double amp = 1.0f;
             x *= m_frequency;
             y *= m_frequency;
             z *= m_frequency;
@@ -414,7 +414,7 @@ namespace Sean.WorldGenerator.Noise
             u *= m_frequency;
             v *= m_frequency;
             for (uint i = 0; i < m_numoctaves; ++i) {
-                float n = m_source [i].get (x, y, z, w);
+                double n = m_source [i].get (x, y, z, w);
                 sum += n * amp;
                 amp *= m_gain;
                 x *= m_lacunarity;
@@ -427,9 +427,9 @@ namespace Sean.WorldGenerator.Noise
             return sum;
         }
 
-        float Multi_get (float x, float y)
+        double Multi_get (double x, double y)
         {
-            float value = 1.0f;
+            double value = 1.0f;
             x *= m_frequency;
             y *= m_frequency;
             for (uint i = 0; i < m_numoctaves; ++i) {
@@ -437,12 +437,12 @@ namespace Sean.WorldGenerator.Noise
                 x *= m_lacunarity;
                 y *= m_lacunarity;
             }
-            return value * m_correct [m_numoctaves - 1] [0] + m_correct [m_numoctaves - 1] [1];
+            return value * m_correct [m_numoctaves - 1, 0] + m_correct [m_numoctaves - 1, 1];
         }
 
-        float Multi_get (float x, float y, float z, float w)
+        double Multi_get (double x, double y, double z, double w)
         {
-            float value = 1.0f;
+            double value = 1.0f;
             x *= m_frequency;
             y *= m_frequency;
             z *= m_frequency;
@@ -454,12 +454,12 @@ namespace Sean.WorldGenerator.Noise
                 z *= m_lacunarity;
                 w *= m_lacunarity;
             }
-            return value * m_correct [m_numoctaves - 1] [0] + m_correct [m_numoctaves - 1] [1];
+            return value * m_correct [m_numoctaves - 1, 0] + m_correct [m_numoctaves - 1, 1];
         }
 
-        float Multi_get (float x, float y, float z)
+        double Multi_get (double x, double y, double z)
         {
-            float value = 1.0f;
+            double value = 1.0f;
             x *= m_frequency;
             y *= m_frequency;
             z *= m_frequency;
@@ -469,12 +469,12 @@ namespace Sean.WorldGenerator.Noise
                 y *= m_lacunarity;
                 z *= m_lacunarity;
             }
-            return value * m_correct [m_numoctaves - 1] [0] + m_correct [m_numoctaves - 1] [1];
+            return value * m_correct [m_numoctaves - 1, 0] + m_correct [m_numoctaves - 1, 1];
         }
 
-        float Multi_get (float x, float y, float z, float w, float u, float v)
+        double Multi_get (double x, double y, double z, double w, double u, double v)
         {
-            float value = 1.0f;
+            double value = 1.0f;
             x *= m_frequency;
             y *= m_frequency;
             z *= m_frequency;
@@ -490,17 +490,17 @@ namespace Sean.WorldGenerator.Noise
                 u *= m_lacunarity;
                 v *= m_lacunarity;
             }
-            return value * m_correct [m_numoctaves - 1] [0] + m_correct [m_numoctaves - 1] [1];
+            return value * m_correct [m_numoctaves - 1, 0] + m_correct [m_numoctaves - 1, 1];
         }
 
-        float Billow_get (float x, float y)
+        double Billow_get (double x, double y)
         {
-            float sum = 0.0f;
-            float amp = 1.0f;
+            double sum = 0.0f;
+            double amp = 1.0f;
             x *= m_frequency;
             y *= m_frequency;
             for (uint i = 0; i < m_numoctaves; ++i) {
-                float n = m_source [i].get (x, y);
+                double n = m_source [i].get (x, y);
                 sum += (2.0f * Math.Abs (n) - 1.0f) * amp;
                 amp *= m_gain;
                 x *= m_lacunarity;
@@ -509,16 +509,16 @@ namespace Sean.WorldGenerator.Noise
             return sum;
         }
 
-        float Billow_get (float x, float y, float z, float w)
+        double Billow_get (double x, double y, double z, double w)
         {
-            float sum = 0.0f;
-            float amp = 1.0f;
+            double sum = 0.0f;
+            double amp = 1.0f;
             x *= m_frequency;
             y *= m_frequency;
             z *= m_frequency;
             w *= m_frequency;
             for (uint i = 0; i < m_numoctaves; ++i) {
-                float n = m_source [i].get (x, y, z, w);
+                double n = m_source [i].get (x, y, z, w);
                 sum += (2.0f * Math.Abs (n) - 1.0f) * amp;
                 amp *= m_gain;
                 x *= m_lacunarity;
@@ -529,15 +529,15 @@ namespace Sean.WorldGenerator.Noise
             return sum;
         }
 
-        float Billow_get (float x, float y, float z)
+        double Billow_get (double x, double y, double z)
         {
-            float sum = 0.0f;
-            float amp = 1.0f;
+            double sum = 0.0f;
+            double amp = 1.0f;
             x *= m_frequency;
             y *= m_frequency;
             z *= m_frequency;
             for (uint i = 0; i < m_numoctaves; ++i) {
-                float n = m_source [i].get (x, y, z);
+                double n = m_source [i].get (x, y, z);
                 sum += (2.0f * Math.Abs (n) - 1.0f) * amp;
                 amp *= m_gain;
                 x *= m_lacunarity;
@@ -547,10 +547,10 @@ namespace Sean.WorldGenerator.Noise
             return sum;
         }
 
-        float Billow_get (float x, float y, float z, float w, float u, float v)
+        double Billow_get (double x, double y, double z, double w, double u, double v)
         {
-            float sum = 0.0f;
-            float amp = 1.0f;
+            double sum = 0.0f;
+            double amp = 1.0f;
             x *= m_frequency;
             y *= m_frequency;
             z *= m_frequency;
@@ -558,7 +558,7 @@ namespace Sean.WorldGenerator.Noise
             u *= m_frequency;
             v *= m_frequency;
             for (uint i = 0; i < m_numoctaves; ++i) {
-                float n = m_source [i].get (x, y, z, w, u, v);
+                double n = m_source [i].get (x, y, z, w, u, v);
                 sum += (2.0f * Math.Abs (n) - 1.0f) * amp;
                 amp *= m_gain;
                 x *= m_lacunarity;
@@ -571,14 +571,14 @@ namespace Sean.WorldGenerator.Noise
             return sum;
         }
 
-        float RidgedMulti_get (float x, float y)
+        double RidgedMulti_get (double x, double y)
         {
-            float sum = 0;
-            float amp = 1.0f;
+            double sum = 0;
+            double amp = 1.0f;
             x *= m_frequency;
             y *= m_frequency;
             for (uint i = 0; i < m_numoctaves; ++i) {
-                float n = m_source [i].get (x, y);
+                double n = m_source [i].get (x, y);
                 n = 1.0f - Math.Abs (n);
                 sum += amp * n;
                 amp *= m_gain;
@@ -586,13 +586,13 @@ namespace Sean.WorldGenerator.Noise
                 y *= m_lacunarity;
             }
             return sum;
-            /*float result=0.0, signal;
+            /*double result=0.0, signal;
             x*=m_frequency;
             y*=m_frequency;
             for(uint i=0; i<m_numoctaves; ++i)
             {
                 signal=m_source[i]->get(x,y);
-                signal=m_offset-fabs(signal);
+                signal=m_offset-Math.Abs(signal);
                 signal *= signal;
                 result +=signal*m_exparray[i];
                 x*=m_lacunarity;
@@ -601,9 +601,9 @@ namespace Sean.WorldGenerator.Noise
             return result*m_correct[m_numoctaves-1][0] + m_correct[m_numoctaves-1][1];*/
         }
 
-        float RidgedMulti_get (float x, float y, float z, float w)
+        double RidgedMulti_get (double x, double y, double z, double w)
         {
-            float result = 0.0f, signal;
+            double result = 0.0f, signal;
             x *= m_frequency;
             y *= m_frequency;
             z *= m_frequency;
@@ -618,18 +618,18 @@ namespace Sean.WorldGenerator.Noise
                 z *= m_lacunarity;
                 w *= m_lacunarity;
             }
-            return result * m_correct [m_numoctaves - 1] [0] + m_correct [m_numoctaves - 1] [1];
+            return result * m_correct [m_numoctaves - 1, 0] + m_correct [m_numoctaves - 1, 1];
         }
 
-        float RidgedMulti_get (float x, float y, float z)
+        double RidgedMulti_get (double x, double y, double z)
         {
-            float sum = 0;
-            float amp = 1.0f;
+            double sum = 0;
+            double amp = 1.0f;
             x *= m_frequency;
             y *= m_frequency;
             z *= m_frequency;
             for (uint i = 0; i < m_numoctaves; ++i) {
-                float n = m_source [i].get (x, y, z);
+                double n = m_source [i].get (x, y, z);
                 n = 1.0f - Math.Abs (n);
                 sum += amp * n;
                 amp *= m_gain;
@@ -640,9 +640,9 @@ namespace Sean.WorldGenerator.Noise
             return sum;
         }
 
-        float RidgedMulti_get (float x, float y, float z, float w, float u, float v)
+        double RidgedMulti_get (double x, double y, double z, double w, double u, double v)
         {
-            float result = 0.0f, signal;
+            double result = 0.0f, signal;
             x *= m_frequency;
             y *= m_frequency;
             z *= m_frequency;
@@ -661,12 +661,12 @@ namespace Sean.WorldGenerator.Noise
                 u *= m_lacunarity;
                 v *= m_lacunarity;
             }
-            return result * m_correct [m_numoctaves - 1] [0] + m_correct [m_numoctaves - 1] [1];
+            return result * m_correct [m_numoctaves - 1, 0] + m_correct [m_numoctaves - 1, 1];
         }
 
-        float HybridMulti_get (float x, float y)
+        double HybridMulti_get (double x, double y)
         {
-            float value, signal, weight;
+            double value, signal, weight;
             x *= m_frequency;
             y *= m_frequency;
             value = m_source [0].get (x, y) + m_offset;
@@ -681,12 +681,12 @@ namespace Sean.WorldGenerator.Noise
                 x *= m_lacunarity;
                 y *= m_lacunarity;
             }
-            return value * m_correct [m_numoctaves - 1] [0] + m_correct [m_numoctaves - 1] [1];
+            return value * m_correct [m_numoctaves - 1, 0] + m_correct [m_numoctaves - 1, 1];
         }
 
-        float HybridMulti_get (float x, float y, float z)
+        double HybridMulti_get (double x, double y, double z)
         {
-            float value, signal, weight;
+            double value, signal, weight;
             x *= m_frequency;
             y *= m_frequency;
             z *= m_frequency;
@@ -704,12 +704,12 @@ namespace Sean.WorldGenerator.Noise
                 y *= m_lacunarity;
                 z *= m_lacunarity;
             }
-            return value * m_correct [m_numoctaves - 1] [0] + m_correct [m_numoctaves - 1] [1];
+            return value * m_correct [m_numoctaves - 1, 0] + m_correct [m_numoctaves - 1, 1];
         }
 
-        float HybridMulti_get (float x, float y, float z, float w)
+        double HybridMulti_get (double x, double y, double z, double w)
         {
-            float value, signal, weight;
+            double value, signal, weight;
             x *= m_frequency;
             y *= m_frequency;
             z *= m_frequency;
@@ -730,12 +730,12 @@ namespace Sean.WorldGenerator.Noise
                 z *= m_lacunarity;
                 w *= m_lacunarity;
             }
-            return value * m_correct [m_numoctaves - 1] [0] + m_correct [m_numoctaves - 1] [1];
+            return value * m_correct [m_numoctaves - 1, 0] + m_correct [m_numoctaves - 1, 1];
         }
 
-        float HybridMulti_get (float x, float y, float z, float w, float u, float v)
+        double HybridMulti_get (double x, double y, double z, double w, double u, double v)
         {
-            float value, signal, weight;
+            double value, signal, weight;
             x *= m_frequency;
             y *= m_frequency;
             z *= m_frequency;
@@ -762,55 +762,55 @@ namespace Sean.WorldGenerator.Noise
                 u *= m_lacunarity;
                 v *= m_lacunarity;
             }
-            return value * m_correct [m_numoctaves - 1] [0] + m_correct [m_numoctaves - 1] [1];
+            return value * m_correct [m_numoctaves - 1, 0] + m_correct [m_numoctaves - 1, 1];
         }
 
-        float DeCarpentierSwiss_get (float x, float y)
+        double DeCarpentierSwiss_get (double x, double y)
         {
-            float sum = 0;
-            float amp = 1.0f;
-            float dx_sum = 0;
-            float dy_sum = 0;
+            double sum = 0;
+            double amp = 1.0f;
+            double dx_sum = 0;
+            double dy_sum = 0;
             x *= m_frequency;
             y *= m_frequency;
             for (uint i = 0; i < m_numoctaves; ++i) {
-                float n = m_source [i].get (x + m_offset * dx_sum, y + m_offset * dy_sum);
-                float dx = m_source [i].get_dx (x + m_offset * dx_sum, y + m_offset * dy_sum);
-                float dy = m_source [i].get_dy (x + m_offset * dx_sum, y + m_offset * dy_sum);
+                double n = m_source [i].get (x + m_offset * dx_sum, y + m_offset * dy_sum);
+                double dx = m_source [i].get_dx (x + m_offset * dx_sum, y + m_offset * dy_sum);
+                double dy = m_source [i].get_dy (x + m_offset * dx_sum, y + m_offset * dy_sum);
                 sum += amp * (1.0f - Math.Abs (n));
                 dx_sum += amp * dx * -n;
                 dy_sum += amp * dy * -n;
-                amp *= m_gain * Utility.clamp (sum, (float)0.0, (float)1.0);
+                amp *= m_gain * Utility.clamp (sum, 0.0, 1.0);
                 x *= m_lacunarity;
                 y *= m_lacunarity;
             }
             return sum;
         }
 
-        float DeCarpentierSwiss_get (float x, float y, float z, float w)
+        double DeCarpentierSwiss_get (double x, double y, double z, double w)
         {
-            float sum = 0;
-            float amp = 1.0f;
-            float dx_sum = 0;
-            float dy_sum = 0;
-            float dz_sum = 0;
-            float dw_sum = 0;
+            double sum = 0;
+            double amp = 1.0f;
+            double dx_sum = 0;
+            double dy_sum = 0;
+            double dz_sum = 0;
+            double dw_sum = 0;
             x *= m_frequency;
             y *= m_frequency;
             z *= m_frequency;
             w *= m_frequency;
             for (uint i = 0; i < m_numoctaves; ++i) {
-                float n = m_source [i].get (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum);
-                float dx = m_source [i].get_dx (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum);
-                float dy = m_source [i].get_dy (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum);
-                float dz = m_source [i].get_dz (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum);
-                float dw = m_source [i].get_dw (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum);
+                double n = m_source [i].get (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum);
+                double dx = m_source [i].get_dx (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum);
+                double dy = m_source [i].get_dy (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum);
+                double dz = m_source [i].get_dz (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum);
+                double dw = m_source [i].get_dw (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum);
                 sum += amp * (1.0f - Math.Abs (n));
                 dx_sum += amp * dx * -n;
                 dy_sum += amp * dy * -n;
                 dz_sum += amp * dz * -n;
                 dw_sum += amp * dw * -n;
-                amp *= m_gain * Utility.clamp (sum, (float)0.0, (float)1.0);
+                amp *= m_gain * Utility.clamp (sum, 0.0, 1.0);
                 x *= m_lacunarity;
                 y *= m_lacunarity;
                 z *= m_lacunarity;
@@ -819,26 +819,26 @@ namespace Sean.WorldGenerator.Noise
             return sum;
         }
 
-        float DeCarpentierSwiss_get (float x, float y, float z)
+        double DeCarpentierSwiss_get (double x, double y, double z)
         {
-            float sum = 0;
-            float amp = 1.0f;
-            float dx_sum = 0;
-            float dy_sum = 0;
-            float dz_sum = 0;
+            double sum = 0;
+            double amp = 1.0f;
+            double dx_sum = 0;
+            double dy_sum = 0;
+            double dz_sum = 0;
             x *= m_frequency;
             y *= m_frequency;
             z *= m_frequency;
             for (uint i = 0; i < m_numoctaves; ++i) {
-                float n = m_source [i].get (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum);
-                float dx = m_source [i].get_dx (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum);
-                float dy = m_source [i].get_dy (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum);
-                float dz = m_source [i].get_dz (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum);
+                double n = m_source [i].get (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum);
+                double dx = m_source [i].get_dx (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum);
+                double dy = m_source [i].get_dy (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum);
+                double dz = m_source [i].get_dz (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum);
                 sum += amp * (1.0f - Math.Abs (n));
                 dx_sum += amp * dx * -n;
                 dy_sum += amp * dy * -n;
                 dz_sum += amp * dz * -n;
-                amp *= m_gain * Utility.clamp (sum, (float)0.0, (float)1.0);
+                amp *= m_gain * Utility.clamp (sum, 0.0, 1.0);
                 x *= m_lacunarity;
                 y *= m_lacunarity;
                 z *= m_lacunarity;
@@ -846,16 +846,16 @@ namespace Sean.WorldGenerator.Noise
             return sum;
         }
 
-        float DeCarpentierSwiss_get (float x, float y, float z, float w, float u, float v)
+        double DeCarpentierSwiss_get (double x, double y, double z, double w, double u, double v)
         {
-            float sum = 0;
-            float amp = 1.0f;
-            float dx_sum = 0;
-            float dy_sum = 0;
-            float dz_sum = 0;
-            float dw_sum = 0;
-            float du_sum = 0;
-            float dv_sum = 0;
+            double sum = 0;
+            double amp = 1.0f;
+            double dx_sum = 0;
+            double dy_sum = 0;
+            double dz_sum = 0;
+            double dw_sum = 0;
+            double du_sum = 0;
+            double dv_sum = 0;
             x *= m_frequency;
             y *= m_frequency;
             z *= m_frequency;
@@ -863,13 +863,13 @@ namespace Sean.WorldGenerator.Noise
             u *= m_frequency;
             v *= m_frequency;
             for (uint i = 0; i < m_numoctaves; ++i) {
-                float n = m_source [i].get (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum);
-                float dx = m_source [i].get_dx (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dx_sum, w + m_offset * dw_sum, u + m_offset * du_sum, v + m_offset * dv_sum);
-                float dy = m_source [i].get_dy (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum, u + m_offset * du_sum, v + m_offset * dv_sum);
-                float dz = m_source [i].get_dz (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum, u + m_offset * du_sum, v + m_offset * dv_sum);
-                float dw = m_source [i].get_dw (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum, u + m_offset * du_sum, v + m_offset * dv_sum);
-                float du = m_source [i].get_du (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum, u + m_offset * du_sum, v + m_offset * dv_sum);
-                float dv = m_source [i].get_dv (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum, u + m_offset * du_sum, v + m_offset * dv_sum);
+                double n = m_source [i].get (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum);
+                double dx = m_source [i].get_dx (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dx_sum, w + m_offset * dw_sum, u + m_offset * du_sum, v + m_offset * dv_sum);
+                double dy = m_source [i].get_dy (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum, u + m_offset * du_sum, v + m_offset * dv_sum);
+                double dz = m_source [i].get_dz (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum, u + m_offset * du_sum, v + m_offset * dv_sum);
+                double dw = m_source [i].get_dw (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum, u + m_offset * du_sum, v + m_offset * dv_sum);
+                double du = m_source [i].get_du (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum, u + m_offset * du_sum, v + m_offset * dv_sum);
+                double dv = m_source [i].get_dv (x + m_offset * dx_sum, y + m_offset * dy_sum, z + m_offset * dz_sum, w + m_offset * dw_sum, u + m_offset * du_sum, v + m_offset * dv_sum);
                 sum += amp * (1.0f - Math.Abs (n));
                 dx_sum += amp * dx * -n;
                 dy_sum += amp * dy * -n;
@@ -877,7 +877,7 @@ namespace Sean.WorldGenerator.Noise
                 dw_sum += amp * dw * -n;
                 du_sum += amp * du * -n;
                 dv_sum += amp * dv * -n;
-                amp *= m_gain * Utility.clamp (sum, (float)0.0, (float)1.0);
+                amp *= m_gain * Utility.clamp (sum, 0.0, 1.0);
                 x *= m_lacunarity;
                 y *= m_lacunarity;
                 z *= m_lacunarity;

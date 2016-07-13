@@ -135,7 +135,7 @@ namespace Sean.WorldGenerator.Noise
         if(!m_source) return 0.0f;
 
         float v=m_source->get(x,y);
-        return std::max(m_low, std::min(m_high, v*m_scale2+m_offset2));
+        return Math.Max(m_low, std::min(m_high, v*m_scale2+m_offset2));
     }
 
     float CImplicitAutoCorrect::get(float x, float y, float z)
@@ -143,14 +143,14 @@ namespace Sean.WorldGenerator.Noise
         if(!m_source) return 0.0f;
 
         float v=m_source->get(x,y,z);
-        return std::max(m_low, std::min(m_high, v*m_scale3+m_offset3));
+        return Math.Max(m_low, std::min(m_high, v*m_scale3+m_offset3));
     }
     float CImplicitAutoCorrect::get(float x, float y, float z, float w)
     {
         if(!m_source) return 0.0f;
 
         float v=m_source->get(x,y,z,w);
-        return std::max(m_low, std::min(m_high, v*m_scale4+m_offset4));
+        return Math.Max(m_low, std::min(m_high, v*m_scale4+m_offset4));
     }
 
     float CImplicitAutoCorrect::get(float x, float y, float z, float w, float u, float v)
@@ -158,6 +158,6 @@ namespace Sean.WorldGenerator.Noise
         if(!m_source) return 0.0f;
 
         float val=m_source->get(x,y,z,w,u,v);
-        return std::max(m_low, std::min(m_high, val*m_scale6+m_offset6));
+        return Math.Max(m_low, std::min(m_high, val*m_scale6+m_offset6));
     }
 };

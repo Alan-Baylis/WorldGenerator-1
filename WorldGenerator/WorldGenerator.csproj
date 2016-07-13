@@ -55,6 +55,8 @@
     <Compile Include="World\Generator\Noise\Fractal.cs" />
     <Compile Include="World\Generator\Noise\Gradient.cs" />
     <Compile Include="World\Generator\Noise\ModuleBase.cs" />
+    <Compile Include="World\Generator\Noise\Noise_Gen.cs" />
+    <Compile Include="World\Generator\Noise\Noise_Lut.cs" />
     <Compile Include="World\Generator\Noise\ScaleDomain.cs" />
     <Compile Include="World\Generator\Noise\ScaleOffset.cs" />
     <Compile Include="World\Generator\Noise\Select.cs" />

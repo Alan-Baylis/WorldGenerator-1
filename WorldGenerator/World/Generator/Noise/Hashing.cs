@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sean.WorldGenerator
+namespace Sean.WorldGenerator.Noise
 {
     static class Hashing
     {
-        private const uint FNV_32_PRIME = ((uint)0x01000193);
-        private const uint FNV_32_INIT = ((uint)2166136261);
-        private const uint FNV_MASK_8 = (((uint)1 << 8) - 1);
+        public const uint FNV_32_PRIME = ((uint)0x01000193);
+        public const uint FNV_32_INIT = ((uint)2166136261);
+        public const uint FNV_MASK_8 = (((uint)1 << 8) - 1);
 
         private static uint[] p241;
         private static uint[] p251;
@@ -51,21 +51,21 @@ namespace Sean.WorldGenerator
 220, 221, 44, 257, 144, 191, 60, 85, 72, 175, 151, 74, 238};
         }
 
-/*
-        private static uint fnv_32_a_buf(void* buf, uint len)
-        {
-            uint hval = (uint)FNV_32_INIT;
-            uint* bp = (uint*)buf;
-            uint* be = bp + len;
-            while (bp < be)
-            {
-                hval ^= *bp++;
-                hval *= FNV_32_PRIME;
-            }
-            return hval;
-        }
-*/
-        private static uint fnv_32_a_combine(uint hash, uint val)
+        /*
+                private static uint fnv_32_a_buf(void* buf, uint len)
+                {
+                    uint hval = (uint)FNV_32_INIT;
+                    uint* bp = (uint*)buf;
+                    uint* be = bp + len;
+                    while (bp < be)
+                    {
+                        hval ^= *bp++;
+                        hval *= FNV_32_PRIME;
+                    }
+                    return hval;
+                }
+        */
+        public static uint fnv_32_a_combine(uint hash, uint val)
         {
             hash ^= val;
             hash *= FNV_32_PRIME;
@@ -73,10 +73,10 @@ namespace Sean.WorldGenerator
         }
 
 
-        private static char xor_fold_hash(uint hash)
+        public static byte xor_fold_hash(uint hash)
         {
             // Implement XOR-folding to reduce from 32 to 8-bit hash
-            return (char)((hash >> 8) ^ (hash & FNV_MASK_8));
+            return (byte)((hash >> 8) ^ (hash & FNV_MASK_8));
         }
 
         // Long period hash
