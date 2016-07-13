@@ -1,9 +1,6 @@
 using System;
 namespace Sean.WorldGenerator.Noise
 {
-   
-
-
     enum EUnaryMathOperation
     {
         ACOS,
@@ -42,7 +39,7 @@ namespace Sean.WorldGenerator.Noise
         MINIMUM
     };
 
-    class CImplicitMath : public CImplicitModuleBase
+    class CImplicitMath : CImplicitModuleBase
     {
         public CImplicitMath();
         public CImplicitMath(unsigned int op, float source=1, float p=1);
@@ -180,4 +177,4 @@ namespace anl
             default: return v; break;
         }
     }
-};
+}

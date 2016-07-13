@@ -27,14 +27,14 @@ namespace Sean.WorldGenerator.Noise
 {
     static class Utility
     {
-        static public float clamp (float v, float l, float h)
+        static public double clamp (double v, double l, double h)
         {
             if (v < l) v = l;
             if (v > h) v = h;
             return v;
         }
 
-        static float lerp (float t, float a, float b)
+        static double lerp (double t, double a, double b)
         {
             return a + t * (b - a);
         }
@@ -44,12 +44,12 @@ namespace Sean.WorldGenerator.Noise
             return ((n - 1) & n) != 0;
         }
 
-        static float hermite_blend (float t)
+        static double hermite_blend (double t)
         {
             return (t * t * (3 - 2 * t));
         }
 
-        static float quintic_blend (float t)
+        static double quintic_blend (double t)
         {
             return t * t * t * (t * (t * 6 - 15) + 10);
         }
@@ -59,22 +59,22 @@ namespace Sean.WorldGenerator.Noise
             return (t > 0 ? (int)t : (int)t - 1);
         }
 
-        static float array_dot (float[] arr, float a, float b)
+        static double array_dot (double[] arr, double a, double b)
         {
             return a * arr [0] + b * arr [1];
         }
 
-        static float array_dot3 (float[] arr, float a, float b, float c)
+        static double array_dot3 (double[] arr, double a, double b, double c)
         {
             return a * arr [0] + b * arr [1] + c * arr [2];
         }
 
-        static float bias (float b, float t)
+        static double bias (double b, double t)
         {
-            return (float)(Math.Pow (t, Math.Log (b) / Math.Log (0.5)));
+            return Math.Pow (t, Math.Log (b) / Math.Log (0.5));
         }
 
-        static float gain (float g, float t)
+        static double gain (double g, double t)
         {
             if (t < 0.5f) {
                 return bias (1.0f - g, 2.0f * t) / 2.0f;

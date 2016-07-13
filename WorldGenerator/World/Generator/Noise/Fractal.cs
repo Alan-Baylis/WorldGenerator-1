@@ -119,13 +119,13 @@ namespace Sean.WorldGenerator.Noise
         {
             if (which < 0 || which >= MaxSources) return;
             if (m_basis [which] == null) return;
-            m_source [which] = m_basis [which].get ();
+            m_source [which] = m_basis [which];//.get (); // TODO ???
         }
 
         void resetAllSources ()
         {
             for (int c = 0; c < MaxSources; ++c) {
-                m_source [c] = m_basis [c].get ();
+                m_source [c] = m_basis [c];//.get (); // TODO ???
                 //if(!m_rotatedomain) m_basis[c]->setRotationAngle(1,0,0,0);
             }
         }
@@ -142,7 +142,7 @@ namespace Sean.WorldGenerator.Noise
         CImplicitModuleBase getBasis (int which)
         {
             if (which < 0 || which >= MaxSources) return null;
-            return m_basis [which].get ();
+            return m_basis [which]; // .get (); // TODO ???
         }
 
         public override double get (double x, double y)
