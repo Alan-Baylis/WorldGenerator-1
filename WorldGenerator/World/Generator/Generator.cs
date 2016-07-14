@@ -14,7 +14,6 @@ namespace Sean.WorldGenerator
         private const double persistence = 0.4;
         private const int minNoiseHeight = -127;
         private const int maxNoiseHeight = 127;
-
         public Generator(int seed)
         {
             perlinNoise = new PerlinNoise(seed, 100);

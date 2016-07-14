@@ -9,7 +9,6 @@ namespace Sean.WorldGenerator.Noise
     public abstract class CImplicitModuleBase
     {
         protected double m_spacing { get; set; }  // DerivSpacing
-        protected DataSource m_source { get; set; }
 
         public CImplicitModuleBase ()
         {

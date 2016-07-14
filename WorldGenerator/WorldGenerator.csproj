@@ -57,6 +57,7 @@
     <Compile Include="World\Generator\Noise\ModuleBase.cs" />
     <Compile Include="World\Generator\Noise\Noise_Gen.cs" />
     <Compile Include="World\Generator\Noise\Noise_Lut.cs" />
+    <Compile Include="World\Generator\Noise\ScalarParameter.cs" />
     <Compile Include="World\Generator\Noise\ScaleDomain.cs" />
     <Compile Include="World\Generator\Noise\ScaleOffset.cs" />
     <Compile Include="World\Generator\Noise\Select.cs" />
@@ -85,7 +86,6 @@
     <Compile Include="Shared\GameItemStatic.cs" />
     <Compile Include="World\Map\Water.cs" />
     <Compile Include="World\Generator\Noise\Hashing.cs" />
-    <Compile Include="World\Generator\Noise\DataSource.cs" />
     <Compile Include="World\Generator\Noise\Math.cs" />
     <Compile Include="World\Generator\Noise\Misc.cs" />
     <Compile Include="World\Generator\Noise\Utility.cs" />

@@ -34,47 +34,47 @@ namespace Sean.WorldGenerator.Noise
             return v;
         }
 
-        static double lerp (double t, double a, double b)
+        static public double lerp (double t, double a, double b)
         {
             return a + t * (b - a);
         }
 
-        static bool isPowerOf2 (int n)
+        static public bool isPowerOf2 (int n)
         {
             return ((n - 1) & n) != 0;
         }
 
-        static double hermite_blend (double t)
+        static public double hermite_blend (double t)
         {
             return (t * t * (3 - 2 * t));
         }
 
-        static double quintic_blend (double t)
+        static public double quintic_blend (double t)
         {
             return t * t * t * (t * (t * 6 - 15) + 10);
         }
 
-        static int fast_floor (float t)
+        static public int fast_floor (float t)
         {
             return (t > 0 ? (int)t : (int)t - 1);
         }
 
-        static double array_dot (double[] arr, double a, double b)
+        static public double array_dot (double[] arr, double a, double b)
         {
             return a * arr [0] + b * arr [1];
         }
 
-        static double array_dot3 (double[] arr, double a, double b, double c)
+        static public double array_dot3 (double[] arr, double a, double b, double c)
         {
             return a * arr [0] + b * arr [1] + c * arr [2];
         }
 
-        static double bias (double b, double t)
+        static public double bias (double b, double t)
         {
             return Math.Pow (t, Math.Log (b) / Math.Log (0.5));
         }
 
-        static double gain (double g, double t)
+        static public double gain (double g, double t)
         {
             if (t < 0.5f) {
                 return bias (1.0f - g, 2.0f * t) / 2.0f;

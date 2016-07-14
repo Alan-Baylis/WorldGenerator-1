@@ -35,8 +35,6 @@ namespace Sean.WorldGenerator.Noise
         private double m_scale4, m_offset4;
         private double m_scale6, m_offset6;
 
-
-
         public CImplicitAutoCorrect () : base ()
         {
             m_source = null; m_low = -1.0; m_high = 1.0;

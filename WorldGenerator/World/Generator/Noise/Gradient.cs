@@ -4,7 +4,6 @@ using Sean.Shared;
 
 namespace Sean.WorldGenerator.Noise
 {
-
     // Gradient has the effect of allowing you to specify a line segment in N-dimensional space by 
     // setting endpoints.The endpoints are set via setGradient() and the segment extends from 
     // P1 = (x1, y1, z1, w1, u1, v1) to P2=(x2,y2,z2,w2,u2,v2). Only the coordinates pertinent to 
@@ -17,14 +16,10 @@ namespace Sean.WorldGenerator.Noise
     // values to go infinitely depending on distance from the "origin" point.Some useful things could 
     // be done in this fashion.) The result is a smooth gradient field oriented along an axis.
 
-
     class CImplicitGradient : public CImplicitModuleBase
     {
-
-
         void setGradient(float x1, float x2, float y1, float y2, float z1=0, float z2=0,
         float w1=0, float w2=0, float u1=0, float u2=0, float v1=0, float v2=0);
-
 
         protected:
         float m_gx1, m_gy1, m_gz1, m_gw1, m_gu1, m_gv1;

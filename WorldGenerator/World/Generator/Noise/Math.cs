@@ -1,8 +1,9 @@
 using System;
 namespace Sean.WorldGenerator.Noise
 {
-    enum EUnaryMathOperation
+    public enum EMathOperation
     {
+        // Unary math ops
         ACOS,
         ASIN,
         ATAN,
@@ -20,13 +21,11 @@ namespace Sean.WorldGenerator.Noise
         SQRT,
         INTEGER,
         FRACTIONAL,
-		EASECUBIC,
-		EASEQUINTIC,
-    };
+        EASECUBIC,
+        EASEQUINTIC,
 
-    enum EBinaryMathOperation
-    {
-        POW=EASEQUINTIC+1,
+        // EBinary Math Operations
+        POW,
         FMOD,
         BIAS,
         GAIN,
@@ -39,142 +38,114 @@ namespace Sean.WorldGenerator.Noise
         MINIMUM
     };
 
-    class CImplicitMath : CImplicitModuleBase
+    public class CImplicitMath : CImplicitModuleBase
     {
-        public CImplicitMath();
-        public CImplicitMath(unsigned int op, float source=1, float p=1);
-        public CImplicitMath(unsigned int op, CImplicitModuleBase * source=0, float p=1);
-        public CImplicitMath(unsigned int op, float source=0, CImplicitModuleBase * p=0);
-        public CImplicitMath(unsigned int op, CImplicitModuleBase * source=0, CImplicitModuleBase * p=0);
+        private EMathOperation m_op;
+        private CScalarParameter m_source;
+        private CScalarParameter m_parameter;
 
-        public void setSource(float v);
-        public void setSource(CImplicitModuleBase * b);
-        public void setParameter(float v);
-        public void setParameter(CImplicitModuleBase * b);
-        public void setOperation(unsigned int op);
+        CImplicitMath() : base()
+        { m_op = EMathOperation.ABS; m_source = new CScalarParameter(0.0); m_parameter = new CScalarParameter(0.0); }
 
-        public float get(float x, float y);
-        public float get(float x, float y, float z);
-        public float get(float x, float y, float z, float w);
-        public float get(float x, float y, float z, float w, float u, float v);
+        CImplicitMath(EMathOperation op, double source, double p) : base()
+        { m_op = op; m_source = new CScalarParameter(source); m_parameter = new CScalarParameter(p); }
+        CImplicitMath(EMathOperation op, CImplicitModuleBase source, double p) : base()
+        { m_op = op; m_source = new CScalarParameter(source); m_parameter = new CScalarParameter(p); }
+        CImplicitMath(EMathOperation op, double source, CImplicitModuleBase p) : base()
+        { m_op = op; m_source = new CScalarParameter(source); m_parameter = new CScalarParameter(p); }
+        CImplicitMath(EMathOperation op, CImplicitModuleBase source, CImplicitModuleBase p) : base()
+        { m_op = op; m_source = new CScalarParameter(source); m_parameter = new CScalarParameter(p); }
 
-        protected:
-        unsigned int m_op;
-        CScalarParameter m_source;
-        CScalarParameter m_parameter;
-
-        float applyOp(float v, float p);
-
-
-
-    };
-};
-
-#endif
-#include <cmath>
-#include <algorithm>
-#include "implicitmath.h"
-#include "utility.h"
-
-namespace anl
-{
-    CImplicitMath::CImplicitMath() : CImplicitModuleBase(), m_op(ABS), m_source(0.0), m_parameter(0.0){}
-
-    CImplicitMath::CImplicitMath(unsigned int op, float source, float p) : CImplicitModuleBase(), m_op(op), m_source(source), m_parameter(p){}
-    CImplicitMath::CImplicitMath(unsigned int op, CImplicitModuleBase * source, float p) : CImplicitModuleBase(), m_op(op), m_source(source), m_parameter(p){}
-    CImplicitMath::CImplicitMath(unsigned int op, float source, CImplicitModuleBase * p) : CImplicitModuleBase(), m_op(op), m_source(source), m_parameter(p){}
-    CImplicitMath::CImplicitMath(unsigned int op, CImplicitModuleBase * source, CImplicitModuleBase * p) : CImplicitModuleBase(), m_op(op), m_source(source), m_parameter(p){}
-    CImplicitMath::~CImplicitMath() {}
-
-    void CImplicitMath::setSource(float v)
-    {
-        m_source.set(v);
-    }
-
-    void CImplicitMath::setSource(CImplicitModuleBase * b)
-    {
-        m_source.set(b);
-    }
-
-    void CImplicitMath::setParameter(float v)
-    {
-        m_parameter.set(v);
-    }
-
-    void CImplicitMath::setParameter(CImplicitModuleBase * b)
-    {
-        m_parameter.set(b);
-    }
-
-    void CImplicitMath::setOperation(unsigned int op)
-    {
-        m_op=op;
-    }
-
-    float CImplicitMath::get(float x, float y)
-    {
-        float v=m_source.get(x,y);
-        float p=m_parameter.get(x,y);
-        return applyOp(v,p);
-    }
-
-    float CImplicitMath::get(float x, float y, float z)
-    {
-        float v=m_source.get(x,y,z);
-        float p=m_parameter.get(x,y,z);
-        return applyOp(v,p);
-    }
-
-    float CImplicitMath::get(float x, float y, float z, float w)
-    {
-        float v=m_source.get(x,y,z,w);
-        float p=m_parameter.get(x,y,z,w);
-        return applyOp(v,p);
-    }
-
-    float CImplicitMath::get(float x, float y, float z, float w, float u, float v)
-    {
-        float val=m_source.get(x,y,z,w,u,v);
-        float p=m_parameter.get(x,y,z,w,u,v);
-        return applyOp(val,p);
-    }
-
-
-    float CImplicitMath::applyOp(float v, float p)
-    {
-        switch(m_op)
+        public void setSource(double v)
         {
-            case ACOS: return acos(v); break;
-            case ASIN: return asin(v); break;
-            case ATAN: return atan(v); break;
-            case COS: return cos(v); break;
-            case SIN: return sin(v); break;
-            case TAN: return tan(v); break;
-            case ABS: return (v<0) ? -v : v; break;
-            case FLOOR: return floor(v); break;
-            case CEIL: return ceil(v); break;
-            case POW: return pow(v,p); break;
-            case EXP: return exp(v); break;
-            case LOG10: return log10(v); break;
-            case LOG2: return log(v)/log(2.0); break;
-            case LOGN: return log(v); break;
-            case FMOD: return fmod(v,p); break;
-            case BIAS: return bias(p,v); break;
-            case GAIN: return gain(p,v); break;
-            case ONEMINUS: return 1.0-v; break;
-            case PMINUS: return p-v; break;
-            case SQRT: return sqrt(v); break;
-            case INTEGER: return (float)(int)v; break;
-            case FRACTIONAL: return v-(float)(int)v; break;
-			case EASECUBIC: return hermite_blend(v); break;
-			case EASEQUINTIC: return quintic_blend(v); break;
-            case SUM: return v+p; break;
-            case MULTIPLY: return v*p; break;
-            case DIVIDE: return v/p; break;
-            case SUBTRACT: return v-p; break;
-            case MAXIMUM: return std::max(v,p); break;
-            case MINIMUM: return std::min(v,p); break;
-            default: return v; break;
+            m_source.set(v);
+        }
+
+        public void setSource(CImplicitModuleBase b)
+        {
+            m_source.set(b);
+        }
+
+        public void setParameter(double v)
+        {
+            m_parameter.set(v);
+        }
+
+        public void setParameter(CImplicitModuleBase b)
+        {
+            m_parameter.set(b);
+        }
+
+        public void setOperation(EMathOperation op)
+        {
+            m_op = op;
+        }
+
+        public override double get(double x, double y)
+        {
+            double v = m_source.get(x, y);
+            double p = m_parameter.get(x, y);
+            return applyOp(v, p);
+        }
+
+        public override double get(double x, double y, double z)
+        {
+            double v = m_source.get(x, y, z);
+            double p = m_parameter.get(x, y, z);
+            return applyOp(v, p);
+        }
+
+        public override double get(double x, double y, double z, double w)
+        {
+            double v = m_source.get(x, y, z, w);
+            double p = m_parameter.get(x, y, z, w);
+            return applyOp(v, p);
+        }
+
+        public override double get(double x, double y, double z, double w, double u, double v)
+        {
+            double val = m_source.get(x, y, z, w, u, v);
+            double p = m_parameter.get(x, y, z, w, u, v);
+            return applyOp(val, p);
+        }
+
+
+        private double applyOp(double v, double p)
+        {
+            switch (m_op)
+            {
+                case EMathOperation.ACOS: return Math.Acos(v); 
+                case EMathOperation.ASIN: return Math.Asin(v);
+                case EMathOperation.ATAN: return Math.Atan(v);
+                case EMathOperation.COS: return Math.Cos(v);
+                case EMathOperation.SIN: return Math.Sin(v);
+                case EMathOperation.TAN: return Math.Tan(v);
+                case EMathOperation.ABS: return (v < 0) ? -v : v;
+                case EMathOperation.FLOOR: return Math.Floor(v);
+                case EMathOperation.CEIL: return Math.Ceiling(v);
+                case EMathOperation.POW: return Math.Pow(v, p);
+                case EMathOperation.EXP: return Math.Exp(v);
+                case EMathOperation.LOG10: return Math.Log10(v);
+                case EMathOperation.LOG2: return Math.Log(v) / Math.Log(2.0);
+                case EMathOperation.LOGN: return Math.Log(v);
+                case EMathOperation.FMOD: return Math.IEEERemainder(v, p);
+                case EMathOperation.BIAS: return Utility.bias(p, v);
+                case EMathOperation.GAIN: return Utility.gain(p, v);
+                case EMathOperation.ONEMINUS: return 1.0 - v;
+                case EMathOperation.PMINUS: return p - v;
+                case EMathOperation.SQRT: return Math.Sqrt(v);
+                case EMathOperation.INTEGER: return (double)(int)v;
+                case EMathOperation.FRACTIONAL: return v - (double)(int)v;
+                case EMathOperation.EASECUBIC: return Utility.hermite_blend(v);
+                case EMathOperation.EASEQUINTIC: return Utility.quintic_blend(v);
+                case EMathOperation.SUM: return v + p;
+                case EMathOperation.MULTIPLY: return v * p; 
+                case EMathOperation.DIVIDE: return v / p; 
+                case EMathOperation.SUBTRACT: return v - p; 
+                case EMathOperation.MAXIMUM: return Math.Max(v, p); 
+                case EMathOperation.MINIMUM: return Math.Min(v, p); 
+                default: return v; 
+            }
         }
     }
 }

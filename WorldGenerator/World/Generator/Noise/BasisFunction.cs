@@ -6,7 +6,6 @@ namespace Sean.WorldGenerator.Noise
 {
     public class CImplicitBasisFunction : CImplicitModuleBase
     {
-
         public enum EBasisTypes
         {
             VALUE,
@@ -14,7 +13,7 @@ namespace Sean.WorldGenerator.Noise
             GRADVAL,
             SIMPLEX,
             WHITE
-        };
+        }
 
         public enum EInterpTypes
         {
@@ -22,9 +21,7 @@ namespace Sean.WorldGenerator.Noise
             LINEAR,
             CUBIC,
             QUINTIC
-        };
-
-
+        }
 
         private double[] m_scale, m_offset;
         private anl.interp_func m_interp;
@@ -38,7 +35,6 @@ namespace Sean.WorldGenerator.Noise
         private double cos2d, sin2d;
         private bool m_rotatedomain;
 
-
         public CImplicitBasisFunction() : base()
         {
             m_rotmatrix = new double[3, 3];
@@ -49,7 +45,6 @@ namespace Sean.WorldGenerator.Noise
             setType(EBasisTypes.GRADIENT);
             setInterp(EInterpTypes.QUINTIC);
             setSeed(1000);
-
         }
         public CImplicitBasisFunction(EBasisTypes type, EInterpTypes interp, bool rotatedomain) : base()
         {
@@ -239,7 +234,7 @@ namespace Sean.WorldGenerator.Noise
                         m_scale[3] = 1.0f; m_offset[3] = 0.0f;
                     }
                     break;
-            };
+            }
         }
     }
 }

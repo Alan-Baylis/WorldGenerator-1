@@ -8,8 +8,9 @@ namespace Sean.WorldGenerator.Noise
 
     internal class CImplicitScaleOffset : CImplicitModuleBase
     {
-        protected DataSource m_scale { get; set; }
-        protected DataSource m_offset { get; set; }
+        private CScalarParameter m_source;
+        private CScalarParameter m_scale { get; set; }
+        private CScalarParameter m_offset { get; set; }
 
         public override double get (double x, double y)
         {
