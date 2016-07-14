@@ -15,67 +15,67 @@ namespace Sean.WorldGenerator.Noise
         private CScalarParameter m_threshold, m_falloff;
         public CImplicitSelect() : base() { }
 
-        public CImplicitSelect(double low, double high, double control, double threshold, double falloff) : base()
+        public CImplicitSelect(double low, double high, double control, double threshold, double falloff=0) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
         public CImplicitSelect(double low, double high, double control, double threshold, CImplicitModuleBase falloff) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
-        public CImplicitSelect(double low, double high, double control, CImplicitModuleBase threshold, double falloff) : base()
+        public CImplicitSelect(double low, double high, double control, CImplicitModuleBase threshold, double falloff=0) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
         public CImplicitSelect(double low, double high, double control, CImplicitModuleBase threshold, CImplicitModuleBase falloff) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
-        public CImplicitSelect(double low, double high, CImplicitModuleBase control, double threshold, double falloff) : base()
+        public CImplicitSelect(double low, double high, CImplicitModuleBase control, double threshold, double falloff=0) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
         public CImplicitSelect(double low, double high, CImplicitModuleBase control, double threshold, CImplicitModuleBase falloff) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
-        public CImplicitSelect(double low, double high, CImplicitModuleBase control, CImplicitModuleBase threshold, double falloff) : base()
+        public CImplicitSelect(double low, double high, CImplicitModuleBase control, CImplicitModuleBase threshold, double falloff=0) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
         public CImplicitSelect(double low, double high, CImplicitModuleBase control, CImplicitModuleBase threshold, CImplicitModuleBase falloff) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
-        public CImplicitSelect(double low, CImplicitModuleBase high, double control, double threshold, double falloff) : base()
+        public CImplicitSelect(double low, CImplicitModuleBase high, double control, double threshold, double falloff=0) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
         public CImplicitSelect(double low, CImplicitModuleBase high, double control, double threshold, CImplicitModuleBase falloff) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
-        public CImplicitSelect(double low, CImplicitModuleBase high, double control, CImplicitModuleBase threshold, double falloff) : base()
+        public CImplicitSelect(double low, CImplicitModuleBase high, double control, CImplicitModuleBase threshold, double falloff=0) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
         public CImplicitSelect(double low, CImplicitModuleBase high, double control, CImplicitModuleBase threshold, CImplicitModuleBase falloff) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
-        public CImplicitSelect(double low, CImplicitModuleBase high, CImplicitModuleBase control, double threshold, double falloff) : base()
+        public CImplicitSelect(double low, CImplicitModuleBase high, CImplicitModuleBase control, double threshold, double falloff=0) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
         public CImplicitSelect(double low, CImplicitModuleBase high, CImplicitModuleBase control, double threshold, CImplicitModuleBase falloff) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
-        public CImplicitSelect(double low, CImplicitModuleBase high, CImplicitModuleBase control, CImplicitModuleBase threshold, double falloff) : base()
+        public CImplicitSelect(double low, CImplicitModuleBase high, CImplicitModuleBase control, CImplicitModuleBase threshold, double falloff=0) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
         public CImplicitSelect(double low, CImplicitModuleBase high, CImplicitModuleBase control, CImplicitModuleBase threshold, CImplicitModuleBase falloff) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
-        public CImplicitSelect(CImplicitModuleBase low, double high, double control, double threshold, double falloff) : base()
+        public CImplicitSelect(CImplicitModuleBase low, double high, double control, double threshold, double falloff=0) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
         public CImplicitSelect(CImplicitModuleBase low, double high, double control, double threshold, CImplicitModuleBase falloff) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
-        public CImplicitSelect(CImplicitModuleBase low, double high, double control, CImplicitModuleBase threshold, double falloff) : base()
+        public CImplicitSelect(CImplicitModuleBase low, double high, double control, CImplicitModuleBase threshold, double falloff=0) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
         public CImplicitSelect(CImplicitModuleBase low, double high, double control, CImplicitModuleBase threshold, CImplicitModuleBase falloff) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
-        public CImplicitSelect(CImplicitModuleBase low, double high, CImplicitModuleBase control, double threshold, double falloff) : base()
+        public CImplicitSelect(CImplicitModuleBase low, double high, CImplicitModuleBase control, double threshold, double falloff=0) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
         public CImplicitSelect(CImplicitModuleBase low, double high, CImplicitModuleBase control, double threshold, CImplicitModuleBase falloff) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
-        public CImplicitSelect(CImplicitModuleBase low, double high, CImplicitModuleBase control, CImplicitModuleBase threshold, double falloff) : base()
+        public CImplicitSelect(CImplicitModuleBase low, double high, CImplicitModuleBase control, CImplicitModuleBase threshold, double falloff=0) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
         public CImplicitSelect(CImplicitModuleBase low, double high, CImplicitModuleBase control, CImplicitModuleBase threshold, CImplicitModuleBase falloff) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
-        public CImplicitSelect(CImplicitModuleBase low, CImplicitModuleBase high, double control, double threshold, double falloff) : base()
+        public CImplicitSelect(CImplicitModuleBase low, CImplicitModuleBase high, double control, double threshold, double falloff=0) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
         public CImplicitSelect(CImplicitModuleBase low, CImplicitModuleBase high, double control, double threshold, CImplicitModuleBase falloff) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
-        public CImplicitSelect(CImplicitModuleBase low, CImplicitModuleBase high, double control, CImplicitModuleBase threshold, double falloff) : base()
+        public CImplicitSelect(CImplicitModuleBase low, CImplicitModuleBase high, double control, CImplicitModuleBase threshold, double falloff=0) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
         public CImplicitSelect(CImplicitModuleBase low, CImplicitModuleBase high, double control, CImplicitModuleBase threshold, CImplicitModuleBase falloff) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
-        public CImplicitSelect(CImplicitModuleBase low, CImplicitModuleBase high, CImplicitModuleBase control, double threshold, double falloff) : base()
+        public CImplicitSelect(CImplicitModuleBase low, CImplicitModuleBase high, CImplicitModuleBase control, double threshold, double falloff=0) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
         public CImplicitSelect(CImplicitModuleBase low, CImplicitModuleBase high, CImplicitModuleBase control, double threshold, CImplicitModuleBase falloff) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
-        public CImplicitSelect(CImplicitModuleBase low, CImplicitModuleBase high, CImplicitModuleBase control, CImplicitModuleBase threshold, double falloff) : base()
+        public CImplicitSelect(CImplicitModuleBase low, CImplicitModuleBase high, CImplicitModuleBase control, CImplicitModuleBase threshold, double falloff=0) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }
         public CImplicitSelect(CImplicitModuleBase low, CImplicitModuleBase high, CImplicitModuleBase control, CImplicitModuleBase threshold, CImplicitModuleBase falloff) : base()
         { m_low = new CScalarParameter(low); m_high = new CScalarParameter(high); m_control = new CScalarParameter(control); m_threshold = new CScalarParameter(threshold); m_falloff = new CScalarParameter(falloff); }

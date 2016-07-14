@@ -16,53 +16,53 @@ namespace Sean.WorldGenerator.Noise
 
         public CImplicitTranslateDomain() : base() { }
 
-        public CImplicitTranslateDomain(double src, double tx, double ty, double tz) : base()
-        {   m_source = new CScalarParameter(src); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz); }
+        public CImplicitTranslateDomain(double source, double tx, double ty, double tz) : base()
+        {   m_source = new CScalarParameter(source); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz); }
 
-        public CImplicitTranslateDomain(double src, double tx, double ty, CImplicitModuleBase tz) : base()
-        {   m_source = new CScalarParameter(src); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz);  }
+        public CImplicitTranslateDomain(double source, double tx, double ty, CImplicitModuleBase tz) : base()
+        {   m_source = new CScalarParameter(source); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz);  }
 
-        public CImplicitTranslateDomain(double src, double tx, CImplicitModuleBase ty, double tz) : base()
-        {   m_source = new CScalarParameter(src); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz);  }
+        public CImplicitTranslateDomain(double source, double tx, CImplicitModuleBase ty, double tz) : base()
+        {   m_source = new CScalarParameter(source); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz);  }
 
-        public CImplicitTranslateDomain(double src, double tx, CImplicitModuleBase ty, CImplicitModuleBase tz) : base()
-        {   m_source = new CScalarParameter(src); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz);  }
+        public CImplicitTranslateDomain(double source, double tx, CImplicitModuleBase ty, CImplicitModuleBase tz) : base()
+        {   m_source = new CScalarParameter(source); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz);  }
 
-        public CImplicitTranslateDomain(double src, CImplicitModuleBase tx, double ty, double tz) : base()
-        { m_source = new CScalarParameter(src); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz); }
+        public CImplicitTranslateDomain(double source, CImplicitModuleBase tx, double ty, double tz) : base()
+        { m_source = new CScalarParameter(source); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz); }
 
-        public CImplicitTranslateDomain(double src, CImplicitModuleBase tx, double ty, CImplicitModuleBase tz) : base()
-        { m_source = new CScalarParameter(src); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz); }
+        public CImplicitTranslateDomain(double source, CImplicitModuleBase tx, double ty, CImplicitModuleBase tz) : base()
+        { m_source = new CScalarParameter(source); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz); }
 
-        public CImplicitTranslateDomain(double src, CImplicitModuleBase tx, CImplicitModuleBase ty, double tz) : base()
-        { m_source = new CScalarParameter(src); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz); }
+        public CImplicitTranslateDomain(double source, CImplicitModuleBase tx, CImplicitModuleBase ty, double tz) : base()
+        { m_source = new CScalarParameter(source); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz); }
 
-        public CImplicitTranslateDomain(double src, CImplicitModuleBase tx, CImplicitModuleBase ty, CImplicitModuleBase tz) : base()
-        { m_source = new CScalarParameter(src); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz); }
+        public CImplicitTranslateDomain(double source, CImplicitModuleBase tx, CImplicitModuleBase ty, CImplicitModuleBase tz) : base()
+        { m_source = new CScalarParameter(source); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz); }
 
-        public CImplicitTranslateDomain(CImplicitModuleBase src, double tx, double ty, double tz) : base()
-        { m_source = new CScalarParameter(src); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz); }
+        public CImplicitTranslateDomain(CImplicitModuleBase source, double tx, double ty, double tz) : base()
+        { m_source = new CScalarParameter(source); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz); }
 
-        public CImplicitTranslateDomain(CImplicitModuleBase src, double tx, double ty, CImplicitModuleBase tz) : base()
-        { m_source = new CScalarParameter(src); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz); }
+        public CImplicitTranslateDomain(CImplicitModuleBase source, double tx, double ty, CImplicitModuleBase tz) : base()
+        { m_source = new CScalarParameter(source); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz); }
 
-        public CImplicitTranslateDomain(CImplicitModuleBase src, double tx, CImplicitModuleBase ty, double tz) : base()
-        { m_source = new CScalarParameter(src); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz); }
+        public CImplicitTranslateDomain(CImplicitModuleBase source, double tx, CImplicitModuleBase ty, double tz) : base()
+        { m_source = new CScalarParameter(source); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz); }
 
-        public CImplicitTranslateDomain(CImplicitModuleBase src, double tx, CImplicitModuleBase ty, CImplicitModuleBase tz) : base()
-        { m_source = new CScalarParameter(src); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz); }
+        public CImplicitTranslateDomain(CImplicitModuleBase source, double tx, CImplicitModuleBase ty, CImplicitModuleBase tz) : base()
+        { m_source = new CScalarParameter(source); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz); }
 
-        public CImplicitTranslateDomain(CImplicitModuleBase src, CImplicitModuleBase tx, double ty, double tz) : base()
-        { m_source = new CScalarParameter(src); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz); }
+        public CImplicitTranslateDomain(CImplicitModuleBase source, CImplicitModuleBase tx, double ty, double tz) : base()
+        { m_source = new CScalarParameter(source); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz); }
 
-        public CImplicitTranslateDomain(CImplicitModuleBase src, CImplicitModuleBase tx, double ty, CImplicitModuleBase tz) : base()
-        { m_source = new CScalarParameter(src); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz); }
+        public CImplicitTranslateDomain(CImplicitModuleBase source, CImplicitModuleBase tx, double ty, CImplicitModuleBase tz) : base()
+        { m_source = new CScalarParameter(source); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz); }
 
-        public CImplicitTranslateDomain(CImplicitModuleBase src, CImplicitModuleBase tx, CImplicitModuleBase ty, double tz) : base()
-        { m_source = new CScalarParameter(src); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz); }
+        public CImplicitTranslateDomain(CImplicitModuleBase source, CImplicitModuleBase tx, CImplicitModuleBase ty, double tz) : base()
+        { m_source = new CScalarParameter(source); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz); }
 
-        public CImplicitTranslateDomain(CImplicitModuleBase src, CImplicitModuleBase tx, CImplicitModuleBase ty, CImplicitModuleBase tz) : base()
-        { m_source = new CScalarParameter(src); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz); }
+        public CImplicitTranslateDomain(CImplicitModuleBase source, CImplicitModuleBase tx, CImplicitModuleBase ty, CImplicitModuleBase tz) : base()
+        { m_source = new CScalarParameter(source); m_ax = new CScalarParameter(tx); m_ay = new CScalarParameter(ty); m_az = new CScalarParameter(tz); }
 
 
         void setXAxisSource(CImplicitModuleBase m)

@@ -26,7 +26,7 @@ namespace Sean.WorldGenerator.Noise
     // calculate() is called.
 
 
-    class CImplicitAutoCorrect : CImplicitModuleBase
+    public class CImplicitAutoCorrect : CImplicitModuleBase
     {
         private CImplicitModuleBase m_source;
         private double m_low, m_high;
@@ -44,9 +44,9 @@ namespace Sean.WorldGenerator.Noise
             m_source = null; m_low = low; m_high = high;
             calculate ();
         }
-        public CImplicitAutoCorrect (CImplicitModuleBase m, double low, double high) : base ()
+        public CImplicitAutoCorrect (CImplicitModuleBase source, double low, double high) : base ()
         {
-            m_source = m;
+            m_source = source;
             m_low = low;
             m_high = high;
             calculate ();

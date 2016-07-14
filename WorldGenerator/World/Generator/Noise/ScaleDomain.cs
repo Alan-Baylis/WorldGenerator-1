@@ -15,60 +15,61 @@ namespace Sean.WorldGenerator.Noise
         public CImplicitScaleDomain() : base()
         {
             m_source = new CScalarParameter(0.0f); m_sx = new CScalarParameter(1.0f); m_sy = new CScalarParameter(1.0f);
-            m_sz = new CScalarParameter(1.0f); m_sw = new CScalarParameter(1.0f); m_su = new CScalarParameter(1.0f); m_sv = new CScalarParameter(1.0f);
+            m_sz = new CScalarParameter(1.0f); m_sw = new CScalarParameter(1.0f); m_su = new CScalarParameter(1.0f); 
+            m_sv = new CScalarParameter(1.0f);
         }
 
-        public CImplicitScaleDomain(double src, double x, double y, double z, double w, double u, double v) : base()
-        { m_source = new CScalarParameter(src); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
+        public CImplicitScaleDomain(double source, double x=1, double y=1, double z=1, double w=1, double u=1, double v=1) : base()
+        { m_source = new CScalarParameter(source); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
 
-        public CImplicitScaleDomain(double src, double x, double y, CImplicitModuleBase z, double w, double u, double v) : base()
-        { m_source = new CScalarParameter(src); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
+        public CImplicitScaleDomain(double source, double x, double y, CImplicitModuleBase z, double w, double u, double v) : base()
+        { m_source = new CScalarParameter(source); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
 
-        public CImplicitScaleDomain(double src, double x, CImplicitModuleBase y, double z, double w, double u, double v) : base()
-        { m_source = new CScalarParameter(src); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
+        public CImplicitScaleDomain(double source, double x, CImplicitModuleBase y, double z, double w, double u, double v) : base()
+        { m_source = new CScalarParameter(source); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
 
-        public CImplicitScaleDomain(double src, double x, CImplicitModuleBase y, CImplicitModuleBase z, double w, double u, double v) : base()
-        { m_source = new CScalarParameter(src); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
+        public CImplicitScaleDomain(double source, double x, CImplicitModuleBase y, CImplicitModuleBase z, double w, double u, double v) : base()
+        { m_source = new CScalarParameter(source); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
 
-        public CImplicitScaleDomain(double src, CImplicitModuleBase x, double y, double z, double w, double u, double v) : base()
-        { m_source = new CScalarParameter(src); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
+        public CImplicitScaleDomain(double source, CImplicitModuleBase x, double y, double z, double w, double u, double v) : base()
+        { m_source = new CScalarParameter(source); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
 
-        public CImplicitScaleDomain(double src, CImplicitModuleBase x, double y, CImplicitModuleBase z, double w, double u, double v) : base()
-        { m_source = new CScalarParameter(src); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
+        public CImplicitScaleDomain(double source, CImplicitModuleBase x, double y, CImplicitModuleBase z, double w, double u, double v) : base()
+        { m_source = new CScalarParameter(source); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
 
-        public CImplicitScaleDomain(double src, CImplicitModuleBase x, CImplicitModuleBase y, double z, double w, double u, double v) : base()
-        { m_source = new CScalarParameter(src); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
+        public CImplicitScaleDomain(double source, CImplicitModuleBase x, CImplicitModuleBase y, double z, double w, double u, double v) : base()
+        { m_source = new CScalarParameter(source); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
 
-        public CImplicitScaleDomain(double src, CImplicitModuleBase x, CImplicitModuleBase y, CImplicitModuleBase z, double w, double u, double v) : base()
-        { m_source = new CScalarParameter(src); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
+        public CImplicitScaleDomain(double source, CImplicitModuleBase x, CImplicitModuleBase y, CImplicitModuleBase z, double w, double u, double v) : base()
+        { m_source = new CScalarParameter(source); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
 
-        public CImplicitScaleDomain(CImplicitModuleBase src, double x, double y, double z, double w, double u, double v) : base()
-        { m_source = new CScalarParameter(src); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
+        public CImplicitScaleDomain(CImplicitModuleBase source, double x=1, double y=1, double z=1, double w=1, double u=1, double v=1) : base()
+        { m_source = new CScalarParameter(source); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
 
-        public CImplicitScaleDomain(CImplicitModuleBase src, double x, double y, CImplicitModuleBase z, double w, double u, double v) : base()
-        { m_source = new CScalarParameter(src); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
+        public CImplicitScaleDomain(CImplicitModuleBase source, double x, double y, CImplicitModuleBase z, double w, double u, double v) : base()
+        { m_source = new CScalarParameter(source); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
 
-        public CImplicitScaleDomain(CImplicitModuleBase src, double x, CImplicitModuleBase y, double z, double w, double u, double v) : base()
-        { m_source = new CScalarParameter(src); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
+        public CImplicitScaleDomain(CImplicitModuleBase source, double x, CImplicitModuleBase y, double z, double w, double u, double v) : base()
+        { m_source = new CScalarParameter(source); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
 
-        public CImplicitScaleDomain(CImplicitModuleBase src, double x, CImplicitModuleBase y, CImplicitModuleBase z, double w, double u, double v) : base()
-        { m_source = new CScalarParameter(src); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
+        public CImplicitScaleDomain(CImplicitModuleBase source, double x, CImplicitModuleBase y, CImplicitModuleBase z, double w, double u, double v) : base()
+        { m_source = new CScalarParameter(source); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
 
-        public CImplicitScaleDomain(CImplicitModuleBase src, CImplicitModuleBase x, double y, double z, double w, double u, double v) : base()
-        { m_source = new CScalarParameter(src); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
+        public CImplicitScaleDomain(CImplicitModuleBase source, CImplicitModuleBase x, double y, double z, double w, double u, double v) : base()
+        { m_source = new CScalarParameter(source); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
 
-        public CImplicitScaleDomain(CImplicitModuleBase src, CImplicitModuleBase x, double y, CImplicitModuleBase z, double w, double u, double v) : base()
-        { m_source = new CScalarParameter(src); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
+        public CImplicitScaleDomain(CImplicitModuleBase source, CImplicitModuleBase x, double y, CImplicitModuleBase z, double w, double u, double v) : base()
+        { m_source = new CScalarParameter(source); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
 
-        public CImplicitScaleDomain(CImplicitModuleBase src, CImplicitModuleBase x, CImplicitModuleBase y, double z, double w, double u, double v) : base()
-        { m_source = new CScalarParameter(src); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
+        public CImplicitScaleDomain(CImplicitModuleBase source, CImplicitModuleBase x, CImplicitModuleBase y, double z, double w, double u, double v) : base()
+        { m_source = new CScalarParameter(source); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
 
-        public CImplicitScaleDomain(CImplicitModuleBase src, CImplicitModuleBase x, CImplicitModuleBase y, CImplicitModuleBase z, double w, double u, double v) : base()
-        { m_source = new CScalarParameter(src); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
+        public CImplicitScaleDomain(CImplicitModuleBase source, CImplicitModuleBase x, CImplicitModuleBase y, CImplicitModuleBase z, double w, double u, double v) : base()
+        { m_source = new CScalarParameter(source); m_sx = new CScalarParameter(x); m_sy = new CScalarParameter(y); m_sz = new CScalarParameter(z); m_sw = new CScalarParameter(1); m_su = new CScalarParameter(u); m_sv = new CScalarParameter(v); }
 
 
 
-        public void setScale(double x, double y, double z, double w, double u, double v)
+        public void setScale(double x, double y, double z=1, double w=1, double u=1, double v=1)
         {
             m_sx.set(x); m_sy.set(y); m_sz.set(z); m_sw.set(w); m_su.set(u); m_sv.set(v);
         }

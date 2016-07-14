@@ -6,11 +6,18 @@ namespace Sean.WorldGenerator.Noise
 {
     // ScaleOffset applies a scaling and translation factor to the output of its source function, as v*scale+offset.
 
-    internal class CImplicitScaleOffset : CImplicitModuleBase
+    public class CImplicitScaleOffset : CImplicitModuleBase
     {
-        private CScalarParameter m_source;
+        private CImplicitModuleBase m_source;
         private CScalarParameter m_scale { get; set; }
         private CScalarParameter m_offset { get; set; }
+
+        public CImplicitScaleOffset(CImplicitModuleBase source, double scale, double offset) : base()
+        {
+            m_source = source;
+            m_scale = new CScalarParameter(scale);
+            m_offset = new CScalarParameter(offset);
+        }
 
         public override double get (double x, double y)
         {

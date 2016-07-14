@@ -82,6 +82,8 @@ namespace Sean.WorldGenerator.Noise
         // Long period hash
         public static uint hash_coords_2(int x, int y, uint seed)
         {
+            if (x < 0) x = -x;
+            if (y < 0) y = -y;
             return (p241[(p241[(p241[x % 241] + y) % 241] + seed) % 241] +
             p251[(p251[(p251[x % 251] + y) % 251] + seed) % 251] +
             p257[(p257[(p257[x % 257] + y) % 257] + seed) % 257] +
@@ -90,6 +92,9 @@ namespace Sean.WorldGenerator.Noise
 
         public static uint hash_coords_3(int x, int y, int z, uint seed)
         {
+            if (x < 0) x = -x;
+            if (y < 0) y = -y;
+            if (z < 0) z = -z;
             return (
                 p241[(p241[(p241[(p241[x % 241] + y) % 241] + z) % 241] + seed) % 241] +
                 p251[(p251[(p251[(p251[x % 251] + y) % 251] + z) % 251] + seed) % 251] +
@@ -100,6 +105,10 @@ namespace Sean.WorldGenerator.Noise
 
         public static uint hash_coords_4(int x, int y, int z, int w, uint seed)
         {
+            if (x < 0) x = -x;
+            if (y < 0) y = -y;
+            if (z < 0) z = -z;
+            if (w < 0) w = -w;
             return (
                 p241[(p241[(p241[(p241[(p241[x % 241] + y) % 241] + z) % 241] + w) % 241] + seed) % 241] +
                 p251[(p251[(p251[(p251[(p251[x % 251] + y) % 251] + z) % 251] + w) % 251] + seed) % 251] +
@@ -110,6 +119,12 @@ namespace Sean.WorldGenerator.Noise
 
         public static uint hash_coords_6(int x, int y, int z, int w, int u, int v, uint seed)
         {
+            if (x < 0) x = -x;
+            if (y < 0) y = -y;
+            if (z < 0) z = -z;
+            if (w < 0) w = -w;
+            if (u < 0) u = -u;
+            if (v < 0) v = -v;
             return (
                 p241[(p241[(p241[(p241[(p241[(p241[(p241[x % 241] + y) % 241] + z) % 241] + w) % 241] + u) % 241] + v) % 241] + seed) % 241] +
                 p251[(p251[(p251[(p251[(p251[(p251[(p251[x % 251] + y) % 251] + z) % 251] + w) % 251] + u) % 251] + v) % 251] + seed) % 251] +

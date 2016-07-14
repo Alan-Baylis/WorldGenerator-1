@@ -47,7 +47,7 @@ namespace Sean.WorldGenerator
                 {
                     double dx = x - (globalMapSize / 2);
                     double dz = z - (globalMapSize / 2);
-                    var dist = Math.Math.Sqrt(dx * dx + dz * dz);
+                    var dist = Math.Sqrt(dx * dx + dz * dz);
                     dist = dist / (globalMapSize / 2);
                     dist = Math.Cos((3.14/2) * dist);
                     map[x,z] = Math.Min(map[x, z] + (int)(map.Size.maxY * dist / 3), size.maxY);

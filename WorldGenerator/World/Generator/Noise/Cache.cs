@@ -11,16 +11,16 @@ namespace Sean.WorldGenerator.Noise
         public bool valid;
     };
 
-    class CImplicitCache : CImplicitModuleBase
+    public class CImplicitCache : CImplicitModuleBase
     {
         //CImplicitModuleBase * m_source;
         private CScalarParameter m_source;
         private SCache m_c2, m_c3, m_c4, m_c6;
 
-        CImplicitCache() : base() { }
-        CImplicitCache(double v) : base()
+        public CImplicitCache() : base() { }
+        public CImplicitCache(double v) : base()
         { m_source = new CScalarParameter(v); }
-        CImplicitCache(CImplicitModuleBase v) : base()
+        public CImplicitCache(CImplicitModuleBase v) : base()
         { m_source = new CScalarParameter(v); }
 
         public void setSource(CImplicitModuleBase m)

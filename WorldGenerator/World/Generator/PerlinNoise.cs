@@ -1,4 +1,5 @@
 ﻿using System;
+using Sean.WorldGenerator.Noise;
 
 namespace Sean.WorldGenerator
 {

@@ -6,6 +6,13 @@ namespace Sean.WorldGenerator.Noise
 {
     // Base class of implicit (2D, 4D, 6D) noise functions
 
+    // Noise values are obtained by calling one of the get() methods provided, 
+    // with the appropriate number of coordinates. Note that the performance of
+    // the system as a hold is affected by the dimensionality of the function called, 
+    // so a 6D function will take significantly longer than a 2D function. 
+    // Typical applications will probably stick with 2D or 3D versions; the higher
+    // orders are provided for the purpose of seamless mapping.
+
     public abstract class CImplicitModuleBase
     {
         protected double m_spacing { get; set; }  // DerivSpacing

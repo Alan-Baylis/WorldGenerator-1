@@ -58,7 +58,7 @@ namespace Sean.WorldGenerator
 		/// <summary>Distance of the chunk from the player in number of blocks.</summary>
         public double DistanceFromPlayer(Coords coords)
 		{
-			return Math.Math.Sqrt(Math.Pow(coords.Xf - ChunkCoords.WorldCoordsX, 2) + Math.Pow(coords.Zf - ChunkCoords.WorldCoordsZ, 2));
+			return Math.Sqrt(Math.Pow(coords.Xf - ChunkCoords.WorldCoordsX, 2) + Math.Pow(coords.Zf - ChunkCoords.WorldCoordsZ, 2));
 		}
 		
 		/// <summary>Lookup for the Chunk Vbo containing the position, normal and texCoords Vbo's for this chunk and texture type.</summary>

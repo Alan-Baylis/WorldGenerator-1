@@ -2,7 +2,6 @@ using System;
 
 namespace Sean.WorldGenerator.Noise
 {
-
     // Fractals are a special type of combiner that combine up to 20 noise sources using 
     // fractal methods pioneered by Perlin, Musgrave, and friends.They come in various 
     // types(specifiable through setType() or in the constructor). Each fractal has up to 
@@ -38,7 +37,7 @@ namespace Sean.WorldGenerator.Noise
         DECARPENTIERSWISS
     };
 
-    class CImplicitFractal : CImplicitModuleBase
+    public class CImplicitFractal : CImplicitModuleBase
     {
         private const int MaxSources = 20;
 
@@ -53,8 +52,13 @@ namespace Sean.WorldGenerator.Noise
         private EFractalTypes m_type;
         private bool m_rotatedomain;
 
-        CImplicitFractal (EFractalTypes type, CImplicitBasisFunction.EBasisTypes basistype, CImplicitBasisFunction.EInterpTypes interptype, uint octaves, double freq, bool rotatedomain) : base ()
+        public CImplicitFractal (EFractalTypes type, CImplicitBasisFunction.EBasisTypes basistype, CImplicitBasisFunction.EInterpTypes interptype, uint octaves, double freq, bool rotatedomain=true) : base ()
         {
+            m_basis = new CImplicitBasisFunction[MaxSources];
+            m_source = new CImplicitModuleBase [MaxSources];
+            m_exparray = new double [MaxSources];
+            m_correct = new double [MaxSources,2];
+
             m_rotatedomain = rotatedomain;
             setNumOctaves (octaves);
             setFrequency (freq);
@@ -62,11 +66,6 @@ namespace Sean.WorldGenerator.Noise
             setType (type);
             setAllSourceTypes (basistype, interptype);
             resetAllSources ();
-
-            m_basis = new CImplicitBasisFunction[MaxSources];
-            m_source = new CImplicitModuleBase [MaxSources];
-            m_exparray = new double [MaxSources];
-            m_correct = new double [MaxSources,2];
         }
 
         void setNumOctaves (uint n) { if (n >= MaxSources) n = MaxSources - 1; m_numoctaves = n; }
