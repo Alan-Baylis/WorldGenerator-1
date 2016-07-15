@@ -190,12 +190,11 @@ namespace WorldViewer
             var highland_mountain_select = new Sean.WorldGenerator.Noise.CImplicitSelect (low:highland_terrain, high:mountain_terrain, control:terrain_type_cache, threshold:0.55, falloff:0.15);
             var highland_lowland_select = new Sean.WorldGenerator.Noise.CImplicitSelect (low:lowland_terrain, high:highland_mountain_select, control:terrain_type_cache, threshold:0.25, falloff:0.15);
             var ground_select = new Sean.WorldGenerator.Noise.CImplicitSelect (low:0, high:1, threshold:0.5, control:highland_lowland_select);
-
+   
             for (int x = 1; x < width; x++) {
                 for (int y = 1; y < height; y++) {
-                    var p = ground_select.get((double)x/width,(double)y/height);
-                    var pt = (int)(p * 127)+127;
-                    var color = Color.FromArgb(255, 0, pt, 0);
+                    var p = (int)(ground_select.get((double)x/width,(double)y/height) * 255);
+                    var color = Color.FromArgb(255, 0, p, 0);
                     graphics.FillRectangle(new SolidBrush(color), x, y, 1, 1);
                 }
             }

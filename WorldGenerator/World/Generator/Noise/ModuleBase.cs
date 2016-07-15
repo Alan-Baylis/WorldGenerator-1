@@ -15,12 +15,7 @@ namespace Sean.WorldGenerator.Noise
 
     public abstract class CImplicitModuleBase
     {
-        protected double m_spacing { get; set; }  // DerivSpacing
-
-        public CImplicitModuleBase ()
-        {
-            m_spacing = 0.0001f;
-        }
+        private double m_spacing = 0.0001f; // DerivSpacing
 
         public virtual void setSeed (uint seed)
         {
@@ -30,8 +25,6 @@ namespace Sean.WorldGenerator.Noise
         public abstract double get (double x, double y, double z);
         public abstract double get (double x, double y, double z, double w);
         public abstract double get (double x, double y, double z, double w, double u, double v);
-
-
 
         public double get_dx (double x, double y)
         {

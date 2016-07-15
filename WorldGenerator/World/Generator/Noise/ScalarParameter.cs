@@ -17,7 +17,11 @@
     // Scalar parameter class
     public class CScalarParameter
     {
-        public CScalarParameter(double v) { }
+        public CScalarParameter(double v) 
+        {
+            m_val = v;
+            m_source = null;
+        }
 
         public CScalarParameter(CImplicitModuleBase b)
         {
