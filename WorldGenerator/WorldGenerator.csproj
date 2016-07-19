@@ -33,6 +33,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NoiseLibrary">
+      <HintPath>Deps\NoiseLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -50,18 +53,6 @@
     <Compile Include="Shared\UiTextGraphics.cs" />
     <Compile Include="World\Chunks.cs" />
     <Compile Include="World\Constants.cs" />
-    <Compile Include="World\Generator\Noise\AutoCorrect.cs" />
-    <Compile Include="World\Generator\Noise\Cache.cs" />
-    <Compile Include="World\Generator\Noise\Fractal.cs" />
-    <Compile Include="World\Generator\Noise\Gradient.cs" />
-    <Compile Include="World\Generator\Noise\ModuleBase.cs" />
-    <Compile Include="World\Generator\Noise\Noise_Gen.cs" />
-    <Compile Include="World\Generator\Noise\Noise_Lut.cs" />
-    <Compile Include="World\Generator\Noise\ScalarParameter.cs" />
-    <Compile Include="World\Generator\Noise\ScaleDomain.cs" />
-    <Compile Include="World\Generator\Noise\ScaleOffset.cs" />
-    <Compile Include="World\Generator\Noise\Select.cs" />
-    <Compile Include="World\Generator\Noise\TranslateDomain.cs" />
     <Compile Include="World\Map\MapChunk.cs" />
     <Compile Include="World\Map\WorldMap.cs" />
     <Compile Include="World\Settings.cs" />
@@ -85,12 +76,6 @@
     <Compile Include="Shared\GameItemDynamic.cs" />
     <Compile Include="Shared\GameItemStatic.cs" />
     <Compile Include="World\Map\Water.cs" />
-    <Compile Include="World\Generator\Noise\Hashing.cs" />
-    <Compile Include="World\Generator\Noise\Math.cs" />
-    <Compile Include="World\Generator\Noise\Misc.cs" />
-    <Compile Include="World\Generator\Noise\Utility.cs" />
-    <Compile Include="World\Generator\Noise\BasisFunction.cs" />
-    <Compile Include="World\Generator\Noise\Random_Gen.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

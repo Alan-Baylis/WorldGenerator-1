@@ -1,6 +1,4 @@
 ﻿using System;
-using Sean.WorldGenerator.Noise;
-
 namespace Sean.WorldGenerator
 {
     // see http://flafla2.github.io/2014/08/09/perlinnoise.html
@@ -97,7 +95,7 @@ namespace Sean.WorldGenerator
 
         private int p(int x, int y, int z, int octave) {
             //return (int)(Misc.GetDeterministicInt (x, y, z, octave, WorldSeed) % 256);
-            return (int)(Hashing.hash_coords_4(x, y, z, octave, (uint)WorldSeed));
+            return (int)(NoiseLibrary.Hashing.hash_coords_4(x, y, z, octave, (uint)WorldSeed));
         }
 
         public double Perlin(double x, double y, double z, int octave) {
