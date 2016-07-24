@@ -28,10 +28,10 @@ namespace WorldViewer
         {
             var currentCursor = this.Cursor;
             this.Cursor = Cursors.WaitCursor;
-            //this.localPictureBox.Image = this.DrawLocal(this.localPictureBox.Width, this.localPictureBox.Height);
-            //this.worldPictureBox.Image = this.DrawAllChunks(this.worldPictureBox.Width, this.worldPictureBox.Height);
+            this.localPictureBox.Image = this.DrawLocal(this.localPictureBox.Width, this.localPictureBox.Height);
+            this.worldPictureBox.Image = this.DrawAllChunks(this.worldPictureBox.Width, this.worldPictureBox.Height);
             //this.pictureBox1.Image = this.DrawGlobalMap(this.pictureBox1.Width, this.pictureBox1.Height);
-            this.terrainPictureBox.Image = this.DrawTerrain(this.terrainPictureBox.Width, this.terrainPictureBox.Height);
+            //this.terrainPictureBox.Image = this.DrawTerrain(this.terrainPictureBox.Width, this.terrainPictureBox.Height);
 
             this.Cursor = currentCursor;
         }
@@ -83,7 +83,8 @@ namespace WorldViewer
                 for (int z = 0; z < chunk.ChunkSize; z++)
                 {
                     var pt = chunk.HeightMap[x + chunk.HeightMap.Size.minX, z + chunk.HeightMap.Size.minZ];
-                    var color = pt < 20 ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
+                    //var color = pt < 20 ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
+                    var color = Color.FromArgb(255, 0, pt, 0);
                     graphics.FillRectangle(new SolidBrush(color), x * xSize, z * zSize, xSize, zSize);
                 }
             }
@@ -125,7 +126,8 @@ namespace WorldViewer
                 for (int z = 0; z < chunk.ChunkSize; z++)
                 {
                     var pt = chunk.HeightMap[x + chunk.HeightMap.Size.minX, z + chunk.HeightMap.Size.minZ];
-                    var color = pt < 20 ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
+                    //var color = pt < 20 ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
+                    var color = Color.FromArgb(255, 0, pt, 0);
                     graphics.FillRectangle(new SolidBrush(color), xOri + x, zOri + z, 1, 1);
                 }
             }

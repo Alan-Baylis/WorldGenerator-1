@@ -153,6 +153,7 @@ namespace Sean.WorldGenerator
 		/// <remarks>The height map is used for lighting. Its also used to determine the players starting Y position.</remarks>
 		public void BuildHeightMap()
 		{
+            HeightMap = new Array<int> (CHUNK_SIZE,CHUNK_SIZE);
 			DeepestTransparentLevel = CHUNK_HEIGHT; //initialize to top of chunk until this gets calculated
 			HighestNonAirLevel = 0; //initialize to bottom of chunk until this gets calculated
 			for (var x = 0; x < CHUNK_SIZE; x++)

@@ -63,25 +63,7 @@ namespace Sean.WorldGenerator
             };
 
             var heightMap = perlinNoise.GetIntMap(worldSize, octaves, persistence);
-            //ApplyIslandHeight(worldSize, heightMap);
             return heightMap;
-        }
-
-        private void ApplyIslandHeight(ArraySize size, Array<int> map)
-        {
-            // Quick hack to make it an island
-            for(var x=size.minX; x<size.maxX; x=x+size.scale)
-            {
-                for(var z=size.minZ; z<size.maxZ; z=z+size.scale)
-                {
-                    double dx = x - (globalMapSize / 2);
-                    double dz = z - (globalMapSize / 2);
-                    var dist = Math.Sqrt(dx * dx + dz * dz);
-                    dist = dist / (globalMapSize / 2);
-                    dist = Math.Cos((3.14/2) * dist);
-                    map[x,z] = Math.Min(map[x, z] + (int)(map.Size.maxY * dist / 3), size.maxY);
-                }
-            }
         }
 
         public void Generate(Chunk chunk)
@@ -97,14 +79,6 @@ namespace Sean.WorldGenerator
                 maxY = maxNoiseHeight,
                 scale = 1,
             };
-            int octaveCount = 3;
-            double persistence = 0.5;
-
-            //chunk.HeightMap = perlinNoise.GetIntMap(worldSize, octaves, persistence);
-            //ApplyIslandHeight(worldSize, chunk.HeightMap);
-            //chunk.MineralMap = perlinNoise.GetFloatMap(worldSize, 2);
-
-            //GenerateChunk(chunk);
 
             for (int z = worldSize.minZ; z < worldSize.maxZ; z += worldSize.scale)
             {
@@ -113,13 +87,15 @@ namespace Sean.WorldGenerator
                     for (int y = 0; y < maxNoiseHeight; y++)
                     {
                         //double p = perlinNoise.OctavePerlin(worldSize, x, y, z, octaveCount, persistence);
-                        double p = noiseGenerator.get(x,y,z);
+                        double p = noiseGenerator.get((double)x/Chunk.CHUNK_SIZE, (double)y/maxNoiseHeight, (double)z/Chunk.CHUNK_SIZE);
                         var blockType = p < 0.5 ? Block.BlockType.Rock : Block.BlockType.Air;
                         chunk.Blocks[x % Chunk.CHUNK_SIZE, y, z % Chunk.CHUNK_SIZE] = new Block(blockType);
                     }
                 }
             }
 
+            chunk.BuildHeightMap();
+            //GenerateChunk(chunk);
 
             /*
 			//loop through chunks again for actions that require the neighboring chunks to be built
@@ -260,36 +236,6 @@ namespace Sean.WorldGenerator
 						}
                         var mineralPosition = new Position(x, (int)chunk.MineralMap[x, z], z);
 						chunk.Blocks[mineralPosition] = new Block(mineralType);
-						
-                        /*
-						//expand this mineral node
-						for (int nextRandom = Settings.Random.Next(); nextRandom % 3600 > 1000; nextRandom = Settings.Random.Next())
-						{
-							switch (nextRandom % 6)
-							{
-								case 0:
-									mineralPosition.X = Math.Min(mineralPosition.X + 1, World.SizeInBlocksX - 1);
-									break;
-								case 1:
-									mineralPosition.X = Math.Max(mineralPosition.X - 1, 0);
-									break;
-								case 2:
-									mineralPosition.Z = Math.Min(mineralPosition.Z + 1, World.SizeInBlocksZ - 1);
-									break;
-								case 3:
-									mineralPosition.Z = Math.Max(mineralPosition.Z - 1, 0);
-									break;
-								case 4:
-                                mineralPosition.Y = Math.Min(mineralPosition.Y + 1, chunk.HeightMap[x, z] - 5 - 1);
-									break;
-								case 5:
-									mineralPosition.Y = Math.Max(mineralPosition.Y - 1, 0);
-									break;
-							}
-                            //need to get via the chunk because this block could be expanding into an adjacent chunk
-                            World.LocalMap.Chunk(mineralPosition).Blocks[mineralPosition] = new Block(mineralType);
-						}
-                        */
 					}
 				}
 			}
