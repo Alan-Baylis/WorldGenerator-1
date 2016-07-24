@@ -30,7 +30,7 @@ namespace WorldViewer
             this.Cursor = Cursors.WaitCursor;
             this.localPictureBox.Image = this.DrawLocal(this.localPictureBox.Width, this.localPictureBox.Height);
             this.worldPictureBox.Image = this.DrawAllChunks(this.worldPictureBox.Width, this.worldPictureBox.Height);
-            //this.pictureBox1.Image = this.DrawGlobalMap(this.pictureBox1.Width, this.pictureBox1.Height);
+            this.pictureBox1.Image = this.DrawGlobalMap(this.pictureBox1.Width, this.pictureBox1.Height);
             //this.terrainPictureBox.Image = this.DrawTerrain(this.terrainPictureBox.Width, this.terrainPictureBox.Height);
 
             this.Cursor = currentCursor;
@@ -147,8 +147,8 @@ namespace WorldViewer
                 for (int z = map.Size.minZ; z < map.Size.maxZ; z=z+map.Size.scale)
                 {
                     var pt = map[x,z];
-                    var color = World.IsGlobalMapWater(x, z) ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
-                    //var color = Color.FromArgb(255, 0, pt, 0);
+                    //var color = World.IsGlobalMapWater(x, z) ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
+                    var color = Color.FromArgb(255, 0, pt, 0);
                     graphics.FillRectangle(new SolidBrush(color), x1, z1, 1,1);
                     if (x1 == currentChunk.X && z1 == currentChunk.Z)
                         graphics.DrawRectangle(new Pen(Color.FromArgb(255, 255,0,0)), x1, z1, 1, 1);

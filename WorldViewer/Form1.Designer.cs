@@ -34,12 +34,12 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.localPictureBox = new System.Windows.Forms.PictureBox();
-            this.terrainPictureBox = new System.Windows.Forms.PictureBox();
+            //this.terrainPictureBox = new System.Windows.Forms.PictureBox();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.worldPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.localPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.terrainPictureBox)).BeginInit();
+            //((System.ComponentModel.ISupportInitialize)(this.terrainPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // worldPictureBox
@@ -79,11 +79,11 @@
             // 
             // terrainPictureBox
             // 
-            this.terrainPictureBox.Location = new System.Drawing.Point(279, 47);
-            this.terrainPictureBox.Name = "terrainPictureBox";
-            this.terrainPictureBox.Size = new System.Drawing.Size(512, 512);
-            this.terrainPictureBox.TabIndex = 6;
-            this.terrainPictureBox.TabStop = false;
+            //this.terrainPictureBox.Location = new System.Drawing.Point(279, 47);
+            //this.terrainPictureBox.Name = "terrainPictureBox";
+            //this.terrainPictureBox.Size = new System.Drawing.Size(512, 512);
+            //this.terrainPictureBox.TabIndex = 6;
+            //this.terrainPictureBox.TabStop = false;
             // 
             // imageList
             // 
@@ -96,7 +96,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 586);
-            this.Controls.Add(this.terrainPictureBox);
+            //this.Controls.Add(this.terrainPictureBox);
             this.Controls.Add(this.localPictureBox);
             this.Controls.Add(this.worldPictureBox);
             this.Controls.Add(this.pictureBox1);
@@ -109,7 +109,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.worldPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.localPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.terrainPictureBox)).EndInit();
+            //((System.ComponentModel.ISupportInitialize)(this.terrainPictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -121,7 +121,7 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.PictureBox localPictureBox;
-        private System.Windows.Forms.PictureBox terrainPictureBox;
+        //private System.Windows.Forms.PictureBox terrainPictureBox;
         private System.Windows.Forms.ImageList imageList;
     }
 }

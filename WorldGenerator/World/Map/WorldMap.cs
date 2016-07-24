@@ -17,6 +17,7 @@ namespace Sean.WorldGenerator
         public WorldMap(int seed)
         {
             this.generator = new Generator(seed);
+            Generate();
         }
 
         public void Generate()

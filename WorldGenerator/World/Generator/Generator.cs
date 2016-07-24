@@ -62,7 +62,24 @@ namespace Sean.WorldGenerator
                 scale = 8 //Chunk.CHUNK_SIZE,
             };
 
-            var heightMap = perlinNoise.GetIntMap(worldSize, octaves, persistence);
+            var heightMap = new Array<int>(worldSize);
+            for (int z = worldSize.minZ; z < worldSize.maxZ; z += worldSize.scale)
+            {
+                for (int x = worldSize.minX; x < worldSize.maxX; x += worldSize.scale)
+                {
+                    int d = worldSize.maxY / 2;
+                    int y = d;
+                    while (d > 1)
+                    {
+                        d /= 2;
+                        if (noiseGenerator.get ((double)x / Chunk.CHUNK_SIZE, (double)y / maxNoiseHeight, (double)z / Chunk.CHUNK_SIZE) < 0.5)
+                            y += d;
+                        else
+                            y -= d;
+                    }
+                    heightMap[x, z] = y;
+                }
+            }
             return heightMap;
         }
 
