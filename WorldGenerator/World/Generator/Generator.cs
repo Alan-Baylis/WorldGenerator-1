@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Sean.Shared;
+using NoiseLibrary;
 
 namespace Sean.WorldGenerator
 {
@@ -14,9 +15,37 @@ namespace Sean.WorldGenerator
         private const double persistence = 0.4;
         private const int minNoiseHeight = -127;
         private const int maxNoiseHeight = 127;
+        private CImplicitSelect noiseGenerator;
+
         public Generator(int seed)
         {
             perlinNoise = new PerlinNoise(seed, 100);
+
+            var ground_gradient = new CImplicitGradient (x1:0, x2:0, y1:0, y2:1);
+            var lowland_shape_fractal = new CImplicitFractal (type:EFractalTypes.FBM, basistype:CImplicitBasisFunction.EBasisTypes.GRADIENT, interptype:CImplicitBasisFunction.EInterpTypes.QUINTIC, octaves:2, freq:1);
+            var lowland_autocorrect = new CImplicitAutoCorrect (source:lowland_shape_fractal, low:0, high:1);
+            var lowland_scale = new CImplicitScaleOffset (source:lowland_autocorrect, scale:0.2, offset:-0.25);
+            var lowland_y_scale = new CImplicitScaleDomain (source:lowland_scale, x:1, y:0);
+            var lowland_terrain = new CImplicitTranslateDomain (source:ground_gradient, tx:0, ty:lowland_y_scale, tz:0);
+            var highland_shape_fractal = new CImplicitFractal (type:EFractalTypes.RIDGEDMULTI, basistype:CImplicitBasisFunction.EBasisTypes.GRADIENT, interptype:CImplicitBasisFunction.EInterpTypes.QUINTIC, octaves:2, freq:2);
+            var highland_autocorrect = new CImplicitAutoCorrect (source:highland_shape_fractal, low:0, high:1);
+            var highland_scale = new CImplicitScaleOffset (source:highland_autocorrect, scale:0.45, offset:0);
+            var highland_y_scale = new CImplicitScaleDomain (source:highland_scale, x:1, y:0);
+            var highland_terrain = new CImplicitTranslateDomain (source:ground_gradient, tx:0, ty:highland_y_scale, tz:0);
+
+            var mountain_shape_fractal = new CImplicitFractal (type:EFractalTypes.BILLOW, basistype:CImplicitBasisFunction.EBasisTypes.GRADIENT, interptype:CImplicitBasisFunction.EInterpTypes.QUINTIC, octaves:4, freq:1);
+            var mountain_autocorrect = new CImplicitAutoCorrect (source:mountain_shape_fractal, low:0, high:1);
+            var mountain_scale = new CImplicitScaleOffset (source:mountain_autocorrect, scale:0.75, offset:0.25);
+            var mountain_y_scale = new CImplicitScaleDomain (source:mountain_scale, x:1, y:0.1);
+            var mountain_terrain = new CImplicitTranslateDomain (source:ground_gradient, tx:0, ty:mountain_y_scale, tz:0);
+
+            var terrain_type_fractal = new CImplicitFractal (type:EFractalTypes.FBM, basistype:CImplicitBasisFunction.EBasisTypes.GRADIENT, interptype:CImplicitBasisFunction.EInterpTypes.QUINTIC, octaves:3, freq:0.5);
+            var terrain_autocorrect = new CImplicitAutoCorrect (source:terrain_type_fractal, low: 0, high: 1);
+            var terrain_type_cache = new CImplicitCache (v:terrain_autocorrect);
+            var highland_mountain_select = new CImplicitSelect (low:highland_terrain, high:mountain_terrain, control:terrain_type_cache, threshold:0.55, falloff:0.15);
+            var highland_lowland_select = new CImplicitSelect (low:lowland_terrain, high:highland_mountain_select, control:terrain_type_cache, threshold:0.25, falloff:0.15);
+            var ground_select = new CImplicitSelect (low:0, high:1, threshold:0.5, control:highland_lowland_select);
+            noiseGenerator = ground_select;
         }
 
         public Array<int> GenerateGlobalMap()
@@ -83,7 +112,8 @@ namespace Sean.WorldGenerator
                 {
                     for (int y = 0; y < maxNoiseHeight; y++)
                     {
-                        double p = perlinNoise.OctavePerlin(worldSize, x, y, z, octaveCount, persistence);
+                        //double p = perlinNoise.OctavePerlin(worldSize, x, y, z, octaveCount, persistence);
+                        double p = noiseGenerator.get(x,y,z);
                         var blockType = p < 0.5 ? Block.BlockType.Rock : Block.BlockType.Air;
                         chunk.Blocks[x % Chunk.CHUNK_SIZE, y, z % Chunk.CHUNK_SIZE] = new Block(blockType);
                     }

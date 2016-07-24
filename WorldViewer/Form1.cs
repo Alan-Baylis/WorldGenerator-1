@@ -165,7 +165,7 @@ namespace WorldViewer
             var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
             var graphics = Graphics.FromImage(bitmap);
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
-
+            /*
             var ground_gradient = new CImplicitGradient (x1:0, x2:0, y1:0, y2:1);
             var lowland_shape_fractal = new CImplicitFractal (type:EFractalTypes.FBM, basistype:CImplicitBasisFunction.EBasisTypes.GRADIENT, interptype:CImplicitBasisFunction.EInterpTypes.QUINTIC, octaves:2, freq:1);
             var lowland_autocorrect = new CImplicitAutoCorrect (source:lowland_shape_fractal, low:0, high:1);
@@ -197,14 +197,7 @@ namespace WorldViewer
                     var color = Color.FromArgb(255, 0, p, 0);
                     graphics.FillRectangle(new SolidBrush(color), x, y, 1, 1);
                 }
-            }
-
-            /*
-            var boxImage = imageList.Images["box_blue"];
-            var chunk = World.GetChunk(currentChunk, 1);
-            var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-            var graphics = Graphics.FromImage(bitmap);
-            graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            }*/
 
             var xSize = width / chunk.ChunkSize;
             var zSize = height / chunk.ChunkSize;
@@ -225,7 +218,7 @@ namespace WorldViewer
                     }
                 }
             }
-            */
+
             return bitmap;
         }
         
