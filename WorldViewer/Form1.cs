@@ -1,15 +1,8 @@
-﻿using NoiseLibrary;
-using Sean.WorldGenerator;
+﻿using Sean.WorldGenerator;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace WorldViewer
@@ -69,6 +62,7 @@ namespace WorldViewer
         private void Form1_Load(object sender, EventArgs e)
         {
         }
+
         public Bitmap DrawLocal(int width, int height)
         {
             var chunk = World.GetChunk(currentChunk, 1);
@@ -150,12 +144,11 @@ namespace WorldViewer
                     //var color = World.IsGlobalMapWater(x, z) ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
                     var color = Color.FromArgb(255, 0, pt, 0);
                     graphics.FillRectangle(new SolidBrush(color), x1, z1, 1,1);
-                    if (x1 == currentChunk.X && z1 == currentChunk.Z)
-                        graphics.DrawRectangle(new Pen(Color.FromArgb(255, 255,0,0)), x1, z1, 1, 1);
                     z1++;
                 }
                 x1++;
             }
+            graphics.DrawRectangle(new Pen(Color.FromArgb(255, 255,0,0)), currentChunk.X*4, currentChunk.Z*4, 4, 4);
             return bitmap;
         }
 
