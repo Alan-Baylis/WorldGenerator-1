@@ -44,7 +44,17 @@ namespace Sean.WorldGenerator
             var terrain_type_cache = new CImplicitCache (v:terrain_autocorrect);
             var highland_mountain_select = new CImplicitSelect (low:highland_terrain, high:mountain_terrain, control:terrain_type_cache, threshold:0.55, falloff:0.15);
             var highland_lowland_select = new CImplicitSelect (low:lowland_terrain, high:highland_mountain_select, control:terrain_type_cache, threshold:0.25, falloff:0.15);
-            var ground_select = new CImplicitSelect (low:0, high:1, threshold:0.5, control:highland_lowland_select);
+     
+            var coastline_shape_fractal = new CImplicitFractal(type: EFractalTypes.RIDGEDMULTI, basistype: CImplicitBasisFunction.EBasisTypes.GRADIENT, interptype: CImplicitBasisFunction.EInterpTypes.QUINTIC, octaves: 8, freq: 1);
+            var coastline_autocorrect = new CImplicitAutoCorrect(source: coastline_shape_fractal, low: -1, high: 1);
+            var coastline_seamless = new CImplicitSeamlessMapping(source: coastline_autocorrect, seamlessmode: CImplicitSeamlessMapping.EMappingModes.SEAMLESS_X);
+            var coastline_scale = new CImplicitScaleOffset(source: coastline_seamless, scale: 0.45, offset: 0.15);
+            var coastline_y_scale = new CImplicitScaleDomain(source: coastline_scale, y: 0.25);
+            var coastline_terrain = new CImplicitTranslateDomain(source: ground_gradient, tx: 0.0, ty: coastline_y_scale, tz: 0.0);
+            var coastline_radial_mapping = new CImplicitTranslateRadial(source: coastline_terrain);
+            var terrain_select = new CImplicitTranslateDomain (source:highland_lowland_select, tx:0, ty:coastline_radial_mapping, tz:0);
+
+            var ground_select = new CImplicitSelect (low:0, high:1, threshold:0.5, control:terrain_select);
 
             noiseGenerator = ground_select;
         }

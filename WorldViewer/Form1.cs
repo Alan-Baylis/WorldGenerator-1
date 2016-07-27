@@ -12,7 +12,7 @@ namespace WorldViewer
         public Form1()
         {
             InitializeComponent();
-            currentChunk = new ChunkCoords(100, 100);
+            currentChunk = new ChunkCoords(40, 40);
             textBox1.Text = "Keys: W,A,S,D";
             DrawMaps();
         }
