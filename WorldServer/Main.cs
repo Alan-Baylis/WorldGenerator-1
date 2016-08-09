@@ -51,13 +51,13 @@ namespace Sean.WorldServer
             //
             //}
 
-            var chunk = World.GetChunk(new ChunkCoords(100, 100), 1);
-            World.RenderMap();
+            //var chunk = World.GetChunk(new ChunkCoords(100, 100), 1);
+            //World.RenderMap();
             //var otpServer = new OtpServer();
             //otpServer.Start();
 
-            //ClientSocket.SendMessage ();
             //ServerSocketListener.Run();
+            //ClientSocket.SendMessage ();
 
             // Rest web server
             string baseUri = "http://localhost:8080";

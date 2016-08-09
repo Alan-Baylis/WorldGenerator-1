@@ -99,7 +99,6 @@ namespace Sean.WorldGenerator
         /// <summary>Number of blocks in Z direction that make up the world.</summary>
         public static int SizeInBlocksZ { get; private set; }
 
-
         public static int MaxXChunk { get { return LocalMap.MaxXChunk; } }
         public static int MinXChunk { get { return LocalMap.MinXChunk; } }
         public static int MaxZChunk { get { return LocalMap.MaxZChunk; } }
@@ -113,8 +112,6 @@ namespace Sean.WorldGenerator
         //public static Chunks Chunks;
         public static bool GenerateWithTrees = true;
         #endregion
-
-
 
         internal static LocalMap LocalMap { get { return localMap; } }
         internal static WorldMap WorldMap { get { return worldMap; } }

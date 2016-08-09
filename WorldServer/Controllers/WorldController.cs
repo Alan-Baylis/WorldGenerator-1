@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-// Add these usings:
 using System.Web.Http;
 using System.Net.Http;
 
@@ -12,32 +10,26 @@ namespace Sean.WorldServer
 {
     public class WorldController : ApiController
     {
-        public HttpResponseMessage LookingAt(int playerId, int x, int z)
+        [HttpPost]
+        [Route("Player/{playerId}/LookingAt?x={x}&y={y}")]
+        public async Task<bool> LookingAt(int playerId, int x, int z)
         {
             Console.WriteLine ("Player {0} at {1},{2}", playerId, x,z);
-            return this.Request.CreateResponse( System.Net.HttpStatusCode.OK);
+            return true;
         }
 
-        public int GetObjectId(int playerId, int x,int y,int z)
+        [HttpGet]
+        [Route("Player/{playerId}/ObjectId/{objectId}")]
+        public async Task<string> QueryObject(int playerId, int objectId)
         {
-            return 0;
+            return "hello";
         }
 
-        public HttpResponseMessage QueryObject(int playerId, int objectId)
+        [HttpPost]
+        [Route("Player/{playerId}/ObjectId?Action={action}")]
+        public async Task<bool> DoAction(int playerId, int objectId, Action action)
         {
-            return this.Request.CreateResponse( System.Net.HttpStatusCode.OK);
+            return true;
         }
-
-        public HttpResponseMessage DoAction(int playerId, int objectId, Action action)
-        {
-            return this.Request.CreateResponse( System.Net.HttpStatusCode.OK);
-        }
-
-        /*
-        public IHttpActionResult Post(Company company)
-        {
-            return Ok();
-        }
-        */
     }
 }
