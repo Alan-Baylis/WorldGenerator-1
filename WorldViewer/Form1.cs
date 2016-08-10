@@ -30,6 +30,7 @@ namespace WorldViewer
         }
 
         private ChunkCoords currentChunk;
+        private const int WaterHeight = 20;
 
         private void OnKeyPress(object sender, KeyPressEventArgs e)
         {
@@ -77,8 +78,8 @@ namespace WorldViewer
                 for (int z = 0; z < chunk.ChunkSize; z++)
                 {
                     var pt = chunk.HeightMap[x + chunk.HeightMap.Size.minX, z + chunk.HeightMap.Size.minZ];
-                    //var color = pt < 20 ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
-                    var color = Color.FromArgb(255, 0, pt, 0);
+                    var color = pt < 20 ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
+                    //var color = Color.FromArgb(255, 0, pt, 0);
                     graphics.FillRectangle(new SolidBrush(color), x * xSize, z * zSize, xSize, zSize);
                 }
             }
@@ -120,8 +121,8 @@ namespace WorldViewer
                 for (int z = 0; z < chunk.ChunkSize; z++)
                 {
                     var pt = chunk.HeightMap[x + chunk.HeightMap.Size.minX, z + chunk.HeightMap.Size.minZ];
-                    //var color = pt < 20 ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
-                    var color = Color.FromArgb(255, 0, pt, 0);
+                    var color = pt < WaterHeight ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
+                    //var color = Color.FromArgb(255, 0, pt, 0);
                     graphics.FillRectangle(new SolidBrush(color), xOri + x, zOri + z, 1, 1);
                 }
             }
@@ -142,7 +143,8 @@ namespace WorldViewer
                 {
                     var pt = map[x,z];
                     //var color = World.IsGlobalMapWater(x, z) ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
-                    var color = Color.FromArgb(255, 0, pt, 0);
+                    var color = pt < 20 ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
+                    //var color = Color.FromArgb(255, 0, pt, 0);
                     graphics.FillRectangle(new SolidBrush(color), x1, z1, 1,1);
                     z1++;
                 }
