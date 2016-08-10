@@ -22,11 +22,7 @@ namespace Sean.WorldGenerator
         {
             perlinNoise = new PerlinNoise(seed, 100);
 
-<<<<<<< HEAD
             var ground_gradient = new CImplicitGradient(x1:0, x2:0, y1:0, y2:1);
-=======
-            var ground_gradient = new CImplicitGradient(x1: 0, x2: 0, y1: 0, y2: 1);
->>>>>>> cfee95c026552f34c70cd36d50058a393a76c3aa
 
             var lowland_shape_fractal = new CImplicitFractal(type: EFractalTypes.BILLOW, basistype: CImplicitBasisFunction.EBasisTypes.GRADIENT, interptype: CImplicitBasisFunction.EInterpTypes.QUINTIC, octaves: 2, freq: 0.25);
             var lowland_autocorrect = new CImplicitAutoCorrect(source: lowland_shape_fractal, low: 0, high: 1);
@@ -42,7 +38,6 @@ namespace Sean.WorldGenerator
             var highland_y_scale = new CImplicitScaleDomain(source: highland_cache, y: 0);
             var highland_terrain = new CImplicitTranslateDomain(source: ground_gradient, tx: 0.0, ty: highland_y_scale, tz: 0.0);
 
-<<<<<<< HEAD
             var mountain_shape_fractal = new CImplicitFractal(type: EFractalTypes.RIDGEDMULTI, basistype: CImplicitBasisFunction.EBasisTypes.GRADIENT, interptype: CImplicitBasisFunction.EInterpTypes.QUINTIC, octaves:8, freq: 1);
             var mountain_autocorrect = new CImplicitAutoCorrect(source:mountain_shape_fractal, low:-1, high:1);
             var mountain_scale = new CImplicitScaleOffset(source:mountain_autocorrect, scale:0.45, offset:0.15);
@@ -55,43 +50,20 @@ namespace Sean.WorldGenerator
             var terrain_type_cache = new CImplicitCache(terrain_type_y_scale);
             var highland_mountain_select = new CImplicitSelect(low:highland_terrain, high:mountain_terrain, control:terrain_type_cache, threshold:0.55, falloff:0.2);
             var highland_lowland_select = new CImplicitSelect(low:lowland_terrain, high:highland_mountain_select, control:terrain_type_cache, threshold:0.25, falloff:0.15);
-=======
-            var mountain_shape_fractal = new CImplicitFractal(type: EFractalTypes.RIDGEDMULTI, basistype: CImplicitBasisFunction.EBasisTypes.GRADIENT, interptype: CImplicitBasisFunction.EInterpTypes.QUINTIC, octaves: 8, freq: 1);
-            var mountain_autocorrect = new CImplicitAutoCorrect(source: mountain_shape_fractal, low: -1, high: 1);
-            var mountain_scale = new CImplicitScaleOffset(source: mountain_autocorrect, scale: 0.45, offset: 0.15);
-            var mountain_y_scale = new CImplicitScaleDomain(source: mountain_scale, y: 0.25);
-            var mountain_terrain = new CImplicitTranslateDomain(source: ground_gradient, tx: 0.0, ty: mountain_y_scale, tz: 0.0);
-
-            var terrain_type_fractal = new CImplicitFractal(type: EFractalTypes.FBM, basistype: CImplicitBasisFunction.EBasisTypes.GRADIENT, interptype: CImplicitBasisFunction.EInterpTypes.QUINTIC, octaves: 3, freq: 0.125);
-            var terrain_autocorrect = new CImplicitAutoCorrect(source: terrain_type_fractal, low: 0, high: 1);
-            var terrain_type_y_scale = new CImplicitScaleDomain(source: terrain_autocorrect, y: 0);
-            var terrain_type_cache = new CImplicitCache(terrain_type_y_scale);
-            var highland_mountain_select = new CImplicitSelect(low: highland_terrain, high: mountain_terrain, control: terrain_type_cache, threshold: 0.55, falloff: 0.2);
-            var highland_lowland_select = new CImplicitSelect(low: lowland_terrain, high: highland_mountain_select, control: terrain_type_cache, threshold: 0.25, falloff: 0.15);
->>>>>>> cfee95c026552f34c70cd36d50058a393a76c3aa
             var highland_lowland_select_cache = new CImplicitCache(highland_lowland_select);
 
             var coastline_shape_fractal = new CImplicitFractal(type: EFractalTypes.RIDGEDMULTI, basistype: CImplicitBasisFunction.EBasisTypes.GRADIENT, interptype: CImplicitBasisFunction.EInterpTypes.QUINTIC, octaves: 2, freq: 1);
             var coastline_autocorrect = new CImplicitAutoCorrect(source: coastline_shape_fractal, low: 0, high: 1);
             var coastline_seamless = new CImplicitSeamlessMapping(source: coastline_autocorrect, seamlessmode: CImplicitSeamlessMapping.EMappingModes.SEAMLESS_X);
-<<<<<<< HEAD
             var coastline_cache = new CImplicitCache(coastline_seamless );
             var coastline_y_scale = new CImplicitScaleDomain(source: coastline_cache, y: 0);
             var coastline_scale = new CImplicitScaleOffset(source:coastline_y_scale , scale: 0.5, offset: -1);
-=======
-            var coastline_cache = new CImplicitCache(coastline_seamless);
-            var coastline_y_scale = new CImplicitScaleDomain(source: coastline_cache, y: 0);
-            var coastline_scale = new CImplicitScaleOffset(source: coastline_y_scale, scale: 0.5, offset: -1);
->>>>>>> cfee95c026552f34c70cd36d50058a393a76c3aa
             var coastline_terrain = new CImplicitTranslateDomain(source: ground_gradient, tx: 0.0, ty: coastline_scale, tz: 0.0);
             var coastline_radial_mapping = new CImplicitTranslateRadial(source: coastline_terrain, xCentre: globalMapSize/FRACTAL_SIZE/2, zCentre: globalMapSize/FRACTAL_SIZE/2);
 
             var coastline_highland_lowland_select = new CImplicitTranslateDomain(source: highland_lowland_select_cache, tx: 0.0, ty: coastline_radial_mapping, tz: 0.0);
-<<<<<<< HEAD
 
             var ground_select = new CImplicitSelect(low: 0, high: 1, threshold: 0.5, control: coastline_highland_lowland_select);
-=======
-
             //var ground_select = new CImplicitSelect(low: 0, high: 1, threshold: 0.5, control: coastline_highland_lowland_select);
 
             //    var cave_attenuate_bias = new CImplicitMath(op: EMathOperation.BIAS, source: highland_lowland_select_cache, p: 0.45);
@@ -104,7 +76,6 @@ namespace Sean.WorldGenerator
             //    var cave_select = new CImplicitSelect(low: 1, high: 0, control: cave_perturb, threshold: 0.48, falloff: 0);
 
             //    var ground_cave_multiply = new CImplicitCombiner(type: ECombinerTypes.MULT, source0: cave_select, source1: ground_select);
->>>>>>> cfee95c026552f34c70cd36d50058a393a76c3aa
 
             noiseGenerator = coastline_highland_lowland_select;
         }
@@ -133,12 +104,8 @@ namespace Sean.WorldGenerator
                     while (d > 1)
                     {
                         d /= 2;
-<<<<<<< HEAD
                         var p = noiseGenerator.get ((double)x / FRACTAL_SIZE, (double)y / maxNoiseHeight, (double)z / FRACTAL_SIZE);
                         if (p < 0.5)
-=======
-                        if (noiseGenerator.get ((double)x / FRACTAL_SIZE, (double)y / maxNoiseHeight, (double)z / FRACTAL_SIZE) > 0.5)
->>>>>>> cfee95c026552f34c70cd36d50058a393a76c3aa
                             y += d;
                         else
                             y -= d;
@@ -172,11 +139,7 @@ namespace Sean.WorldGenerator
                     for (int y = worldSize.minY; y < worldSize.maxY; y++)
                     {
                         //double p = perlinNoise.OctavePerlin(worldSize, x, y, z, octaveCount, persistence);
-<<<<<<< HEAD
                         double p = noiseGenerator.get((double)x/FRACTAL_SIZE, (double)(worldSize.maxY-y)/maxNoiseHeight, (double)z/FRACTAL_SIZE);
-=======
-                        double p = noiseGenerator.get((double)x/FRACTAL_SIZE, (double)y/maxNoiseHeight, (double)z/FRACTAL_SIZE);
->>>>>>> cfee95c026552f34c70cd36d50058a393a76c3aa
                         var blockType = p > 0.5 ? Block.BlockType.Rock : Block.BlockType.Air;
                         chunk.Blocks[x % Chunk.CHUNK_SIZE, y, z % Chunk.CHUNK_SIZE] = new Block(blockType);
                     }
