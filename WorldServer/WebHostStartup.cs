@@ -20,10 +20,9 @@ namespace Sean.WorldServer
             var config = new HttpConfiguration();
             config.Routes.MapHttpRoute (
                 "DefaultApi",
-                "{controller}/Player/{playerId}");//,
+                "api/{controller}");//,
                 //new { playerId = RouteParameter.Optional });
             return config;
         }
     }
 }
-
