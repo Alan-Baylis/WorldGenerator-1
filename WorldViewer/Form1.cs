@@ -135,22 +135,18 @@ namespace WorldViewer
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
             var map = World.GetGlobalMap();
-            int x1 = 1;
             for (int x = map.Size.minX; x < map.Size.maxX; x=x+map.Size.scale)
             {
-                int z1 = 1;
                 for (int z = map.Size.minZ; z < map.Size.maxZ; z=z+map.Size.scale)
                 {
                     var pt = map[x,z];
                     //var color = World.IsGlobalMapWater(x, z) ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
                     var color = pt < 20 ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
                     //var color = Color.FromArgb(255, 0, pt, 0);
-                    graphics.FillRectangle(new SolidBrush(color), x1, z1, 1,1);
-                    z1++;
+                    graphics.FillRectangle(new SolidBrush(color), (width * x/map.Size.xHeight), (height * z/map.Size.zWidth), 1,1);
                 }
-                x1++;
             }
-            graphics.DrawRectangle(new Pen(Color.FromArgb(255, 255,0,0)), currentChunk.X*4, currentChunk.Z*4, 4, 4);
+            graphics.DrawRectangle(new Pen(Color.FromArgb(255, 255,0,0)), (width*currentChunk.X/map.Size.xHeight), (height*currentChunk.Z/map.Size.zWidth), (width * (currentChunk.X+1) / map.Size.xHeight), (height * (currentChunk.Z+1) / map.Size.zWidth));
             return bitmap;
         }
 
