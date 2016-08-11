@@ -12,7 +12,7 @@ namespace WorldViewer
         public Form1()
         {
             InitializeComponent();
-            currentChunk = new ChunkCoords(40, 40);
+            currentChunk = new ChunkCoords(50, 50);
             textBox1.Text = "Keys: W,A,S,D";
             DrawMaps();
         }
@@ -143,10 +143,10 @@ namespace WorldViewer
                     //var color = World.IsGlobalMapWater(x, z) ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
                     var color = pt < 20 ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
                     //var color = Color.FromArgb(255, 0, pt, 0);
-                    graphics.FillRectangle(new SolidBrush(color), (width * x/map.Size.xHeight), (height * z/map.Size.zWidth), 1,1);
+                    graphics.FillRectangle(new SolidBrush(color), (width * x/map.Size.maxX), (height * z/map.Size.maxZ), width*(x+map.Size.scale)/map.Size.maxX,height*(z+map.Size.scale)/map.Size.maxZ);
                 }
             }
-            graphics.DrawRectangle(new Pen(Color.FromArgb(255, 255,0,0)), (width*currentChunk.X/map.Size.xHeight), (height*currentChunk.Z/map.Size.zWidth), (width * (currentChunk.X+1) / map.Size.xHeight), (height * (currentChunk.Z+1) / map.Size.zWidth));
+            graphics.DrawRectangle(new Pen(Color.FromArgb(255, 255,0,0)), (width*currentChunk.WorldCoordsX/map.Size.maxX), (height*currentChunk.WorldCoordsZ/map.Size.maxZ), (width * (currentChunk.X+1) / map.Size.maxX), (height * (currentChunk.Z+1) / map.Size.maxZ));
             return bitmap;
         }
 

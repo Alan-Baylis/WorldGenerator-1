@@ -91,10 +91,11 @@ namespace Sean.WorldGenerator
                 maxX = globalMapSize,
                 minY = minNoiseHeight,
                 maxY = maxNoiseHeight,
-                scale = 16 //Chunk.CHUNK_SIZE,
+                scale = Chunk.CHUNK_SIZE,
             };
 
             var heightMap = new Array<int>(worldSize);
+            var midpoint = Chunk.CHUNK_SIZE / 2;
             for (int z = worldSize.minZ; z < worldSize.maxZ; z += worldSize.scale)
             {
                 for (int x = worldSize.minX; x < worldSize.maxX; x += worldSize.scale)
@@ -104,7 +105,7 @@ namespace Sean.WorldGenerator
                     while (d > 1)
                     {
                         d /= 2;
-                        var p = noiseGenerator.get ((double)x / FRACTAL_SIZE, (double)y / maxNoiseHeight, (double)z / FRACTAL_SIZE);
+                        var p = noiseGenerator.get ((double)(x+midpoint) / FRACTAL_SIZE, (double)y / maxNoiseHeight, (double)(z+midpoint) / FRACTAL_SIZE);
                         if (p < 0.5)
                             y += d;
                         else
