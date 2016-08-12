@@ -9,12 +9,14 @@ namespace WorldViewer
 {
     public partial class Form1 : Form
     {
+        ParametersForm parametersForm;
+        ElevationForm elevationForm;
+
         public Form1()
         {
             InitializeComponent();
             currentChunk = new ChunkCoords(50, 50);
             textBox1.Text = "Keys: W,A,S,D";
-            DrawMaps();
         }
 
         private void DrawMaps()
@@ -26,7 +28,16 @@ namespace WorldViewer
             this.pictureBox1.Image = this.DrawGlobalMap(this.pictureBox1.Width, this.pictureBox1.Height);
             //this.terrainPictureBox.Image = this.DrawTerrain(this.terrainPictureBox.Width, this.terrainPictureBox.Height);
 
+            this.elevationForm.DrawImages(currentChunk);
+
             this.Cursor = currentCursor;
+        }
+
+        private void OnGlobalMapMouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            var map = World.GetGlobalMap();
+            currentChunk = new ChunkCoords(World.MaxXChunk * e.X / this.pictureBox1.Width, World.MaxZChunk * e.Y / this.pictureBox1.Height);
+            DrawMaps();
         }
 
         private ChunkCoords currentChunk;
@@ -135,18 +146,20 @@ namespace WorldViewer
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
             var map = World.GetGlobalMap();
-            for (int x = map.Size.minX; x < map.Size.maxX; x=x+map.Size.scale)
+            for (int w = 1; w<width; w++)
             {
-                for (int z = map.Size.minZ; z < map.Size.maxZ; z=z+map.Size.scale)
+                for (int h=1;h<height;h++)
                 {
+                    int x = map.Size.maxX * w / width;
+                    int z = map.Size.maxZ * h / height;
                     var pt = map[x,z];
                     //var color = World.IsGlobalMapWater(x, z) ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
                     var color = pt < 20 ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
                     //var color = Color.FromArgb(255, 0, pt, 0);
-                    graphics.FillRectangle(new SolidBrush(color), (width * x/map.Size.maxX), (height * z/map.Size.maxZ), width*(x+map.Size.scale)/map.Size.maxX,height*(z+map.Size.scale)/map.Size.maxZ);
+                    graphics.FillRectangle(new SolidBrush(color), (width * x/map.Size.maxX), (height * z/map.Size.maxZ), Math.Max(width/map.Size.maxX,1),Math.Max(height/map.Size.maxZ,1));
                 }
             }
-            graphics.DrawRectangle(new Pen(Color.FromArgb(255, 255,0,0)), (width*currentChunk.WorldCoordsX/map.Size.maxX), (height*currentChunk.WorldCoordsZ/map.Size.maxZ), (width * (currentChunk.X+1) / map.Size.maxX), (height * (currentChunk.Z+1) / map.Size.maxZ));
+            graphics.DrawRectangle(new Pen(Color.FromArgb(255, 255,0,0)), (width*currentChunk.WorldCoordsX/map.Size.maxX), (height*currentChunk.WorldCoordsZ/map.Size.maxZ), Math.Max(width / map.Size.maxX,1), Math.Max(height / map.Size.maxZ,1));
             return bitmap;
         }
 
@@ -228,5 +241,16 @@ namespace WorldViewer
         {
             Refresh();
         }
+
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+            parametersForm = new ParametersForm();
+            parametersForm.Show();
+            elevationForm = new ElevationForm();
+            elevationForm.Show();
+            DrawMaps();
+        }
+
+  
     }
 }

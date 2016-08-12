@@ -34,12 +34,10 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.localPictureBox = new System.Windows.Forms.PictureBox();
-            //this.terrainPictureBox = new System.Windows.Forms.PictureBox();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.worldPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.localPictureBox)).BeginInit();
-            //((System.ComponentModel.ISupportInitialize)(this.terrainPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // worldPictureBox
@@ -68,6 +66,7 @@
             this.pictureBox1.Size = new System.Drawing.Size(512, 512);
             this.pictureBox1.TabIndex = 5;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.OnGlobalMapMouseDoubleClick);
             // 
             // localPictureBox
             // 
@@ -76,14 +75,6 @@
             this.localPictureBox.Size = new System.Drawing.Size(256, 256);
             this.localPictureBox.TabIndex = 1;
             this.localPictureBox.TabStop = false;
-            // 
-            // terrainPictureBox
-            // 
-            //this.terrainPictureBox.Location = new System.Drawing.Point(279, 47);
-            //this.terrainPictureBox.Name = "terrainPictureBox";
-            //this.terrainPictureBox.Size = new System.Drawing.Size(512, 512);
-            //this.terrainPictureBox.TabIndex = 6;
-            //this.terrainPictureBox.TabStop = false;
             // 
             // imageList
             // 
@@ -96,7 +87,6 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 586);
-            //this.Controls.Add(this.terrainPictureBox);
             this.Controls.Add(this.localPictureBox);
             this.Controls.Add(this.worldPictureBox);
             this.Controls.Add(this.pictureBox1);
@@ -104,12 +94,12 @@
             this.Name = "Form1";
             this.Text = "WorldViewer";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.Shown += new System.EventHandler(this.Form1_Shown);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.OnKeyPress);
             this.Resize += new System.EventHandler(this.Form1_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.worldPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.localPictureBox)).EndInit();
-            //((System.ComponentModel.ISupportInitialize)(this.terrainPictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
