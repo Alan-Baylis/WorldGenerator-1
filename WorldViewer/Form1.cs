@@ -36,7 +36,9 @@ namespace WorldViewer
         private void OnGlobalMapMouseDoubleClick(object sender, MouseEventArgs e)
         {
             var map = World.GetGlobalMap();
-            currentChunk = new ChunkCoords(World.MaxXChunk * e.X / this.pictureBox1.Width, World.MaxZChunk * e.Y / this.pictureBox1.Height);
+            currentChunk = new ChunkCoords (
+                Settings.globalChunkSize * e.X / this.pictureBox1.Width,
+                Settings.globalChunkSize * e.Y / this.pictureBox1.Height);
             DrawMaps();
         }
 

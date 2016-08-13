@@ -14,7 +14,7 @@ namespace Sean.WorldGenerator
 		public Chunk(ChunkCoords chunkCoords)
 		{
             ChunkCoords = chunkCoords;
-			Blocks = new Blocks(CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE);
+            Blocks = new Blocks(Settings.CHUNK_SIZE, Settings.CHUNK_HEIGHT, Settings.CHUNK_SIZE);
             //HeightMap = new Array<int>(CHUNK_SIZE, CHUNK_SIZE);
 			//Clutters = new HashSet<Clutter>();
 			LightSources = new ConcurrentDictionary<int, LightSource>();
@@ -24,10 +24,8 @@ namespace Sean.WorldGenerator
 		#endregion
 
 		#region Properties
-		public const int CHUNK_SIZE = 32;
-		public const int CHUNK_HEIGHT = 128;
-		public const int SIZE_IN_BYTES = CHUNK_SIZE * CHUNK_HEIGHT * CHUNK_SIZE * sizeof(ushort);
-		private const int CLUTTER_RENDER_DISTANCE = CHUNK_SIZE * 4;
+        public const int SIZE_IN_BYTES = Settings.CHUNK_SIZE * Settings.CHUNK_HEIGHT * Settings.CHUNK_SIZE * sizeof(ushort);
+        private const int CLUTTER_RENDER_DISTANCE = Settings.CHUNK_SIZE * 4;
 		private const int GAME_ITEM_RENDER_DISTANCE = CLUTTER_RENDER_DISTANCE;
 
 		public ChunkCoords ChunkCoords;
@@ -39,7 +37,7 @@ namespace Sean.WorldGenerator
 		public byte[,,] SkyLightMapInitial;
 		public byte[,,] ItemLightMapInitial;
 
-        public int ChunkSize {  get { return CHUNK_SIZE; } }
+        public int ChunkSize {  get { return Settings.CHUNK_SIZE; } }
 
         /// <summary>Clutter contained in this chunk. Clutter can be stored at the chunk level only because it can never move off the chunk.</summary>
         /// <remarks>HashSet because currently Clutter cannot be added outside of initial world generation. Collection is locked during removal.</remarks>
@@ -153,14 +151,14 @@ namespace Sean.WorldGenerator
 		/// <remarks>The height map is used for lighting. Its also used to determine the players starting Y position.</remarks>
 		public void BuildHeightMap()
 		{
-            HeightMap = new Array<int> (CHUNK_SIZE,CHUNK_SIZE);
-			DeepestTransparentLevel = CHUNK_HEIGHT; //initialize to top of chunk until this gets calculated
+            HeightMap = new Array<int> (Settings.CHUNK_SIZE,Settings.CHUNK_SIZE);
+            DeepestTransparentLevel = Settings.CHUNK_HEIGHT; //initialize to top of chunk until this gets calculated
 			HighestNonAirLevel = 0; //initialize to bottom of chunk until this gets calculated
-			for (var x = 0; x < CHUNK_SIZE; x++)
+            for (var x = 0; x < Settings.CHUNK_SIZE; x++)
 			{
-				for (var z = 0; z < CHUNK_SIZE; z++)
+                for (var z = 0; z < Settings.CHUNK_SIZE; z++)
 				{
-					for (var y = CHUNK_HEIGHT - 1; y >= 0; y--) //loop from the highest block position downward until we find a solid block
+                    for (var y = Settings.CHUNK_HEIGHT - 1; y >= 0; y--) //loop from the highest block position downward until we find a solid block
 					{
 						var block = Blocks[x, y, z];
 						if (y > HighestNonAirLevel && block.Type != Block.BlockType.Air) HighestNonAirLevel = y;
@@ -169,7 +167,7 @@ namespace Sean.WorldGenerator
 						break;
 					}
 
-					for (var y = 0; y < CHUNK_HEIGHT - 1; y++) //loop from the base of the world upwards until finding a transparent block
+                    for (var y = 0; y < Settings.CHUNK_HEIGHT - 1; y++) //loop from the base of the world upwards until finding a transparent block
 					{
 						if (!Blocks[x, y, z].IsTransparent) continue;
 						if (y < DeepestTransparentLevel) DeepestTransparentLevel = y; //record this as the deepest transparent level if it is deeper then what we had previously
@@ -358,11 +356,11 @@ namespace Sean.WorldGenerator
 		{
 			Debug.WriteLine("Water expanding in chunk {0}...", ChunkCoords);
 			var newWater = new List<Position>();
-			for (var i = 0; i < CHUNK_SIZE; i++)
+            for (var i = 0; i < Settings.CHUNK_SIZE; i++)
 			{
-				for (var j = 0; j < CHUNK_HEIGHT; j++)
+                for (var j = 0; j < Settings.CHUNK_HEIGHT; j++)
 				{
-					for (var k = 0; k < CHUNK_SIZE; k++)
+                    for (var k = 0; k < Settings.CHUNK_SIZE; k++)
 					{
 						if (Blocks[i, j, k].Type != Block.BlockType.Water) continue;
 						var belowCurrent = new Position();
@@ -437,13 +435,13 @@ namespace Sean.WorldGenerator
 		private void GrassGrow()
 		{
 			var possibleChanges = new List<Tuple<Block.BlockType, Position>>();
-			for (var x = 0; x < CHUNK_SIZE; x++)
+            for (var x = 0; x < Settings.CHUNK_SIZE; x++)
 			{
 				int worldX = ChunkCoords.WorldCoordsX + x;
-				for (var z = 0; z < CHUNK_SIZE; z++)
+                for (var z = 0; z < Settings.CHUNK_SIZE; z++)
 				{
 					int worldZ = ChunkCoords.WorldCoordsZ + z;
-					for (var y = 0; y <= Math.Min(CHUNK_HEIGHT - 1, HeightMap[x, z] + 1); y++) //look +1 above heightmap as water directly above heightmap could change to ice
+                    for (var y = 0; y <= Math.Min(Settings.CHUNK_HEIGHT - 1, HeightMap[x, z] + 1); y++) //look +1 above heightmap as water directly above heightmap could change to ice
 					{
 						var blockType = Blocks[x, y, z].Type;
 						switch (blockType)
@@ -459,7 +457,7 @@ namespace Sean.WorldGenerator
 								continue; //continue if this block type can never cause changes
 						}
 
-						bool hasAirAbove = y >= CHUNK_HEIGHT - 1 || Blocks[x, y + 1, z].Type == Block.BlockType.Air;
+                        bool hasAirAbove = y >= Settings.CHUNK_HEIGHT - 1 || Blocks[x, y + 1, z].Type == Block.BlockType.Air;
 						bool isReceivingSunlight = y > HeightMap[x, z] || (hasAirAbove && World.HasAdjacentBlockReceivingDirectSunlight(worldX, y, worldZ));
 
 						switch (World.WorldType)

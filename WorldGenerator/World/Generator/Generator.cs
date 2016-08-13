@@ -8,15 +8,10 @@ namespace Sean.WorldGenerator
 {
 	internal class Generator
 	{
-		public const int waterLevel = 20;
-        private const int FRACTAL_SIZE = Chunk.CHUNK_SIZE * 20;
-        private const int globalMapSize = 256*Chunk.CHUNK_SIZE;
+        private CImplicitModuleBase noiseGenerator;
         private PerlinNoise perlinNoise;
         private const int octaves = 1;
         private const double persistence = 0.4;
-        private const int minNoiseHeight = 0;
-        private const int maxNoiseHeight = 127;
-        private CImplicitModuleBase noiseGenerator;
 
         public Generator(int seed)
         {
@@ -59,7 +54,7 @@ namespace Sean.WorldGenerator
             var coastline_y_scale = new CImplicitScaleDomain(source: coastline_cache, y: 0);
             var coastline_scale = new CImplicitScaleOffset(source:coastline_y_scale , scale: 0.5, offset: -1);
             var coastline_terrain = new CImplicitTranslateDomain(source: ground_gradient, tx: 0.0, ty: coastline_scale, tz: 0.0);
-            var coastline_radial_mapping = new CImplicitTranslateRadial(source: coastline_terrain, xCentre: globalMapSize/FRACTAL_SIZE/2, zCentre: globalMapSize/FRACTAL_SIZE/2);
+            var coastline_radial_mapping = new CImplicitTranslateRadial(source: coastline_terrain, xCentre: Settings.globalMapSize/Settings.FRACTAL_SIZE/2, zCentre: Settings.globalMapSize/Settings.FRACTAL_SIZE/2);
 
             var coastline_highland_lowland_select = new CImplicitTranslateDomain(source: highland_lowland_select_cache, tx: 0.0, ty: coastline_radial_mapping, tz: 0.0);
 
@@ -86,16 +81,16 @@ namespace Sean.WorldGenerator
             var worldSize = new ArraySize()
             {
                 minZ = 0,
-                maxZ = globalMapSize,
+                maxZ = Settings.globalMapSize,
                 minX = 0,
-                maxX = globalMapSize,
-                minY = minNoiseHeight,
-                maxY = maxNoiseHeight,
-                scale = Chunk.CHUNK_SIZE,
+                maxX = Settings.globalMapSize,
+                minY = Settings.minNoiseHeight,
+                maxY = Settings.maxNoiseHeight,
+                scale = Settings.CHUNK_SIZE,
             };
 
             var heightMap = new Array<int>(worldSize);
-            var midpoint = Chunk.CHUNK_SIZE / 2;
+            var midpoint = Settings.CHUNK_SIZE / 2;
             for (int z = worldSize.minZ; z < worldSize.maxZ; z += worldSize.scale)
             {
                 for (int x = worldSize.minX; x < worldSize.maxX; x += worldSize.scale)
@@ -105,7 +100,7 @@ namespace Sean.WorldGenerator
                     while (d > 1)
                     {
                         d /= 2;
-                        var p = noiseGenerator.get ((double)(x+midpoint) / FRACTAL_SIZE, (double)y / maxNoiseHeight, (double)(z+midpoint) / FRACTAL_SIZE);
+                        var p = noiseGenerator.get ((double)(x+midpoint) / Settings.FRACTAL_SIZE, (double)y / Settings.maxNoiseHeight, (double)(z+midpoint) / Settings.FRACTAL_SIZE);
                         if (p < 0.5)
                             y += d;
                         else
@@ -125,11 +120,11 @@ namespace Sean.WorldGenerator
             var worldSize = new ArraySize()
             {
                 minZ = chunk.ChunkCoords.WorldCoordsZ,
-                maxZ = chunk.ChunkCoords.WorldCoordsZ + Chunk.CHUNK_SIZE,
+                maxZ = chunk.ChunkCoords.WorldCoordsZ + Settings.CHUNK_SIZE,
                 minX = chunk.ChunkCoords.WorldCoordsX,
-                maxX = chunk.ChunkCoords.WorldCoordsX + Chunk.CHUNK_SIZE,
-                minY = minNoiseHeight,
-                maxY = maxNoiseHeight,
+                maxX = chunk.ChunkCoords.WorldCoordsX + Settings.CHUNK_SIZE,
+                minY = Settings.minNoiseHeight,
+                maxY = Settings.maxNoiseHeight,
                 scale = 1,
             };
 
@@ -140,9 +135,9 @@ namespace Sean.WorldGenerator
                     for (int y = worldSize.minY; y < worldSize.maxY; y++)
                     {
                         //double p = perlinNoise.OctavePerlin(worldSize, x, y, z, octaveCount, persistence);
-                        double p = noiseGenerator.get((double)x/FRACTAL_SIZE, (double)(worldSize.maxY-y)/maxNoiseHeight, (double)z/FRACTAL_SIZE);
+                        double p = noiseGenerator.get((double)x/Settings.FRACTAL_SIZE, (double)(worldSize.maxY-y)/Settings.maxNoiseHeight, (double)z/Settings.FRACTAL_SIZE);
                         var blockType = p > 0.5 ? Block.BlockType.Rock : Block.BlockType.Air;
-                        chunk.Blocks[x % Chunk.CHUNK_SIZE, y, z % Chunk.CHUNK_SIZE] = new Block(blockType);
+                        chunk.Blocks[x % Settings.CHUNK_SIZE, y, z % Settings.CHUNK_SIZE] = new Block(blockType);
                     }
                 }
             }
@@ -182,11 +177,11 @@ namespace Sean.WorldGenerator
 
 		private void GenerateChunk(Chunk chunk)
 		{
-			for (var x = chunk.ChunkCoords.WorldCoordsX; x < chunk.ChunkCoords.WorldCoordsX + Chunk.CHUNK_SIZE; x++)
+            for (var x = chunk.ChunkCoords.WorldCoordsX; x < chunk.ChunkCoords.WorldCoordsX + Settings.CHUNK_SIZE; x++)
 			{
-				for (var z = chunk.ChunkCoords.WorldCoordsZ; z < chunk.ChunkCoords.WorldCoordsZ + Chunk.CHUNK_SIZE; z++)
+                for (var z = chunk.ChunkCoords.WorldCoordsZ; z < chunk.ChunkCoords.WorldCoordsZ + Settings.CHUNK_SIZE; z++)
 				{
-                    for (var y = 0; y <= Math.Max(chunk.HeightMap[x,z], waterLevel); y++)
+                    for (var y = 0; y <= Math.Max(chunk.HeightMap[x,z], Settings.waterLevel); y++)
 					{
 						Block.BlockType blockType;
 						if (y == 0) //world base
@@ -200,7 +195,7 @@ namespace Sean.WorldGenerator
 						}
                         else if (y == chunk.HeightMap[x, z]) //ground level
 						{
-							if (y > waterLevel)
+                            if (y > Settings.waterLevel)
 							{
 								switch (World.WorldType)
 								{
@@ -211,7 +206,7 @@ namespace Sean.WorldGenerator
 							}
 							else
 							{
-								switch (waterLevel - y)
+                                switch (Settings.waterLevel - y)
 								{
 									case 0:
 									case 1:
@@ -229,9 +224,9 @@ namespace Sean.WorldGenerator
 								}
 							}
 						}
-                        else if (y > chunk.HeightMap[x, z] && y <= waterLevel)
+                        else if (y > chunk.HeightMap[x, z] && y <= Settings.waterLevel)
 						{
-                            blockType = (World.WorldType == WorldType.Winter && y == waterLevel && y - chunk.HeightMap[x, z] <= 3) ? Block.BlockType.Ice : Block.BlockType.Water;
+                            blockType = (World.WorldType == WorldType.Winter && y == Settings.waterLevel && y - chunk.HeightMap[x, z] <= 3) ? Block.BlockType.Ice : Block.BlockType.Water;
 						}
                         else if (y > chunk.HeightMap[x, z] - 5) //within 5 blocks of the surface
 						{
@@ -255,7 +250,7 @@ namespace Sean.WorldGenerator
 							blockType = Settings.Random.Next(0, 5) == 0 ? Block.BlockType.Gravel : Block.BlockType.Rock;
 							//blockType = Block.BlockType.Air; //replace with this to do some quick seismic on what the mineral generator is doing
 						}
-						chunk.Blocks[x % Chunk.CHUNK_SIZE, y, z % Chunk.CHUNK_SIZE] = new Block(blockType);
+                        chunk.Blocks[x % Settings.CHUNK_SIZE, y, z % Settings.CHUNK_SIZE] = new Block(blockType);
 					}
 
                     if (chunk.MineralMap[x, z] < chunk.HeightMap[x, z] - 5 && chunk.MineralMap[x, z] % 1f > 0.80f)

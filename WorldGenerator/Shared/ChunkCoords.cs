@@ -8,16 +8,16 @@ namespace Sean.WorldGenerator
 		{
 			X = x;
 			Z = z;
-			WorldCoordsX = X * Chunk.CHUNK_SIZE;
-			WorldCoordsZ = Z * Chunk.CHUNK_SIZE;
+            WorldCoordsX = X * Settings.CHUNK_SIZE;
+            WorldCoordsZ = Z * Settings.CHUNK_SIZE;
 		}
             
 		public ChunkCoords(ref Coords coords)
 		{
-			X = coords.Xblock / Chunk.CHUNK_SIZE;
-			Z = coords.Zblock / Chunk.CHUNK_SIZE;
-			WorldCoordsX = X * Chunk.CHUNK_SIZE;
-			WorldCoordsZ = Z * Chunk.CHUNK_SIZE;
+            X = coords.Xblock / Settings.CHUNK_SIZE;
+            Z = coords.Zblock / Settings.CHUNK_SIZE;
+            WorldCoordsX = X * Settings.CHUNK_SIZE;
+            WorldCoordsZ = Z * Settings.CHUNK_SIZE;
 		}
 
 		public readonly int X;

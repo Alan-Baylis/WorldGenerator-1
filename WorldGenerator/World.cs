@@ -77,7 +77,7 @@ namespace Sean.WorldGenerator
             set
             {
                 _sizeInChunksX = value;
-                SizeInBlocksX = _sizeInChunksX * Chunk.CHUNK_SIZE;
+                SizeInBlocksX = _sizeInChunksX * Settings.CHUNK_SIZE;
             }
         }
 
@@ -89,7 +89,7 @@ namespace Sean.WorldGenerator
             set
             {
                 _sizeInChunksZ = value;
-                SizeInBlocksZ = _sizeInChunksZ * Chunk.CHUNK_SIZE;
+                SizeInBlocksZ = _sizeInChunksZ * Settings.CHUNK_SIZE;
             }
         }
 
@@ -139,11 +139,11 @@ namespace Sean.WorldGenerator
 
         public static int GetChunkSize()
         {
-            return Chunk.CHUNK_SIZE;
+            return Settings.CHUNK_SIZE;
         }
         public static ChunkCoords GetChunkCoords(Position position)
         {
-            return new ChunkCoords (position.X / Chunk.CHUNK_SIZE, position.Z / Chunk.CHUNK_SIZE); 
+            return new ChunkCoords (position.X / Settings.CHUNK_SIZE, position.Z / Settings.CHUNK_SIZE); 
         }
         public static Chunk GetChunk(ChunkCoords chunkCoords, int id)
         {
@@ -172,7 +172,7 @@ namespace Sean.WorldGenerator
         }
         public static bool IsGlobalMapWater(int x, int z)
         {
-            return worldMap.GetMap()[x, z] < Generator.waterLevel; // TODO - temp
+            return worldMap.GetMap()[x, z] < Settings.waterLevel; // TODO - temp
         }
 
         public static void RenderMap()
@@ -199,7 +199,7 @@ namespace Sean.WorldGenerator
         /// <remarks>For example, this provided ~40% speed increase in the World.PropagateLight function compared to constructing coords and calling the above overload.</remarks>
         internal static Block GetBlock(int x, int y, int z)
         {
-            return localMap.Chunk(x / Chunk.CHUNK_SIZE, z / Chunk.CHUNK_SIZE).Blocks[x % Chunk.CHUNK_SIZE, y, z % Chunk.CHUNK_SIZE];
+            return localMap.Chunk(x / Settings.CHUNK_SIZE, z / Settings.CHUNK_SIZE).Blocks[x % Settings.CHUNK_SIZE, y, z % Settings.CHUNK_SIZE];
         }
 
         /// <summary>
@@ -209,17 +209,17 @@ namespace Sean.WorldGenerator
         /// </summary>
         internal static bool IsValidBlockLocation(int x, int y, int z)
         {
-            return x >= 0 && x < SizeInBlocksX && y >= 0 && y < Chunk.CHUNK_HEIGHT && z >= 0 && z < World.SizeInBlocksZ;
+            return x >= 0 && x < SizeInBlocksX && y >= 0 && y < Settings.CHUNK_HEIGHT && z >= 0 && z < World.SizeInBlocksZ;
         }
 
         internal static bool IsOnChunkBorder(int x, int z)
         {
-            return x % Chunk.CHUNK_SIZE == 0 || z % Chunk.CHUNK_SIZE == 0 || x % Chunk.CHUNK_SIZE == Chunk.CHUNK_SIZE - 1 || z % Chunk.CHUNK_SIZE == Chunk.CHUNK_SIZE - 1;
+            return x % Settings.CHUNK_SIZE == 0 || z % Settings.CHUNK_SIZE == 0 || x % Settings.CHUNK_SIZE == Settings.CHUNK_SIZE - 1 || z % Settings.CHUNK_SIZE == Settings.CHUNK_SIZE - 1;
         }
 
         internal static int GetHeightMapLevel(int x, int z)
         {
-            return LocalMap.Chunk(x / Chunk.CHUNK_SIZE, z / Chunk.CHUNK_SIZE).HeightMap[x % Chunk.CHUNK_SIZE, z % Chunk.CHUNK_SIZE];
+            return LocalMap.Chunk(x / Settings.CHUNK_SIZE, z / Settings.CHUNK_SIZE).HeightMap[x % Settings.CHUNK_SIZE, z % Settings.CHUNK_SIZE];
         }
 
         /// <summary>Check if any of 4 directly adjacent blocks receive direct sunlight. Uses the heightmap so that the server can also use this method. If the server stored light info then it could be used instead.</summary>
@@ -252,22 +252,22 @@ namespace Sean.WorldGenerator
         {
             var chunks = new List<Chunk>();
             //check in X direction
-            if (position.X > 0 && position.X % Chunk.CHUNK_SIZE == 0)
+            if (position.X > 0 && position.X % Settings.CHUNK_SIZE == 0)
             {
-                chunks.Add(localMap.Chunk((position.X - 1) / Chunk.CHUNK_SIZE, position.Z / Chunk.CHUNK_SIZE)); //add left chunk
+                chunks.Add(localMap.Chunk((position.X - 1) / Settings.CHUNK_SIZE, position.Z / Settings.CHUNK_SIZE)); //add left chunk
             }
-            else if (position.X < World.SizeInBlocksX - 1 && position.X % Chunk.CHUNK_SIZE == Chunk.CHUNK_SIZE - 1)
+            else if (position.X < World.SizeInBlocksX - 1 && position.X % Settings.CHUNK_SIZE == Settings.CHUNK_SIZE - 1)
             {
-                chunks.Add(localMap.Chunk((position.X + 1) / Chunk.CHUNK_SIZE, position.Z / Chunk.CHUNK_SIZE)); //add right chunk
+                chunks.Add(localMap.Chunk((position.X + 1) / Settings.CHUNK_SIZE, position.Z / Settings.CHUNK_SIZE)); //add right chunk
             }
             //check in Z direction
-            if (position.Z > 0 && position.Z % Chunk.CHUNK_SIZE == 0)
+            if (position.Z > 0 && position.Z % Settings.CHUNK_SIZE == 0)
             {
-                chunks.Add(localMap.Chunk(position.X / Chunk.CHUNK_SIZE, (position.Z - 1) / Chunk.CHUNK_SIZE)); //add back chunk
+                chunks.Add(localMap.Chunk(position.X / Settings.CHUNK_SIZE, (position.Z - 1) / Settings.CHUNK_SIZE)); //add back chunk
             }
-            else if (position.Z < World.SizeInBlocksZ - 1 && position.Z % Chunk.CHUNK_SIZE == Chunk.CHUNK_SIZE - 1)
+            else if (position.Z < World.SizeInBlocksZ - 1 && position.Z % Settings.CHUNK_SIZE == Settings.CHUNK_SIZE - 1)
             {
-                chunks.Add(localMap.Chunk(position.X / Chunk.CHUNK_SIZE, (position.Z + 1) / Chunk.CHUNK_SIZE)); //add front chunk
+                chunks.Add(localMap.Chunk(position.X / Settings.CHUNK_SIZE, (position.Z + 1) / Settings.CHUNK_SIZE)); //add front chunk
             }
             return chunks;
         }
@@ -286,9 +286,9 @@ namespace Sean.WorldGenerator
             return coords.Xf >= 0 && coords.Xf < World.SizeInBlocksX
                 && coords.Yf >= 0 && coords.Yf <= 600 //can't see anything past 600
                 && coords.Zf >= 0 && coords.Zf < World.SizeInBlocksZ
-                && (coords.Yf >= Chunk.CHUNK_HEIGHT || !GetBlock(coords.ToPosition()).IsSolid)
-                && (coords.Yf + 1 >= Chunk.CHUNK_HEIGHT || !GetBlock(coords.Xblock, coords.Yblock + 1, coords.Zblock).IsSolid)
-                && (coords.Yf % 1 < Constants.PLAYER_HEADROOM || coords.Yf + 2 >= Chunk.CHUNK_HEIGHT || !GetBlock(coords.Xblock, coords.Yblock + 2, coords.Zblock).IsSolid); //the player can occupy 3 blocks
+                && (coords.Yf >= Settings.CHUNK_HEIGHT || !GetBlock(coords.ToPosition()).IsSolid)
+                && (coords.Yf + 1 >= Settings.CHUNK_HEIGHT || !GetBlock(coords.Xblock, coords.Yblock + 1, coords.Zblock).IsSolid)
+                && (coords.Yf % 1 < Constants.PLAYER_HEADROOM || coords.Yf + 2 >= Settings.CHUNK_HEIGHT || !GetBlock(coords.Xblock, coords.Yblock + 2, coords.Zblock).IsSolid); //the player can occupy 3 blocks
         }
 
         internal static bool IsValidItemLocation(Coords coords)
@@ -372,7 +372,7 @@ namespace Sean.WorldGenerator
             if (type == Block.BlockType.Air)
             {
                 //if destroying a block under water, fill with water instead of air
-                if (position.Y + 1 < Chunk.CHUNK_HEIGHT && GetBlock(position.X, position.Y + 1, position.Z).Type == Block.BlockType.Water) type = Block.BlockType.Water;
+                if (position.Y + 1 < Settings.CHUNK_HEIGHT && GetBlock(position.X, position.Y + 1, position.Z).Type == Block.BlockType.Water) type = Block.BlockType.Water;
             }
 
             var chunk = localMap.Chunk(position);
@@ -383,7 +383,7 @@ namespace Sean.WorldGenerator
             var isTransparentOldBlock = Block.IsBlockTypeTransparent(oldType);
             block.BlockData = (ushort)(block.BlockData | 0x8000); //mark the block as dirty for the save file "diff" logic
             chunk.Blocks[position] = block; //insert the new block
-            chunk.UpdateHeightMap(ref block, position.X % Chunk.CHUNK_SIZE, position.Y, position.Z % Chunk.CHUNK_SIZE);
+            chunk.UpdateHeightMap(ref block, position.X % Settings.CHUNK_SIZE, position.Y, position.Z % Settings.CHUNK_SIZE);
 
             if (!isTransparentBlock || type == Block.BlockType.Water)
             {

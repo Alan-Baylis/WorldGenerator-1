@@ -10,6 +10,15 @@ namespace Sean.WorldGenerator
     /// </summary>
     public static class Settings
     {
+        public const int waterLevel = 20;
+        public const int CHUNK_SIZE = 32;
+        public const int CHUNK_HEIGHT = 128;
+        public const int FRACTAL_SIZE = CHUNK_SIZE * 20;
+        public const int globalMapSize = 256*CHUNK_SIZE;
+        public const int minNoiseHeight = 0;
+        public const int maxNoiseHeight = 127;
+        public const int globalChunkSize = globalMapSize / CHUNK_SIZE;
+
         public static Random Random = new Random();
 
         private static Version _version;
@@ -52,8 +61,8 @@ namespace Sean.WorldGenerator
             set
             {
                 _zFar = value;
-                ZFarForChunkLoad = Math.Min(ZFar * 1.2f, ZFar + Chunk.CHUNK_SIZE * 3);
-                ZFarForChunkUnload = Math.Min(ZFar * 1.3f, ZFar + Chunk.CHUNK_SIZE * 5);
+                ZFarForChunkLoad = Math.Min(ZFar * 1.2f, ZFar + Settings.CHUNK_SIZE * 3);
+                ZFarForChunkUnload = Math.Min(ZFar * 1.3f, ZFar + Settings.CHUNK_SIZE * 5);
             }
         }
         

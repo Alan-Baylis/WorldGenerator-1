@@ -15,14 +15,14 @@ namespace Sean.WorldGenerator
 
 		public Block this[Coords coords]
 		{
-			get { return new Block(Array[coords.Yblock, coords.Xblock % Chunk.CHUNK_SIZE, coords.Zblock % Chunk.CHUNK_SIZE]); }
-			set { Array[coords.Yblock, coords.Xblock % Chunk.CHUNK_SIZE, coords.Zblock % Chunk.CHUNK_SIZE] = value.BlockData; }
+            get { return new Block(Array[coords.Yblock, coords.Xblock % Settings.CHUNK_SIZE, coords.Zblock % Settings.CHUNK_SIZE]); }
+            set { Array[coords.Yblock, coords.Xblock % Settings.CHUNK_SIZE, coords.Zblock % Settings.CHUNK_SIZE] = value.BlockData; }
 		}
 
 		public Block this[Position position]
 		{
-			get { return new Block(Array[position.Y, position.X % Chunk.CHUNK_SIZE, position.Z % Chunk.CHUNK_SIZE]); }
-			set { Array[position.Y, position.X % Chunk.CHUNK_SIZE, position.Z % Chunk.CHUNK_SIZE] = value.BlockData; }
+            get { return new Block(Array[position.Y, position.X % Settings.CHUNK_SIZE, position.Z % Settings.CHUNK_SIZE]); }
+            set { Array[position.Y, position.X % Settings.CHUNK_SIZE, position.Z % Settings.CHUNK_SIZE] = value.BlockData; }
 		}
 
 		/// <summary>Get a block from the array.</summary>
@@ -42,12 +42,12 @@ namespace Sean.WorldGenerator
 		{
 			get
 			{
-				var diffArray = new ushort[Chunk.CHUNK_HEIGHT,Chunk.CHUNK_SIZE,Chunk.CHUNK_SIZE];
-				for (var y = 0; y < Chunk.CHUNK_HEIGHT; y++)
+                var diffArray = new ushort[Settings.CHUNK_HEIGHT,Settings.CHUNK_SIZE,Settings.CHUNK_SIZE];
+                for (var y = 0; y < Settings.CHUNK_HEIGHT; y++)
 				{
-					for (var x = 0; x < Chunk.CHUNK_SIZE; x++)
+                    for (var x = 0; x < Settings.CHUNK_SIZE; x++)
 					{
-						for (var z = 0; z < Chunk.CHUNK_SIZE; z++)
+                        for (var z = 0; z < Settings.CHUNK_SIZE; z++)
 						{
 							//only copy the dirty blocks
 							if ((Array[y, x, z] & 0x8000) != 0) diffArray[y, x, z] = Array[y, x, z];

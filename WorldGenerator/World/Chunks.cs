@@ -20,14 +20,14 @@ namespace Sean.WorldGenerator
         }
         private ChunkCoords CoordToChunkCoords(Coords coord)
         {
-            int x = coord.Xblock / Chunk.CHUNK_SIZE;
-            int z = coord.Zblock / Chunk.CHUNK_SIZE;
+            int x = coord.Xblock / Settings.CHUNK_SIZE;
+            int z = coord.Zblock / Settings.CHUNK_SIZE;
             return new ChunkCoords(x,z);
         }
         private ChunkCoords PositionToChunkCoords(Position position)
         {
-            int x = position.X / Chunk.CHUNK_SIZE;
-            int z = position.Z / Chunk.CHUNK_SIZE;
+            int x = position.X / Settings.CHUNK_SIZE;
+            int z = position.Z / Settings.CHUNK_SIZE;
             return new ChunkCoords(x,z);
         }
 
