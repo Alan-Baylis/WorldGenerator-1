@@ -21,6 +21,9 @@ namespace WorldViewer
 
         private void updateButton_Click(object sender, EventArgs e)
         {
+            float p1;
+            float.TryParse(this.param1TextBox.Text, out p1);
+
 
         }
     }

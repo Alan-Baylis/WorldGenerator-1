@@ -32,7 +32,7 @@ namespace Sean.WorldGenerator
                 VersionDisplay = string.Format("{0}.{1}.{2}", value.Major, value.Minor, value.Build);
             }
         }
-        
+
         /// <summary>Version in the format: major.minor.build</summary>
         public static string VersionDisplay { get; private set; }
 
