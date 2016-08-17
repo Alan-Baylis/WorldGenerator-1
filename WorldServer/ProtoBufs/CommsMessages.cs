@@ -71,22 +71,23 @@ namespace CommsMessages {
           "BWNvdW50GAEgAigFIhUKBFBvbmcSDQoFY291bnQYASACKAUiKQoIUmVzcG9u" + 
           "c2USDAoEY29kZRgBIAIoBRIPCgdtZXNzYWdlGAIgASgJIjsKB05ld1VzZXIS" + 
           "EAoIdXNlcm5hbWUYASACKAkSEAoIcGFzc3dvcmQYAiACKAkSDAoEbmFtZRgD" + 
-          "IAIoCSIrCgVMb2dpbhIQCgh1c2VybmFtZRgBIAIoCRIQCghwYXNzd29yZBgC" + 
-          "IAIoCSITCgNTYXkSDAoEdGV4dBgBIAIoCSIiCgpNYXBSZXF1ZXN0EgkKAXgY" + 
-          "ASACKAUSCQoBeRgCIAIoBSIhCglNYXBJZ25vcmUSCQoBeBgBIAIoBRIJCgF5" + 
-          "GAIgAigFIk8KA01hcBIMCgRtaW5YGAEgAigFEgwKBG1pblkYAiACKAUSDAoE" + 
-          "bWF4WBgDIAIoBRIMCgRtYXhZGAQgAigFEhAKCGRhdGFTaXplGAUgAigFIj4K" + 
-          "CU1hcFVwZGF0ZRIJCgF4GAEgAigFEgkKAXkYAiACKAUSCQoBehgDIAIoBRIQ" + 
-          "CghuZXdCbG9jaxgEIAIoBSJBChJNYXBDaGFyYWN0ZXJVcGRhdGUSCgoCaWQY" + 
-          "ASACKAUSCQoBeBgCIAIoBRIJCgF5GAMgAigFEgkKAXoYBCACKAUiDQoLUXVl" + 
-          "cnlTZXJ2ZXIibQoTUXVlcnlTZXJ2ZXJSZXNwb25zZRIUCgxtaW5NYXBDaHVu" + 
-          "a1gYASACKAUSFAoMbWluTWFwQ2h1bmtZGAIgAigFEhQKDG1heE1hcENodW5r" + 
-          "WBgDIAIoBRIUCgxtYXhNYXBDaHVua1kYBCACKAUq0gEKB01zZ1R5cGUSDQoJ" + 
-          "ZVJlc3BvbnNlEAESCQoFZVBpbmcQAhIJCgVlUG9uZxADEgwKCGVOZXdVc2Vy" + 
-          "EAQSCgoGZUxvZ2luEAUSCAoEZVNheRAGEg8KC2VNYXBSZXF1ZXN0EAcSDgoK" + 
-          "ZU1hcElnbm9yZRAIEggKBGVNYXAQCRIOCgplTWFwVXBkYXRlEAoSFwoTZU1h" + 
-          "cENoYXJhY3RlclVwZGF0ZRALEhAKDGVRdWVyeVNlcnZlchAMEhgKFGVRdWVy" + 
-          "eVNlcnZlclJlc3BvbnNlEA1CAkgB");
+          "IAIoCSJMCgVMb2dpbhIRCglpcGFkZHJlc3MYASACKAkSDAoEcG9ydBgCIAIo" + 
+          "BRIQCgh1c2VybmFtZRgDIAIoCRIQCghwYXNzd29yZBgEIAIoCSITCgNTYXkS" + 
+          "DAoEdGV4dBgBIAIoCSIiCgpNYXBSZXF1ZXN0EgkKAXgYASACKAUSCQoBeRgC" + 
+          "IAIoBSIhCglNYXBJZ25vcmUSCQoBeBgBIAIoBRIJCgF5GAIgAigFIk8KA01h" + 
+          "cBIMCgRtaW5YGAEgAigFEgwKBG1pblkYAiACKAUSDAoEbWF4WBgDIAIoBRIM" + 
+          "CgRtYXhZGAQgAigFEhAKCGRhdGFTaXplGAUgAigFIj4KCU1hcFVwZGF0ZRIJ" + 
+          "CgF4GAEgAigFEgkKAXkYAiACKAUSCQoBehgDIAIoBRIQCghuZXdCbG9jaxgE" + 
+          "IAIoBSJBChJNYXBDaGFyYWN0ZXJVcGRhdGUSCgoCaWQYASACKAUSCQoBeBgC" + 
+          "IAIoBRIJCgF5GAMgAigFEgkKAXoYBCACKAUiDQoLUXVlcnlTZXJ2ZXIibQoT" + 
+          "UXVlcnlTZXJ2ZXJSZXNwb25zZRIUCgxtaW5NYXBDaHVua1gYASACKAUSFAoM" + 
+          "bWluTWFwQ2h1bmtZGAIgAigFEhQKDG1heE1hcENodW5rWBgDIAIoBRIUCgxt" + 
+          "YXhNYXBDaHVua1kYBCACKAUq0gEKB01zZ1R5cGUSDQoJZVJlc3BvbnNlEAES" + 
+          "CQoFZVBpbmcQAhIJCgVlUG9uZxADEgwKCGVOZXdVc2VyEAQSCgoGZUxvZ2lu" + 
+          "EAUSCAoEZVNheRAGEg8KC2VNYXBSZXF1ZXN0EAcSDgoKZU1hcElnbm9yZRAI" + 
+          "EggKBGVNYXAQCRIOCgplTWFwVXBkYXRlEAoSFwoTZU1hcENoYXJhY3RlclVw" + 
+          "ZGF0ZRALEhAKDGVRdWVyeVNlcnZlchAMEhgKFGVRdWVyeVNlcnZlclJlc3Bv" + 
+          "bnNlEA1CAkgB");
       pbd::FileDescriptor.InternalDescriptorAssigner assigner = delegate(pbd::FileDescriptor root) {
         descriptor = root;
         internal__static_CommsMessages_Message__Descriptor = Descriptor.MessageTypes[0];
@@ -112,7 +113,7 @@ namespace CommsMessages {
         internal__static_CommsMessages_Login__Descriptor = Descriptor.MessageTypes[5];
         internal__static_CommsMessages_Login__FieldAccessorTable = 
             new pb::FieldAccess.FieldAccessorTable<global::CommsMessages.Login, global::CommsMessages.Login.Builder>(internal__static_CommsMessages_Login__Descriptor,
-                new string[] { "Username", "Password", });
+                new string[] { "Ipaddress", "Port", "Username", "Password", });
         internal__static_CommsMessages_Say__Descriptor = Descriptor.MessageTypes[6];
         internal__static_CommsMessages_Say__FieldAccessorTable = 
             new pb::FieldAccess.FieldAccessorTable<global::CommsMessages.Say, global::CommsMessages.Say.Builder>(internal__static_CommsMessages_Say__Descriptor,
@@ -2676,8 +2677,8 @@ namespace CommsMessages {
   public sealed partial class Login : pb::GeneratedMessage<Login, Login.Builder> {
     private Login() { }
     private static readonly Login defaultInstance = new Login().MakeReadOnly();
-    private static readonly string[] _loginFieldNames = new string[] { "password", "username" };
-    private static readonly uint[] _loginFieldTags = new uint[] { 18, 10 };
+    private static readonly string[] _loginFieldNames = new string[] { "ipaddress", "password", "port", "username" };
+    private static readonly uint[] _loginFieldTags = new uint[] { 10, 34, 16, 26 };
     public static Login DefaultInstance {
       get { return defaultInstance; }
     }
@@ -2698,7 +2699,27 @@ namespace CommsMessages {
       get { return global::CommsMessages.CommsMessages.internal__static_CommsMessages_Login__FieldAccessorTable; }
     }
     
-    public const int UsernameFieldNumber = 1;
+    public const int IpaddressFieldNumber = 1;
+    private bool hasIpaddress;
+    private string ipaddress_ = "";
+    public bool HasIpaddress {
+      get { return hasIpaddress; }
+    }
+    public string Ipaddress {
+      get { return ipaddress_; }
+    }
+    
+    public const int PortFieldNumber = 2;
+    private bool hasPort;
+    private int port_;
+    public bool HasPort {
+      get { return hasPort; }
+    }
+    public int Port {
+      get { return port_; }
+    }
+    
+    public const int UsernameFieldNumber = 3;
     private bool hasUsername;
     private string username_ = "";
     public bool HasUsername {
@@ -2708,7 +2729,7 @@ namespace CommsMessages {
       get { return username_; }
     }
     
-    public const int PasswordFieldNumber = 2;
+    public const int PasswordFieldNumber = 4;
     private bool hasPassword;
     private string password_ = "";
     public bool HasPassword {
@@ -2720,6 +2741,8 @@ namespace CommsMessages {
     
     public override bool IsInitialized {
       get {
+        if (!hasIpaddress) return false;
+        if (!hasPort) return false;
         if (!hasUsername) return false;
         if (!hasPassword) return false;
         return true;
@@ -2729,11 +2752,17 @@ namespace CommsMessages {
     public override void WriteTo(pb::ICodedOutputStream output) {
       int size = SerializedSize;
       string[] field_names = _loginFieldNames;
+      if (hasIpaddress) {
+        output.WriteString(1, field_names[0], Ipaddress);
+      }
+      if (hasPort) {
+        output.WriteInt32(2, field_names[2], Port);
+      }
       if (hasUsername) {
-        output.WriteString(1, field_names[1], Username);
+        output.WriteString(3, field_names[3], Username);
       }
       if (hasPassword) {
-        output.WriteString(2, field_names[0], Password);
+        output.WriteString(4, field_names[1], Password);
       }
       UnknownFields.WriteTo(output);
     }
@@ -2745,11 +2774,17 @@ namespace CommsMessages {
         if (size != -1) return size;
         
         size = 0;
+        if (hasIpaddress) {
+          size += pb::CodedOutputStream.ComputeStringSize(1, Ipaddress);
+        }
+        if (hasPort) {
+          size += pb::CodedOutputStream.ComputeInt32Size(2, Port);
+        }
         if (hasUsername) {
-          size += pb::CodedOutputStream.ComputeStringSize(1, Username);
+          size += pb::CodedOutputStream.ComputeStringSize(3, Username);
         }
         if (hasPassword) {
-          size += pb::CodedOutputStream.ComputeStringSize(2, Password);
+          size += pb::CodedOutputStream.ComputeStringSize(4, Password);
         }
         size += UnknownFields.SerializedSize;
         memoizedSerializedSize = size;
@@ -2875,6 +2910,12 @@ namespace CommsMessages {
       public override Builder MergeFrom(Login other) {
         if (other == global::CommsMessages.Login.DefaultInstance) return this;
         PrepareBuilder();
+        if (other.HasIpaddress) {
+          Ipaddress = other.Ipaddress;
+        }
+        if (other.HasPort) {
+          Port = other.Port;
+        }
         if (other.HasUsername) {
           Username = other.Username;
         }
@@ -2925,10 +2966,18 @@ namespace CommsMessages {
               break;
             }
             case 10: {
+              result.hasIpaddress = input.ReadString(ref result.ipaddress_);
+              break;
+            }
+            case 16: {
+              result.hasPort = input.ReadInt32(ref result.port_);
+              break;
+            }
+            case 26: {
               result.hasUsername = input.ReadString(ref result.username_);
               break;
             }
-            case 18: {
+            case 34: {
               result.hasPassword = input.ReadString(ref result.password_);
               break;
             }
@@ -2941,6 +2990,47 @@ namespace CommsMessages {
         return this;
       }
       
+      
+      public bool HasIpaddress {
+        get { return result.hasIpaddress; }
+      }
+      public string Ipaddress {
+        get { return result.Ipaddress; }
+        set { SetIpaddress(value); }
+      }
+      public Builder SetIpaddress(string value) {
+        pb::ThrowHelper.ThrowIfNull(value, "value");
+        PrepareBuilder();
+        result.hasIpaddress = true;
+        result.ipaddress_ = value;
+        return this;
+      }
+      public Builder ClearIpaddress() {
+        PrepareBuilder();
+        result.hasIpaddress = false;
+        result.ipaddress_ = "";
+        return this;
+      }
+      
+      public bool HasPort {
+        get { return result.hasPort; }
+      }
+      public int Port {
+        get { return result.Port; }
+        set { SetPort(value); }
+      }
+      public Builder SetPort(int value) {
+        PrepareBuilder();
+        result.hasPort = true;
+        result.port_ = value;
+        return this;
+      }
+      public Builder ClearPort() {
+        PrepareBuilder();
+        result.hasPort = false;
+        result.port_ = 0;
+        return this;
+      }
       
       public bool HasUsername {
         get { return result.hasUsername; }

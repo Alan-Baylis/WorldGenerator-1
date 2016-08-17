@@ -8,7 +8,6 @@ using System.Collections.Generic;
 
 namespace Sean.WorldServer
 {
-
 	// State object for reading client data asynchronously
 	public class ClientConnection {
         public ClientConnection(TcpClient inClientSocket)

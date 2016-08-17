@@ -56,7 +56,7 @@ namespace Sean.WorldServer
             //var otpServer = new OtpServer();
             //otpServer.Start();
 
-            //ServerSocketListener.Run();
+            ServerSocketListener.Run();
             //ClientSocket.SendMessage ();
 
             // Rest web server
