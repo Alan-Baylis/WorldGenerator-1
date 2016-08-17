@@ -102,6 +102,10 @@ namespace Sean.WorldGenerator
             }
         }
 
+        public bool IsValidCoord(int x, int z)
+        {
+            return x >= _size.minX && x < _size.maxX && z >= _size.minZ && z < _size.maxZ;
+        }
         public ArraySize Size { get { return _size; } }
             
         public T this[int x, int z]

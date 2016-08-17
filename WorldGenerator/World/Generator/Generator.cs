@@ -8,16 +8,24 @@ namespace Sean.WorldGenerator
 {
 	internal class Generator
 	{
-        private CImplicitModuleBase noiseGenerator;
+        private CImplicitModuleBase terrainGenerator;
+        private CImplicitModuleBase biosphereGenerator;
 
         private PerlinNoise perlinNoise;
         private const int octaves = 1;
         private const double persistence = 0.4;
+        private int chunkMidpoint = Settings.CHUNK_SIZE / 2;
 
         public Generator(int seed)
         {
             perlinNoise = new PerlinNoise(seed, 100);
 
+            terrainGenerator = CreateTerrainGenerator();
+            biosphereGenerator = CreateBiosphereGenerator();
+        }
+
+        private CImplicitModuleBase CreateTerrainGenerator()
+        { 
             var ground_gradient = new CImplicitGradient(x1: 0, x2: 0, y1: 0, y2: 1);
 
             var lowland_shape_fractal = new CImplicitFractal(type: EFractalTypes.BILLOW, basistype: CImplicitBasisFunction.EBasisTypes.GRADIENT, interptype: CImplicitBasisFunction.EInterpTypes.QUINTIC, octaves: 2, freq: 1.25);
@@ -76,7 +84,15 @@ namespace Sean.WorldGenerator
 
             //    var ground_cave_multiply = new CImplicitCombiner(type: ECombinerTypes.MULT, source0: cave_select, source1: ground_select);
 
-            noiseGenerator = coastline_highland_lowland_select;
+            return coastline_highland_lowland_select;
+        }
+
+        private CImplicitModuleBase CreateBiosphereGenerator()
+        {
+            var bio_type_fractal = new CImplicitFractal(type: EFractalTypes.FBM, basistype: CImplicitBasisFunction.EBasisTypes.GRADIENT, interptype: CImplicitBasisFunction.EInterpTypes.QUINTIC, octaves: 3, freq: 0.5);
+            var bio_autocorrect = new CImplicitAutoCorrect(source: bio_type_fractal, low: 0, high: 1);
+
+            return bio_autocorrect;
         }
 
         public Array<int> GenerateGlobalMap()
@@ -94,7 +110,6 @@ namespace Sean.WorldGenerator
             };
 
             var heightMap = new Array<int>(worldSize);
-            var midpoint = Settings.CHUNK_SIZE / 2;
             for (int z = worldSize.minZ; z < worldSize.maxZ; z += worldSize.scale)
             {
                 for (int x = worldSize.minX; x < worldSize.maxX; x += worldSize.scale)
@@ -104,7 +119,7 @@ namespace Sean.WorldGenerator
                     while (d > 1)
                     {
                         d /= 2;
-                        var p = noiseGenerator.get ((double)(x+midpoint) / Settings.FRACTAL_SIZE, (double)y / Settings.maxNoiseHeight, (double)(z+midpoint) / Settings.FRACTAL_SIZE);
+                        var p = terrainGenerator.get ((double)(x+chunkMidpoint) / Settings.FRACTAL_SIZE, (double)y / Settings.maxNoiseHeight, (double)(z+chunkMidpoint) / Settings.FRACTAL_SIZE);
                         if (p < 0.5)
                             y += d;
                         else
@@ -116,6 +131,15 @@ namespace Sean.WorldGenerator
                 }
             }
             return heightMap;
+        }
+
+        public double CalcGlobalBiosphere(int x, int z)
+        {
+            return biosphereGenerator.get((double)(x+chunkMidpoint) / Settings.FRACTAL_SIZE, (double)(z+chunkMidpoint) / Settings.FRACTAL_SIZE);
+        }
+        public double CalcBiosphere(int x, int z)
+        {
+            return biosphereGenerator.get((double)x, (double)z);
         }
 
         public void Generate(Chunk chunk)
@@ -139,7 +163,7 @@ namespace Sean.WorldGenerator
                     for (int y = worldSize.minY; y < worldSize.maxY; y++)
                     {
                         //double p = perlinNoise.OctavePerlin(worldSize, x, y, z, octaveCount, persistence);
-                        double p = noiseGenerator.get((double)x/Settings.FRACTAL_SIZE, (double)(worldSize.maxY-y)/Settings.maxNoiseHeight, (double)z/Settings.FRACTAL_SIZE);
+                        double p = terrainGenerator.get((double)x/Settings.FRACTAL_SIZE, (double)(worldSize.maxY-y)/Settings.maxNoiseHeight, (double)z/Settings.FRACTAL_SIZE);
                         var blockType = p > 0.5 ? Block.BlockType.Rock : Block.BlockType.Air;
                         chunk.Blocks[x % Settings.CHUNK_SIZE, y, z % Settings.CHUNK_SIZE] = new Block(blockType);
                     }

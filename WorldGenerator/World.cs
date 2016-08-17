@@ -114,7 +114,12 @@ namespace Sean.WorldGenerator
         #endregion
 
         internal static LocalMap LocalMap { get { return localMap; } }
-        internal static WorldMap WorldMap { get { return worldMap; } }
+
+        public static Array<int> GlobalMap { get { return worldMap.GlobalMap; } }
+        public static Array<bool> GlobalOceanMap { get { return worldMap.OceanMap; } }
+        public static Array<int> GlobalTemperatureMap { get { return worldMap.TemperatureMap; } }
+        public static Array<int> GlobalBiosphereMap { get { return worldMap.BiosphereMap; } }
+
 
         static World ()
         {
@@ -164,15 +169,6 @@ namespace Sean.WorldGenerator
                     registrations.Remove (chunkCoords);
                 }
             }
-        }
-
-        public static Array<int> GetGlobalMap()
-        {
-            return worldMap.GetMap();
-        }
-        public static bool IsGlobalMapWater(int x, int z)
-        {
-            return worldMap.GetMap()[x, z] < Settings.waterLevel; // TODO - temp
         }
 
         public static void RenderMap()

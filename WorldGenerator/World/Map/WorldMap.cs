@@ -9,10 +9,12 @@ namespace Sean.WorldGenerator
     internal class WorldMap
     {
         private Generator generator;
-        private Array<int> globalMap;
-        private Array<int> waterMap;
-
         private const int oceanLevel = 40;
+
+        public Array<int> GlobalMap { get; private set; }
+        public Array<bool> OceanMap { get; private set; }
+        public Array<int> TemperatureMap { get; private set; }
+        public Array<int> BiosphereMap { get; private set; }
 
         public WorldMap(int seed)
         {
@@ -21,64 +23,69 @@ namespace Sean.WorldGenerator
         }
 
         public void Generate()
-        { 
-            globalMap = generator.GenerateGlobalMap();
-            waterMap = new Array<int>(globalMap.Size);
+        {
+            GlobalMap = generator.GenerateGlobalMap();
 
-            /*
-            // Springs
-            for (int i=0; i<1; i++)
+            OceanMap = DefineOcean(GlobalMap);
+            TemperatureMap = DefineTemperature(GlobalMap);
+            BiosphereMap = DefineBiosphere(GlobalMap, TemperatureMap);
+        }
+
+        private Array<bool> DefineOcean(Array<int> globalMap)
+        {
+            var isOcean = new Array<bool>(globalMap.Size);
+            for (int z = globalMap.Size.minZ; z < globalMap.Size.maxZ; z += globalMap.Size.scale)
             {
-                var x = rnd.Next(globalMap.Size.minX, globalMap.Size.maxX);
-                var z = rnd.Next(globalMap.Size.minZ, globalMap.Size.maxZ);
-                RecurseWaterFlow(x, z, globalMap[x,z]);
+                if (globalMap[globalMap.Size.minX, z] < Settings.waterLevel)
+                    ExpandOcean(globalMap, ref isOcean, globalMap.Size.minX, z);
+                if (globalMap[globalMap.Size.maxX-1, z] < Settings.waterLevel)
+                    ExpandOcean(globalMap, ref isOcean, globalMap.Size.maxX-1, z);
             }
-            */
+            for (int x = globalMap.Size.minX; x < globalMap.Size.maxX; x += globalMap.Size.scale)
+            {
+                if (globalMap[x, globalMap.Size.minZ] < Settings.waterLevel)
+                    ExpandOcean(globalMap, ref isOcean, x, globalMap.Size.minZ);
+                if (globalMap[x, globalMap.Size.maxZ-1] < Settings.waterLevel)
+                    ExpandOcean(globalMap, ref isOcean, x, globalMap.Size.maxZ-1);
+            }
+            return isOcean;
         }
-        /*
-        private void RecurseWaterFlow(int x,int z,int h)
+        private void ExpandOcean(Array<int> globalMap, ref Array<bool> isOcean, int x, int z)
         {
-            if (h <= oceanLevel) return; // Hit the ocean or another river
-            waterMap[x, z] = h;
-            switch (rnd.Next(1, 3))
-            { 
-            case 1:
-                if (globalMap[x - 1, z] < h)
-                    RecurseWaterFlow(x - 1, z, globalMap[x - 1, z]);
-                else if (globalMap[x + 1, z] < h)
-                    RecurseWaterFlow(x + 1, z, globalMap[x + 1, z]);
-                else if (globalMap[x, z - 1] < h)
-                    RecurseWaterFlow(x, z - 1, globalMap[x, z - 1]);
-                else if (globalMap[x, z + 1] < h)
-                    RecurseWaterFlow(x, z + 1, globalMap[x, z + 1]);
-                else
-                {
-                    // Stuck, build lake
-                    RecurseWaterFlow(x, z, h + 1);
-                }
-                break;
-            case 2:
-                if (globalMap[x, z + 1] < h)
-                    RecurseWaterFlow(x, z + 1, globalMap[x, z + 1]);
-                else if (globalMap[x, z - 1] < h)
-                    RecurseWaterFlow(x, z - 1, globalMap[x, z - 1]);
-                else if (globalMap[x + 1, z] < h)
-                    RecurseWaterFlow(x + 1, z, globalMap[x + 1, z]);
-                else if (globalMap[x - 1, z] < h)
-                    RecurseWaterFlow(x - 1, z, globalMap[x - 1, z]);
-                else
-                {
-                    // Stuck, build lake
-                    RecurseWaterFlow(x, z, h + 1);
-                }
-                break;
+            if (globalMap.IsValidCoord(x, z) && isOcean[x, z] == false && globalMap[x, z] < Settings.waterLevel)
+            {
+                isOcean[x, z] = true;
+                ExpandOcean(globalMap, ref isOcean, x + globalMap.Size.scale, z);
+                ExpandOcean(globalMap, ref isOcean, x - globalMap.Size.scale, z);
+                ExpandOcean(globalMap, ref isOcean, x, z + globalMap.Size.scale);
+                ExpandOcean(globalMap, ref isOcean, x, z - globalMap.Size.scale);
             }
         }
-        */
-        public Array<int> GetMap()
+        private Array<int> DefineTemperature(Array<int> globalMap)
         {
-            return globalMap;
+            var temp = new Array<int>(globalMap.Size);
+            for (int x = globalMap.Size.minX; x < globalMap.Size.maxX; x += globalMap.Size.scale)
+            {
+                for (int z = globalMap.Size.minZ; z < globalMap.Size.maxZ; z += globalMap.Size.scale)
+                {
+                    var h = (globalMap.Size.maxY - globalMap[x, z]) * 50 / globalMap.Size.maxY;
+                    var l = z * 50 / globalMap.Size.maxZ;
+                    temp[x, z] = (h + l) / 2;
+                }
+            }
+            return temp;
         }
-
+        private Array<int> DefineBiosphere(Array<int> globalMap, Array<int> temperatureMap)
+        {
+            var bio = new Array<int>(globalMap.Size);
+            for (int x = globalMap.Size.minX; x < globalMap.Size.maxX; x += globalMap.Size.scale)
+            {
+                for (int z = globalMap.Size.minZ; z < globalMap.Size.maxZ; z += globalMap.Size.scale)
+                {
+                    bio[x,z] = (int)(generator.CalcGlobalBiosphere(x, z) * 255);
+                }
+            }
+            return bio;
+        }
     }
 }

@@ -11,6 +11,12 @@ namespace WorldViewer
     {
         ParametersForm parametersForm;
         ElevationForm elevationForm;
+        View selectedView;
+
+        private enum View
+        {
+            HeightMap, Temp, Biosphere, Water
+        }
 
         public Form1()
         {
@@ -25,7 +31,7 @@ namespace WorldViewer
             this.Cursor = Cursors.WaitCursor;
             this.localPictureBox.Image = this.DrawLocal(this.localPictureBox.Width, this.localPictureBox.Height);
             this.worldPictureBox.Image = this.DrawAllChunks(this.worldPictureBox.Width, this.worldPictureBox.Height);
-            this.pictureBox1.Image = this.DrawGlobalMap(this.pictureBox1.Width, this.pictureBox1.Height);
+            this.pictureBox1.Image = this.DrawGlobalMap(this.pictureBox1.Width, this.pictureBox1.Height, selectedView);
             //this.terrainPictureBox.Image = this.DrawTerrain(this.terrainPictureBox.Width, this.terrainPictureBox.Height);
 
             this.elevationForm.DrawImages(currentChunk);
@@ -35,7 +41,7 @@ namespace WorldViewer
 
         private void OnGlobalMapMouseDoubleClick(object sender, MouseEventArgs e)
         {
-            var map = World.GetGlobalMap();
+            var map = World.GlobalMap;
             currentChunk = new ChunkCoords (
                 Settings.globalChunkSize * e.X / this.pictureBox1.Width,
                 Settings.globalChunkSize * e.Y / this.pictureBox1.Height);
@@ -141,13 +147,14 @@ namespace WorldViewer
             }
         }
 
-        private Bitmap DrawGlobalMap(int width, int height)
+        private Bitmap DrawGlobalMap(int width, int height, View selectedView)
         {
             var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
             var graphics = Graphics.FromImage(bitmap);
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-            var map = World.GetGlobalMap();
+            var map = World.GlobalMap;
+            var ocean = World.GlobalOceanMap;
             for (int w = 1; w<width; w++)
             {
                 for (int h=1;h<height;h++)
@@ -155,9 +162,29 @@ namespace WorldViewer
                     int x = map.Size.maxX * w / width;
                     int z = map.Size.maxZ * h / height;
                     var pt = map[x,z];
-                    //var color = World.IsGlobalMapWater(x, z) ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
-                    var color = pt < 20 ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
-                    //var color = Color.FromArgb(255, 0, pt, 0);
+                    var isOcean = ocean[x, z];
+                    Color color;
+                    if (isOcean)
+                    {
+                        color = Color.FromArgb(255, 0, 0, 255);
+                    }
+                    else
+                    {
+                        switch (selectedView)
+                        {
+                            case View.Temp:
+                                color = Color.FromArgb(255, 0, World.GlobalTemperatureMap[x,z], 0);
+                                break;
+                            case View.Biosphere:
+                                color = Color.FromArgb(255, 0, World.GlobalBiosphereMap[x, z], 0);
+                                break;
+                            default:
+                            case View.HeightMap:
+                                color = Color.FromArgb(255, 0, pt, 0);
+                                break;
+                        }
+                    }
+
                     graphics.FillRectangle(new SolidBrush(color), (width * x/map.Size.maxX), (height * z/map.Size.maxZ), Math.Max(width/map.Size.maxX,1),Math.Max(height/map.Size.maxZ,1));
                 }
             }
@@ -253,6 +280,15 @@ namespace WorldViewer
             DrawMaps();
         }
 
-  
+        private void OnRadioButtonCheckedChanged(object sender, EventArgs e)
+        {
+            selectedView = View.HeightMap;
+            if (heightRadioButton.Checked) selectedView = View.HeightMap;
+            if (tempRadioButton.Checked) selectedView = View.Temp;
+            if (bioRadioButton.Checked) selectedView = View.Biosphere;
+            if (waterRadioButton.Checked) selectedView = View.Water;
+            DrawMaps();
+        }
+
     }
 }

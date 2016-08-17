@@ -35,6 +35,10 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.localPictureBox = new System.Windows.Forms.PictureBox();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
+            this.heightRadioButton = new System.Windows.Forms.RadioButton();
+            this.tempRadioButton = new System.Windows.Forms.RadioButton();
+            this.bioRadioButton = new System.Windows.Forms.RadioButton();
+            this.waterRadioButton = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.worldPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.localPictureBox)).BeginInit();
@@ -56,7 +60,7 @@
             this.textBox1.Location = new System.Drawing.Point(12, 536);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(779, 47);
+            this.textBox1.Size = new System.Drawing.Size(839, 47);
             this.textBox1.TabIndex = 2;
             // 
             // pictureBox1
@@ -82,11 +86,61 @@
             this.imageList.TransparentColor = System.Drawing.Color.Transparent;
             this.imageList.Images.SetKeyName(0, "box_blue");
             // 
+            // heightRadioButton
+            // 
+            this.heightRadioButton.AutoSize = true;
+            this.heightRadioButton.Checked = true;
+            this.heightRadioButton.Location = new System.Drawing.Point(792, 12);
+            this.heightRadioButton.Name = "heightRadioButton";
+            this.heightRadioButton.Size = new System.Drawing.Size(56, 17);
+            this.heightRadioButton.TabIndex = 6;
+            this.heightRadioButton.TabStop = true;
+            this.heightRadioButton.Text = "Height";
+            this.heightRadioButton.UseVisualStyleBackColor = true;
+            this.heightRadioButton.CheckedChanged += new System.EventHandler(this.OnRadioButtonCheckedChanged);
+            // 
+            // tempRadioButton
+            // 
+            this.tempRadioButton.AutoSize = true;
+            this.tempRadioButton.Location = new System.Drawing.Point(792, 35);
+            this.tempRadioButton.Name = "tempRadioButton";
+            this.tempRadioButton.Size = new System.Drawing.Size(52, 17);
+            this.tempRadioButton.TabIndex = 7;
+            this.tempRadioButton.Text = "Temp";
+            this.tempRadioButton.UseVisualStyleBackColor = true;
+            this.tempRadioButton.CheckedChanged += new System.EventHandler(this.OnRadioButtonCheckedChanged);
+            // 
+            // bioRadioButton
+            // 
+            this.bioRadioButton.AutoSize = true;
+            this.bioRadioButton.Location = new System.Drawing.Point(792, 58);
+            this.bioRadioButton.Name = "bioRadioButton";
+            this.bioRadioButton.Size = new System.Drawing.Size(72, 17);
+            this.bioRadioButton.TabIndex = 8;
+            this.bioRadioButton.Text = "Biosphere";
+            this.bioRadioButton.UseVisualStyleBackColor = true;
+            this.bioRadioButton.CheckedChanged += new System.EventHandler(this.OnRadioButtonCheckedChanged);
+            // 
+            // waterRadioButton
+            // 
+            this.waterRadioButton.AutoSize = true;
+            this.waterRadioButton.Location = new System.Drawing.Point(792, 81);
+            this.waterRadioButton.Name = "waterRadioButton";
+            this.waterRadioButton.Size = new System.Drawing.Size(54, 17);
+            this.waterRadioButton.TabIndex = 9;
+            this.waterRadioButton.Text = "Water";
+            this.waterRadioButton.UseVisualStyleBackColor = true;
+            this.waterRadioButton.CheckedChanged += new System.EventHandler(this.OnRadioButtonCheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 586);
+            this.ClientSize = new System.Drawing.Size(860, 586);
+            this.Controls.Add(this.waterRadioButton);
+            this.Controls.Add(this.bioRadioButton);
+            this.Controls.Add(this.tempRadioButton);
+            this.Controls.Add(this.heightRadioButton);
             this.Controls.Add(this.localPictureBox);
             this.Controls.Add(this.worldPictureBox);
             this.Controls.Add(this.pictureBox1);
@@ -113,6 +167,10 @@
         private System.Windows.Forms.PictureBox localPictureBox;
         //private System.Windows.Forms.PictureBox terrainPictureBox;
         private System.Windows.Forms.ImageList imageList;
+        private System.Windows.Forms.RadioButton heightRadioButton;
+        private System.Windows.Forms.RadioButton tempRadioButton;
+        private System.Windows.Forms.RadioButton bioRadioButton;
+        private System.Windows.Forms.RadioButton waterRadioButton;
     }
 }
 
