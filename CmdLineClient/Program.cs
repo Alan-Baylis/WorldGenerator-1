@@ -8,7 +8,7 @@ namespace CmdLineClient
         {
             Console.WriteLine ("Hello World!");
 
-            var worldClient = new WorldClient("http://localhost:8080", 1);
+            var worldClient = new WorldClient("http://localhost:8084", 1);
             Location cursor = new Location (100,0,100);
             int stepSize = 5;
             while (true)
