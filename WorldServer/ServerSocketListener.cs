@@ -8,7 +8,6 @@ using System.Collections.Generic;
 
 namespace Sean.WorldServer
 {
-
 	// State object for reading client data asynchronously
 	public class ClientConnection {
         public ClientConnection(TcpClient inClientSocket)
@@ -124,7 +123,7 @@ namespace Sean.WorldServer
                 TcpListener serverSocket = new TcpListener(ServerListenPort);
                 TcpClient clientSocket = default(TcpClient);
                 serverSocket.Start();
-                Console.WriteLine("Waiting for a connection...");
+                Console.WriteLine($"Waiting for a connection on port {ServerListenPort}...");
                 while (true) {
                     var socket = serverSocket.AcceptTcpClient();
                     Console.WriteLine("Client joined");

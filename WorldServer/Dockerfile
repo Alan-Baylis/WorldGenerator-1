@@ -19,4 +19,4 @@ MAINTAINER Sean OConnor <onewheel@gmail.com>
 
 EXPOSE 8083
 
-CMD ["/usr/bin/iex"]
+CMD ["/bin/bash"]

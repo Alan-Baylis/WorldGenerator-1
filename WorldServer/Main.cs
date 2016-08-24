@@ -56,11 +56,11 @@ namespace Sean.WorldServer
             //var otpServer = new OtpServer();
             //otpServer.Start();
 
-            //ServerSocketListener.Run();
+            ServerSocketListener.Run();
             //ClientSocket.SendMessage ();
 
             // Rest web server
-            string baseUri = "http://localhost:8080";
+            string baseUri = "http://localhost:8085";
             Console.WriteLine("Starting web Server...");
             WebApp.Start<WebHostStartup>(baseUri);
             Console.WriteLine("Server running at {0}", baseUri);
