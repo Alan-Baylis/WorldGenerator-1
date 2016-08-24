@@ -82,25 +82,6 @@ namespace Sean.Shared.Textures
         Lantern
     }
     
-    public enum UiTextureType
-    {
-        CompassArrow,
-        BlockCursor,
-        ToolDefault,
-        ToolCuboid,
-        ToolFastBuild,
-        ToolFastDestroy,
-        ToolTree,
-        CrossHairs,
-        Axe,
-        Shovel,
-        PickAxe,
-        Tower,
-        SmallKeep,
-        LargeKeep,
-        BaseCharacter
-    }
-    
     /// <summary>All units regardless of type (players, mobs etc.) go in this enum so they can share the same resource file. The order can be changed without affecting anything.</summary>
     public enum UnitTextureType
     {
