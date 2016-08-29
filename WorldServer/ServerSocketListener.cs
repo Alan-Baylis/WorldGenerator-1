@@ -54,18 +54,25 @@ namespace Sean.WorldServer
                             Console.WriteLine ("{0}", builder.ToString ());
                         }
 
-                        var recv = MessageParser.ReadMessage (bytesFrom);
+                        int msgLength = bytesFrom[0] * 256 + bytesFrom[1];
+                        byte[] msg = new byte[msgLength];
+                        int dataLength = bytesRead - msgLength - 2;
+                        byte[] data = new byte[dataLength];
+                        Array.Copy(bytesFrom, 2, msg, 0, msgLength);
+                        Array.Copy(bytesFrom, 2, data, 0, dataLength);
+                        var recv = MessageParser.ReadMessage (msg);
 
                         // Send a response back to the client.
-                        var messageBuilder = new CommsMessages.Message.Builder ();
-                        messageBuilder.SetMsgtype ((int)CommsMessages.MsgType.eResponse);
+                        //var messageBuilder = new CommsMessages.Message.Builder ();
+                        //messageBuilder.SetMsgtype ((int)CommsMessages.MsgType.eResponse);
                         var respBuilder = new CommsMessages.Response.Builder ();
                         respBuilder.SetCode (0);
                         respBuilder.SetMessage ("OK");
-                        messageBuilder.SetResponse (respBuilder);
-                        var message = messageBuilder.BuildPartial ();
+                        //messageBuilder.SetResponse (respBuilder);
+                        //var message = messageBuilder.BuildPartial ();
+                        var message = respBuilder.Build();
 
-                        var messageBytes = MessageParser.WriteMessage (message);
+                        var messageBytes = message.ToByteArray();
                         Send (messageBytes);
                     }
                     else
