@@ -56,10 +56,10 @@ namespace Sean.WorldServer
 
                         int msgLength = bytesFrom[0] * 256 + bytesFrom[1];
                         byte[] msg = new byte[msgLength];
-                        int dataLength = bytesRead - msgLength - 2;
+                        int dataLength = bytesFrom[msgLength+2]*256+bytesFrom[msgLength+3];
                         byte[] data = new byte[dataLength];
                         Array.Copy(bytesFrom, 2, msg, 0, msgLength);
-                        Array.Copy(bytesFrom, 2, data, 0, dataLength);
+                        Array.Copy(bytesFrom, 2+msgLength+2, data, 0, dataLength);
                         var recv = MessageParser.ReadMessage (msg);
 
                         // Send a response back to the client.

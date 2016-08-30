@@ -7,6 +7,7 @@ namespace Sean.WorldServer
     {
         public static CommsMessages.Message ReadMessage (byte[] data)
         {
+            /*
             byte[] msgBuffer = new byte[data [0]];
             Array.Copy (data, 1, msgBuffer, 0, data [0]); // Skip length byte
 
@@ -17,8 +18,8 @@ namespace Sean.WorldServer
                     builder.Append (",");
                 }
                 Console.WriteLine ("{0}", builder.ToString());
-            }
-            var recv = CommsMessages.Message.ParseFrom(msgBuffer);
+            }*/
+            var recv = CommsMessages.Message.ParseFrom(data);
             var msgType = (CommsMessages.MsgType)recv.Msgtype;
             Console.WriteLine ("Msg Type: {0}", msgType);
             switch (msgType) {
