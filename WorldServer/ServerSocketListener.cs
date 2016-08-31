@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Collections;
 using System.Collections.Generic;
+using Sean.Shared;
 
 namespace Sean.WorldServer
 {
@@ -44,36 +45,12 @@ namespace Sean.WorldServer
                     int bytesRead = networkStream.Read (bytesFrom, 0, BufferSize);
                     if (bytesRead > 0)
                     {
-                        Console.WriteLine ("Read {0} bytes", bytesRead);
-                        {
-                            var builder = new StringBuilder ();
-                            for (int i=0; i<bytesFrom[0] + 1; i++) {
-                                builder.Append (bytesFrom [i].ToString ());
-                                builder.Append (",");
-                            }
-                            Console.WriteLine ("{0}", builder.ToString ());
-                        }
-
-                        int msgLength = bytesFrom[0] * 256 + bytesFrom[1];
-                        byte[] msg = new byte[msgLength];
-                        int dataLength = bytesFrom[msgLength+2]*256+bytesFrom[msgLength+3];
-                        byte[] data = new byte[dataLength];
-                        Array.Copy(bytesFrom, 2, msg, 0, msgLength);
-                        Array.Copy(bytesFrom, 2+msgLength+2, data, 0, dataLength);
-                        var recv = MessageParser.ReadMessage (msg);
+                        byte[] data;
+                        var recv = MessageParser.ParsePacket (bytesFrom, out data);
 
                         // Send a response back to the client.
-                        //var messageBuilder = new CommsMessages.Message.Builder ();
-                        //messageBuilder.SetMsgtype ((int)CommsMessages.MsgType.eResponse);
-                        var respBuilder = new CommsMessages.Response.Builder ();
-                        respBuilder.SetCode (0);
-                        respBuilder.SetMessage ("OK");
-                        //messageBuilder.SetResponse (respBuilder);
-                        //var message = messageBuilder.BuildPartial ();
-                        var message = respBuilder.Build();
+                        Send (bytesFrom);
 
-                        var messageBytes = message.ToByteArray();
-                        Send (messageBytes);
                     }
                     else
                     {

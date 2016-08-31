@@ -94,7 +94,7 @@ namespace Sean.WorldServer
             try {
                 if (!IsConnected) Connect();
                 // Encode the data string into a byte array.
-
+/*
                 var messageBytes = MessageParser.WriteMessage (message);
 
                 //byte[] msg = Encoding.ASCII.GetBytes ("This is a test<EOF>");
@@ -114,6 +114,7 @@ namespace Sean.WorldServer
 
                 int bytesSent = socket.Send (msg);
                 Console.WriteLine("SynchronousSocketClient.SendMessage sent {0} bytes", bytesSent);
+*/                
             } catch (ArgumentNullException ane) {
                 Console.WriteLine ("ArgumentNullException : {0}", ane.Message);
             } catch (SocketException se) {
