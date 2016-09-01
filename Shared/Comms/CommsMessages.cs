@@ -24,8 +24,6 @@ namespace CommsMessages {
     internal static pb::FieldAccess.FieldAccessorTable<global::CommsMessages.Pong, global::CommsMessages.Pong.Builder> internal__static_CommsMessages_Pong__FieldAccessorTable;
     internal static pbd::MessageDescriptor internal__static_CommsMessages_Response__Descriptor;
     internal static pb::FieldAccess.FieldAccessorTable<global::CommsMessages.Response, global::CommsMessages.Response.Builder> internal__static_CommsMessages_Response__FieldAccessorTable;
-    internal static pbd::MessageDescriptor internal__static_CommsMessages_NewUser__Descriptor;
-    internal static pb::FieldAccess.FieldAccessorTable<global::CommsMessages.NewUser, global::CommsMessages.NewUser.Builder> internal__static_CommsMessages_NewUser__FieldAccessorTable;
     internal static pbd::MessageDescriptor internal__static_CommsMessages_Login__Descriptor;
     internal static pb::FieldAccess.FieldAccessorTable<global::CommsMessages.Login, global::CommsMessages.Login.Builder> internal__static_CommsMessages_Login__FieldAccessorTable;
     internal static pbd::MessageDescriptor internal__static_CommsMessages_Say__Descriptor;
@@ -53,99 +51,91 @@ namespace CommsMessages {
     
     static CommsMessages() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
-          "ChNDb21tc01lc3NhZ2VzLnByb3RvEg1Db21tc01lc3NhZ2VzIvEECgdNZXNz" + 
+          "ChNDb21tc01lc3NhZ2VzLnByb3RvEg1Db21tc01lc3NhZ2VzIsgECgdNZXNz" + 
           "YWdlEg8KB21zZ3R5cGUYASACKAUSDAoEZnJvbRgCIAIoBRIMCgRkZXN0GAMg" + 
           "AigFEikKCHJlc3BvbnNlGAQgASgLMhcuQ29tbXNNZXNzYWdlcy5SZXNwb25z" + 
           "ZRIhCgRwaW5nGAUgASgLMhMuQ29tbXNNZXNzYWdlcy5QaW5nEiEKBHBvbmcY" + 
-          "BiABKAsyEy5Db21tc01lc3NhZ2VzLlBvbmcSJwoHbmV3VXNlchgHIAEoCzIW" + 
-          "LkNvbW1zTWVzc2FnZXMuTmV3VXNlchIjCgVsb2dpbhgIIAEoCzIULkNvbW1z" + 
-          "TWVzc2FnZXMuTG9naW4SHwoDc2F5GAkgASgLMhIuQ29tbXNNZXNzYWdlcy5T" + 
-          "YXkSLQoKbWFwUmVxdWVzdBgKIAEoCzIZLkNvbW1zTWVzc2FnZXMuTWFwUmVx" + 
-          "dWVzdBIrCgltYXBJZ25vcmUYCyABKAsyGC5Db21tc01lc3NhZ2VzLk1hcEln" + 
-          "bm9yZRIfCgNtYXAYDCABKAsyEi5Db21tc01lc3NhZ2VzLk1hcBIrCgltYXBV" + 
-          "cGRhdGUYDSABKAsyGC5Db21tc01lc3NhZ2VzLk1hcFVwZGF0ZRI9ChJtYXBD" + 
-          "aGFyYWN0ZXJVcGRhdGUYDiABKAsyIS5Db21tc01lc3NhZ2VzLk1hcENoYXJh" + 
-          "Y3RlclVwZGF0ZRIvCgtxdWVyeVNlcnZlchgPIAEoCzIaLkNvbW1zTWVzc2Fn" + 
-          "ZXMuUXVlcnlTZXJ2ZXISPwoTcXVlcnlTZXJ2ZXJSZXNwb25zZRgQIAEoCzIi" + 
-          "LkNvbW1zTWVzc2FnZXMuUXVlcnlTZXJ2ZXJSZXNwb25zZSIVCgRQaW5nEg0K" + 
-          "BWNvdW50GAEgAigFIhUKBFBvbmcSDQoFY291bnQYASACKAUiKQoIUmVzcG9u" + 
-          "c2USDAoEY29kZRgBIAIoBRIPCgdtZXNzYWdlGAIgASgJIjsKB05ld1VzZXIS" + 
-          "EAoIdXNlcm5hbWUYASACKAkSEAoIcGFzc3dvcmQYAiACKAkSDAoEbmFtZRgD" + 
-          "IAIoCSJMCgVMb2dpbhIRCglpcGFkZHJlc3MYASACKAkSDAoEcG9ydBgCIAIo" + 
-          "BRIQCgh1c2VybmFtZRgDIAIoCRIQCghwYXNzd29yZBgEIAIoCSITCgNTYXkS" + 
-          "DAoEdGV4dBgBIAIoCSIiCgpNYXBSZXF1ZXN0EgkKAXgYASACKAUSCQoBeRgC" + 
-          "IAIoBSIhCglNYXBJZ25vcmUSCQoBeBgBIAIoBRIJCgF5GAIgAigFIk8KA01h" + 
-          "cBIMCgRtaW5YGAEgAigFEgwKBG1pblkYAiACKAUSDAoEbWF4WBgDIAIoBRIM" + 
-          "CgRtYXhZGAQgAigFEhAKCGRhdGFTaXplGAUgAigFIj4KCU1hcFVwZGF0ZRIJ" + 
-          "CgF4GAEgAigFEgkKAXkYAiACKAUSCQoBehgDIAIoBRIQCghuZXdCbG9jaxgE" + 
-          "IAIoBSJBChJNYXBDaGFyYWN0ZXJVcGRhdGUSCgoCaWQYASACKAUSCQoBeBgC" + 
-          "IAIoBRIJCgF5GAMgAigFEgkKAXoYBCACKAUiDQoLUXVlcnlTZXJ2ZXIibQoT" + 
-          "UXVlcnlTZXJ2ZXJSZXNwb25zZRIUCgxtaW5NYXBDaHVua1gYASACKAUSFAoM" + 
-          "bWluTWFwQ2h1bmtZGAIgAigFEhQKDG1heE1hcENodW5rWBgDIAIoBRIUCgxt" + 
-          "YXhNYXBDaHVua1kYBCACKAUq0gEKB01zZ1R5cGUSDQoJZVJlc3BvbnNlEAES" + 
-          "CQoFZVBpbmcQAhIJCgVlUG9uZxADEgwKCGVOZXdVc2VyEAQSCgoGZUxvZ2lu" + 
-          "EAUSCAoEZVNheRAGEg8KC2VNYXBSZXF1ZXN0EAcSDgoKZU1hcElnbm9yZRAI" + 
-          "EggKBGVNYXAQCRIOCgplTWFwVXBkYXRlEAoSFwoTZU1hcENoYXJhY3RlclVw" + 
-          "ZGF0ZRALEhAKDGVRdWVyeVNlcnZlchAMEhgKFGVRdWVyeVNlcnZlclJlc3Bv" + 
-          "bnNlEA1CAkgB");
+          "BiABKAsyEy5Db21tc01lc3NhZ2VzLlBvbmcSIwoFbG9naW4YByABKAsyFC5D" + 
+          "b21tc01lc3NhZ2VzLkxvZ2luEh8KA3NheRgIIAEoCzISLkNvbW1zTWVzc2Fn" + 
+          "ZXMuU2F5Ei0KCm1hcFJlcXVlc3QYCSABKAsyGS5Db21tc01lc3NhZ2VzLk1h" + 
+          "cFJlcXVlc3QSKwoJbWFwSWdub3JlGAogASgLMhguQ29tbXNNZXNzYWdlcy5N" + 
+          "YXBJZ25vcmUSHwoDbWFwGAsgASgLMhIuQ29tbXNNZXNzYWdlcy5NYXASKwoJ" + 
+          "bWFwVXBkYXRlGAwgASgLMhguQ29tbXNNZXNzYWdlcy5NYXBVcGRhdGUSPQoS" + 
+          "bWFwQ2hhcmFjdGVyVXBkYXRlGA0gASgLMiEuQ29tbXNNZXNzYWdlcy5NYXBD" + 
+          "aGFyYWN0ZXJVcGRhdGUSLwoLcXVlcnlTZXJ2ZXIYDiABKAsyGi5Db21tc01l" + 
+          "c3NhZ2VzLlF1ZXJ5U2VydmVyEj8KE3F1ZXJ5U2VydmVyUmVzcG9uc2UYDyAB" + 
+          "KAsyIi5Db21tc01lc3NhZ2VzLlF1ZXJ5U2VydmVyUmVzcG9uc2UiBgoEUGlu" + 
+          "ZyIGCgRQb25nIikKCFJlc3BvbnNlEgwKBGNvZGUYASACKAUSDwoHbWVzc2Fn" + 
+          "ZRgCIAEoCSJMCgVMb2dpbhIRCglpcGFkZHJlc3MYASACKAkSDAoEcG9ydBgC" + 
+          "IAIoBRIQCgh1c2VybmFtZRgDIAIoCRIQCghwYXNzd29yZBgEIAIoCSITCgNT" + 
+          "YXkSDAoEdGV4dBgBIAIoCSIiCgpNYXBSZXF1ZXN0EgkKAXgYASACKAUSCQoB" + 
+          "eRgCIAIoBSIhCglNYXBJZ25vcmUSCQoBeBgBIAIoBRIJCgF5GAIgAigFIj0K" + 
+          "A01hcBIMCgRtaW5YGAEgAigFEgwKBG1pblkYAiACKAUSDAoEbWF4WBgDIAIo" + 
+          "BRIMCgRtYXhZGAQgAigFIj4KCU1hcFVwZGF0ZRIJCgF4GAEgAigFEgkKAXkY" + 
+          "AiACKAUSCQoBehgDIAIoBRIQCghuZXdCbG9jaxgEIAIoBSJBChJNYXBDaGFy" + 
+          "YWN0ZXJVcGRhdGUSCgoCaWQYASACKAUSCQoBeBgCIAIoBRIJCgF5GAMgAigF" + 
+          "EgkKAXoYBCACKAUiIAoLUXVlcnlTZXJ2ZXISEQoJcGFyYW1ldGVyGAEgAigJ" + 
+          "IjcKE1F1ZXJ5U2VydmVyUmVzcG9uc2USEQoJcGFyYW1ldGVyGAEgAigJEg0K" + 
+          "BXZhbHVlGAIgAigJKtIBCgdNc2dUeXBlEg0KCWVSZXNwb25zZRABEgkKBWVQ" + 
+          "aW5nEAISCQoFZVBvbmcQAxIMCghlTmV3VXNlchAEEgoKBmVMb2dpbhAFEggK" + 
+          "BGVTYXkQBhIPCgtlTWFwUmVxdWVzdBAHEg4KCmVNYXBJZ25vcmUQCBIICgRl" + 
+          "TWFwEAkSDgoKZU1hcFVwZGF0ZRAKEhcKE2VNYXBDaGFyYWN0ZXJVcGRhdGUQ" + 
+          "CxIQCgxlUXVlcnlTZXJ2ZXIQDBIYChRlUXVlcnlTZXJ2ZXJSZXNwb25zZRAN" + 
+          "QgJIAQ==");
       pbd::FileDescriptor.InternalDescriptorAssigner assigner = delegate(pbd::FileDescriptor root) {
         descriptor = root;
         internal__static_CommsMessages_Message__Descriptor = Descriptor.MessageTypes[0];
         internal__static_CommsMessages_Message__FieldAccessorTable = 
             new pb::FieldAccess.FieldAccessorTable<global::CommsMessages.Message, global::CommsMessages.Message.Builder>(internal__static_CommsMessages_Message__Descriptor,
-                new string[] { "Msgtype", "From", "Dest", "Response", "Ping", "Pong", "NewUser", "Login", "Say", "MapRequest", "MapIgnore", "Map", "MapUpdate", "MapCharacterUpdate", "QueryServer", "QueryServerResponse", });
+                new string[] { "Msgtype", "From", "Dest", "Response", "Ping", "Pong", "Login", "Say", "MapRequest", "MapIgnore", "Map", "MapUpdate", "MapCharacterUpdate", "QueryServer", "QueryServerResponse", });
         internal__static_CommsMessages_Ping__Descriptor = Descriptor.MessageTypes[1];
         internal__static_CommsMessages_Ping__FieldAccessorTable = 
             new pb::FieldAccess.FieldAccessorTable<global::CommsMessages.Ping, global::CommsMessages.Ping.Builder>(internal__static_CommsMessages_Ping__Descriptor,
-                new string[] { "Count", });
+                new string[] { });
         internal__static_CommsMessages_Pong__Descriptor = Descriptor.MessageTypes[2];
         internal__static_CommsMessages_Pong__FieldAccessorTable = 
             new pb::FieldAccess.FieldAccessorTable<global::CommsMessages.Pong, global::CommsMessages.Pong.Builder>(internal__static_CommsMessages_Pong__Descriptor,
-                new string[] { "Count", });
+                new string[] { });
         internal__static_CommsMessages_Response__Descriptor = Descriptor.MessageTypes[3];
         internal__static_CommsMessages_Response__FieldAccessorTable = 
             new pb::FieldAccess.FieldAccessorTable<global::CommsMessages.Response, global::CommsMessages.Response.Builder>(internal__static_CommsMessages_Response__Descriptor,
                 new string[] { "Code", "Message", });
-        internal__static_CommsMessages_NewUser__Descriptor = Descriptor.MessageTypes[4];
-        internal__static_CommsMessages_NewUser__FieldAccessorTable = 
-            new pb::FieldAccess.FieldAccessorTable<global::CommsMessages.NewUser, global::CommsMessages.NewUser.Builder>(internal__static_CommsMessages_NewUser__Descriptor,
-                new string[] { "Username", "Password", "Name", });
-        internal__static_CommsMessages_Login__Descriptor = Descriptor.MessageTypes[5];
+        internal__static_CommsMessages_Login__Descriptor = Descriptor.MessageTypes[4];
         internal__static_CommsMessages_Login__FieldAccessorTable = 
             new pb::FieldAccess.FieldAccessorTable<global::CommsMessages.Login, global::CommsMessages.Login.Builder>(internal__static_CommsMessages_Login__Descriptor,
                 new string[] { "Ipaddress", "Port", "Username", "Password", });
-        internal__static_CommsMessages_Say__Descriptor = Descriptor.MessageTypes[6];
+        internal__static_CommsMessages_Say__Descriptor = Descriptor.MessageTypes[5];
         internal__static_CommsMessages_Say__FieldAccessorTable = 
             new pb::FieldAccess.FieldAccessorTable<global::CommsMessages.Say, global::CommsMessages.Say.Builder>(internal__static_CommsMessages_Say__Descriptor,
                 new string[] { "Text", });
-        internal__static_CommsMessages_MapRequest__Descriptor = Descriptor.MessageTypes[7];
+        internal__static_CommsMessages_MapRequest__Descriptor = Descriptor.MessageTypes[6];
         internal__static_CommsMessages_MapRequest__FieldAccessorTable = 
             new pb::FieldAccess.FieldAccessorTable<global::CommsMessages.MapRequest, global::CommsMessages.MapRequest.Builder>(internal__static_CommsMessages_MapRequest__Descriptor,
                 new string[] { "X", "Y", });
-        internal__static_CommsMessages_MapIgnore__Descriptor = Descriptor.MessageTypes[8];
+        internal__static_CommsMessages_MapIgnore__Descriptor = Descriptor.MessageTypes[7];
         internal__static_CommsMessages_MapIgnore__FieldAccessorTable = 
             new pb::FieldAccess.FieldAccessorTable<global::CommsMessages.MapIgnore, global::CommsMessages.MapIgnore.Builder>(internal__static_CommsMessages_MapIgnore__Descriptor,
                 new string[] { "X", "Y", });
-        internal__static_CommsMessages_Map__Descriptor = Descriptor.MessageTypes[9];
+        internal__static_CommsMessages_Map__Descriptor = Descriptor.MessageTypes[8];
         internal__static_CommsMessages_Map__FieldAccessorTable = 
             new pb::FieldAccess.FieldAccessorTable<global::CommsMessages.Map, global::CommsMessages.Map.Builder>(internal__static_CommsMessages_Map__Descriptor,
-                new string[] { "MinX", "MinY", "MaxX", "MaxY", "DataSize", });
-        internal__static_CommsMessages_MapUpdate__Descriptor = Descriptor.MessageTypes[10];
+                new string[] { "MinX", "MinY", "MaxX", "MaxY", });
+        internal__static_CommsMessages_MapUpdate__Descriptor = Descriptor.MessageTypes[9];
         internal__static_CommsMessages_MapUpdate__FieldAccessorTable = 
             new pb::FieldAccess.FieldAccessorTable<global::CommsMessages.MapUpdate, global::CommsMessages.MapUpdate.Builder>(internal__static_CommsMessages_MapUpdate__Descriptor,
                 new string[] { "X", "Y", "Z", "NewBlock", });
-        internal__static_CommsMessages_MapCharacterUpdate__Descriptor = Descriptor.MessageTypes[11];
+        internal__static_CommsMessages_MapCharacterUpdate__Descriptor = Descriptor.MessageTypes[10];
         internal__static_CommsMessages_MapCharacterUpdate__FieldAccessorTable = 
             new pb::FieldAccess.FieldAccessorTable<global::CommsMessages.MapCharacterUpdate, global::CommsMessages.MapCharacterUpdate.Builder>(internal__static_CommsMessages_MapCharacterUpdate__Descriptor,
                 new string[] { "Id", "X", "Y", "Z", });
-        internal__static_CommsMessages_QueryServer__Descriptor = Descriptor.MessageTypes[12];
+        internal__static_CommsMessages_QueryServer__Descriptor = Descriptor.MessageTypes[11];
         internal__static_CommsMessages_QueryServer__FieldAccessorTable = 
             new pb::FieldAccess.FieldAccessorTable<global::CommsMessages.QueryServer, global::CommsMessages.QueryServer.Builder>(internal__static_CommsMessages_QueryServer__Descriptor,
-                new string[] { });
-        internal__static_CommsMessages_QueryServerResponse__Descriptor = Descriptor.MessageTypes[13];
+                new string[] { "Parameter", });
+        internal__static_CommsMessages_QueryServerResponse__Descriptor = Descriptor.MessageTypes[12];
         internal__static_CommsMessages_QueryServerResponse__FieldAccessorTable = 
             new pb::FieldAccess.FieldAccessorTable<global::CommsMessages.QueryServerResponse, global::CommsMessages.QueryServerResponse.Builder>(internal__static_CommsMessages_QueryServerResponse__Descriptor,
-                new string[] { "MinMapChunkX", "MinMapChunkY", "MaxMapChunkX", "MaxMapChunkY", });
+                new string[] { "Parameter", "Value", });
         return null;
       };
       pbd::FileDescriptor.InternalBuildGeneratedFileFrom(descriptorData,
@@ -179,8 +169,8 @@ namespace CommsMessages {
   public sealed partial class Message : pb::GeneratedMessage<Message, Message.Builder> {
     private Message() { }
     private static readonly Message defaultInstance = new Message().MakeReadOnly();
-    private static readonly string[] _messageFieldNames = new string[] { "dest", "from", "login", "map", "mapCharacterUpdate", "mapIgnore", "mapRequest", "mapUpdate", "msgtype", "newUser", "ping", "pong", "queryServer", "queryServerResponse", "response", "say" };
-    private static readonly uint[] _messageFieldTags = new uint[] { 24, 16, 66, 98, 114, 90, 82, 106, 8, 58, 42, 50, 122, 130, 34, 74 };
+    private static readonly string[] _messageFieldNames = new string[] { "dest", "from", "login", "map", "mapCharacterUpdate", "mapIgnore", "mapRequest", "mapUpdate", "msgtype", "ping", "pong", "queryServer", "queryServerResponse", "response", "say" };
+    private static readonly uint[] _messageFieldTags = new uint[] { 24, 16, 58, 90, 106, 82, 74, 98, 8, 42, 50, 114, 122, 34, 66 };
     public static Message DefaultInstance {
       get { return defaultInstance; }
     }
@@ -261,17 +251,7 @@ namespace CommsMessages {
       get { return pong_ ?? global::CommsMessages.Pong.DefaultInstance; }
     }
     
-    public const int NewUserFieldNumber = 7;
-    private bool hasNewUser;
-    private global::CommsMessages.NewUser newUser_;
-    public bool HasNewUser {
-      get { return hasNewUser; }
-    }
-    public global::CommsMessages.NewUser NewUser {
-      get { return newUser_ ?? global::CommsMessages.NewUser.DefaultInstance; }
-    }
-    
-    public const int LoginFieldNumber = 8;
+    public const int LoginFieldNumber = 7;
     private bool hasLogin;
     private global::CommsMessages.Login login_;
     public bool HasLogin {
@@ -281,7 +261,7 @@ namespace CommsMessages {
       get { return login_ ?? global::CommsMessages.Login.DefaultInstance; }
     }
     
-    public const int SayFieldNumber = 9;
+    public const int SayFieldNumber = 8;
     private bool hasSay;
     private global::CommsMessages.Say say_;
     public bool HasSay {
@@ -291,7 +271,7 @@ namespace CommsMessages {
       get { return say_ ?? global::CommsMessages.Say.DefaultInstance; }
     }
     
-    public const int MapRequestFieldNumber = 10;
+    public const int MapRequestFieldNumber = 9;
     private bool hasMapRequest;
     private global::CommsMessages.MapRequest mapRequest_;
     public bool HasMapRequest {
@@ -301,7 +281,7 @@ namespace CommsMessages {
       get { return mapRequest_ ?? global::CommsMessages.MapRequest.DefaultInstance; }
     }
     
-    public const int MapIgnoreFieldNumber = 11;
+    public const int MapIgnoreFieldNumber = 10;
     private bool hasMapIgnore;
     private global::CommsMessages.MapIgnore mapIgnore_;
     public bool HasMapIgnore {
@@ -311,7 +291,7 @@ namespace CommsMessages {
       get { return mapIgnore_ ?? global::CommsMessages.MapIgnore.DefaultInstance; }
     }
     
-    public const int MapFieldNumber = 12;
+    public const int MapFieldNumber = 11;
     private bool hasMap;
     private global::CommsMessages.Map map_;
     public bool HasMap {
@@ -321,7 +301,7 @@ namespace CommsMessages {
       get { return map_ ?? global::CommsMessages.Map.DefaultInstance; }
     }
     
-    public const int MapUpdateFieldNumber = 13;
+    public const int MapUpdateFieldNumber = 12;
     private bool hasMapUpdate;
     private global::CommsMessages.MapUpdate mapUpdate_;
     public bool HasMapUpdate {
@@ -331,7 +311,7 @@ namespace CommsMessages {
       get { return mapUpdate_ ?? global::CommsMessages.MapUpdate.DefaultInstance; }
     }
     
-    public const int MapCharacterUpdateFieldNumber = 14;
+    public const int MapCharacterUpdateFieldNumber = 13;
     private bool hasMapCharacterUpdate;
     private global::CommsMessages.MapCharacterUpdate mapCharacterUpdate_;
     public bool HasMapCharacterUpdate {
@@ -341,7 +321,7 @@ namespace CommsMessages {
       get { return mapCharacterUpdate_ ?? global::CommsMessages.MapCharacterUpdate.DefaultInstance; }
     }
     
-    public const int QueryServerFieldNumber = 15;
+    public const int QueryServerFieldNumber = 14;
     private bool hasQueryServer;
     private global::CommsMessages.QueryServer queryServer_;
     public bool HasQueryServer {
@@ -351,7 +331,7 @@ namespace CommsMessages {
       get { return queryServer_ ?? global::CommsMessages.QueryServer.DefaultInstance; }
     }
     
-    public const int QueryServerResponseFieldNumber = 16;
+    public const int QueryServerResponseFieldNumber = 15;
     private bool hasQueryServerResponse;
     private global::CommsMessages.QueryServerResponse queryServerResponse_;
     public bool HasQueryServerResponse {
@@ -368,15 +348,6 @@ namespace CommsMessages {
         if (!hasDest) return false;
         if (HasResponse) {
           if (!Response.IsInitialized) return false;
-        }
-        if (HasPing) {
-          if (!Ping.IsInitialized) return false;
-        }
-        if (HasPong) {
-          if (!Pong.IsInitialized) return false;
-        }
-        if (HasNewUser) {
-          if (!NewUser.IsInitialized) return false;
         }
         if (HasLogin) {
           if (!Login.IsInitialized) return false;
@@ -399,6 +370,9 @@ namespace CommsMessages {
         if (HasMapCharacterUpdate) {
           if (!MapCharacterUpdate.IsInitialized) return false;
         }
+        if (HasQueryServer) {
+          if (!QueryServer.IsInitialized) return false;
+        }
         if (HasQueryServerResponse) {
           if (!QueryServerResponse.IsInitialized) return false;
         }
@@ -419,43 +393,40 @@ namespace CommsMessages {
         output.WriteInt32(3, field_names[0], Dest);
       }
       if (hasResponse) {
-        output.WriteMessage(4, field_names[14], Response);
+        output.WriteMessage(4, field_names[13], Response);
       }
       if (hasPing) {
-        output.WriteMessage(5, field_names[10], Ping);
+        output.WriteMessage(5, field_names[9], Ping);
       }
       if (hasPong) {
-        output.WriteMessage(6, field_names[11], Pong);
-      }
-      if (hasNewUser) {
-        output.WriteMessage(7, field_names[9], NewUser);
+        output.WriteMessage(6, field_names[10], Pong);
       }
       if (hasLogin) {
-        output.WriteMessage(8, field_names[2], Login);
+        output.WriteMessage(7, field_names[2], Login);
       }
       if (hasSay) {
-        output.WriteMessage(9, field_names[15], Say);
+        output.WriteMessage(8, field_names[14], Say);
       }
       if (hasMapRequest) {
-        output.WriteMessage(10, field_names[6], MapRequest);
+        output.WriteMessage(9, field_names[6], MapRequest);
       }
       if (hasMapIgnore) {
-        output.WriteMessage(11, field_names[5], MapIgnore);
+        output.WriteMessage(10, field_names[5], MapIgnore);
       }
       if (hasMap) {
-        output.WriteMessage(12, field_names[3], Map);
+        output.WriteMessage(11, field_names[3], Map);
       }
       if (hasMapUpdate) {
-        output.WriteMessage(13, field_names[7], MapUpdate);
+        output.WriteMessage(12, field_names[7], MapUpdate);
       }
       if (hasMapCharacterUpdate) {
-        output.WriteMessage(14, field_names[4], MapCharacterUpdate);
+        output.WriteMessage(13, field_names[4], MapCharacterUpdate);
       }
       if (hasQueryServer) {
-        output.WriteMessage(15, field_names[12], QueryServer);
+        output.WriteMessage(14, field_names[11], QueryServer);
       }
       if (hasQueryServerResponse) {
-        output.WriteMessage(16, field_names[13], QueryServerResponse);
+        output.WriteMessage(15, field_names[12], QueryServerResponse);
       }
       UnknownFields.WriteTo(output);
     }
@@ -485,35 +456,32 @@ namespace CommsMessages {
         if (hasPong) {
           size += pb::CodedOutputStream.ComputeMessageSize(6, Pong);
         }
-        if (hasNewUser) {
-          size += pb::CodedOutputStream.ComputeMessageSize(7, NewUser);
-        }
         if (hasLogin) {
-          size += pb::CodedOutputStream.ComputeMessageSize(8, Login);
+          size += pb::CodedOutputStream.ComputeMessageSize(7, Login);
         }
         if (hasSay) {
-          size += pb::CodedOutputStream.ComputeMessageSize(9, Say);
+          size += pb::CodedOutputStream.ComputeMessageSize(8, Say);
         }
         if (hasMapRequest) {
-          size += pb::CodedOutputStream.ComputeMessageSize(10, MapRequest);
+          size += pb::CodedOutputStream.ComputeMessageSize(9, MapRequest);
         }
         if (hasMapIgnore) {
-          size += pb::CodedOutputStream.ComputeMessageSize(11, MapIgnore);
+          size += pb::CodedOutputStream.ComputeMessageSize(10, MapIgnore);
         }
         if (hasMap) {
-          size += pb::CodedOutputStream.ComputeMessageSize(12, Map);
+          size += pb::CodedOutputStream.ComputeMessageSize(11, Map);
         }
         if (hasMapUpdate) {
-          size += pb::CodedOutputStream.ComputeMessageSize(13, MapUpdate);
+          size += pb::CodedOutputStream.ComputeMessageSize(12, MapUpdate);
         }
         if (hasMapCharacterUpdate) {
-          size += pb::CodedOutputStream.ComputeMessageSize(14, MapCharacterUpdate);
+          size += pb::CodedOutputStream.ComputeMessageSize(13, MapCharacterUpdate);
         }
         if (hasQueryServer) {
-          size += pb::CodedOutputStream.ComputeMessageSize(15, QueryServer);
+          size += pb::CodedOutputStream.ComputeMessageSize(14, QueryServer);
         }
         if (hasQueryServerResponse) {
-          size += pb::CodedOutputStream.ComputeMessageSize(16, QueryServerResponse);
+          size += pb::CodedOutputStream.ComputeMessageSize(15, QueryServerResponse);
         }
         size += UnknownFields.SerializedSize;
         memoizedSerializedSize = size;
@@ -657,9 +625,6 @@ namespace CommsMessages {
         if (other.HasPong) {
           MergePong(other.Pong);
         }
-        if (other.HasNewUser) {
-          MergeNewUser(other.NewUser);
-        }
         if (other.HasLogin) {
           MergeLogin(other.Login);
         }
@@ -770,15 +735,6 @@ namespace CommsMessages {
               break;
             }
             case 58: {
-              global::CommsMessages.NewUser.Builder subBuilder = global::CommsMessages.NewUser.CreateBuilder();
-              if (result.hasNewUser) {
-                subBuilder.MergeFrom(NewUser);
-              }
-              input.ReadMessage(subBuilder, extensionRegistry);
-              NewUser = subBuilder.BuildPartial();
-              break;
-            }
-            case 66: {
               global::CommsMessages.Login.Builder subBuilder = global::CommsMessages.Login.CreateBuilder();
               if (result.hasLogin) {
                 subBuilder.MergeFrom(Login);
@@ -787,7 +743,7 @@ namespace CommsMessages {
               Login = subBuilder.BuildPartial();
               break;
             }
-            case 74: {
+            case 66: {
               global::CommsMessages.Say.Builder subBuilder = global::CommsMessages.Say.CreateBuilder();
               if (result.hasSay) {
                 subBuilder.MergeFrom(Say);
@@ -796,7 +752,7 @@ namespace CommsMessages {
               Say = subBuilder.BuildPartial();
               break;
             }
-            case 82: {
+            case 74: {
               global::CommsMessages.MapRequest.Builder subBuilder = global::CommsMessages.MapRequest.CreateBuilder();
               if (result.hasMapRequest) {
                 subBuilder.MergeFrom(MapRequest);
@@ -805,7 +761,7 @@ namespace CommsMessages {
               MapRequest = subBuilder.BuildPartial();
               break;
             }
-            case 90: {
+            case 82: {
               global::CommsMessages.MapIgnore.Builder subBuilder = global::CommsMessages.MapIgnore.CreateBuilder();
               if (result.hasMapIgnore) {
                 subBuilder.MergeFrom(MapIgnore);
@@ -814,7 +770,7 @@ namespace CommsMessages {
               MapIgnore = subBuilder.BuildPartial();
               break;
             }
-            case 98: {
+            case 90: {
               global::CommsMessages.Map.Builder subBuilder = global::CommsMessages.Map.CreateBuilder();
               if (result.hasMap) {
                 subBuilder.MergeFrom(Map);
@@ -823,7 +779,7 @@ namespace CommsMessages {
               Map = subBuilder.BuildPartial();
               break;
             }
-            case 106: {
+            case 98: {
               global::CommsMessages.MapUpdate.Builder subBuilder = global::CommsMessages.MapUpdate.CreateBuilder();
               if (result.hasMapUpdate) {
                 subBuilder.MergeFrom(MapUpdate);
@@ -832,7 +788,7 @@ namespace CommsMessages {
               MapUpdate = subBuilder.BuildPartial();
               break;
             }
-            case 114: {
+            case 106: {
               global::CommsMessages.MapCharacterUpdate.Builder subBuilder = global::CommsMessages.MapCharacterUpdate.CreateBuilder();
               if (result.hasMapCharacterUpdate) {
                 subBuilder.MergeFrom(MapCharacterUpdate);
@@ -841,7 +797,7 @@ namespace CommsMessages {
               MapCharacterUpdate = subBuilder.BuildPartial();
               break;
             }
-            case 122: {
+            case 114: {
               global::CommsMessages.QueryServer.Builder subBuilder = global::CommsMessages.QueryServer.CreateBuilder();
               if (result.hasQueryServer) {
                 subBuilder.MergeFrom(QueryServer);
@@ -850,7 +806,7 @@ namespace CommsMessages {
               QueryServer = subBuilder.BuildPartial();
               break;
             }
-            case 130: {
+            case 122: {
               global::CommsMessages.QueryServerResponse.Builder subBuilder = global::CommsMessages.QueryServerResponse.CreateBuilder();
               if (result.hasQueryServerResponse) {
                 subBuilder.MergeFrom(QueryServerResponse);
@@ -1046,46 +1002,6 @@ namespace CommsMessages {
         PrepareBuilder();
         result.hasPong = false;
         result.pong_ = null;
-        return this;
-      }
-      
-      public bool HasNewUser {
-       get { return result.hasNewUser; }
-      }
-      public global::CommsMessages.NewUser NewUser {
-        get { return result.NewUser; }
-        set { SetNewUser(value); }
-      }
-      public Builder SetNewUser(global::CommsMessages.NewUser value) {
-        pb::ThrowHelper.ThrowIfNull(value, "value");
-        PrepareBuilder();
-        result.hasNewUser = true;
-        result.newUser_ = value;
-        return this;
-      }
-      public Builder SetNewUser(global::CommsMessages.NewUser.Builder builderForValue) {
-        pb::ThrowHelper.ThrowIfNull(builderForValue, "builderForValue");
-        PrepareBuilder();
-        result.hasNewUser = true;
-        result.newUser_ = builderForValue.Build();
-        return this;
-      }
-      public Builder MergeNewUser(global::CommsMessages.NewUser value) {
-        pb::ThrowHelper.ThrowIfNull(value, "value");
-        PrepareBuilder();
-        if (result.hasNewUser &&
-            result.newUser_ != global::CommsMessages.NewUser.DefaultInstance) {
-            result.newUser_ = global::CommsMessages.NewUser.CreateBuilder(result.newUser_).MergeFrom(value).BuildPartial();
-        } else {
-          result.newUser_ = value;
-        }
-        result.hasNewUser = true;
-        return this;
-      }
-      public Builder ClearNewUser() {
-        PrepareBuilder();
-        result.hasNewUser = false;
-        result.newUser_ = null;
         return this;
       }
       
@@ -1458,8 +1374,8 @@ namespace CommsMessages {
   public sealed partial class Ping : pb::GeneratedMessage<Ping, Ping.Builder> {
     private Ping() { }
     private static readonly Ping defaultInstance = new Ping().MakeReadOnly();
-    private static readonly string[] _pingFieldNames = new string[] { "count" };
-    private static readonly uint[] _pingFieldTags = new uint[] { 8 };
+    private static readonly string[] _pingFieldNames = new string[] {  };
+    private static readonly uint[] _pingFieldTags = new uint[] {  };
     public static Ping DefaultInstance {
       get { return defaultInstance; }
     }
@@ -1480,19 +1396,8 @@ namespace CommsMessages {
       get { return global::CommsMessages.CommsMessages.internal__static_CommsMessages_Ping__FieldAccessorTable; }
     }
     
-    public const int CountFieldNumber = 1;
-    private bool hasCount;
-    private int count_;
-    public bool HasCount {
-      get { return hasCount; }
-    }
-    public int Count {
-      get { return count_; }
-    }
-    
     public override bool IsInitialized {
       get {
-        if (!hasCount) return false;
         return true;
       }
     }
@@ -1500,9 +1405,6 @@ namespace CommsMessages {
     public override void WriteTo(pb::ICodedOutputStream output) {
       int size = SerializedSize;
       string[] field_names = _pingFieldNames;
-      if (hasCount) {
-        output.WriteInt32(1, field_names[0], Count);
-      }
       UnknownFields.WriteTo(output);
     }
     
@@ -1513,9 +1415,6 @@ namespace CommsMessages {
         if (size != -1) return size;
         
         size = 0;
-        if (hasCount) {
-          size += pb::CodedOutputStream.ComputeInt32Size(1, Count);
-        }
         size += UnknownFields.SerializedSize;
         memoizedSerializedSize = size;
         return size;
@@ -1640,9 +1539,6 @@ namespace CommsMessages {
       public override Builder MergeFrom(Ping other) {
         if (other == global::CommsMessages.Ping.DefaultInstance) return this;
         PrepareBuilder();
-        if (other.HasCount) {
-          Count = other.Count;
-        }
         this.MergeUnknownFields(other.UnknownFields);
         return this;
       }
@@ -1686,10 +1582,6 @@ namespace CommsMessages {
               ParseUnknownField(input, unknownFields, extensionRegistry, tag, field_name);
               break;
             }
-            case 8: {
-              result.hasCount = input.ReadInt32(ref result.count_);
-              break;
-            }
           }
         }
         
@@ -1699,26 +1591,6 @@ namespace CommsMessages {
         return this;
       }
       
-      
-      public bool HasCount {
-        get { return result.hasCount; }
-      }
-      public int Count {
-        get { return result.Count; }
-        set { SetCount(value); }
-      }
-      public Builder SetCount(int value) {
-        PrepareBuilder();
-        result.hasCount = true;
-        result.count_ = value;
-        return this;
-      }
-      public Builder ClearCount() {
-        PrepareBuilder();
-        result.hasCount = false;
-        result.count_ = 0;
-        return this;
-      }
     }
     static Ping() {
       object.ReferenceEquals(global::CommsMessages.CommsMessages.Descriptor, null);
@@ -1729,8 +1601,8 @@ namespace CommsMessages {
   public sealed partial class Pong : pb::GeneratedMessage<Pong, Pong.Builder> {
     private Pong() { }
     private static readonly Pong defaultInstance = new Pong().MakeReadOnly();
-    private static readonly string[] _pongFieldNames = new string[] { "count" };
-    private static readonly uint[] _pongFieldTags = new uint[] { 8 };
+    private static readonly string[] _pongFieldNames = new string[] {  };
+    private static readonly uint[] _pongFieldTags = new uint[] {  };
     public static Pong DefaultInstance {
       get { return defaultInstance; }
     }
@@ -1751,19 +1623,8 @@ namespace CommsMessages {
       get { return global::CommsMessages.CommsMessages.internal__static_CommsMessages_Pong__FieldAccessorTable; }
     }
     
-    public const int CountFieldNumber = 1;
-    private bool hasCount;
-    private int count_;
-    public bool HasCount {
-      get { return hasCount; }
-    }
-    public int Count {
-      get { return count_; }
-    }
-    
     public override bool IsInitialized {
       get {
-        if (!hasCount) return false;
         return true;
       }
     }
@@ -1771,9 +1632,6 @@ namespace CommsMessages {
     public override void WriteTo(pb::ICodedOutputStream output) {
       int size = SerializedSize;
       string[] field_names = _pongFieldNames;
-      if (hasCount) {
-        output.WriteInt32(1, field_names[0], Count);
-      }
       UnknownFields.WriteTo(output);
     }
     
@@ -1784,9 +1642,6 @@ namespace CommsMessages {
         if (size != -1) return size;
         
         size = 0;
-        if (hasCount) {
-          size += pb::CodedOutputStream.ComputeInt32Size(1, Count);
-        }
         size += UnknownFields.SerializedSize;
         memoizedSerializedSize = size;
         return size;
@@ -1911,9 +1766,6 @@ namespace CommsMessages {
       public override Builder MergeFrom(Pong other) {
         if (other == global::CommsMessages.Pong.DefaultInstance) return this;
         PrepareBuilder();
-        if (other.HasCount) {
-          Count = other.Count;
-        }
         this.MergeUnknownFields(other.UnknownFields);
         return this;
       }
@@ -1957,10 +1809,6 @@ namespace CommsMessages {
               ParseUnknownField(input, unknownFields, extensionRegistry, tag, field_name);
               break;
             }
-            case 8: {
-              result.hasCount = input.ReadInt32(ref result.count_);
-              break;
-            }
           }
         }
         
@@ -1970,26 +1818,6 @@ namespace CommsMessages {
         return this;
       }
       
-      
-      public bool HasCount {
-        get { return result.hasCount; }
-      }
-      public int Count {
-        get { return result.Count; }
-        set { SetCount(value); }
-      }
-      public Builder SetCount(int value) {
-        PrepareBuilder();
-        result.hasCount = true;
-        result.count_ = value;
-        return this;
-      }
-      public Builder ClearCount() {
-        PrepareBuilder();
-        result.hasCount = false;
-        result.count_ = 0;
-        return this;
-      }
     }
     static Pong() {
       object.ReferenceEquals(global::CommsMessages.CommsMessages.Descriptor, null);
@@ -2307,368 +2135,6 @@ namespace CommsMessages {
       }
     }
     static Response() {
-      object.ReferenceEquals(global::CommsMessages.CommsMessages.Descriptor, null);
-    }
-  }
-  
-  [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-  public sealed partial class NewUser : pb::GeneratedMessage<NewUser, NewUser.Builder> {
-    private NewUser() { }
-    private static readonly NewUser defaultInstance = new NewUser().MakeReadOnly();
-    private static readonly string[] _newUserFieldNames = new string[] { "name", "password", "username" };
-    private static readonly uint[] _newUserFieldTags = new uint[] { 26, 18, 10 };
-    public static NewUser DefaultInstance {
-      get { return defaultInstance; }
-    }
-    
-    public override NewUser DefaultInstanceForType {
-      get { return DefaultInstance; }
-    }
-    
-    protected override NewUser ThisMessage {
-      get { return this; }
-    }
-    
-    public static pbd::MessageDescriptor Descriptor {
-      get { return global::CommsMessages.CommsMessages.internal__static_CommsMessages_NewUser__Descriptor; }
-    }
-    
-    protected override pb::FieldAccess.FieldAccessorTable<NewUser, NewUser.Builder> InternalFieldAccessors {
-      get { return global::CommsMessages.CommsMessages.internal__static_CommsMessages_NewUser__FieldAccessorTable; }
-    }
-    
-    public const int UsernameFieldNumber = 1;
-    private bool hasUsername;
-    private string username_ = "";
-    public bool HasUsername {
-      get { return hasUsername; }
-    }
-    public string Username {
-      get { return username_; }
-    }
-    
-    public const int PasswordFieldNumber = 2;
-    private bool hasPassword;
-    private string password_ = "";
-    public bool HasPassword {
-      get { return hasPassword; }
-    }
-    public string Password {
-      get { return password_; }
-    }
-    
-    public const int NameFieldNumber = 3;
-    private bool hasName;
-    private string name_ = "";
-    public bool HasName {
-      get { return hasName; }
-    }
-    public string Name {
-      get { return name_; }
-    }
-    
-    public override bool IsInitialized {
-      get {
-        if (!hasUsername) return false;
-        if (!hasPassword) return false;
-        if (!hasName) return false;
-        return true;
-      }
-    }
-    
-    public override void WriteTo(pb::ICodedOutputStream output) {
-      int size = SerializedSize;
-      string[] field_names = _newUserFieldNames;
-      if (hasUsername) {
-        output.WriteString(1, field_names[2], Username);
-      }
-      if (hasPassword) {
-        output.WriteString(2, field_names[1], Password);
-      }
-      if (hasName) {
-        output.WriteString(3, field_names[0], Name);
-      }
-      UnknownFields.WriteTo(output);
-    }
-    
-    private int memoizedSerializedSize = -1;
-    public override int SerializedSize {
-      get {
-        int size = memoizedSerializedSize;
-        if (size != -1) return size;
-        
-        size = 0;
-        if (hasUsername) {
-          size += pb::CodedOutputStream.ComputeStringSize(1, Username);
-        }
-        if (hasPassword) {
-          size += pb::CodedOutputStream.ComputeStringSize(2, Password);
-        }
-        if (hasName) {
-          size += pb::CodedOutputStream.ComputeStringSize(3, Name);
-        }
-        size += UnknownFields.SerializedSize;
-        memoizedSerializedSize = size;
-        return size;
-      }
-    }
-    
-    public static NewUser ParseFrom(pb::ByteString data) {
-      return ((Builder) CreateBuilder().MergeFrom(data)).BuildParsed();
-    }
-    public static NewUser ParseFrom(pb::ByteString data, pb::ExtensionRegistry extensionRegistry) {
-      return ((Builder) CreateBuilder().MergeFrom(data, extensionRegistry)).BuildParsed();
-    }
-    public static NewUser ParseFrom(byte[] data) {
-      return ((Builder) CreateBuilder().MergeFrom(data)).BuildParsed();
-    }
-    public static NewUser ParseFrom(byte[] data, pb::ExtensionRegistry extensionRegistry) {
-      return ((Builder) CreateBuilder().MergeFrom(data, extensionRegistry)).BuildParsed();
-    }
-    public static NewUser ParseFrom(global::System.IO.Stream input) {
-      return ((Builder) CreateBuilder().MergeFrom(input)).BuildParsed();
-    }
-    public static NewUser ParseFrom(global::System.IO.Stream input, pb::ExtensionRegistry extensionRegistry) {
-      return ((Builder) CreateBuilder().MergeFrom(input, extensionRegistry)).BuildParsed();
-    }
-    public static NewUser ParseDelimitedFrom(global::System.IO.Stream input) {
-      return CreateBuilder().MergeDelimitedFrom(input).BuildParsed();
-    }
-    public static NewUser ParseDelimitedFrom(global::System.IO.Stream input, pb::ExtensionRegistry extensionRegistry) {
-      return CreateBuilder().MergeDelimitedFrom(input, extensionRegistry).BuildParsed();
-    }
-    public static NewUser ParseFrom(pb::ICodedInputStream input) {
-      return ((Builder) CreateBuilder().MergeFrom(input)).BuildParsed();
-    }
-    public static NewUser ParseFrom(pb::ICodedInputStream input, pb::ExtensionRegistry extensionRegistry) {
-      return ((Builder) CreateBuilder().MergeFrom(input, extensionRegistry)).BuildParsed();
-    }
-    private NewUser MakeReadOnly() {
-      return this;
-    }
-    
-    public static Builder CreateBuilder() { return new Builder(); }
-    public override Builder ToBuilder() { return CreateBuilder(this); }
-    public override Builder CreateBuilderForType() { return new Builder(); }
-    public static Builder CreateBuilder(NewUser prototype) {
-      return new Builder(prototype);
-    }
-    
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-    public sealed partial class Builder : pb::GeneratedBuilder<NewUser, Builder> {
-      protected override Builder ThisBuilder {
-        get { return this; }
-      }
-      public Builder() {
-        result = DefaultInstance;
-        resultIsReadOnly = true;
-      }
-      internal Builder(NewUser cloneFrom) {
-        result = cloneFrom;
-        resultIsReadOnly = true;
-      }
-      
-      private bool resultIsReadOnly;
-      private NewUser result;
-      
-      private NewUser PrepareBuilder() {
-        if (resultIsReadOnly) {
-          NewUser original = result;
-          result = new NewUser();
-          resultIsReadOnly = false;
-          MergeFrom(original);
-        }
-        return result;
-      }
-      
-      public override bool IsInitialized {
-        get { return result.IsInitialized; }
-      }
-      
-      protected override NewUser MessageBeingBuilt {
-        get { return PrepareBuilder(); }
-      }
-      
-      public override Builder Clear() {
-        result = DefaultInstance;
-        resultIsReadOnly = true;
-        return this;
-      }
-      
-      public override Builder Clone() {
-        if (resultIsReadOnly) {
-          return new Builder(result);
-        } else {
-          return new Builder().MergeFrom(result);
-        }
-      }
-      
-      public override pbd::MessageDescriptor DescriptorForType {
-        get { return global::CommsMessages.NewUser.Descriptor; }
-      }
-      
-      public override NewUser DefaultInstanceForType {
-        get { return global::CommsMessages.NewUser.DefaultInstance; }
-      }
-      
-      public override NewUser BuildPartial() {
-        if (resultIsReadOnly) {
-          return result;
-        }
-        resultIsReadOnly = true;
-        return result.MakeReadOnly();
-      }
-      
-      public override Builder MergeFrom(pb::IMessage other) {
-        if (other is NewUser) {
-          return MergeFrom((NewUser) other);
-        } else {
-          base.MergeFrom(other);
-          return this;
-        }
-      }
-      
-      public override Builder MergeFrom(NewUser other) {
-        if (other == global::CommsMessages.NewUser.DefaultInstance) return this;
-        PrepareBuilder();
-        if (other.HasUsername) {
-          Username = other.Username;
-        }
-        if (other.HasPassword) {
-          Password = other.Password;
-        }
-        if (other.HasName) {
-          Name = other.Name;
-        }
-        this.MergeUnknownFields(other.UnknownFields);
-        return this;
-      }
-      
-      public override Builder MergeFrom(pb::ICodedInputStream input) {
-        return MergeFrom(input, pb::ExtensionRegistry.Empty);
-      }
-      
-      public override Builder MergeFrom(pb::ICodedInputStream input, pb::ExtensionRegistry extensionRegistry) {
-        PrepareBuilder();
-        pb::UnknownFieldSet.Builder unknownFields = null;
-        uint tag;
-        string field_name;
-        while (input.ReadTag(out tag, out field_name)) {
-          if(tag == 0 && field_name != null) {
-            int field_ordinal = global::System.Array.BinarySearch(_newUserFieldNames, field_name, global::System.StringComparer.Ordinal);
-            if(field_ordinal >= 0)
-              tag = _newUserFieldTags[field_ordinal];
-            else {
-              if (unknownFields == null) {
-                unknownFields = pb::UnknownFieldSet.CreateBuilder(this.UnknownFields);
-              }
-              ParseUnknownField(input, unknownFields, extensionRegistry, tag, field_name);
-              continue;
-            }
-          }
-          switch (tag) {
-            case 0: {
-              throw pb::InvalidProtocolBufferException.InvalidTag();
-            }
-            default: {
-              if (pb::WireFormat.IsEndGroupTag(tag)) {
-                if (unknownFields != null) {
-                  this.UnknownFields = unknownFields.Build();
-                }
-                return this;
-              }
-              if (unknownFields == null) {
-                unknownFields = pb::UnknownFieldSet.CreateBuilder(this.UnknownFields);
-              }
-              ParseUnknownField(input, unknownFields, extensionRegistry, tag, field_name);
-              break;
-            }
-            case 10: {
-              result.hasUsername = input.ReadString(ref result.username_);
-              break;
-            }
-            case 18: {
-              result.hasPassword = input.ReadString(ref result.password_);
-              break;
-            }
-            case 26: {
-              result.hasName = input.ReadString(ref result.name_);
-              break;
-            }
-          }
-        }
-        
-        if (unknownFields != null) {
-          this.UnknownFields = unknownFields.Build();
-        }
-        return this;
-      }
-      
-      
-      public bool HasUsername {
-        get { return result.hasUsername; }
-      }
-      public string Username {
-        get { return result.Username; }
-        set { SetUsername(value); }
-      }
-      public Builder SetUsername(string value) {
-        pb::ThrowHelper.ThrowIfNull(value, "value");
-        PrepareBuilder();
-        result.hasUsername = true;
-        result.username_ = value;
-        return this;
-      }
-      public Builder ClearUsername() {
-        PrepareBuilder();
-        result.hasUsername = false;
-        result.username_ = "";
-        return this;
-      }
-      
-      public bool HasPassword {
-        get { return result.hasPassword; }
-      }
-      public string Password {
-        get { return result.Password; }
-        set { SetPassword(value); }
-      }
-      public Builder SetPassword(string value) {
-        pb::ThrowHelper.ThrowIfNull(value, "value");
-        PrepareBuilder();
-        result.hasPassword = true;
-        result.password_ = value;
-        return this;
-      }
-      public Builder ClearPassword() {
-        PrepareBuilder();
-        result.hasPassword = false;
-        result.password_ = "";
-        return this;
-      }
-      
-      public bool HasName {
-        get { return result.hasName; }
-      }
-      public string Name {
-        get { return result.Name; }
-        set { SetName(value); }
-      }
-      public Builder SetName(string value) {
-        pb::ThrowHelper.ThrowIfNull(value, "value");
-        PrepareBuilder();
-        result.hasName = true;
-        result.name_ = value;
-        return this;
-      }
-      public Builder ClearName() {
-        PrepareBuilder();
-        result.hasName = false;
-        result.name_ = "";
-        return this;
-      }
-    }
-    static NewUser() {
       object.ReferenceEquals(global::CommsMessages.CommsMessages.Descriptor, null);
     }
   }
@@ -3985,8 +3451,8 @@ namespace CommsMessages {
   public sealed partial class Map : pb::GeneratedMessage<Map, Map.Builder> {
     private Map() { }
     private static readonly Map defaultInstance = new Map().MakeReadOnly();
-    private static readonly string[] _mapFieldNames = new string[] { "dataSize", "maxX", "maxY", "minX", "minY" };
-    private static readonly uint[] _mapFieldTags = new uint[] { 40, 24, 32, 8, 16 };
+    private static readonly string[] _mapFieldNames = new string[] { "maxX", "maxY", "minX", "minY" };
+    private static readonly uint[] _mapFieldTags = new uint[] { 24, 32, 8, 16 };
     public static Map DefaultInstance {
       get { return defaultInstance; }
     }
@@ -4047,23 +3513,12 @@ namespace CommsMessages {
       get { return maxY_; }
     }
     
-    public const int DataSizeFieldNumber = 5;
-    private bool hasDataSize;
-    private int dataSize_;
-    public bool HasDataSize {
-      get { return hasDataSize; }
-    }
-    public int DataSize {
-      get { return dataSize_; }
-    }
-    
     public override bool IsInitialized {
       get {
         if (!hasMinX) return false;
         if (!hasMinY) return false;
         if (!hasMaxX) return false;
         if (!hasMaxY) return false;
-        if (!hasDataSize) return false;
         return true;
       }
     }
@@ -4072,19 +3527,16 @@ namespace CommsMessages {
       int size = SerializedSize;
       string[] field_names = _mapFieldNames;
       if (hasMinX) {
-        output.WriteInt32(1, field_names[3], MinX);
+        output.WriteInt32(1, field_names[2], MinX);
       }
       if (hasMinY) {
-        output.WriteInt32(2, field_names[4], MinY);
+        output.WriteInt32(2, field_names[3], MinY);
       }
       if (hasMaxX) {
-        output.WriteInt32(3, field_names[1], MaxX);
+        output.WriteInt32(3, field_names[0], MaxX);
       }
       if (hasMaxY) {
-        output.WriteInt32(4, field_names[2], MaxY);
-      }
-      if (hasDataSize) {
-        output.WriteInt32(5, field_names[0], DataSize);
+        output.WriteInt32(4, field_names[1], MaxY);
       }
       UnknownFields.WriteTo(output);
     }
@@ -4107,9 +3559,6 @@ namespace CommsMessages {
         }
         if (hasMaxY) {
           size += pb::CodedOutputStream.ComputeInt32Size(4, MaxY);
-        }
-        if (hasDataSize) {
-          size += pb::CodedOutputStream.ComputeInt32Size(5, DataSize);
         }
         size += UnknownFields.SerializedSize;
         memoizedSerializedSize = size;
@@ -4247,9 +3696,6 @@ namespace CommsMessages {
         if (other.HasMaxY) {
           MaxY = other.MaxY;
         }
-        if (other.HasDataSize) {
-          DataSize = other.DataSize;
-        }
         this.MergeUnknownFields(other.UnknownFields);
         return this;
       }
@@ -4307,10 +3753,6 @@ namespace CommsMessages {
             }
             case 32: {
               result.hasMaxY = input.ReadInt32(ref result.maxY_);
-              break;
-            }
-            case 40: {
-              result.hasDataSize = input.ReadInt32(ref result.dataSize_);
               break;
             }
           }
@@ -4400,26 +3842,6 @@ namespace CommsMessages {
         PrepareBuilder();
         result.hasMaxY = false;
         result.maxY_ = 0;
-        return this;
-      }
-      
-      public bool HasDataSize {
-        get { return result.hasDataSize; }
-      }
-      public int DataSize {
-        get { return result.DataSize; }
-        set { SetDataSize(value); }
-      }
-      public Builder SetDataSize(int value) {
-        PrepareBuilder();
-        result.hasDataSize = true;
-        result.dataSize_ = value;
-        return this;
-      }
-      public Builder ClearDataSize() {
-        PrepareBuilder();
-        result.hasDataSize = false;
-        result.dataSize_ = 0;
         return this;
       }
     }
@@ -5238,8 +4660,8 @@ namespace CommsMessages {
   public sealed partial class QueryServer : pb::GeneratedMessage<QueryServer, QueryServer.Builder> {
     private QueryServer() { }
     private static readonly QueryServer defaultInstance = new QueryServer().MakeReadOnly();
-    private static readonly string[] _queryServerFieldNames = new string[] {  };
-    private static readonly uint[] _queryServerFieldTags = new uint[] {  };
+    private static readonly string[] _queryServerFieldNames = new string[] { "parameter" };
+    private static readonly uint[] _queryServerFieldTags = new uint[] { 10 };
     public static QueryServer DefaultInstance {
       get { return defaultInstance; }
     }
@@ -5260,8 +4682,19 @@ namespace CommsMessages {
       get { return global::CommsMessages.CommsMessages.internal__static_CommsMessages_QueryServer__FieldAccessorTable; }
     }
     
+    public const int ParameterFieldNumber = 1;
+    private bool hasParameter;
+    private string parameter_ = "";
+    public bool HasParameter {
+      get { return hasParameter; }
+    }
+    public string Parameter {
+      get { return parameter_; }
+    }
+    
     public override bool IsInitialized {
       get {
+        if (!hasParameter) return false;
         return true;
       }
     }
@@ -5269,6 +4702,9 @@ namespace CommsMessages {
     public override void WriteTo(pb::ICodedOutputStream output) {
       int size = SerializedSize;
       string[] field_names = _queryServerFieldNames;
+      if (hasParameter) {
+        output.WriteString(1, field_names[0], Parameter);
+      }
       UnknownFields.WriteTo(output);
     }
     
@@ -5279,6 +4715,9 @@ namespace CommsMessages {
         if (size != -1) return size;
         
         size = 0;
+        if (hasParameter) {
+          size += pb::CodedOutputStream.ComputeStringSize(1, Parameter);
+        }
         size += UnknownFields.SerializedSize;
         memoizedSerializedSize = size;
         return size;
@@ -5403,6 +4842,9 @@ namespace CommsMessages {
       public override Builder MergeFrom(QueryServer other) {
         if (other == global::CommsMessages.QueryServer.DefaultInstance) return this;
         PrepareBuilder();
+        if (other.HasParameter) {
+          Parameter = other.Parameter;
+        }
         this.MergeUnknownFields(other.UnknownFields);
         return this;
       }
@@ -5446,6 +4888,10 @@ namespace CommsMessages {
               ParseUnknownField(input, unknownFields, extensionRegistry, tag, field_name);
               break;
             }
+            case 10: {
+              result.hasParameter = input.ReadString(ref result.parameter_);
+              break;
+            }
           }
         }
         
@@ -5455,6 +4901,27 @@ namespace CommsMessages {
         return this;
       }
       
+      
+      public bool HasParameter {
+        get { return result.hasParameter; }
+      }
+      public string Parameter {
+        get { return result.Parameter; }
+        set { SetParameter(value); }
+      }
+      public Builder SetParameter(string value) {
+        pb::ThrowHelper.ThrowIfNull(value, "value");
+        PrepareBuilder();
+        result.hasParameter = true;
+        result.parameter_ = value;
+        return this;
+      }
+      public Builder ClearParameter() {
+        PrepareBuilder();
+        result.hasParameter = false;
+        result.parameter_ = "";
+        return this;
+      }
     }
     static QueryServer() {
       object.ReferenceEquals(global::CommsMessages.CommsMessages.Descriptor, null);
@@ -5465,8 +4932,8 @@ namespace CommsMessages {
   public sealed partial class QueryServerResponse : pb::GeneratedMessage<QueryServerResponse, QueryServerResponse.Builder> {
     private QueryServerResponse() { }
     private static readonly QueryServerResponse defaultInstance = new QueryServerResponse().MakeReadOnly();
-    private static readonly string[] _queryServerResponseFieldNames = new string[] { "maxMapChunkX", "maxMapChunkY", "minMapChunkX", "minMapChunkY" };
-    private static readonly uint[] _queryServerResponseFieldTags = new uint[] { 24, 32, 8, 16 };
+    private static readonly string[] _queryServerResponseFieldNames = new string[] { "parameter", "value" };
+    private static readonly uint[] _queryServerResponseFieldTags = new uint[] { 10, 18 };
     public static QueryServerResponse DefaultInstance {
       get { return defaultInstance; }
     }
@@ -5487,52 +4954,30 @@ namespace CommsMessages {
       get { return global::CommsMessages.CommsMessages.internal__static_CommsMessages_QueryServerResponse__FieldAccessorTable; }
     }
     
-    public const int MinMapChunkXFieldNumber = 1;
-    private bool hasMinMapChunkX;
-    private int minMapChunkX_;
-    public bool HasMinMapChunkX {
-      get { return hasMinMapChunkX; }
+    public const int ParameterFieldNumber = 1;
+    private bool hasParameter;
+    private string parameter_ = "";
+    public bool HasParameter {
+      get { return hasParameter; }
     }
-    public int MinMapChunkX {
-      get { return minMapChunkX_; }
-    }
-    
-    public const int MinMapChunkYFieldNumber = 2;
-    private bool hasMinMapChunkY;
-    private int minMapChunkY_;
-    public bool HasMinMapChunkY {
-      get { return hasMinMapChunkY; }
-    }
-    public int MinMapChunkY {
-      get { return minMapChunkY_; }
+    public string Parameter {
+      get { return parameter_; }
     }
     
-    public const int MaxMapChunkXFieldNumber = 3;
-    private bool hasMaxMapChunkX;
-    private int maxMapChunkX_;
-    public bool HasMaxMapChunkX {
-      get { return hasMaxMapChunkX; }
+    public const int ValueFieldNumber = 2;
+    private bool hasValue;
+    private string value_ = "";
+    public bool HasValue {
+      get { return hasValue; }
     }
-    public int MaxMapChunkX {
-      get { return maxMapChunkX_; }
-    }
-    
-    public const int MaxMapChunkYFieldNumber = 4;
-    private bool hasMaxMapChunkY;
-    private int maxMapChunkY_;
-    public bool HasMaxMapChunkY {
-      get { return hasMaxMapChunkY; }
-    }
-    public int MaxMapChunkY {
-      get { return maxMapChunkY_; }
+    public string Value {
+      get { return value_; }
     }
     
     public override bool IsInitialized {
       get {
-        if (!hasMinMapChunkX) return false;
-        if (!hasMinMapChunkY) return false;
-        if (!hasMaxMapChunkX) return false;
-        if (!hasMaxMapChunkY) return false;
+        if (!hasParameter) return false;
+        if (!hasValue) return false;
         return true;
       }
     }
@@ -5540,17 +4985,11 @@ namespace CommsMessages {
     public override void WriteTo(pb::ICodedOutputStream output) {
       int size = SerializedSize;
       string[] field_names = _queryServerResponseFieldNames;
-      if (hasMinMapChunkX) {
-        output.WriteInt32(1, field_names[2], MinMapChunkX);
+      if (hasParameter) {
+        output.WriteString(1, field_names[0], Parameter);
       }
-      if (hasMinMapChunkY) {
-        output.WriteInt32(2, field_names[3], MinMapChunkY);
-      }
-      if (hasMaxMapChunkX) {
-        output.WriteInt32(3, field_names[0], MaxMapChunkX);
-      }
-      if (hasMaxMapChunkY) {
-        output.WriteInt32(4, field_names[1], MaxMapChunkY);
+      if (hasValue) {
+        output.WriteString(2, field_names[1], Value);
       }
       UnknownFields.WriteTo(output);
     }
@@ -5562,17 +5001,11 @@ namespace CommsMessages {
         if (size != -1) return size;
         
         size = 0;
-        if (hasMinMapChunkX) {
-          size += pb::CodedOutputStream.ComputeInt32Size(1, MinMapChunkX);
+        if (hasParameter) {
+          size += pb::CodedOutputStream.ComputeStringSize(1, Parameter);
         }
-        if (hasMinMapChunkY) {
-          size += pb::CodedOutputStream.ComputeInt32Size(2, MinMapChunkY);
-        }
-        if (hasMaxMapChunkX) {
-          size += pb::CodedOutputStream.ComputeInt32Size(3, MaxMapChunkX);
-        }
-        if (hasMaxMapChunkY) {
-          size += pb::CodedOutputStream.ComputeInt32Size(4, MaxMapChunkY);
+        if (hasValue) {
+          size += pb::CodedOutputStream.ComputeStringSize(2, Value);
         }
         size += UnknownFields.SerializedSize;
         memoizedSerializedSize = size;
@@ -5698,17 +5131,11 @@ namespace CommsMessages {
       public override Builder MergeFrom(QueryServerResponse other) {
         if (other == global::CommsMessages.QueryServerResponse.DefaultInstance) return this;
         PrepareBuilder();
-        if (other.HasMinMapChunkX) {
-          MinMapChunkX = other.MinMapChunkX;
+        if (other.HasParameter) {
+          Parameter = other.Parameter;
         }
-        if (other.HasMinMapChunkY) {
-          MinMapChunkY = other.MinMapChunkY;
-        }
-        if (other.HasMaxMapChunkX) {
-          MaxMapChunkX = other.MaxMapChunkX;
-        }
-        if (other.HasMaxMapChunkY) {
-          MaxMapChunkY = other.MaxMapChunkY;
+        if (other.HasValue) {
+          Value = other.Value;
         }
         this.MergeUnknownFields(other.UnknownFields);
         return this;
@@ -5753,20 +5180,12 @@ namespace CommsMessages {
               ParseUnknownField(input, unknownFields, extensionRegistry, tag, field_name);
               break;
             }
-            case 8: {
-              result.hasMinMapChunkX = input.ReadInt32(ref result.minMapChunkX_);
+            case 10: {
+              result.hasParameter = input.ReadString(ref result.parameter_);
               break;
             }
-            case 16: {
-              result.hasMinMapChunkY = input.ReadInt32(ref result.minMapChunkY_);
-              break;
-            }
-            case 24: {
-              result.hasMaxMapChunkX = input.ReadInt32(ref result.maxMapChunkX_);
-              break;
-            }
-            case 32: {
-              result.hasMaxMapChunkY = input.ReadInt32(ref result.maxMapChunkY_);
+            case 18: {
+              result.hasValue = input.ReadString(ref result.value_);
               break;
             }
           }
@@ -5779,83 +5198,45 @@ namespace CommsMessages {
       }
       
       
-      public bool HasMinMapChunkX {
-        get { return result.hasMinMapChunkX; }
+      public bool HasParameter {
+        get { return result.hasParameter; }
       }
-      public int MinMapChunkX {
-        get { return result.MinMapChunkX; }
-        set { SetMinMapChunkX(value); }
+      public string Parameter {
+        get { return result.Parameter; }
+        set { SetParameter(value); }
       }
-      public Builder SetMinMapChunkX(int value) {
+      public Builder SetParameter(string value) {
+        pb::ThrowHelper.ThrowIfNull(value, "value");
         PrepareBuilder();
-        result.hasMinMapChunkX = true;
-        result.minMapChunkX_ = value;
+        result.hasParameter = true;
+        result.parameter_ = value;
         return this;
       }
-      public Builder ClearMinMapChunkX() {
+      public Builder ClearParameter() {
         PrepareBuilder();
-        result.hasMinMapChunkX = false;
-        result.minMapChunkX_ = 0;
-        return this;
-      }
-      
-      public bool HasMinMapChunkY {
-        get { return result.hasMinMapChunkY; }
-      }
-      public int MinMapChunkY {
-        get { return result.MinMapChunkY; }
-        set { SetMinMapChunkY(value); }
-      }
-      public Builder SetMinMapChunkY(int value) {
-        PrepareBuilder();
-        result.hasMinMapChunkY = true;
-        result.minMapChunkY_ = value;
-        return this;
-      }
-      public Builder ClearMinMapChunkY() {
-        PrepareBuilder();
-        result.hasMinMapChunkY = false;
-        result.minMapChunkY_ = 0;
+        result.hasParameter = false;
+        result.parameter_ = "";
         return this;
       }
       
-      public bool HasMaxMapChunkX {
-        get { return result.hasMaxMapChunkX; }
+      public bool HasValue {
+        get { return result.hasValue; }
       }
-      public int MaxMapChunkX {
-        get { return result.MaxMapChunkX; }
-        set { SetMaxMapChunkX(value); }
+      public string Value {
+        get { return result.Value; }
+        set { SetValue(value); }
       }
-      public Builder SetMaxMapChunkX(int value) {
+      public Builder SetValue(string value) {
+        pb::ThrowHelper.ThrowIfNull(value, "value");
         PrepareBuilder();
-        result.hasMaxMapChunkX = true;
-        result.maxMapChunkX_ = value;
+        result.hasValue = true;
+        result.value_ = value;
         return this;
       }
-      public Builder ClearMaxMapChunkX() {
+      public Builder ClearValue() {
         PrepareBuilder();
-        result.hasMaxMapChunkX = false;
-        result.maxMapChunkX_ = 0;
-        return this;
-      }
-      
-      public bool HasMaxMapChunkY {
-        get { return result.hasMaxMapChunkY; }
-      }
-      public int MaxMapChunkY {
-        get { return result.MaxMapChunkY; }
-        set { SetMaxMapChunkY(value); }
-      }
-      public Builder SetMaxMapChunkY(int value) {
-        PrepareBuilder();
-        result.hasMaxMapChunkY = true;
-        result.maxMapChunkY_ = value;
-        return this;
-      }
-      public Builder ClearMaxMapChunkY() {
-        PrepareBuilder();
-        result.hasMaxMapChunkY = false;
-        result.maxMapChunkY_ = 0;
+        result.hasValue = false;
+        result.value_ = "";
         return this;
       }
     }
