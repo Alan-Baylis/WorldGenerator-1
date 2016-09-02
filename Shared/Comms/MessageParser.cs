@@ -1,13 +1,22 @@
 ﻿using System;
 using System.Text;
 
-namespace Sean.Shared
+namespace Sean.Shared.Comms
 {
     public static class MessageParser
     {
         public static int clientId { get; set; }
         private static int destId = 1;
 
+
+        public static string SerializeMessage(Message message)
+        {
+            return Utilities.JsonSerialize<Message>(message);
+        }
+        public static Message DeserializeMessage(string json)
+        {
+            return Utilities.JsonDeserialize<Message>(json);
+        }
 
         public static CommsMessages.Message ParsePacket (byte[] packet, out byte[] data)
         {
