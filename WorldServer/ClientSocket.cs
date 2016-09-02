@@ -1,8 +1,7 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading;
+using Sean.Shared.Comms;
 
 namespace Sean.WorldServer
 {
@@ -20,7 +19,7 @@ namespace Sean.WorldServer
             return socket;
         }
 
-        public static void SendMessage(CommsMessages.Message message, byte[] data)
+        public static void SendMessage(Message message, byte[] data)
         {
             // TODO - threads
             GetSocket ().SendMessage (message, data);
@@ -89,7 +88,7 @@ namespace Sean.WorldServer
             Console.WriteLine("Socket connected to {0}", socket.RemoteEndPoint.ToString());
         }
 
-        public void SendMessage(CommsMessages.Message message, byte[] data)
+        public void SendMessage(Message message, byte[] data)
         {
             try {
                 if (!IsConnected) Connect();

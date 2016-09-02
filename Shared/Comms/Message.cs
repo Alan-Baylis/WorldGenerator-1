@@ -110,40 +110,40 @@ namespace Sean.Shared.Comms
         public int DestId { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
-        PingMessage Ping { get; set; }
+        public PingMessage Ping { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
-        PongMessage Pong { get; set; }
+        public PongMessage Pong { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
-        ResponseMessage Response { get; set; }
+        public ResponseMessage Response { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
-        LoginMessage Login { get; set; }
+        public LoginMessage Login { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
-        SayMessage Say { get; set; }
+        public SayMessage Say { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
-        MapRequestMessage MapRequest { get; set; }
+        public MapRequestMessage MapRequest { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
-        MapIgnoreMessage MapIgnore { get; set; }
+        public MapIgnoreMessage MapIgnore { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
-        MapMessage Map { get; set; }
+        public MapMessage Map { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
-        MapUpdateMessage MapUpdate { get; set; }
+        public MapUpdateMessage MapUpdate { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
-        MapCharacterUpdateMessage MapCharacterUpdate { get; set; }
+        public MapCharacterUpdateMessage MapCharacterUpdate { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
-        QueryServerMessage QueryServer { get; set; }
+        public QueryServerMessage QueryServer { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
-        QueryServerResponseMessage QueryServerResponse { get; set; }
+        public QueryServerResponseMessage QueryServerResponse { get; set; }
     }
 
 }
