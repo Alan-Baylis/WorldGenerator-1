@@ -14,7 +14,7 @@ namespace Sean.WorldServer
         private static SynchronousSocketClient GetSocket()
         {
             if (socket == null) {
-                socket = new SynchronousSocketClient ("elixirserver", 8083);
+                socket = new SynchronousSocketClient (server, port);
             }
             return socket;
         }

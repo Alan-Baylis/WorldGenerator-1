@@ -66,6 +66,9 @@
     <Compile Include="WebHostStartup.cs" />
     <Compile Include="Controllers\WorldController.cs" />
     <Compile Include="Controllers\JobsController.cs" />
+    <Compile Include="MessageProcessor.cs" />
+    <Compile Include="WorldEvents.cs" />
+    <Compile Include="ClientConnection.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

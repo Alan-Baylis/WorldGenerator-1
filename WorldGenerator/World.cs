@@ -46,7 +46,6 @@ namespace Sean.WorldGenerator
         public delegate void WorldEventHandler(WorldEventArgs e);
         public static event WorldEventHandler WorldEvents;
 
-        private static Dictionary<ChunkCoords, List<int> > registrations;
         private static LocalMap localMap;
         private static WorldMap worldMap;
         //public ConcurrentDictionary<int, Mob> Mobs { get; private set; }
@@ -133,8 +132,6 @@ namespace Sean.WorldGenerator
 
             ChunkSize = 32;
 
-            registrations = new Dictionary<ChunkCoords, List<int> > ();
-
             worldMap = new WorldMap(RawSeed);
             localMap = new LocalMap(RawSeed);
         }
@@ -150,25 +147,10 @@ namespace Sean.WorldGenerator
         {
             return new ChunkCoords (position.X / Settings.CHUNK_SIZE, position.Z / Settings.CHUNK_SIZE); 
         }
-        public static Chunk GetChunk(ChunkCoords chunkCoords, int id)
+        public static Chunk GetChunk(ChunkCoords chunkCoords)
         {
             var chunk = localMap.Chunk(chunkCoords);
-            if (!registrations.ContainsKey (chunkCoords)) {
-                registrations [chunkCoords] = new List<int> ();
-            }
-            registrations[chunkCoords].Add(id);
             return chunk;
-        }
-        public static void ChunkIgnore(ChunkCoords chunkCoords, int id)
-        {
-            var reg = registrations [chunkCoords];
-            if (reg != null)
-            {
-                reg.Remove (id);
-                if (reg.Count == 0) {
-                    registrations.Remove (chunkCoords);
-                }
-            }
         }
 
         public static void RenderMap()

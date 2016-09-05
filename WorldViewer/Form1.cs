@@ -85,7 +85,7 @@ namespace WorldViewer
 
         public Bitmap DrawLocal(int width, int height)
         {
-            var chunk = World.GetChunk(currentChunk, 1);
+            var chunk = World.GetChunk(currentChunk);
             var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
             var graphics = Graphics.FromImage(bitmap);
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
@@ -120,7 +120,7 @@ namespace WorldViewer
                     var coords = new ChunkCoords(x, z);
                     if (World.IsChunkLoaded(coords))
                     {
-                        var chunk = World.GetChunk(coords, 1);
+                        var chunk = World.GetChunk(coords);
                         DrawChunk(graphics, chunk, xOri, zOri);
                     }
                     if (coords == currentChunk)
@@ -196,7 +196,7 @@ namespace WorldViewer
         private Bitmap DrawTerrain(int width, int height)
         {
             var boxImage = imageList.Images["box_blue"];
-            var chunk = World.GetChunk(currentChunk, 1);
+            var chunk = World.GetChunk(currentChunk);
             var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
             var graphics = Graphics.FromImage(bitmap);
             graphics.SmoothingMode = SmoothingMode.AntiAlias;

@@ -29,7 +29,7 @@ namespace WorldViewer
 
         private Bitmap DrawTerrainZ(ChunkCoords currentChunk, int width, int height)
         {
-            var chunk = World.GetChunk(currentChunk, 1);
+            var chunk = World.GetChunk(currentChunk);
             var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
             var graphics = Graphics.FromImage(bitmap);
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
@@ -53,7 +53,7 @@ namespace WorldViewer
 
         private Bitmap DrawTerrainX(ChunkCoords currentChunk, int width, int height)
         {
-            var chunk = World.GetChunk(currentChunk, 1);
+            var chunk = World.GetChunk(currentChunk);
             var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
             var graphics = Graphics.FromImage(bitmap);
             graphics.SmoothingMode = SmoothingMode.AntiAlias;

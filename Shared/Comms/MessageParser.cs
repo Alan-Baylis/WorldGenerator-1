@@ -23,6 +23,17 @@ namespace Sean.Shared.Comms
             return recv;
         }
 
+        // Parse just the message, no data expected
+        public static Message ParsePacket (byte[] packet)
+        {
+            int messageLength = packet [0] * 256 + packet [1];
+            byte[] msgBuffer = new byte[messageLength];
+            Array.Copy (packet, 2, msgBuffer, 0, messageLength);
+            var jsonMessage = Encoding.ASCII.GetString(msgBuffer);
+            var recv = Utilities.JsonDeserialize<Message>(jsonMessage);
+            return recv;
+        }
+
         public static Message CreateLoginMessage(string ipAddress, int port, string username, string password)
         {
             var message = new Message () {
@@ -38,7 +49,7 @@ namespace Sean.Shared.Comms
             return message;
         }
 
-        public static byte[] CreatePacket(Message message, byte[] data)
+        public static byte[] CreatePacket(Message message, byte[] data = null)
         {
             var messageJson = Utilities.JsonSerialize<Message>(message);
             byte[] messageBytes = Encoding.ASCII.GetBytes(messageJson);
@@ -50,11 +61,13 @@ namespace Sean.Shared.Comms
 
                 memoryStream.WriteByte (0); // reserve for length
                 memoryStream.WriteByte (0); // reserve for length
-                using (var dataStream = new System.IO.MemoryStream (data)) {
-                    dataStream.WriteTo (memoryStream);
+                long dataLength = 0;
+                if (data != null) {
+                    using (var dataStream = new System.IO.MemoryStream (data)) {
+                        dataStream.WriteTo (memoryStream);
+                    }
+                    dataLength = memoryStream.Position - messageLength - 4;
                 }
-                var dataLength = memoryStream.Position - messageLength - 4;
-
                 var packetBytes = memoryStream.ToArray ();
                 packetBytes [0] = (byte)((messageLength)/256);
                 packetBytes [1] = (byte)((messageLength)%256);

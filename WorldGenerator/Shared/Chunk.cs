@@ -38,6 +38,22 @@ namespace Sean.WorldGenerator
 		public byte[,,] ItemLightMapInitial;
 
         public int ChunkSize {  get { return Settings.CHUNK_SIZE; } }
+        public Position MinPosition { get { 
+                return 
+                new Position (
+                    ChunkCoords.WorldCoordsX * Settings.CHUNK_SIZE,
+                    0,
+                    ChunkCoords.WorldCoordsZ * Settings.CHUNK_SIZE);
+            }
+        }
+        public Position MaxPosition { get { 
+                return 
+                    new Position (
+                        ChunkCoords.WorldCoordsX+1 * Settings.CHUNK_SIZE,
+                        Settings.CHUNK_HEIGHT,
+                        ChunkCoords.WorldCoordsZ+1 * Settings.CHUNK_SIZE);
+            }
+        }
 
         /// <summary>Clutter contained in this chunk. Clutter can be stored at the chunk level only because it can never move off the chunk.</summary>
         /// <remarks>HashSet because currently Clutter cannot be added outside of initial world generation. Collection is locked during removal.</remarks>
@@ -602,6 +618,33 @@ namespace Sean.WorldGenerator
 				Debug.WriteLine("Grass finished growing in chunk {0} All possible changes made", ChunkCoords);
 			}
 		}
+
+        public byte[] Serialize()
+        {
+            using (var memoryStream = new System.IO.MemoryStream ()) {
+                for (var x = 0; x < Settings.CHUNK_SIZE; x++) {
+                    for (var z = 0; z < Settings.CHUNK_SIZE; z++) {
+                        for (var y = 0; y <= Settings.CHUNK_HEIGHT; y++) {
+                            memoryStream.WriteByte ((byte)Blocks[x, y, z].Type);
+                        }
+                    }
+                }
+                return memoryStream.ToArray ();
+            }
+        }
+
+        public static Chunk Deserialize(byte[] data)
+        {
+            return null; // TODO
+            /*
+            for (var x = 0; x < Settings.CHUNK_SIZE; x++) {
+                for (var z = 0; z < Settings.CHUNK_SIZE; z++) {
+                    for (var y = 0; y <= Math.Min (Settings.CHUNK_HEIGHT - 1, HeightMap [x, z] + 1); y++) { //look +1 above heightmap as water directly above heightmap could change to ice
+                    }
+                }
+            }
+            */
+        }
 
         public void Render()
         {
