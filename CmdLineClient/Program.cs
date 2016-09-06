@@ -7,44 +7,23 @@ namespace CmdLineClient
         public static void Main (string[] args)
         {
             Console.WriteLine ("Hello World!");
-
-            var worldClient = new WorldClient("http://localhost:8084", 1);
-            Location cursor = new Location (100,0,100);
-            int stepSize = 5;
-            while (true)
+            if (args.Length > 0)
             {
-                worldClient.LookingAt (cursor);
-                Console.Clear ();
-                //var chunk = WorldData.WorldMap.Chunk (cursor);
-                //chunk.Render (y);
-                var key = Console.ReadKey ();
-                switch (key.KeyChar)
+                if (args[0] == "/client")
                 {
-                case 'q': cursor.Z -= stepSize; break;
-                case 'a': cursor.Z += stepSize; break;
-                case 'p': cursor.X += stepSize; break;
-                case 'o': cursor.X -= stepSize; break;
-                case '>': cursor.Y += stepSize; break;
-                case '<': cursor.Y -= stepSize; break;
+                    Console.WriteLine("Start client");
+                    SyncSocketClient.StartClient();
+                }
+                else if (args[0] == "/server")
+                {
+                    Console.WriteLine("Start listening");
+                    SyncSocketListener.StartListening();
                 }
             }
-
-            //WriteStatusCodeResult(result);
-
+            Console.WriteLine("Press enter to exit");
+            Console.ReadLine();
         }
 
-        static void WriteStatusCodeResult(System.Net.HttpStatusCode statusCode)
-        {
-            if(statusCode == System.Net.HttpStatusCode.OK)
-            {
-                Console.WriteLine("Opreation Succeeded - status code {0}", statusCode);
-            }
-            else
-            {
-                Console.WriteLine("Opreation Failed - status code {0}", statusCode);
-            }
-            Console.WriteLine("");
-        }
     }
 
 }
