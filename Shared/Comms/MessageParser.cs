@@ -8,6 +8,7 @@ namespace Sean.Shared.Comms
         public static int clientId { get; set; }
         private static int destId = 1;
 
+        /*
         public static Message ParsePacket (byte[] packet, out byte[] data)
         {
             int messageLength = packet [0] * 256 + packet [1];
@@ -22,17 +23,9 @@ namespace Sean.Shared.Comms
 
             return recv;
         }
+        */
 
-        // Parse just the message, no data expected
-        public static Message ParsePacket (byte[] packet)
-        {
-            int messageLength = packet [0] * 256 + packet [1];
-            byte[] msgBuffer = new byte[messageLength];
-            Array.Copy (packet, 2, msgBuffer, 0, messageLength);
-            var jsonMessage = Encoding.ASCII.GetString(msgBuffer);
-            var recv = Utilities.JsonDeserialize<Message>(jsonMessage);
-            return recv;
-        }
+ /*
 
         public static Message CreateLoginMessage(string ipAddress, int port, string username, string password)
         {
@@ -48,7 +41,8 @@ namespace Sean.Shared.Comms
             };
             return message;
         }
-
+        */
+        /*
         public static byte[] CreatePacket(Message message, byte[] data = null)
         {
             var messageJson = Utilities.JsonSerialize<Message>(message);
@@ -77,6 +71,7 @@ namespace Sean.Shared.Comms
                 return packetBytes;
             }
         }
+        */
     }
 }
 

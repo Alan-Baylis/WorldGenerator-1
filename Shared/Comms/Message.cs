@@ -144,6 +144,9 @@ namespace Sean.Shared.Comms
 
         [DataMember(EmitDefaultValue = false)]
         public QueryServerResponseMessage QueryServerResponse { get; set; }
+
+        // Note: Serialize separately as binary not json
+        public byte[] Data { get; set; }
     }
 
 }
