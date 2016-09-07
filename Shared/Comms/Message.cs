@@ -1,4 +1,6 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
+using System.Text;
 
 namespace Sean.Shared.Comms
 {
@@ -100,14 +102,14 @@ namespace Sean.Shared.Comms
         [DataMember]
         public string Value { get; set; }
     }
-    
+
     [DataContract]
     public class Message
     {
         [DataMember]
-        public int FromId { get; set; }
+        public Guid FromId { get; set; }
         [DataMember]
-        public int DestId { get; set; }
+        public Guid DestId { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
         public PingMessage Ping { get; set; }
@@ -147,6 +149,26 @@ namespace Sean.Shared.Comms
 
         // Note: Serialize separately as binary not json
         public byte[] Data { get; set; }
+
+        public override string ToString()
+        {
+            var text = new StringBuilder();
+            text.Append($"From:{FromId} ");
+            text.Append($"To:{DestId} ");
+            if (Ping != null) text.Append($"Ping({Ping.Message}) ");
+            if (Pong != null) text.Append($"Pong({Pong.Message}) ");
+            if (Response != null) text.Append($"Response({Response.Code},{Response.Message}) ");
+            if (Login != null) text.Append($"Login({Login.Username}) ");
+            if (Say != null) text.Append($"Say({Say.Text}) ");
+            if (MapRequest != null) text.Append($"MapRequest({MapRequest.Position}) ");
+            if (MapIgnore != null) text.Append($"MapIgnore({MapIgnore.Position}) ");
+            if (Map != null) text.Append($"Map({Map.MinPosition}) ");
+            if (MapUpdate != null) text.Append($"MapUpdate({MapUpdate.Position}={MapUpdate.NewBlock}) ");
+            if (MapCharacterUpdate != null) text.Append($"MapCharacterUpdate({MapCharacterUpdate.CharacterId}->{MapCharacterUpdate.Position}) ");
+            if (QueryServer != null) text.Append($"QueryServer({QueryServer.Parameter}) ");
+            if (QueryServerResponse != null) text.Append($"QueryServerResponse({QueryServerResponse.Parameter}={QueryServerResponse.Value}) ");
+            return text.ToString();
+        }
     }
 
 }

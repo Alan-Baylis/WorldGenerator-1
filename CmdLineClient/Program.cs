@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Sean.Shared.Comms;
+using System;
+using System.Net;
+using System.Net.Sockets;
 
 namespace CmdLineClient
 {
@@ -7,21 +10,27 @@ namespace CmdLineClient
         public static void Main (string[] args)
         {
             Console.WriteLine ("Hello World!");
-            if (args.Length > 0)
+
+            try
             {
-                if (args[0] == "/client")
-                {
-                    Console.WriteLine("Start client");
-                    SyncSocketClient.StartClient();
-                }
-                else if (args[0] == "/server")
-                {
-                    Console.WriteLine("Start listening");
-                    SyncSocketListener.StartListening();
-                }
+                IPHostEntry ipHostInfo = Dns.Resolve(Dns.GetHostName());
+                IPAddress ipAddress = ipHostInfo.AddressList[0];
+                IPEndPoint remoteEP = new IPEndPoint(ipAddress, 8084);
+
+                TcpClient client = new TcpClient(remoteEP);
+
+                var connection = ClientConnection.CreateClientConnection(client, ProcessMessage);
+                connection.StartClient();
             }
-            Console.WriteLine("Press enter to exit");
-            Console.ReadLine();
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception caught in ServerSocketListener - {0}", e.ToString());
+            }
+        }
+
+        public static void ProcessMessage(Guid clientId, Message msg)
+        {
+            Console.WriteLine($"Processing...");
         }
 
     }

@@ -75,10 +75,5 @@ namespace CmdLineClient
 
         }
 
-        public static int Main(String[] args)
-        {
-            StartListening();
-            return 0;
-        }
     }
 }

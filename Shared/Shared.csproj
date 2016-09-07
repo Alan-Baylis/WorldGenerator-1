@@ -35,6 +35,7 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Comms\ClientConnection.cs" />
     <Compile Include="Comms\Message.cs" />
     <Compile Include="Comms\Utilities.cs" />
     <Compile Include="MyClass.cs" />

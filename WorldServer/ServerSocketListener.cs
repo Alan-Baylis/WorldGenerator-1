@@ -24,17 +24,14 @@ namespace Sean.WorldServer
         private static void StartListening() {
             try {
                 TcpListener serverSocket = new TcpListener(ServerListenPort);
-                TcpClient clientSocket = default(TcpClient);
                 serverSocket.Start();
                 Console.WriteLine($"Waiting for a connection on port {ServerListenPort}...");
                 while (true) {
                     var socket = serverSocket.AcceptTcpClient();
                     Console.WriteLine("Client joined");
-                    var client = new ClientConnection (socket);
-                    ClientConnection.clientsList.Add(client);
+                    var client = ClientConnection.CreateClientConnection(socket, MessageProcessor.ServerProcessMessage);
                     client.StartClient();
                 }
-                clientSocket.Close();
                 serverSocket.Stop();
                 Console.WriteLine("Ending Listening Server");
             }

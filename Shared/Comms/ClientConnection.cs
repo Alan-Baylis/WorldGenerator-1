@@ -3,23 +3,42 @@ using System.Net.Sockets;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
-using Sean.Shared.Comms;
-using Sean.WorldGenerator;
 
-namespace Sean.WorldServer
+namespace Sean.Shared.Comms
 {
     // State object for reading client data asynchronously
     public class ClientConnection {
-        public ClientConnection(TcpClient inClientSocket)
+
+        public delegate void ProcessMessage(Guid clientId, Message msg);
+        private ProcessMessage processMessageFn;
+
+        public static ClientConnection CreateClientConnection(TcpClient inClientSocket, ProcessMessage processMessageFn)
         {
-            this.socket = inClientSocket;
+            var clientId = Guid.NewGuid();
+            var client = new ClientConnection(clientId, inClientSocket, processMessageFn);
+            clientsList[clientId] = client;
+            return client;
         }
 
-        public static List<ClientConnection> clientsList = new List<ClientConnection> ();
+        public static void EnqueueMessage(Guid clientId, Message message)
+        {
+            if (!clientsList.ContainsKey(clientId))
+                return;
+            clientsList[clientId].PutQueuedMessage(message);
+        }
 
+        private ClientConnection(Guid clientId, TcpClient inClientSocket, ProcessMessage processMessageFn)
+        {
+            this.clientId = clientId;
+            this.socket = inClientSocket;
+            this.processMessageFn = processMessageFn;
+        }
+
+        public static Dictionary<Guid, ClientConnection> clientsList = new Dictionary<Guid, ClientConnection> ();
+
+        private Guid clientId;
         public TcpClient socket = null;
         private const int MaxMessageLength = 1024;
-        private int clientId;
 
         public void StartClient()
         {
@@ -75,9 +94,10 @@ namespace Sean.WorldServer
                             totalBytesRead += bytesRead;
                         }
                         while(totalBytesRead < messageLength);
-                        
+
                         // Process Message
-                        ProcessMessage(msg);
+                        Console.WriteLine($"Received: {msg.ToString()}");                    
+                        processMessageFn(clientId, msg);
                     }
                 }
             } 
@@ -103,15 +123,16 @@ namespace Sean.WorldServer
                     }
                     else
                     {
+                        Console.WriteLine($"Sending: {message.ToString()}");                    
                         var messageJson = Utilities.JsonSerialize<Message>(message);
                         var msgBuffer = Encoding.ASCII.GetBytes(messageJson);
 
-                        networkStream.Write((byte)(msgBuffer.Length/256));
-                        networkStream.Write((byte)(msgBuffer.Length%256));
+                        networkStream.WriteByte((byte)(msgBuffer.Length/256));
+                        networkStream.WriteByte((byte)(msgBuffer.Length%256));
                         networkStream.Write(msgBuffer,0,msgBuffer.Length);
 
-                        networkStream.Write((byte)(message.Data.Length/256));
-                        networkStream.Write((byte)(message.Data.Length%256));
+                        networkStream.WriteByte((byte)(message.Data.Length/256));
+                        networkStream.WriteByte((byte)(message.Data.Length%256));
                         networkStream.Write(message.Data,0,message.Data.Length);
                     }
                 }
@@ -138,127 +159,6 @@ namespace Sean.WorldServer
                 return writeQueue.Dequeue();
             }
         }
-
-        /*
-        private void Send(Message message, byte[] data = null) 
-        {
-            var respPacket = MessageParser.SerializeMessage(message, data);
-            Send (respPacket);
-        }
-        private void Send(byte[] byteData) {
-            Console.WriteLine ("Send");
-            var builder = new StringBuilder ();
-            for (int i=0; i<byteData.Length; i++) {
-                builder.Append (byteData [i].ToString ());
-                builder.Append (",");
-            }
-            Console.WriteLine ("{0}", builder.ToString());
-
-            // Begin sending the data to the remote device.
-            NetworkStream socketStream = socket.GetStream();
-            socketStream.Write(byteData, 0, byteData.Length);
-            socketStream.Flush ();
-        }
-        */
-        /*
-        public static void broadcast(byte[] byteData)
-        {
-            foreach (ClientConnection client in clientsList)
-            {
-                client.Send (byteData);
-            }
-        }
-        */
-
-        private void ProcessMessage(Message msg)
-        {
-            if (msg.Ping != null)
-                ProcessPing (msg);
-            if (msg.Login != null)
-                ProcessLogin (msg);
-            if (msg.Say != null)
-                ProcessSay (msg);
-            if (msg.MapRequest != null)
-                ProcessMapRequest (msg);
-            if (msg.MapIgnore != null)
-                ProcessMapIgnore (msg);
-            if (msg.MapUpdate != null)
-                ProcessMapUpdate (msg);
-            if (msg.QueryServer != null)
-                ProcessQueryServer (msg);
-            Console.WriteLine("[ClientConnection.ProcessMessage] Unexpected message");
-            SendError ("Unexpected message");
-        }
-
-        private void ProcessPing(Message pingMsg)
-        {
-            var pongMsg = new Message () {
-                DestId = clientId,
-                Pong = new PongMessage (){ Message = pingMsg.Ping.Message }
-            };
-            PutQueuedMessage(pongMsg);
-        }
-        private void ProcessLogin(Message msg)
-        {
-            SendOk ();// TODO
-        }
-        private void  ProcessSay(Message msg)
-        {
-        }
-        private void ProcessMapRequest(Message msg)
-        {
-            var chunkCoord = World.GetChunkCoords (msg.MapRequest.Position);
-            WorldEvents.ChunkRegister (chunkCoord, this);
-        }
-        private void ProcessMapIgnore(Message msg)
-        {
-            var chunkCoord = World.GetChunkCoords (msg.MapRequest.Position);
-            WorldEvents.ChunkIgnore (chunkCoord, this);
-            SendOk ();
-        }
-        private void ProcessMapUpdate(Message msg)
-        {
-            SendOk (); // TODO
-        }
-        private void ProcessQueryServer(Message msg)
-        {
-            SendOk (); // TODO
-        }
-
-        private void SendOk ()
-        {
-            var msg = new Message ()
-            {
-                DestId = clientId,
-                Response = new ResponseMessage() { Code = 0 }
-            };
-            PutQueuedMessage (msg);
-        }
-        public void SendMap(Chunk chunk)
-        {
-            var msg = new Message () {
-                DestId = clientId,
-                Map = new MapMessage () {
-                    MinPosition = chunk.MinPosition,
-                    MaxPosition = chunk.MaxPosition
-                },
-                Data = chunk.Serialize ()
-            };
-            PutQueuedMessage (msg);
-        }
-
-        public void SendError(string reason)
-        {
-            var msg = new Message () {
-                DestId = clientId,
-                Response = new ResponseMessage () {
-                    Code = 1,
-                    Message = reason
-                }
-            };
-            PutQueuedMessage (msg);
-        }
-            
     }
 }
 
