@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Collections.Generic;
 using Sean.Shared.Comms;
+using System.Net;
 
 namespace Sean.WorldServer
 {
@@ -23,7 +24,11 @@ namespace Sean.WorldServer
         }
         private static void StartListening() {
             try {
-                TcpListener serverSocket = new TcpListener(ServerListenPort);
+                IPHostEntry ipHostInfo = Dns.Resolve(Dns.GetHostName());
+                IPAddress ipAddress = ipHostInfo.AddressList[0];
+                IPEndPoint localEP = new IPEndPoint(ipAddress, 8084);
+
+                TcpListener serverSocket = new TcpListener(localEP);
                 serverSocket.Start();
                 Console.WriteLine($"Waiting for a connection on port {ServerListenPort}...");
                 while (true) {

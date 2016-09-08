@@ -1,7 +1,6 @@
 ﻿using System;
 using Sean.Shared.Comms;
 using Sean.WorldGenerator;
-using System.Collections.Generic;
 
 namespace Sean.WorldServer
 {
@@ -23,15 +22,14 @@ namespace Sean.WorldServer
                 ProcessMapUpdate(clientId, msg);
             if (msg.QueryServer != null)
                 ProcessQueryServer(clientId, msg);
-            Console.WriteLine("[ClientConnection.ProcessMessage] Unexpected message");
-            SendError(clientId, "Unexpected message");
+            //Console.WriteLine("[ClientConnection.ProcessMessage] Unexpected message");
+            //SendError(clientId, "Unexpected message");
         }
 
         private static void ProcessPing(Guid clientId, Message pingMsg)
         {
             var pongMsg = new Message()
             {
-                DestId = clientId,
                 Pong = new PongMessage() { Message = pingMsg.Ping.Message }
             };
             ClientConnection.EnqueueMessage(clientId, pongMsg);
@@ -67,7 +65,6 @@ namespace Sean.WorldServer
         {
             var msg = new Message()
             {
-                DestId = clientId,
                 Response = new ResponseMessage() { Code = 0 }
             };
             ClientConnection.EnqueueMessage(clientId, msg);
@@ -76,7 +73,6 @@ namespace Sean.WorldServer
         {
             var msg = new Message()
             {
-                DestId = clientId,
                 Map = new MapMessage()
                 {
                     MinPosition = chunk.MinPosition,
@@ -91,7 +87,6 @@ namespace Sean.WorldServer
         {
             var msg = new Message()
             {
-                DestId = clientId,
                 Response = new ResponseMessage()
                 {
                     Code = 1,

@@ -11,6 +11,7 @@ namespace Sean.Shared.Comms
 
         public delegate void ProcessMessage(Guid clientId, Message msg);
         private ProcessMessage processMessageFn;
+        private static Guid serverId = Guid.NewGuid();
 
         public static ClientConnection CreateClientConnection(TcpClient inClientSocket, ProcessMessage processMessageFn)
         {
@@ -25,6 +26,14 @@ namespace Sean.Shared.Comms
             if (!clientsList.ContainsKey(clientId))
                 return;
             clientsList[clientId].PutQueuedMessage(message);
+        }
+
+        public static void BroadcastMessage(Message message)
+        {
+            foreach (var clientId in clientsList.Keys)
+            {
+                clientsList[clientId].PutQueuedMessage(message);
+            }
         }
 
         private ClientConnection(Guid clientId, TcpClient inClientSocket, ProcessMessage processMessageFn)
@@ -53,6 +62,8 @@ namespace Sean.Shared.Comms
             Console.WriteLine ($"[ClientConnection.DoSocketReader] Listening on socket {socket}");
             try {
                 NetworkStream networkStream = socket.GetStream ();
+                if (!networkStream.CanRead)
+                    throw new ApplicationException("Cannot read from socket");
                 while (true) 
                 {
                     if (!networkStream.DataAvailable)
@@ -84,16 +95,19 @@ namespace Sean.Shared.Comms
                         bytesRead = networkStream.Read(lenBuffer, 0, 2);
                         if (bytesRead != 2) throw new ApplicationException("Could not read data length bytes");
                         int dataLength = lenBuffer[0] * 256 + lenBuffer[1];
-                        if (dataLength > MaxMessageLength) throw new ApplicationException ($"Message data length {dataLength} too large"); 
+                        if (dataLength > MaxMessageLength) throw new ApplicationException ($"Message data length {dataLength} too large");
 
-                        msg.Data = new byte[messageLength];
-                        totalBytesRead = 0;                    
-                        do
+                        if (dataLength > 0)
                         {
-                            bytesRead = networkStream.Read(msg.Data, totalBytesRead, messageLength);
-                            totalBytesRead += bytesRead;
+                            msg.Data = new byte[dataLength];
+                            totalBytesRead = 0;
+                            do
+                            {
+                                bytesRead = networkStream.Read(msg.Data, totalBytesRead, dataLength);
+                                totalBytesRead += bytesRead;
+                            }
+                            while (totalBytesRead < messageLength);
                         }
-                        while(totalBytesRead < messageLength);
 
                         // Process Message
                         Console.WriteLine($"Received: {msg.ToString()}");                    
@@ -114,9 +128,13 @@ namespace Sean.Shared.Comms
             Console.WriteLine ($"[ClientConnection.DoSocketWriter] Writing on socket {socket}");
             try {
                 NetworkStream networkStream = socket.GetStream ();
+                if (!networkStream.CanWrite)
+                    throw new ApplicationException("Cannot write to socket");
                 while (true) 
                 {
                     Message message = GetQueuedMessage();
+                    message.DestId = clientId;
+                    message.FromId = serverId;
                     if (message == null)
                     {
                         Thread.Sleep(500);
@@ -131,9 +149,13 @@ namespace Sean.Shared.Comms
                         networkStream.WriteByte((byte)(msgBuffer.Length%256));
                         networkStream.Write(msgBuffer,0,msgBuffer.Length);
 
-                        networkStream.WriteByte((byte)(message.Data.Length/256));
-                        networkStream.WriteByte((byte)(message.Data.Length%256));
-                        networkStream.Write(message.Data,0,message.Data.Length);
+                        var dataLength = message.Data == null ? 0 : message.Data.Length;
+                        networkStream.WriteByte((byte)(dataLength / 256));
+                        networkStream.WriteByte((byte)(dataLength % 256));
+                        if (message.Data != null)
+                            networkStream.Write(message.Data,0,message.Data.Length);
+
+                        networkStream.Flush();
                     }
                 }
             } 

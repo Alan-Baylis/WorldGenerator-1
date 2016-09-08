@@ -17,10 +17,23 @@ namespace CmdLineClient
                 IPAddress ipAddress = ipHostInfo.AddressList[0];
                 IPEndPoint remoteEP = new IPEndPoint(ipAddress, 8084);
 
-                TcpClient client = new TcpClient(remoteEP);
+                TcpClient client = new TcpClient();
+                Console.WriteLine ("Connecting...");
+                client.Connect(remoteEP);
 
                 var connection = ClientConnection.CreateClientConnection(client, ProcessMessage);
                 connection.StartClient();
+
+                ClientConnection.BroadcastMessage(new Message()
+                {
+                    Ping = new PingMessage()
+                    {
+                        Message = "Hi"
+                    }
+                });
+
+                Console.WriteLine("Press any key to exit");
+                Console.ReadKey();
             }
             catch (Exception e)
             {
@@ -30,7 +43,7 @@ namespace CmdLineClient
 
         public static void ProcessMessage(Guid clientId, Message msg)
         {
-            Console.WriteLine($"Processing...");
+            Console.WriteLine($"Processing response...");
         }
 
     }

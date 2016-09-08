@@ -60,10 +60,10 @@ namespace Sean.WorldServer
             //ClientSocket.SendMessage ();
 
             // Rest web server
-            string baseUri = "http://localhost:8085";
-            Console.WriteLine("Starting web Server...");
-            WebApp.Start<WebHostStartup>(baseUri);
-            Console.WriteLine("Server running at {0}", baseUri);
+            //string baseUri = "http://localhost:8085";
+            //Console.WriteLine("Starting web Server...");
+            //WebApp.Start<WebHostStartup>(baseUri);
+            //Console.WriteLine("Server running at {0}", baseUri);
 
             Console.WriteLine("Press any key to exit");
             Console.ReadKey();
