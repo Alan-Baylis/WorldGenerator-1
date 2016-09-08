@@ -143,10 +143,10 @@ namespace Sean.WorldGenerator
         {
             return Settings.CHUNK_SIZE;
         }
-        public static ChunkCoords GetChunkCoords(Position position)
-        {
-            return new ChunkCoords (position.X / Settings.CHUNK_SIZE, position.Z / Settings.CHUNK_SIZE); 
-        }
+        //public static ChunkCoords GetChunkCoords(Position position)
+        //{
+        //    return new ChunkCoords (position.X / Settings.CHUNK_SIZE, position.Z / Settings.CHUNK_SIZE); 
+        //}
         public static Chunk GetChunk(ChunkCoords chunkCoords)
         {
             var chunk = localMap.Chunk(chunkCoords);

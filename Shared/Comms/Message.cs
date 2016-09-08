@@ -50,14 +50,14 @@ namespace Sean.Shared.Comms
     public class MapRequestMessage
     {
         [DataMember]
-        public Position Position { get; set; }
+        public ChunkCoords Coords { get; set; }
     }
 
     [DataContract]
     public class MapIgnoreMessage
     {
         [DataMember]
-        public Position Position { get; set; }
+        public ChunkCoords Coords { get; set; }
     }
 
     [DataContract]
@@ -160,8 +160,8 @@ namespace Sean.Shared.Comms
             if (Response != null) text.Append($"Response({Response.Code},{Response.Message}) ");
             if (Login != null) text.Append($"Login({Login.Username}) ");
             if (Say != null) text.Append($"Say({Say.Text}) ");
-            if (MapRequest != null) text.Append($"MapRequest({MapRequest.Position}) ");
-            if (MapIgnore != null) text.Append($"MapIgnore({MapIgnore.Position}) ");
+            if (MapRequest != null) text.Append($"MapRequest({MapRequest.Coords}) ");
+            if (MapIgnore != null) text.Append($"MapIgnore({MapIgnore.Coords}) ");
             if (Map != null) text.Append($"Map({Map.MinPosition}) ");
             if (MapUpdate != null) text.Append($"MapUpdate({MapUpdate.Position}={MapUpdate.NewBlock}) ");
             if (MapCharacterUpdate != null) text.Append($"MapCharacterUpdate({MapCharacterUpdate.CharacterId}->{MapCharacterUpdate.Position}) ");

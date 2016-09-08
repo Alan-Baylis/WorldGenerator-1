@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Sean.WorldGenerator;
+using Sean.Shared;
 
 namespace Sean.WorldServer
 {

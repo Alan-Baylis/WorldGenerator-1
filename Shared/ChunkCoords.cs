@@ -1,23 +1,25 @@
 ﻿using Sean.Shared;
 
-namespace Sean.WorldGenerator
+namespace Sean.Shared
 {
 	public struct ChunkCoords
 	{
+        public const int CHUNK_SIZE = 32;
+
 		public ChunkCoords(int x, int z)
 		{
 			X = x;
 			Z = z;
-            WorldCoordsX = X * Settings.CHUNK_SIZE;
-            WorldCoordsZ = Z * Settings.CHUNK_SIZE;
+            WorldCoordsX = X * CHUNK_SIZE;
+            WorldCoordsZ = Z * CHUNK_SIZE;
 		}
             
 		public ChunkCoords(ref Coords coords)
 		{
-            X = coords.Xblock / Settings.CHUNK_SIZE;
-            Z = coords.Zblock / Settings.CHUNK_SIZE;
-            WorldCoordsX = X * Settings.CHUNK_SIZE;
-            WorldCoordsZ = Z * Settings.CHUNK_SIZE;
+            X = coords.Xblock / CHUNK_SIZE;
+            Z = coords.Zblock / CHUNK_SIZE;
+            WorldCoordsX = X * CHUNK_SIZE;
+            WorldCoordsZ = Z * CHUNK_SIZE;
 		}
 
 		public readonly int X;

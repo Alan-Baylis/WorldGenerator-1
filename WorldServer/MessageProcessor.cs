@@ -43,13 +43,11 @@ namespace Sean.WorldServer
         }
         private static void ProcessMapRequest(Guid clientId, Message msg)
         {
-            var chunkCoord = World.GetChunkCoords(msg.MapRequest.Position);
-            WorldEvents.ChunkRegister(chunkCoord, clientId);
+            WorldEvents.ChunkRegister(msg.MapRequest.Coords, clientId);
         }
         private static void ProcessMapIgnore(Guid clientId, Message msg)
         {
-            var chunkCoord = World.GetChunkCoords(msg.MapRequest.Position);
-            WorldEvents.ChunkIgnore(chunkCoord, clientId);
+            WorldEvents.ChunkIgnore(msg.MapIgnore.Coords, clientId);
             SendOk(clientId);
         }
         private static void ProcessMapUpdate(Guid clientId, Message msg)

@@ -45,7 +45,6 @@
     <Compile Include="Shared\AddBlock.cs" />
     <Compile Include="Shared\Blocks.cs" />
     <Compile Include="Shared\Chunk.cs" />
-    <Compile Include="Shared\ChunkCoords.cs" />
     <Compile Include="Shared\GameAction.cs" />
     <Compile Include="Shared\GameObject.cs" />
     <Compile Include="Shared\LightSource.cs" />
