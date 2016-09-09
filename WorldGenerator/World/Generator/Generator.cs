@@ -6,7 +6,7 @@ using NoiseLibrary;
 
 namespace Sean.WorldGenerator
 {
-	internal class Generator
+	public class Generator
 	{
         private CImplicitModuleBase terrainGenerator;
         private CImplicitModuleBase biosphereGenerator;

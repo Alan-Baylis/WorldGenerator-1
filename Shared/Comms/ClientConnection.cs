@@ -133,14 +133,14 @@ namespace Sean.Shared.Comms
                 while (true) 
                 {
                     Message message = GetQueuedMessage();
-                    message.DestId = clientId;
-                    message.FromId = serverId;
                     if (message == null)
                     {
                         Thread.Sleep(500);
                     }
                     else
                     {
+                        message.DestId = clientId;
+                        message.FromId = serverId;
                         Console.WriteLine($"Sending: {message.ToString()}");                    
                         var messageJson = Utilities.JsonSerialize<Message>(message);
                         var msgBuffer = Encoding.ASCII.GetBytes(messageJson);

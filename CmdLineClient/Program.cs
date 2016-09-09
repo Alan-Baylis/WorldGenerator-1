@@ -32,6 +32,14 @@ namespace CmdLineClient
                     }
                 });
 
+                ClientConnection.BroadcastMessage(new Message()
+                {
+                    MapRequest = new MapRequestMessage()
+                    {
+                        Coords = new Sean.Shared.ChunkCoords(1, 1)
+                    }
+                });
+
                 Console.WriteLine("Press any key to exit");
                 Console.ReadKey();
             }

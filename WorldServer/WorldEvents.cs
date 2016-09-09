@@ -7,8 +7,12 @@ namespace Sean.WorldServer
 {
     public static class WorldEvents
     {
-        private static Dictionary<ChunkCoords, List<Guid> > registrations
-            = new Dictionary<ChunkCoords, List<Guid> > ();
+        private static Dictionary<ChunkCoords, List<Guid>> registrations;
+
+        static WorldEvents()
+        {
+            registrations = new Dictionary<ChunkCoords, List<Guid>>();
+        }
 
         public static void ChunkRegister(ChunkCoords chunkCoords, Guid clientId)
         {

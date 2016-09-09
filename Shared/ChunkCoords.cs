@@ -1,8 +1,10 @@
 ﻿using Sean.Shared;
+using System.Runtime.Serialization;
 
 namespace Sean.Shared
 {
-	public struct ChunkCoords
+    [DataContract]
+    public struct ChunkCoords
 	{
         public const int CHUNK_SIZE = 32;
 
@@ -22,7 +24,9 @@ namespace Sean.Shared
             WorldCoordsZ = Z * CHUNK_SIZE;
 		}
 
+        [DataMember]
 		public readonly int X;
+        [DataMember]
 		public readonly int Z;
 
 		/// <summary>X coord of this chunk in world block coords.</summary>
