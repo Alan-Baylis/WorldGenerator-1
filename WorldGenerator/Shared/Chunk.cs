@@ -624,7 +624,7 @@ namespace Sean.WorldGenerator
             using (var memoryStream = new System.IO.MemoryStream ()) {
                 for (var x = 0; x < Settings.CHUNK_SIZE; x++) {
                     for (var z = 0; z < Settings.CHUNK_SIZE; z++) {
-                        for (var y = 0; y <= Settings.CHUNK_HEIGHT; y++) {
+                        for (var y = 0; y < Settings.CHUNK_HEIGHT; y++) {
                             memoryStream.WriteByte ((byte)Blocks[x, y, z].Type);
                         }
                     }

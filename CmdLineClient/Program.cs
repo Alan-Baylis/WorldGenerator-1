@@ -36,7 +36,7 @@ namespace CmdLineClient
                 {
                     MapRequest = new MapRequestMessage()
                     {
-                        Coords = new Sean.Shared.ChunkCoords(1, 1)
+                        Coords = new Sean.Shared.ChunkCoords(100, 100)
                     }
                 });
 
