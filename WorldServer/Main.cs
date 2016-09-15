@@ -57,6 +57,7 @@ namespace Sean.WorldServer
             //otpServer.Start();
 
             ServerSocketListener.Run();
+            WebSocketListener.Run ();
             //ClientSocket.SendMessage ();
 
             // Rest web server
