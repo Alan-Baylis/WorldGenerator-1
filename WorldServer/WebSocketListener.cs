@@ -1,12 +1,54 @@
 ﻿using System;
 using System.Threading;
-using WebSocketSharp;
-using WebSocketSharp.Server;
-using WebSocketSharp.Net;
 using System.Text;
+using WebSocketSharp.Server;
+using WebSocketSharp;
 
 namespace Sean.WorldServer
 {
+    // See http://sta.github.io/websocket-sharp/
+
+    public class Laputa : WebSocketBehavior
+    {
+        protected override void OnMessage(MessageEventArgs e)
+        {
+            var msg = e.Data == "BALUS"
+                      ? "I've been balused already..."
+                      : "I'm not available now.";
+
+            Send(msg);
+        }
+    }
+
+    public class Echo : WebSocketBehavior
+    {
+        protected override void OnMessage(MessageEventArgs e)
+        {
+            Send(e.Data);
+        }
+    }
+    public class Chat : WebSocketBehavior
+    {
+        private string _suffix;
+
+        public Chat()
+          : this(null)
+        {
+        }
+
+        public Chat(string suffix)
+        {
+            _suffix = suffix ?? String.Empty;
+        }
+
+        protected override void OnMessage(MessageEventArgs e)
+        {
+            Sessions.Broadcast(e.Data + _suffix);
+        }
+    }
+
+
+    
     public class WebSocketListener
     {
         public WebSocketListener ()
@@ -22,24 +64,17 @@ namespace Sean.WorldServer
         {
             try 
             {
+                var wssv = new WebSocketServer("ws://dragonsnest.far");
+                wssv.AddWebSocketService<Laputa>("/Laputa");
+                wssv.AddWebSocketService<Echo>("/Echo");
+                wssv.AddWebSocketService<Chat>("/Chat");
+                wssv.AddWebSocketService<Chat>("/ChatWithNyan", () => new Chat(" Nyan!"));
+                wssv.Start();
+                while (true) { }
+                //Console.ReadKey(true);
+                //wssv.Stop();
+     
                 /*
-                using (var ws = new WebSocket ("ws://127.0.0.1/")) 
-                {
-                    ws.OnMessage = e => {
-                        Console.WriteLine ("Ws says: " + e.Data);
-                    };
-
-                    ws.Connect ();
-                    ws.Send ("ws pong");
-            
-                }
-                */
-
-                /* Create a new instance of the HttpServer class.
-                *
-                * If you would like to provide the secure connection, you should create the instance with
-                * the 'secure' parameter set to true, or the https scheme HTTP URL.
-                */
                 var ServerListeningPort = 8081;
                 var httpsv = new HttpServer (ServerListeningPort);
                 Console.WriteLine($"Websocket waiting for a connection on port {ServerListeningPort}...");
@@ -55,24 +90,6 @@ namespace Sean.WorldServer
                 // To change the wait time for the response to the WebSocket Ping or Close.
                 httpsv.WaitTime = TimeSpan.FromSeconds (2);
                 #endif
-                /* To provide the secure connection.
-                var cert = ConfigurationManager.AppSettings["ServerCertFile"];
-                var passwd = ConfigurationManager.AppSettings["CertFilePassword"];
-                httpsv.SslConfiguration.ServerCertificate = new X509Certificate2 (cert, passwd);
-                */
-
-                /* To provide the HTTP Authentication (Basic/Digest).
-                httpsv.AuthenticationSchemes = AuthenticationSchemes.Basic;
-                httpsv.Realm = "WebSocket Test";
-                httpsv.UserCredentialsFinder = id => {
-                    var name = id.Name;
-
-                    // Return user name, password, and roles.
-                    return name == "nobita"
-                        ? new NetworkCredential (name, "password", "gunfighter")
-                            : null; // If the user credentials aren't found.
-                };
-                */
 
                 // To set the document root path.
                 if (System.IO.Directory.Exists("../../../../Html5Client/"))
@@ -113,49 +130,19 @@ namespace Sean.WorldServer
                 //httpsv.AddWebSocketService<Echo> ("/Echo");
                 httpsv.AddWebSocketService<WebSocketSession> ("/WebSocket");
 
-                /* Add the WebSocket service with initializing.
-                httpsv.AddWebSocketService<Chat> (
-                "/Chat",
-                () => new Chat ("Anon#") {
-                  Protocol = "chat",
-                  // To emit a WebSocket.OnMessage event when receives a Ping.
-                  EmitOnPing = true,
-                  // To ignore the Sec-WebSocket-Extensions header.
-                  IgnoreExtensions = true,
-                  // To validate the Origin header.
-                  OriginValidator = val => {
-                    // Check the value of the Origin header, and return true if valid.
-                    Uri origin;
-                    return !val.IsNullOrEmpty () &&
-                           Uri.TryCreate (val, UriKind.Absolute, out origin) &&
-                           origin.Host == "localhost";
-                  },
-                  // To validate the Cookies.
-                  CookiesValidator = (req, res) => {
-                    // Check the Cookies in 'req', and set the Cookies to send to the client with 'res'
-                    // if necessary.
-                    foreach (Cookie cookie in req) {
-                      cookie.Expired = true;
-                      res.Add (cookie);
-                    }
-
-                    return true; // If valid.
-                  }
-                });
-                */
-
                 httpsv.Start ();
                 if (httpsv.IsListening) {
                     Console.WriteLine ("Listening on port {0}, and providing WebSocket services:", httpsv.Port);
                     foreach (var path in httpsv.WebSocketServices.Paths)
                         Console.WriteLine ("- {0}", path);
                 }
-
+                
                 while (true)
                 {}
 
                 //httpsv.Stop ();
                 //Console.WriteLine("Ending Listening Server");
+                */
             }
             catch (Exception e) 
             {
@@ -164,6 +151,7 @@ namespace Sean.WorldServer
         }
     }
 
+    /*
     public class WebSocketSession : WebSocketBehavior
     {
         protected override void OnMessage (MessageEventArgs e)
@@ -175,5 +163,7 @@ namespace Sean.WorldServer
             Send (msg);
         }
     }
+    */
+    
 }
 
