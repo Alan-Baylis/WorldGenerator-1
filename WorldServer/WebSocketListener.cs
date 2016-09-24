@@ -3,6 +3,7 @@ using System.Threading;
 using System.Text;
 using WebSocketSharp.Server;
 using WebSocketSharp;
+using System.Net;
 
 namespace Sean.WorldServer
 {
@@ -64,32 +65,31 @@ namespace Sean.WorldServer
         {
             try 
             {
-                var wssv = new WebSocketServer("ws://dragonsnest.far");
+                var wssv = new WebSocketServer("ws://localhost:8083");
                 wssv.AddWebSocketService<Laputa>("/Laputa");
                 wssv.AddWebSocketService<Echo>("/Echo");
+                wssv.AddWebSocketService<Echo>("/WebSocket");
                 wssv.AddWebSocketService<Chat>("/Chat");
                 wssv.AddWebSocketService<Chat>("/ChatWithNyan", () => new Chat(" Nyan!"));
                 wssv.Start();
-                while (true) { }
-                //Console.ReadKey(true);
-                //wssv.Stop();
+               
      
-                /*
-                var ServerListeningPort = 8081;
+
+                var ServerListeningPort = 8080;
                 var httpsv = new HttpServer (ServerListeningPort);
-                Console.WriteLine($"Websocket waiting for a connection on port {ServerListeningPort}...");
+                Console.WriteLine($"Webserver waiting for a connection on port {ServerListeningPort}...");
                 //var httpsv = new HttpServer (5963, true);
                 //var httpsv = new HttpServer (System.Net.IPAddress.Parse ("127.0.0.1"), 4649);
                 //var httpsv = new HttpServer (System.Net.IPAddress.Parse ("127.0.0.1"), 5963, true);
                 //var httpsv = new HttpServer ("http://localhost:4649");
                 //var httpsv = new HttpServer ("https://localhost:5963");
-                #if DEBUG
-                // To change the logging level.
-                httpsv.Log.Level = LogLevel.Trace;
+                //#if DEBUG
+                //// To change the logging level.
+                //httpsv.Log.Level = LogLevel.Trace;
 
-                // To change the wait time for the response to the WebSocket Ping or Close.
-                httpsv.WaitTime = TimeSpan.FromSeconds (2);
-                #endif
+                //// To change the wait time for the response to the WebSocket Ping or Close.
+                //httpsv.WaitTime = TimeSpan.FromSeconds (2);
+                //#endif
 
                 // To set the document root path.
                 if (System.IO.Directory.Exists("../../../../Html5Client/"))
@@ -128,11 +128,11 @@ namespace Sean.WorldServer
 
                 // Add the WebSocket services.
                 //httpsv.AddWebSocketService<Echo> ("/Echo");
-                httpsv.AddWebSocketService<WebSocketSession> ("/WebSocket");
+                //httpsv.AddWebSocketService<WebSocketSession> ("/WebSocket");
 
                 httpsv.Start ();
                 if (httpsv.IsListening) {
-                    Console.WriteLine ("Listening on port {0}, and providing WebSocket services:", httpsv.Port);
+                    Console.WriteLine ("Listening on port {0}", httpsv.Port);
                     foreach (var path in httpsv.WebSocketServices.Paths)
                         Console.WriteLine ("- {0}", path);
                 }
@@ -142,7 +142,7 @@ namespace Sean.WorldServer
 
                 //httpsv.Stop ();
                 //Console.WriteLine("Ending Listening Server");
-                */
+
             }
             catch (Exception e) 
             {
