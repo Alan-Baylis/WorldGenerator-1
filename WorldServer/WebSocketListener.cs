@@ -4,6 +4,7 @@ using System.Text;
 using WebSocketSharp.Server;
 using WebSocketSharp;
 using System.Net;
+using Sean.Shared.Comms;
 
 namespace Sean.WorldServer
 {
@@ -28,23 +29,68 @@ namespace Sean.WorldServer
             Send(e.Data);
         }
     }
+
     public class Chat : WebSocketBehavior
     {
-        private string _suffix;
-
         public Chat()
-          : this(null)
         {
+            IgnoreExtensions = true;
+            id = Guid.NewGuid ();
+            Console.WriteLine ($"Connected {ID}={id}");
         }
 
-        public Chat(string suffix)
-        {
-            _suffix = suffix ?? String.Empty;
-        }
+        private Sean.Shared.Comms.ClientConnection.ProcessMessage processMessageFn = MessageProcessor.ServerProcessMessage;
+        private const int MaxMessageLength = 1024;
+        private const int MaxDataMessageLength = 1048576;
+        private Guid id;
 
         protected override void OnMessage(MessageEventArgs e)
         {
-            Sessions.Broadcast(e.Data + _suffix);
+            try
+            {
+                Console.WriteLine ($"received from {id}");
+                var data = e.RawData;
+
+                // Message
+                byte[] lenBuffer = new byte[2];
+                Array.Copy (data, 0, lenBuffer, 0, 2);
+                int messageLength = data[0] * 256 + data[1];
+                if (messageLength > MaxMessageLength) throw new ApplicationException ($"Message length {messageLength} too large"); 
+                if (messageLength == 0) throw new ApplicationException ($"Message length 0");
+
+                byte[] msgBuffer = new byte[messageLength];
+                Array.Copy (data, 2, msgBuffer, 0, messageLength);
+                var jsonMessage = Encoding.ASCII.GetString(msgBuffer);
+                var msg = Utilities.JsonDeserialize<Message>(jsonMessage);
+
+                // Data
+                byte[] dataLenBuffer = new byte[4];
+                Array.Copy (data, 2 + messageLength, dataLenBuffer, 0, 4);
+                int dataLength = BitConverter.ToInt32(dataLenBuffer, 0);
+                if (dataLength > MaxDataMessageLength) throw new ApplicationException ($"Message data length {dataLength} too large");
+                Console.WriteLine($"[ClientConnection.DoSocketReader] DataLength:{dataLength}");
+
+                if (dataLength > 0)
+                {
+                    msg.Data = new byte[dataLength];
+                    Array.Copy (data, 2 + messageLength + 4, msg.Data, 0, dataLength);
+                }
+
+                // Process Message
+                Console.WriteLine($"Received: {msg.ToString()}");                    
+                processMessageFn(id, msg);
+
+                Sessions.Broadcast(e.Data);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[OnMessage] Exception: {ex.Message}");
+            }
+        }
+
+        protected virtual void OnError (ErrorEventArgs e)
+        {
+            Console.WriteLine ($"OnError {ID}: {e.Message}");
         }
     }
 
@@ -68,9 +114,8 @@ namespace Sean.WorldServer
                 var wssv = new WebSocketServer("ws://localhost:8083");
                 wssv.AddWebSocketService<Laputa>("/Laputa");
                 wssv.AddWebSocketService<Echo>("/Echo");
-                wssv.AddWebSocketService<Echo>("/WebSocket");
+                wssv.AddWebSocketService<Chat>("/WebSocket");
                 wssv.AddWebSocketService<Chat>("/Chat");
-                wssv.AddWebSocketService<Chat>("/ChatWithNyan", () => new Chat(" Nyan!"));
                 wssv.Start();
                
      
