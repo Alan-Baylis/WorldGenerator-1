@@ -5,50 +5,41 @@ using WebSocketSharp.Server;
 using WebSocketSharp;
 using System.Net;
 using Sean.Shared.Comms;
+using System.Collections.Generic;
 
 namespace Sean.WorldServer
 {
     // See http://sta.github.io/websocket-sharp/
 
-    public class Laputa : WebSocketBehavior
-    {
-        protected override void OnMessage(MessageEventArgs e)
-        {
-            var msg = e.Data == "BALUS"
-                      ? "I've been balused already..."
-                      : "I'm not available now.";
+    //public class Echo : WebSocketBehavior
+    //{
+    //    protected override void OnMessage(MessageEventArgs e)
+    //    {
+    //        Send(e.Data);
+    //    }
+    //}
 
-            Send(msg);
-        }
-    }
-
-    public class Echo : WebSocketBehavior
+    public class WorldWebSocketClientConnection : WebSocketBehavior
     {
-        protected override void OnMessage(MessageEventArgs e)
-        {
-            Send(e.Data);
-        }
-    }
-
-    public class Chat : WebSocketBehavior
-    {
-        public Chat()
+        public WorldWebSocketClientConnection()
         {
             IgnoreExtensions = true;
-            id = Guid.NewGuid ();
-            Console.WriteLine ($"Connected {ID}={id}");
+            clientId = Guid.NewGuid ();
+            WebSocketListener.clientsList[clientId] = this;
+            Console.WriteLine ($"Connected {ID}={clientId}");
         }
 
         private Sean.Shared.Comms.ClientConnection.ProcessMessage processMessageFn = MessageProcessor.ServerProcessMessage;
         private const int MaxMessageLength = 1024;
         private const int MaxDataMessageLength = 1048576;
-        private Guid id;
+        private Guid clientId;
+        private Guid serverId = new Guid();
 
         protected override void OnMessage(MessageEventArgs e)
         {
             try
             {
-                Console.WriteLine ($"received from {id}");
+                Console.WriteLine ($"received from {clientId}");
                 var data = e.RawData;
 
                 // Message
@@ -78,9 +69,9 @@ namespace Sean.WorldServer
 
                 // Process Message
                 Console.WriteLine($"Received: {msg.ToString()}");                    
-                processMessageFn(id, msg);
+                processMessageFn(clientId, msg);
 
-                Sessions.Broadcast(e.Data);
+                //Sessions.Broadcast(e.Data);
             }
             catch (Exception ex)
             {
@@ -88,7 +79,38 @@ namespace Sean.WorldServer
             }
         }
 
-        protected virtual void OnError (ErrorEventArgs e)
+        public void SendMessage(Message message)
+        {
+            message.DestId = clientId;
+            message.FromId = serverId;
+            Console.WriteLine($"Sending: {message.ToString()}");
+
+            using (var memoryStream = new System.IO.MemoryStream())
+            {
+                var messageJson = Utilities.JsonSerialize<Message>(message);
+                var msgBuffer = Encoding.ASCII.GetBytes(messageJson);
+
+                memoryStream.WriteByte((byte)(msgBuffer.Length / 256));
+                memoryStream.WriteByte((byte)(msgBuffer.Length % 256));
+                Console.WriteLine($"[SendMessage] Writing message length:{msgBuffer.Length}");
+                memoryStream.Write(msgBuffer, 0, msgBuffer.Length);
+
+                var dataLength = message.Data == null ? 0 : message.Data.Length;
+                byte[] intBytes = BitConverter.GetBytes(dataLength);
+                memoryStream.WriteByte(intBytes[0]);
+                memoryStream.WriteByte(intBytes[1]);
+                memoryStream.WriteByte(intBytes[2]);
+                memoryStream.WriteByte(intBytes[3]);
+
+                Console.WriteLine($"[SendMessage] Writing data length:{dataLength}");
+                if (message.Data != null)
+                    memoryStream.Write(message.Data, 0, message.Data.Length);
+
+                Send(memoryStream.ToArray());
+            }
+        }
+
+        protected override void OnError (ErrorEventArgs e)
         {
             Console.WriteLine ($"OnError {ID}: {e.Message}");
         }
@@ -98,6 +120,8 @@ namespace Sean.WorldServer
     
     public class WebSocketListener
     {
+        public static Dictionary<Guid, WorldWebSocketClientConnection> clientsList = new Dictionary<Guid, WorldWebSocketClientConnection>();
+
         public WebSocketListener ()
         {
         }
@@ -107,87 +131,27 @@ namespace Sean.WorldServer
             Thread thread = new Thread (new ThreadStart (StartListening));
             thread.Start ();
         }
+
+        public static void SendMessage(Guid clientId, Message message)
+        {
+            if (!clientsList.ContainsKey(clientId))
+                return;
+            clientsList[clientId].SendMessage(message);
+        }
+
         private static void StartListening() 
         {
             try 
             {
-                var wssv = new WebSocketServer("ws://localhost:8083");
-                wssv.AddWebSocketService<Laputa>("/Laputa");
-                wssv.AddWebSocketService<Echo>("/Echo");
-                wssv.AddWebSocketService<Chat>("/WebSocket");
-                wssv.AddWebSocketService<Chat>("/Chat");
+                var ServerListeningPort = 8083;
+                var wssv = new WebSocketServer($"ws://localhost:{ServerListeningPort}");
+                Console.WriteLine($"Websocket waiting for a connection on port {ServerListeningPort}...");
+                //wssv.AddWebSocketService<Echo>("/Echo");
+                wssv.AddWebSocketService<WorldWebSocketClientConnection>("/WebSocket");
                 wssv.Start();
                
-     
-
-                var ServerListeningPort = 8080;
-                var httpsv = new HttpServer (ServerListeningPort);
-                Console.WriteLine($"Webserver waiting for a connection on port {ServerListeningPort}...");
-                //var httpsv = new HttpServer (5963, true);
-                //var httpsv = new HttpServer (System.Net.IPAddress.Parse ("127.0.0.1"), 4649);
-                //var httpsv = new HttpServer (System.Net.IPAddress.Parse ("127.0.0.1"), 5963, true);
-                //var httpsv = new HttpServer ("http://localhost:4649");
-                //var httpsv = new HttpServer ("https://localhost:5963");
-                //#if DEBUG
-                //// To change the logging level.
-                //httpsv.Log.Level = LogLevel.Trace;
-
-                //// To change the wait time for the response to the WebSocket Ping or Close.
-                //httpsv.WaitTime = TimeSpan.FromSeconds (2);
-                //#endif
-
-                // To set the document root path.
-                if (System.IO.Directory.Exists("../../../../Html5Client/"))
-                    httpsv.RootPath = "../../../../Html5Client/"; 
-                else
-                    httpsv.RootPath = "../../Public/";
-
-                // To set the HTTP GET method event.
-                httpsv.OnGet += (sender, e) => {
-                    var req = e.Request;
-                    var res = e.Response;
-
-                    var path = req.RawUrl;
-                    if (path == "/")
-                        path += "index.html";
-
-                    var content = httpsv.GetFile (path);
-                    if (content == null) {
-                        res.StatusCode = (int) HttpStatusCode.NotFound;
-                        return;
-                    }
-
-                    if (path.EndsWith (".html")) {
-                        res.ContentType = "text/html";
-                        res.ContentEncoding = Encoding.UTF8;
-                    }
-
-                    res.WriteContent (content);
-                };
-
-                // Not to remove the inactive WebSocket sessions periodically.
-                //httpsv.KeepClean = false;
-
-                // To resolve to wait for socket in TIME_WAIT state.
-                //httpsv.ReuseAddress = true;
-
-                // Add the WebSocket services.
-                //httpsv.AddWebSocketService<Echo> ("/Echo");
-                //httpsv.AddWebSocketService<WebSocketSession> ("/WebSocket");
-
-                httpsv.Start ();
-                if (httpsv.IsListening) {
-                    Console.WriteLine ("Listening on port {0}", httpsv.Port);
-                    foreach (var path in httpsv.WebSocketServices.Paths)
-                        Console.WriteLine ("- {0}", path);
-                }
-                
                 while (true)
                 {}
-
-                //httpsv.Stop ();
-                //Console.WriteLine("Ending Listening Server");
-
             }
             catch (Exception e) 
             {
@@ -195,20 +159,5 @@ namespace Sean.WorldServer
             }
         }
     }
-
-    /*
-    public class WebSocketSession : WebSocketBehavior
-    {
-        protected override void OnMessage (MessageEventArgs e)
-        {
-            Console.WriteLine("[OnMessage]");
-            var name = Context.QueryString["name"];
-            var msg = !name.IsNullOrEmpty () ? String.Format ("'{0}' to {1}", e.Data, 
-                name) : e.Data;
-            Send (msg);
-        }
-    }
-    */
-    
 }
 

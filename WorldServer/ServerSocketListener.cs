@@ -30,7 +30,7 @@ namespace Sean.WorldServer
 
                 TcpListener serverSocket = new TcpListener(localEP);
                 serverSocket.Start();
-                Console.WriteLine($"Waiting for binary connection on port {ServerListenPort}...");
+                Console.WriteLine($"TcpSocket waiting for a connection on port {ServerListenPort}...");
                 while (true) {
                     var socket = serverSocket.AcceptTcpClient();
                     Console.WriteLine("Client joined");

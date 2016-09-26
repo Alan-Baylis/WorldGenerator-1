@@ -32,7 +32,7 @@ namespace Sean.WorldServer
             {
                 Pong = new PongMessage() { Message = pingMsg.Ping.Message }
             };
-            ClientConnection.EnqueueMessage(clientId, pongMsg);
+            SendMessage(clientId, pongMsg);
         }
         private static void ProcessLogin(Guid clientId, Message msg)
         {
@@ -40,6 +40,7 @@ namespace Sean.WorldServer
         }
         private static void ProcessSay(Guid clientId, Message msg)
         {
+            Console.WriteLine($"{clientId} says \"{msg.Say.Text}\"");
         }
         private static void ProcessMapRequest(Guid clientId, Message msg)
         {
@@ -59,13 +60,20 @@ namespace Sean.WorldServer
             SendOk(clientId); // TODO
         }
 
+        private static void SendMessage(Guid clientId, Message msg)
+        {
+            Console.WriteLine($"[MessageProcessor.SendMessage] Sending message to {clientId}");
+            ClientConnection.EnqueueMessage(clientId, msg);
+            WebSocketListener.SendMessage(clientId, msg);
+        }
+
         private static void SendOk(Guid clientId)
         {
             var msg = new Message()
             {
                 Response = new ResponseMessage() { Code = 0 }
             };
-            ClientConnection.EnqueueMessage(clientId, msg);
+            SendMessage(clientId, msg);
         }
         public static void SendMap(Guid clientId, Chunk chunk)
         {
@@ -78,7 +86,7 @@ namespace Sean.WorldServer
                 },
                 Data = chunk.Serialize()
             };
-            ClientConnection.EnqueueMessage(clientId, msg);
+            SendMessage(clientId, msg);
         }
 
         public static void SendError(Guid clientId, string reason)
@@ -91,7 +99,7 @@ namespace Sean.WorldServer
                     Message = reason
                 }
             };
-            ClientConnection.EnqueueMessage(clientId, msg);
+            SendMessage(clientId, msg);
         }
     }
 }
