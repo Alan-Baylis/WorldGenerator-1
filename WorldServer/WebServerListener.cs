@@ -9,14 +9,19 @@ namespace Sean.WorldServer
 {
     public class WebServerListener
     {
+        private static Thread thread;
         public WebServerListener()
         {
         }
             
         public static void Run() 
         {
-            Thread thread = new Thread (new ThreadStart (StartListening));
+            thread = new Thread (new ThreadStart (StartListening));
             thread.Start ();
+        }
+        public static void Stop()
+        {
+            thread.Abort();
         }
         private static void StartListening() 
         {

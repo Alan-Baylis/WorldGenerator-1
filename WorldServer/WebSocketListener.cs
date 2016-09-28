@@ -19,6 +19,53 @@ namespace Sean.WorldServer
     //    }
     //}
 
+    public class WebSocketListener
+    {
+        public static Dictionary<Guid, WorldWebSocketClientConnection> clientsList = new Dictionary<Guid, WorldWebSocketClientConnection>();
+        private static Thread thread;
+
+        public WebSocketListener()
+        {
+        }
+
+        public static void Run()
+        {
+            thread = new Thread(new ThreadStart(StartListening));
+            thread.Start();
+        }
+        public static void Stop()
+        {
+            thread.Abort();
+        }
+        public static void SendMessage(Guid clientId, Message message)
+        {
+            if (!clientsList.ContainsKey(clientId))
+                return;
+            clientsList[clientId].SendMessage(message);
+        }
+
+        private static void StartListening()
+        {
+            try
+            {
+                var ServerListeningPort = 8083;
+                var wssv = new WebSocketServer($"ws://localhost:{ServerListeningPort}");
+                Console.WriteLine($"Websocket waiting for a connection on port {ServerListeningPort}...");
+                //wssv.AddWebSocketService<Echo>("/Echo");
+                wssv.AddWebSocketService<WorldWebSocketClientConnection>("/WebSocket");
+                wssv.Start();
+
+                while (true)
+                { }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception caught in WebSocketListener - {0}", e.ToString());
+            }
+        }
+    }
+
+
     public class WorldWebSocketClientConnection : WebSocketBehavior
     {
         public WorldWebSocketClientConnection()
@@ -116,48 +163,5 @@ namespace Sean.WorldServer
         }
     }
 
-
-    
-    public class WebSocketListener
-    {
-        public static Dictionary<Guid, WorldWebSocketClientConnection> clientsList = new Dictionary<Guid, WorldWebSocketClientConnection>();
-
-        public WebSocketListener ()
-        {
-        }
-            
-        public static void Run() 
-        {
-            Thread thread = new Thread (new ThreadStart (StartListening));
-            thread.Start ();
-        }
-
-        public static void SendMessage(Guid clientId, Message message)
-        {
-            if (!clientsList.ContainsKey(clientId))
-                return;
-            clientsList[clientId].SendMessage(message);
-        }
-
-        private static void StartListening() 
-        {
-            try 
-            {
-                var ServerListeningPort = 8083;
-                var wssv = new WebSocketServer($"ws://localhost:{ServerListeningPort}");
-                Console.WriteLine($"Websocket waiting for a connection on port {ServerListeningPort}...");
-                //wssv.AddWebSocketService<Echo>("/Echo");
-                wssv.AddWebSocketService<WorldWebSocketClientConnection>("/WebSocket");
-                wssv.Start();
-               
-                while (true)
-                {}
-            }
-            catch (Exception e) 
-            {
-                Console.WriteLine("Exception caught in WebSocketListener - {0}", e.ToString());
-            }
-        }
-    }
 }
 

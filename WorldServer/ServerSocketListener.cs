@@ -11,16 +11,23 @@ namespace Sean.WorldServer
 	public class ServerSocketListener {
 		public static int ServerListenPort = 8084;
         private const int MaxMessageBufferSize = 1024;
+        private static Thread thread;
 
-	    // Thread signal.
-	    public static ManualResetEvent allDone = new ManualResetEvent(false);
+        // Thread signal.
+        public static ManualResetEvent allDone = new ManualResetEvent(false);
 
-	    public ServerSocketListener() {
+	    public ServerSocketListener()
+        {
 	    }
 
-	    public static void Run() {
-            Thread thread = new Thread (new ThreadStart (StartListening));
+	    public static void Run()
+        {
+            thread = new Thread (new ThreadStart (StartListening));
             thread.Start ();
+        }
+        public static void Stop()
+        {
+            thread.Abort();
         }
         private static void StartListening() {
             try {

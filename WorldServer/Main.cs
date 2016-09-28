@@ -69,6 +69,10 @@ namespace Sean.WorldServer
 
             Console.WriteLine("Press any key to exit");
             Console.ReadKey();
+            Console.WriteLine("Shutting down");
+            ServerSocketListener.Stop();
+            WebSocketListener.Stop();
+            WebServerListener.Stop();
 		}
 	}
 }
