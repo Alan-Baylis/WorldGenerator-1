@@ -144,16 +144,17 @@ namespace Sean.WorldServer
 
                 var dataLength = message.Data == null ? 0 : message.Data.Length;
                 byte[] intBytes = BitConverter.GetBytes(dataLength);
-                memoryStream.WriteByte(intBytes[0]);
-                memoryStream.WriteByte(intBytes[1]);
-                memoryStream.WriteByte(intBytes[2]);
                 memoryStream.WriteByte(intBytes[3]);
+                memoryStream.WriteByte(intBytes[2]);
+                memoryStream.WriteByte(intBytes[1]);
+                memoryStream.WriteByte(intBytes[0]);
 
                 Console.WriteLine($"[SendMessage] Writing data length:{dataLength}");
                 if (message.Data != null)
                     memoryStream.Write(message.Data, 0, message.Data.Length);
 
-                Send(memoryStream.ToArray());
+                var temp = memoryStream.ToArray();
+                Send(temp);
             }
         }
 

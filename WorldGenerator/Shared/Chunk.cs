@@ -41,17 +41,17 @@ namespace Sean.WorldGenerator
         public Position MinPosition { get { 
                 return 
                 new Position (
-                    ChunkCoords.WorldCoordsX * Settings.CHUNK_SIZE,
+                    ChunkCoords.WorldCoordsX,
                     0,
-                    ChunkCoords.WorldCoordsZ * Settings.CHUNK_SIZE);
+                    ChunkCoords.WorldCoordsZ);
             }
         }
         public Position MaxPosition { get { 
                 return 
                     new Position (
-                        ChunkCoords.WorldCoordsX+1 * Settings.CHUNK_SIZE,
+                        ChunkCoords.WorldCoordsX + Settings.CHUNK_SIZE,
                         Settings.CHUNK_HEIGHT,
-                        ChunkCoords.WorldCoordsZ+1 * Settings.CHUNK_SIZE);
+                        ChunkCoords.WorldCoordsZ + Settings.CHUNK_SIZE);
             }
         }
 
