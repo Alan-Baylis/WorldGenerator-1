@@ -47,6 +47,10 @@
     <Compile Include="MathHelper.cs" />
     <Compile Include="Comms\MessageParser.cs" />
     <Compile Include="ChunkCoords.cs" />
+    <Compile Include="Array.cs" />
+    <Compile Include="Blocks.cs" />
+    <Compile Include="Chunk.cs" />
+    <Compile Include="Chunks.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

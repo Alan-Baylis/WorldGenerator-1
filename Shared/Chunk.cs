@@ -4,28 +4,29 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Xml;
-using Sean.Shared;
 
-namespace Sean.WorldGenerator
+namespace Sean.Shared
 {
-    public class Chunk // TODO merge with shared
+	public class Chunk
 	{
+        public const int CHUNK_SIZE = 32; // TODO - move
+        public const int CHUNK_HEIGHT = 128; // TODO - move
 		#region Constructors
 		public Chunk(ChunkCoords chunkCoords)
 		{
             ChunkCoords = chunkCoords;
-            Blocks = new Blocks(Settings.CHUNK_SIZE, Settings.CHUNK_HEIGHT, Settings.CHUNK_SIZE);
+            Blocks = new Blocks(CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE);
             //HeightMap = new Array<int>(CHUNK_SIZE, CHUNK_SIZE);
 			//Clutters = new HashSet<Clutter>();
-			LightSources = new ConcurrentDictionary<int, LightSource>();
+			//LightSources = new ConcurrentDictionary<int, LightSource>();
 			//Mobs = new HashSet<Mob>();
-			GameItems = new ConcurrentDictionary<int, GameItemDynamic>();
+			//GameItems = new ConcurrentDictionary<int, GameItemDynamic>();
 		}
 		#endregion
 
 		#region Properties
-        public const int SIZE_IN_BYTES = Settings.CHUNK_SIZE * Settings.CHUNK_HEIGHT * Settings.CHUNK_SIZE * sizeof(ushort);
-        private const int CLUTTER_RENDER_DISTANCE = Settings.CHUNK_SIZE * 4;
+        public const int SIZE_IN_BYTES = CHUNK_SIZE * CHUNK_HEIGHT * CHUNK_SIZE * sizeof(ushort);
+        private const int CLUTTER_RENDER_DISTANCE = CHUNK_SIZE * 4;
 		private const int GAME_ITEM_RENDER_DISTANCE = CLUTTER_RENDER_DISTANCE;
 
 		public ChunkCoords ChunkCoords;
@@ -37,7 +38,7 @@ namespace Sean.WorldGenerator
 		public byte[,,] SkyLightMapInitial;
 		public byte[,,] ItemLightMapInitial;
 
-        public int ChunkSize {  get { return Settings.CHUNK_SIZE; } }
+        public int ChunkSize {  get { return CHUNK_SIZE; } }
         public Position MinPosition { get { 
                 return 
                 new Position (
@@ -49,9 +50,9 @@ namespace Sean.WorldGenerator
         public Position MaxPosition { get { 
                 return 
                     new Position (
-                        ChunkCoords.WorldCoordsX + Settings.CHUNK_SIZE,
-                        Settings.CHUNK_HEIGHT,
-                        ChunkCoords.WorldCoordsZ + Settings.CHUNK_SIZE);
+                        ChunkCoords.WorldCoordsX + CHUNK_SIZE,
+                        CHUNK_HEIGHT,
+                        ChunkCoords.WorldCoordsZ + CHUNK_SIZE);
             }
         }
 
@@ -63,11 +64,11 @@ namespace Sean.WorldGenerator
         /// Light sources contained in this chunk. Light sources can be stored at the chunk level only because they can never move off the chunk.
         /// TBD: when a light source is destroyed, does it become a GameItem?
         /// </summary>
-        public ConcurrentDictionary<int, LightSource> LightSources;
+        //public ConcurrentDictionary<int, LightSource> LightSources;
 
 		//public HashSet<Mob> Mobs; //also stored at World level in ConcurrentDictionary
 		
-		public ConcurrentDictionary<int, GameItemDynamic> GameItems; //also stored at World level
+		//public ConcurrentDictionary<int, GameItemDynamic> GameItems; //also stored at World level
 
 		/// <summary>Distance of the chunk from the player in number of blocks.</summary>
         public double DistanceFromPlayer(Coords coords)
@@ -167,14 +168,14 @@ namespace Sean.WorldGenerator
 		/// <remarks>The height map is used for lighting. Its also used to determine the players starting Y position.</remarks>
 		public void BuildHeightMap()
 		{
-            HeightMap = new Array<int> (Settings.CHUNK_SIZE,Settings.CHUNK_SIZE);
-            DeepestTransparentLevel = Settings.CHUNK_HEIGHT; //initialize to top of chunk until this gets calculated
+            HeightMap = new Array<int> (CHUNK_SIZE,CHUNK_SIZE);
+            DeepestTransparentLevel = CHUNK_HEIGHT; //initialize to top of chunk until this gets calculated
 			HighestNonAirLevel = 0; //initialize to bottom of chunk until this gets calculated
-            for (var x = 0; x < Settings.CHUNK_SIZE; x++)
+            for (var x = 0; x < CHUNK_SIZE; x++)
 			{
-                for (var z = 0; z < Settings.CHUNK_SIZE; z++)
+                for (var z = 0; z < CHUNK_SIZE; z++)
 				{
-                    for (var y = Settings.CHUNK_HEIGHT - 1; y >= 0; y--) //loop from the highest block position downward until we find a solid block
+                    for (var y = CHUNK_HEIGHT - 1; y >= 0; y--) //loop from the highest block position downward until we find a solid block
 					{
 						var block = Blocks[x, y, z];
 						if (y > HighestNonAirLevel && block.Type != Block.BlockType.Air) HighestNonAirLevel = y;
@@ -183,7 +184,7 @@ namespace Sean.WorldGenerator
 						break;
 					}
 
-                    for (var y = 0; y < Settings.CHUNK_HEIGHT - 1; y++) //loop from the base of the world upwards until finding a transparent block
+                    for (var y = 0; y < CHUNK_HEIGHT - 1; y++) //loop from the base of the world upwards until finding a transparent block
 					{
 						if (!Blocks[x, y, z].IsTransparent) continue;
 						if (y < DeepestTransparentLevel) DeepestTransparentLevel = y; //record this as the deepest transparent level if it is deeper then what we had previously
@@ -367,264 +368,16 @@ namespace Sean.WorldGenerator
         private const int CHUNK_UPDATE_INTERVAL = 1;
 		public bool WaterExpanding { get; set; }
         private const int WATER_UPDATE_INTERVAL = (int)(UPDATES_PER_SECOND * 1.5) / CHUNK_UPDATE_INTERVAL; //1.5s
-		/// <summary>Only called for SinglePlayer and Servers.</summary>
-		private void WaterExpand()
-		{
-			Debug.WriteLine("Water expanding in chunk {0}...", ChunkCoords);
-			var newWater = new List<Position>();
-            for (var i = 0; i < Settings.CHUNK_SIZE; i++)
-			{
-                for (var j = 0; j < Settings.CHUNK_HEIGHT; j++)
-				{
-                    for (var k = 0; k < Settings.CHUNK_SIZE; k++)
-					{
-						if (Blocks[i, j, k].Type != Block.BlockType.Water) continue;
-						var belowCurrent = new Position();
-						for (var q = 0; q < 5; q++)
-						{
-							Position adjacent;
-							switch (q)
-							{
-								case 0:
-									adjacent = new Position(ChunkCoords.WorldCoordsX + i, j - 1, ChunkCoords.WorldCoordsZ + k);
-									belowCurrent = adjacent;
-									break;
-								case 1:
-									adjacent = new Position(ChunkCoords.WorldCoordsX + i + 1, j, ChunkCoords.WorldCoordsZ + k);
-									break;
-								case 2:
-									adjacent = new Position(ChunkCoords.WorldCoordsX + i - 1, j, ChunkCoords.WorldCoordsZ + k);
-									break;
-								case 3:
-									adjacent = new Position(ChunkCoords.WorldCoordsX + i, j, ChunkCoords.WorldCoordsZ + k + 1);
-									break;
-								default:
-									adjacent = new Position(ChunkCoords.WorldCoordsX + i, j, ChunkCoords.WorldCoordsZ + k - 1);
-									break;
-							}
 
-							if (newWater.Contains(adjacent)) continue;
 
-							//if there's air or water below the current block, don't spread sideways
-                            if (q != 0 && World.IsValidBlockLocation(belowCurrent) && (Blocks[belowCurrent].Type == Block.BlockType.Air || Blocks[belowCurrent].Type == Block.BlockType.Water)) continue;
-                            if (World.IsValidBlockLocation(adjacent) && World.GetBlock(adjacent).Type == Block.BlockType.Air) newWater.Add(adjacent);
-						}
-					}
-				}
-			}
 
-			if (newWater.Count == 0)
-			{
-				WaterExpanding = false;
-				Debug.WriteLine("Water finished expanding in chunk {0}", ChunkCoords);
-				return;
-			}
-
-			var addBlocks = new List<AddBlock>();
-			Settings.ChunkUpdatesDisabled = true; //change blocks while updates are disabled so chunk is only rebuilt once
-            foreach (var newWaterPosition in newWater.Where(newWaterCoords => World.GetBlock(newWaterCoords).Type != Block.BlockType.Water))
-			{
-				World.PlaceBlock(newWaterPosition, Block.BlockType.Water);
-			    var temp = newWaterPosition;
-				addBlocks.Add(new AddBlock(ref temp, Block.BlockType.Water));
-			}
-			Settings.ChunkUpdatesDisabled = false;
-
-			if (addBlocks.Count > 0)
-			{
-// TODO - send to all players
-/*
-				foreach (var player in Server.Controller.Players.Values)
-				{
-					var addBlockMulti = new AddBlockMulti {ConnectedPlayer = player};
-					addBlockMulti.Blocks.AddRange(addBlocks);
-					addBlockMulti.Send();
-				}
-*/
-			}
-		}
-
-		public bool GrassGrowing { get; set; }
-		private const int GRASS_UPDATE_INTERVAL = UPDATES_PER_SECOND * 75 / CHUNK_UPDATE_INTERVAL; //75s
-		//private readonly int _grassOffset = Settings.Random.Next(0, GRASS_UPDATE_INTERVAL); //stagger grass growth randomly for each chunk
-		/// <summary>Only called for SinglePlayer and Servers.</summary>
-		private void GrassGrow()
-		{
-			var possibleChanges = new List<Tuple<Block.BlockType, Position>>();
-            for (var x = 0; x < Settings.CHUNK_SIZE; x++)
-			{
-				int worldX = ChunkCoords.WorldCoordsX + x;
-                for (var z = 0; z < Settings.CHUNK_SIZE; z++)
-				{
-					int worldZ = ChunkCoords.WorldCoordsZ + z;
-                    for (var y = 0; y <= Math.Min(Settings.CHUNK_HEIGHT - 1, HeightMap[x, z] + 1); y++) //look +1 above heightmap as water directly above heightmap could change to ice
-					{
-						var blockType = Blocks[x, y, z].Type;
-						switch (blockType)
-						{
-							case Block.BlockType.Grass:
-							case Block.BlockType.Dirt:
-							case Block.BlockType.Snow:
-							case Block.BlockType.Water:
-							case Block.BlockType.Sand:
-							case Block.BlockType.SandDark:
-								break;
-							default:
-								continue; //continue if this block type can never cause changes
-						}
-
-                        bool hasAirAbove = y >= Settings.CHUNK_HEIGHT - 1 || Blocks[x, y + 1, z].Type == Block.BlockType.Air;
-						bool isReceivingSunlight = y > HeightMap[x, z] || (hasAirAbove && World.HasAdjacentBlockReceivingDirectSunlight(worldX, y, worldZ));
-
-						switch (World.WorldType)
-						{
-							case WorldType.Grass:
-								if (isReceivingSunlight)
-								{
-									switch (blockType)
-									{
-										case Block.BlockType.Dirt:
-											if (hasAirAbove) possibleChanges.Add(new Tuple<Block.BlockType, Position>(Block.BlockType.Grass, new Position(worldX, y, worldZ)));
-											continue;
-										case Block.BlockType.Snow:
-											possibleChanges.Add(new Tuple<Block.BlockType, Position>(Block.BlockType.Dirt, new Position(worldX, y, worldZ)));
-											continue;
-									}
-								}
-								else
-								{
-									switch (blockType)
-									{
-										case Block.BlockType.Grass:
-										case Block.BlockType.Snow:
-											possibleChanges.Add(new Tuple<Block.BlockType, Position>(Block.BlockType.Dirt, new Position(worldX, y, worldZ)));
-											continue;
-									}
-								}
-								break;
-							case WorldType.Desert: //lighting doesnt matter for deserts
-								switch (blockType)
-								{
-									case Block.BlockType.Grass:
-									case Block.BlockType.Snow:
-										possibleChanges.Add(new Tuple<Block.BlockType, Position>(Block.BlockType.Sand, new Position(worldX, y, worldZ)));
-										continue;
-									case Block.BlockType.SandDark:
-										if (hasAirAbove) possibleChanges.Add(new Tuple<Block.BlockType, Position>(Block.BlockType.Sand, new Position(worldX, y, worldZ)));
-										continue;
-								}
-								break;
-							case WorldType.Winter:
-								switch (blockType)
-								{
-									case Block.BlockType.Water:
-										//water with air above and without more water below can freeze
-										//note: this will cause multiple lightbox updates and chunk queues if multiple water freezes at once because water -> ice is a change in transparency; therefore this is acceptable
-										if (hasAirAbove)
-										{
-											var hasWaterBelow = y > 0 && Blocks[x, y - 1, z].Type == Block.BlockType.Water;
-											if (!hasWaterBelow) possibleChanges.Add(new Tuple<Block.BlockType, Position>(Block.BlockType.Ice, new Position(worldX, y, worldZ)));
-										}
-										continue;
-								}
-								
-								if (isReceivingSunlight)
-								{
-									switch (blockType)
-									{
-										case Block.BlockType.Dirt:
-											if (hasAirAbove) possibleChanges.Add(new Tuple<Block.BlockType, Position>(Block.BlockType.Snow, new Position(worldX, y, worldZ)));
-											continue;
-										case Block.BlockType.Grass:
-											possibleChanges.Add(new Tuple<Block.BlockType, Position>(Block.BlockType.Snow, new Position(worldX, y, worldZ)));
-											continue;
-									}
-								}
-								else
-								{
-									switch (blockType)
-									{
-										case Block.BlockType.Grass:
-										case Block.BlockType.Snow:
-											possibleChanges.Add(new Tuple<Block.BlockType, Position>(Block.BlockType.Dirt, new Position(worldX, y, worldZ)));
-											continue;
-									}
-								}
-								break;
-						}
-					}
-				}
-			}
-
-			if (possibleChanges.Count == 0)
-			{
-				//this happens after a change is made in the chunk that did not cause any possible grass grow style changes
-				GrassGrowing = false;
-				Debug.WriteLine("Grass finished growing in chunk {0} No possible changes found", ChunkCoords);
-				return;
-			}
-			Debug.WriteLine("Grass growing in chunk {0} {1} possible change(s)", ChunkCoords, possibleChanges.Count);
-
-			var changesMade = 0;
-			var addBlocks = new List<AddBlock>(); //only gets used for servers
-			Settings.ChunkUpdatesDisabled = true; //change blocks while updates are disabled so chunk is only rebuilt once
-			{
-				foreach (var change in possibleChanges)
-				{
-					//add some randomness so the changes dont happen all at once
-					if (possibleChanges.Count > 1)
-					{
-						switch (change.Item1) //can assign different percentages based on block type
-						{
-							case Block.BlockType.Ice:
-								if (Settings.Random.NextDouble() > 0.05) continue; //give ice forming a very low chance because its a change in transparency and causes lightbox updates and must queue multiple chunks
-								break;
-							default:
-								if (Settings.Random.NextDouble() > 0.18) continue;
-								break;
-						}
-					}
-					else //when only one possible change is left, greatly increase its chance; prevents tons of chunks lingering performing the logic until the final change gets made
-					{
-						if (Settings.Random.NextDouble() > 0.5) continue;
-					}
-
-					changesMade++;
-					var changePosition = change.Item2;
-                    World.PlaceBlock(changePosition, change.Item1);
-					addBlocks.Add(new AddBlock(ref changePosition, change.Item1));
-				}
-			}
-			Settings.ChunkUpdatesDisabled = false;
-
-			//send updates to multiplayer clients
-			if (addBlocks.Count > 0)
-			{
-// TODO - send to all players
-/*
-				foreach (var player in Server.Controller.Players.Values)
-				{
-					var addBlockMulti = new AddBlockMulti {ConnectedPlayer = player};
-					addBlockMulti.Blocks.AddRange(addBlocks);
-					addBlockMulti.Send();
-				}
-*/
-			}
-
-			if (changesMade == possibleChanges.Count)
-			{
-				//when all possible changes have been made we can stop GrassGrowing here without waiting for the next iteration to confirm it
-				GrassGrowing = false;
-				Debug.WriteLine("Grass finished growing in chunk {0} All possible changes made", ChunkCoords);
-			}
-		}
 
         public byte[] Serialize()
         {
             using (var memoryStream = new System.IO.MemoryStream ()) {
-                for (var x = 0; x < Settings.CHUNK_SIZE; x++) {
-                    for (var z = 0; z < Settings.CHUNK_SIZE; z++) {
-                        for (var y = 0; y < Settings.CHUNK_HEIGHT; y++) {
+                for (var x = 0; x < CHUNK_SIZE; x++) {
+                    for (var z = 0; z < CHUNK_SIZE; z++) {
+                        for (var y = 0; y < CHUNK_HEIGHT; y++) {
                             memoryStream.WriteByte ((byte)Blocks[x, y, z].Type);
                         }
                     }
@@ -658,8 +411,8 @@ namespace Sean.WorldGenerator
 			if (xmlNode.Attributes == null) throw new Exception("Node attributes is null.");
 			xmlNode.Attributes.Append(xmlDocument.CreateAttribute("X")).Value = ChunkCoords.X.ToString();
 			xmlNode.Attributes.Append(xmlDocument.CreateAttribute("Z")).Value = ChunkCoords.Z.ToString();
-			xmlNode.Attributes.Append(xmlDocument.CreateAttribute("WaterExpanding")).Value = WaterExpanding.ToString();
-			xmlNode.Attributes.Append(xmlDocument.CreateAttribute("GrassGrowing")).Value = GrassGrowing.ToString();
+			//xmlNode.Attributes.Append(xmlDocument.CreateAttribute("WaterExpanding")).Value = WaterExpanding.ToString();
+			//xmlNode.Attributes.Append(xmlDocument.CreateAttribute("GrassGrowing")).Value = GrassGrowing.ToString();
 			return xmlNode;
 		}
 		#endregion

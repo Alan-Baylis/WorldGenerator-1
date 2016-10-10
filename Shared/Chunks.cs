@@ -1,12 +1,11 @@
 ﻿using System.Collections;
-using System.Diagnostics;
 using System.Collections.Concurrent;
-using Sean.Shared;
 
-namespace Sean.WorldGenerator
+namespace Sean.Shared
 {
-	internal class Chunks : IEnumerable  // TODO - merge with shared copy
+	public class Chunks : IEnumerable
 	{
+        public const int CHUNK_SIZE = 32; // TODO - move
 		public Chunks()
 		{
             _chunks = new ConcurrentDictionary<long, Chunk> ();
@@ -20,14 +19,14 @@ namespace Sean.WorldGenerator
         }
         private ChunkCoords CoordToChunkCoords(Coords coord)
         {
-            int x = coord.Xblock / Settings.CHUNK_SIZE;
-            int z = coord.Zblock / Settings.CHUNK_SIZE;
+            int x = coord.Xblock / CHUNK_SIZE;
+            int z = coord.Zblock / CHUNK_SIZE;
             return new ChunkCoords(x,z);
         }
         private ChunkCoords PositionToChunkCoords(Position position)
         {
-            int x = position.X / Settings.CHUNK_SIZE;
-            int z = position.Z / Settings.CHUNK_SIZE;
+            int x = position.X / CHUNK_SIZE;
+            int z = position.Z / CHUNK_SIZE;
             return new ChunkCoords(x,z);
         }
 

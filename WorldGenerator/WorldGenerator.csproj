@@ -65,7 +65,6 @@
     <Compile Include="World\Objects\Character.cs" />
     <Compile Include="World\Map\Location.cs" />
     <Compile Include="World\Objects\CharacterManager.cs" />
-    <Compile Include="World\Generator\Array.cs" />
     <Compile Include="World\Map\LocalMap.cs" />
     <Compile Include="Shared\Vector3.cs" />
     <Compile Include="Shared\Vector4.cs" />

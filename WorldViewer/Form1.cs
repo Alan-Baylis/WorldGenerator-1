@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
-using Sean.Shared;
 
 namespace WorldViewer
 {
@@ -22,7 +21,7 @@ namespace WorldViewer
         public Form1()
         {
             InitializeComponent();
-            currentChunk = new ChunkCoords(50, 50);
+            currentChunk = new Sean.Shared.ChunkCoords(50, 50);
             textBox1.Text = "Keys: W,A,S,D";
         }
 
@@ -43,13 +42,13 @@ namespace WorldViewer
         private void OnGlobalMapMouseDoubleClick(object sender, MouseEventArgs e)
         {
             var map = World.GlobalMap;
-            currentChunk = new ChunkCoords (
+            currentChunk = new Sean.Shared.ChunkCoords (
                 Settings.globalChunkSize * e.X / this.pictureBox1.Width,
                 Settings.globalChunkSize * e.Y / this.pictureBox1.Height);
             DrawMaps();
         }
 
-        private ChunkCoords currentChunk;
+        private Sean.Shared.ChunkCoords currentChunk;
         private const int WaterHeight = 20;
 
         private void OnKeyPress(object sender, KeyPressEventArgs e)
@@ -58,19 +57,19 @@ namespace WorldViewer
             switch (e.KeyChar)
             {
                 case 'w':
-                    currentChunk = new ChunkCoords(currentChunk.X, currentChunk.Z - 1);
+                currentChunk = new Sean.Shared.ChunkCoords(currentChunk.X, currentChunk.Z - 1);
                     update = true;
                     break;
                 case 's':
-                    currentChunk = new ChunkCoords(currentChunk.X, currentChunk.Z + 1);
+                currentChunk = new Sean.Shared.ChunkCoords(currentChunk.X, currentChunk.Z + 1);
                     update = true;
                     break;
                 case 'a':
-                    currentChunk = new ChunkCoords(currentChunk.X - 1, currentChunk.Z);
+                currentChunk = new Sean.Shared.ChunkCoords(currentChunk.X - 1, currentChunk.Z);
                     update = true;
                     break;
                 case 'd':
-                    currentChunk = new ChunkCoords(currentChunk.X + 1, currentChunk.Z);
+                currentChunk = new Sean.Shared.ChunkCoords(currentChunk.X + 1, currentChunk.Z);
                     update = true;
                     break;
             }
@@ -118,7 +117,7 @@ namespace WorldViewer
                 int zOri = 0;
                 for (int z = World.MinZChunk; z <= World.MaxZChunk; z++)
                 {
-                    var coords = new ChunkCoords(x, z);
+                    var coords = new Sean.Shared.ChunkCoords(x, z);
                     if (World.IsChunkLoaded(coords))
                     {
                         var chunk = World.GetChunk(coords);

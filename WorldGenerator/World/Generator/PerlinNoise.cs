@@ -1,4 +1,6 @@
 ﻿using System;
+using Sean.Shared;
+
 namespace Sean.WorldGenerator
 {
     // see http://flafla2.github.io/2014/08/09/perlinnoise.html
