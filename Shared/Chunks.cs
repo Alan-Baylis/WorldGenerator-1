@@ -40,6 +40,11 @@ namespace Sean.Shared
             }
             return chunk;
         }
+        public void Add(ChunkCoords chunkCoords, Chunk chunk)
+        {
+            long chunkHash = ((long)chunkCoords.X << 32) + (long)chunkCoords.Z;
+            _chunks [chunkHash] = chunk;
+        }
 		/// <summary>Get a chunk from the array. Based on world coords.</summary>
 		public Chunk this[Coords coords]
 		{

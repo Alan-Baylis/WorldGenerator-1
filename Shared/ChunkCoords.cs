@@ -16,6 +16,13 @@ namespace Sean.Shared
             WorldCoordsZ = Z * CHUNK_SIZE;
 		}
             
+        public ChunkCoords(ref Position position)
+        {
+            X = position.X / CHUNK_SIZE;
+            Z = position.Z / CHUNK_SIZE;
+            WorldCoordsX = X;
+            WorldCoordsZ = Z;
+        }
 		public ChunkCoords(ref Coords coords)
 		{
             X = coords.Xblock / CHUNK_SIZE;
