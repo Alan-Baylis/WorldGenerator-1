@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace Sean.Shared
 {
@@ -56,6 +57,12 @@ namespace Sean.Shared
 		{
             get { return GetOrCreate(PositionToChunkCoords(position)); }
 		}
+
+        public IEnumerable<Chunk> GetChunks()
+        {
+            foreach (var chunk in _chunks)
+                yield return chunk.Value;
+        }
 
 		/// <summary>Get a chunk from the array. Based on the x,z of the chunk in the world. Note these are chunk coords not block coords.</summary>
 		public Chunk this[int x, int z]
