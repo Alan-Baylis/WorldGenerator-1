@@ -1,12 +1,12 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4D280CA6-39A9-4400-B365-688930CE654D}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>Sean.Shared</RootNamespace>
-    <AssemblyName>Shared</AssemblyName>
+    <ProjectGuid>{6D256F00-8774-482F-805C-EAF1767D59F0}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Tests</RootNamespace>
+    <AssemblyName>Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -17,8 +17,7 @@
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Externalconsole>true</Externalconsole>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -26,33 +25,21 @@
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Externalconsole>true</Externalconsole>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Mono.C5" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Comms\ClientConnection.cs" />
-    <Compile Include="Comms\Message.cs" />
-    <Compile Include="Comms\Utilities.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Coords.cs" />
-    <Compile Include="Position.cs" />
-    <Compile Include="Enums.cs" />
-    <Compile Include="Block.cs" />
-    <Compile Include="TextureType.cs" />
-    <Compile Include="MathHelper.cs" />
-    <Compile Include="Comms\MessageParser.cs" />
-    <Compile Include="ChunkCoords.cs" />
-    <Compile Include="Array.cs" />
-    <Compile Include="Blocks.cs" />
-    <Compile Include="Chunk.cs" />
-    <Compile Include="Chunks.cs" />
+    <Compile Include="BlocksColumnTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Shared.csproj">
+      <Project>{4D280CA6-39A9-4400-B365-688930CE654D}</Project>
+      <Name>Shared</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

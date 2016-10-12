@@ -605,7 +605,7 @@ namespace Sean.WorldGenerator
 
         internal static void LoadChunk(Chunk chunk, byte[] bytes)
         {
-            Buffer.BlockCopy(bytes, 0, chunk.Blocks.Array, 0, bytes.Length);
+            Buffer.BlockCopy(bytes, 0, chunk.Blocks._array, 0, bytes.Length);
             chunk.BuildHeightMap();
         }
         #endregion
