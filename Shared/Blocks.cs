@@ -111,6 +111,23 @@ namespace Sean.Shared
                 height += item.Count;
             }
         }
+
+        public IEnumerable<Tuple<int, Block.BlockType>> GetVisibleIterator()
+        {
+            int h = 0;
+            int height = 0;
+            foreach (ArrayItem item in _array)
+            {
+                height += item.Count;
+                if (item.BlockType == Block.BlockType.Unknown || item.BlockType == Block.BlockType.Air)
+                    continue;
+                while (h < height)
+                {
+                    yield return new Tuple<int, Block.BlockType> (h, item.BlockType);
+                    h++;
+                }
+            }
+        }
         public byte[] Serialize()
         {
             using (var memoryStream = new System.IO.MemoryStream())
@@ -172,12 +189,12 @@ namespace Sean.Shared
         private const int CHUNK_HEIGHT = 128; // TODO - move
         public readonly BlocksColumn[,] _array;
 
-        public Blocks(int chunkSizeX, int chunkHeight, int chunkSizeZ)
+        public Blocks()
         {
-            _array = new BlocksColumn[chunkSizeX, chunkSizeZ];
-            for (int x = 0; x < chunkSizeX; x++) {
-                for (int z = 0; x < chunkSizeZ; z++) {
-                    _array [x, z] = new BlocksColumn (chunkHeight);
+            _array = new BlocksColumn[CHUNK_SIZE, CHUNK_SIZE];
+            for (int x = 0; x < CHUNK_SIZE; x++) {
+                for (int z = 0; z < CHUNK_SIZE; z++) {
+                    _array [x, z] = new BlocksColumn (CHUNK_HEIGHT);
                 }
             }
         }
@@ -192,6 +209,21 @@ namespace Sean.Shared
         {
             get { return _array[position.X % CHUNK_SIZE, position.Z % CHUNK_SIZE][position.Y]; }
             set { _array[position.X % CHUNK_SIZE, position.Z % CHUNK_SIZE][position.Y] = value; }
+        }
+
+        public IEnumerable<Tuple<Position, Block.BlockType>> GetVisibleIterator()
+        {
+            for (var x = 0; x < CHUNK_SIZE; x++) {
+                for (var z = 0; z < CHUNK_SIZE; z++) {
+                    foreach (var item in _array[x,z].GetVisibleIterator())
+                    {
+                        var y = item.Item1;
+                        var block = item.Item2;
+                        yield return new Tuple<Position, Block.BlockType> (
+                            new Position (x, y, z), block);
+                    }
+                }
+            }
         }
 
         /// <summary>Get a block from the array.</summary>

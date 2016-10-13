@@ -15,7 +15,7 @@ namespace Sean.Shared
 		public Chunk(ChunkCoords chunkCoords)
 		{
             ChunkCoords = chunkCoords;
-            Blocks = new Blocks(CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE);
+            Blocks = new Blocks();
 		}
 
 		public ChunkCoords ChunkCoords;

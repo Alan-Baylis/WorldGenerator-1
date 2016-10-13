@@ -14,7 +14,7 @@ namespace Sean.WorldGenerator
 		public Chunk(ChunkCoords chunkCoords)
 		{
             ChunkCoords = chunkCoords;
-            Blocks = new Blocks(Settings.CHUNK_SIZE, Settings.CHUNK_HEIGHT, Settings.CHUNK_SIZE);
+            Blocks = new Blocks();
             //HeightMap = new Array<int>(CHUNK_SIZE, CHUNK_SIZE);
 			//Clutters = new HashSet<Clutter>();
 			LightSources = new ConcurrentDictionary<int, LightSource>();
