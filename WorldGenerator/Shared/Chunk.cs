@@ -8,7 +8,7 @@ using Sean.Shared;
 
 namespace Sean.WorldGenerator
 {
-    public class Chunk // TODO merge with shared
+    public class Chunk // TODO Duplicate code in shared
 	{
 		#region Constructors
 		public Chunk(ChunkCoords chunkCoords)
@@ -621,29 +621,14 @@ namespace Sean.WorldGenerator
 
         public byte[] Serialize()
         {
-            using (var memoryStream = new System.IO.MemoryStream ()) {
-                for (var x = 0; x < Settings.CHUNK_SIZE; x++) {
-                    for (var z = 0; z < Settings.CHUNK_SIZE; z++) {
-                        for (var y = 0; y < Settings.CHUNK_HEIGHT; y++) {
-                            memoryStream.WriteByte ((byte)Blocks[x, y, z].Type);
-                        }
-                    }
-                }
-                return memoryStream.ToArray ();
-            }
+            return Blocks.Serialize();
         }
 
-        public static Chunk Deserialize(byte[] data)
+        public static Chunk Deserialize(ChunkCoords chunkCoords, byte[] data)
         {
-            return null; // TODO
-            /*
-            for (var x = 0; x < Settings.CHUNK_SIZE; x++) {
-                for (var z = 0; z < Settings.CHUNK_SIZE; z++) {
-                    for (var y = 0; y <= Math.Min (Settings.CHUNK_HEIGHT - 1, HeightMap [x, z] + 1); y++) { //look +1 above heightmap as water directly above heightmap could change to ice
-                    }
-                }
-            }
-            */
+            var chunk = new Chunk(chunkCoords);
+            chunk.Blocks.Deserialize(data);
+            return chunk;
         }
 
         public void Render()

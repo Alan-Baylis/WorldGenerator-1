@@ -41,31 +41,13 @@ namespace Sean.Shared
 
         public byte[] Serialize()
         {
-            using (var memoryStream = new System.IO.MemoryStream ()) {
-                for (var x = 0; x < CHUNK_SIZE; x++) {
-                    for (var z = 0; z < CHUNK_SIZE; z++) {
-                        for (var y = 0; y < CHUNK_HEIGHT; y++) {
-                            memoryStream.WriteByte ((byte)Blocks[x, y, z].Type);
-                        }
-                    }
-                }
-                return memoryStream.ToArray ();
-            }
+            return Blocks.Serialize();
         }
 
         public static Chunk Deserialize(ChunkCoords chunkCoords, byte[] data)
         {
             var chunk = new Chunk(chunkCoords);
-            using (var memoryStream = new System.IO.MemoryStream(data)) {
-                for (var x = 0; x < CHUNK_SIZE; x++) {
-                    for (var z = 0; z < CHUNK_SIZE; z++) {
-                        for (var y = 0; y < CHUNK_HEIGHT; y++) {
-                            ushort blockType = (ushort)memoryStream.ReadByte();
-                            chunk.Blocks[x, y, z] = new Block(blockType);
-                        }
-                    }
-                }
-            }
+            chunk.Blocks.Deserialize(data);
             return chunk;
         }
 	}

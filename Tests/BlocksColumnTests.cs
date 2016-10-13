@@ -21,13 +21,23 @@ namespace Tests
             AddBlock (blocks, Block.BlockType.Air, 16);
             AddBlock (blocks, Block.BlockType.Air, 14);
             AddBlock (blocks, Block.BlockType.Air, 15);
+
+            AddBlock (blocks, Block.BlockType.Air, 25);
+            AddBlock (blocks, Block.BlockType.Air, 20);
+            AddBlock (blocks, Block.BlockType.Air, 5);
+
+            AddBlock (blocks, Block.BlockType.Dirt, 0);
+            AddBlock (blocks, Block.BlockType.Dirt, 29);
+            AddBlock (blocks, Block.BlockType.Air, 0);
+            AddBlock (blocks, Block.BlockType.Air, 29);
         }
 
-        private void AddBlock(BlocksColumn blocks, Block.BlockType type, int position)
+        private static void AddBlock(BlocksColumn blocks, Block.BlockType type, int position)
         {
             Console.WriteLine ($"Add {type} at {position}");
             blocks [position] = new Block (type);
             Console.WriteLine (blocks);
+            Console.WriteLine(blocks.Render());
         }
     }
 }

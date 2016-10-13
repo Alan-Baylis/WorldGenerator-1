@@ -160,12 +160,17 @@ namespace Sean.WorldGenerator
             {
                 for (int x = worldSize.minX; x < worldSize.maxX; x += worldSize.scale)
                 {
-                    for (int y = worldSize.minY; y < worldSize.maxY; y++)
+                    for (int y = worldSize.maxY - 1; y >= worldSize.minY; y--)
                     {
                         //double p = perlinNoise.OctavePerlin(worldSize, x, y, z, octaveCount, persistence);
                         double p = terrainGenerator.get((double)x/Settings.FRACTAL_SIZE, (double)(worldSize.maxY-y)/Settings.maxNoiseHeight, (double)z/Settings.FRACTAL_SIZE);
                         var blockType = p > 0.5 ? Block.BlockType.Dirt : Block.BlockType.Air;
                         chunk.Blocks[x % Settings.CHUNK_SIZE, y, z % Settings.CHUNK_SIZE] = new Block(blockType);
+                        if (blockType != Block.BlockType.Air)
+                        {
+                            break; // Leave rest below ground as hidden
+                            // TODO - fill in the gaps in the landscape
+                        }
                     }
                 }
             }
