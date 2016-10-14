@@ -26,7 +26,7 @@ namespace Sean.Shared
         {
             _chunkHeight = chunkHeight;
             _array = new ArrayList();
-            _array.Add (new ArrayItem(Block.BlockType.Air, chunkHeight));
+            _array.Add (new ArrayItem(Block.BlockType.Unknown, chunkHeight));
         }
         public Block this[int y]
         {
@@ -120,7 +120,7 @@ namespace Sean.Shared
             {
                 height += item.Count;
                 if (item.BlockType == Block.BlockType.Unknown || item.BlockType == Block.BlockType.Air)
-                    continue;
+                    h = height;
                 while (h < height)
                 {
                     yield return new Tuple<int, Block.BlockType> (h, item.BlockType);
@@ -148,7 +148,10 @@ namespace Sean.Shared
             int height = 0;
             while (height < _chunkHeight)
             {
-                var blockType = (Block.BlockType)(memoryStream.ReadByte() << 8 + memoryStream.ReadByte());
+                //var blockType = (Block.BlockType)(memoryStream.ReadByte() << 8 + memoryStream.ReadByte());
+                var a = memoryStream.ReadByte();
+                var b = memoryStream.ReadByte();
+                var blockType = (Block.BlockType)((a << 8) + b);
                 var count = memoryStream.ReadByte();
                 _array.Add (new ArrayItem(blockType, count));
                 height += count;
@@ -213,8 +216,10 @@ namespace Sean.Shared
 
         public IEnumerable<Tuple<Position, Block.BlockType>> GetVisibleIterator()
         {
-            for (var x = 0; x < CHUNK_SIZE; x++) {
-                for (var z = 0; z < CHUNK_SIZE; z++) {
+            for (var x = CHUNK_SIZE - 1; x >= 0; x--)
+            {
+                for (var z = CHUNK_SIZE - 1; z >= 0; z--)
+                {
                     foreach (var item in _array[x,z].GetVisibleIterator())
                     {
                         var y = item.Item1;
