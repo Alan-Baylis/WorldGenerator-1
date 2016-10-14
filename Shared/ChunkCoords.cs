@@ -18,10 +18,11 @@ namespace Sean.Shared
             
         public ChunkCoords(ref Position position)
         {
-            X = position.X / CHUNK_SIZE;
-            Z = position.Z / CHUNK_SIZE;
-            WorldCoordsX = X;
-            WorldCoordsZ = Z;
+            var coords = position.ToCoords ();
+            X = coords.Xblock / CHUNK_SIZE;
+            Z = coords.Zblock / CHUNK_SIZE;
+            WorldCoordsX = X * CHUNK_SIZE;
+            WorldCoordsZ = Z * CHUNK_SIZE;
         }
 		public ChunkCoords(ref Coords coords)
 		{
