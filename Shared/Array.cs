@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Sean.Shared
 {
@@ -117,14 +118,6 @@ namespace Sean.Shared
         {
             _data [ToArrayCoord(z)].Set(x, value);
         }
-
-        public IEnumerable<ArrayLine<T>> GetLines ()
-        {
-            for (int z = 0; z < ToArrayCoord (_size.maxZ); z++) 
-            {
-                yield return _data [z];
-            }
-        }
             
         public void Render()
         {
@@ -141,6 +134,39 @@ namespace Sean.Shared
 
         private ArrayLine<T>[] _data;
         private ArraySize _size;
+
+        public byte[] Serialize()
+        {
+            var binaryFormatter = new BinaryFormatter();
+            using (var memoryStream = new System.IO.MemoryStream())
+            {
+                for (int z = 0; z < ToArrayCoord(_size.maxZ); z++)
+                {
+                    for (int x = 0; x < ToArrayCoord (_size.maxX); x++) 
+                    {
+                        var item = _data[z][x];
+                        binaryFormatter.Serialize(memoryStream, item);
+                    }
+                }
+                return memoryStream.ToArray();
+            }
+        }
+        public void DeSerialize(byte[] data)
+        {
+            var binaryFormatter = new BinaryFormatter();
+            using (var memoryStream = new System.IO.MemoryStream())
+            {
+                for (int z = 0; z < ToArrayCoord(_size.maxZ); z++)
+                {
+                    for (int x = 0; x < ToArrayCoord(_size.maxX); x++)
+                    {
+                        var item = (T)binaryFormatter.Deserialize(memoryStream);
+                        binaryFormatter.Serialize(memoryStream, item);
+                        _data[z][x] = item;
+                    }
+                }
+            }
+        }
     }
 }
 

@@ -14,6 +14,8 @@ namespace Sean.WorldServer
                 ProcessLogin(clientId, msg);
             if (msg.Say != null)
                 ProcessSay(clientId, msg);
+            if (msg.WorldMapRequest != null)
+                ProcessWorldMapRequest(clientId, msg);
             if (msg.MapRequest != null)
                 ProcessMapRequest(clientId, msg);
             if (msg.MapIgnore != null)
@@ -41,6 +43,10 @@ namespace Sean.WorldServer
         private static void ProcessSay(Guid clientId, Message msg)
         {
             Console.WriteLine($"{clientId} says \"{msg.Say.Text}\"");
+        }
+        private static void ProcessWorldMapRequest(Guid clientId, Message msg)
+        {
+            WorldEvents.RequestWorldMap(clientId);
         }
         private static void ProcessMapRequest(Guid clientId, Message msg)
         {
@@ -72,6 +78,20 @@ namespace Sean.WorldServer
             var msg = new Message()
             {
                 Response = new ResponseMessage() { Code = 0 }
+            };
+            SendMessage(clientId, msg);
+        }
+        public static void SendWorldMap(Guid clientId, Shared.Array<int> map)
+        {
+            var msg = new Message()
+            {
+                WorldMapResponse = new WorldMapResponseMessage()
+                {
+                    MinPosition = new Shared.Position(map.Size.minX, map.Size.minY, map.Size.minZ),
+                    MaxPosition = new Shared.Position(map.Size.maxX, map.Size.maxY, map.Size.maxZ),
+                    Scale = map.Size.scale,
+                },
+                Data = map.Serialize()
             };
             SendMessage(clientId, msg);
         }

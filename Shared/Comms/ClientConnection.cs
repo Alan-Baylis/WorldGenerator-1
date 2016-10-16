@@ -48,7 +48,7 @@ namespace Sean.Shared.Comms
         private Guid clientId;
         public TcpClient socket = null;
         private const int MaxMessageLength = 1024;
-        private const int MaxDataMessageLength = 1048576;
+        private const int MaxDataMessageLength = 4194305;
 
         public void StartClient()
         {

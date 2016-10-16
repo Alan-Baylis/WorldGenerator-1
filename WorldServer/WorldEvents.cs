@@ -14,6 +14,11 @@ namespace Sean.WorldServer
             registrations = new Dictionary<ChunkCoords, List<Guid>>();
         }
 
+        public static void RequestWorldMap(Guid clientId)
+        {
+            var map = World.GlobalMap;
+            MessageProcessor.SendWorldMap(clientId, map);
+        }
         public static void ChunkRegister(ChunkCoords chunkCoords, Guid clientId)
         {
             var chunk = World.GetChunk(chunkCoords);
