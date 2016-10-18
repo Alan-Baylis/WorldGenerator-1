@@ -1,12 +1,14 @@
 ﻿using Sean.Shared;
 using System.Runtime.Serialization;
+using System;
 
 namespace Sean.Shared
 {
     [DataContract]
-    public struct ChunkCoords
+    public struct ChunkCoords : System.IComparable 
 	{
         public const int CHUNK_SIZE = 32;
+        public static int MaxChunkLimit = (int)Math.Sqrt(int.MaxValue);
 
 		public ChunkCoords(int x, int z)
 		{
@@ -57,9 +59,14 @@ namespace Sean.Shared
 			return X == ((ChunkCoords)obj).X && Z == ((ChunkCoords)obj).Z;
 		}
 
+        public int CompareTo (object obj)
+        {
+            return GetHashCode ().CompareTo (obj.GetHashCode ());
+        }
+
 		public override int GetHashCode()
 		{
-			return base.GetHashCode();
+            return (X * MaxChunkLimit) + Z;
 		}
 
 		public override string ToString()
