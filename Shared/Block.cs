@@ -86,9 +86,9 @@ namespace Sean.Shared
 			SteelPlate2,
 		}
 
-		public Facing Orientation
+        public Facing Orientation
 		{
-			get { return (Facing)(BlockData >> 8 & 0x3); }
+            get { return (Facing)(BlockData >> 8 & 0x3); }
 			set { BlockData = (ushort)((BlockData & 0xFCFF) | (byte)value << 8); }
 		}
 

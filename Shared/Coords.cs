@@ -79,11 +79,11 @@ namespace Sean.Shared
 			}
 		}
 
-		public Facing DirectionFacing()
+        public Facing DirectionFacing()
 		{
-			if (Direction < MathHelper.PiOver4 || Direction > MathHelper.PiOver4 * 7) return Facing.East;
-			if (Direction > MathHelper.PiOver4 * 5) return Facing.North;
-			return Direction > MathHelper.PiOver4 * 3 ? Facing.West : Facing.South;
+            if (Direction < MathHelper.PiOver4 || Direction > MathHelper.PiOver4 * 7) return Facing.East;
+            if (Direction > MathHelper.PiOver4 * 5) return Facing.North;
+            return Direction > MathHelper.PiOver4 * 3 ? Facing.West : Facing.South;
 		}
 
 		private float _pitch;

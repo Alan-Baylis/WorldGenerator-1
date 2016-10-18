@@ -51,9 +51,9 @@ namespace Sean.Shared
             return chunk;
         }
 
-        public IEnumerable<Tuple<Position, Block.BlockType>> GetVisibleIterator()
+        public IEnumerable<Tuple<Position, Block.BlockType>> GetVisibleIterator(Facing direction)
         {
-            foreach (var item in Blocks.GetVisibleIterator())
+            foreach (var item in Blocks.GetVisibleIterator(direction))
             {
                 yield return new Tuple<Position, Block.BlockType>
                     (new Position(item.Item1.X + ChunkCoords.WorldCoordsX, item.Item1.Y, item.Item1.Z + ChunkCoords.WorldCoordsZ), 

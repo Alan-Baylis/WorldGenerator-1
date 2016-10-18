@@ -214,20 +214,54 @@ namespace Sean.Shared
             set { _array[position.X % CHUNK_SIZE, position.Z % CHUNK_SIZE][position.Y] = value; }
         }
 
-        public IEnumerable<Tuple<Position, Block.BlockType>> GetVisibleIterator()
+        private IEnumerable<Tuple<Position, Block.BlockType>> GetVisibleIterator(int x, int z)
         {
-            for (var x = CHUNK_SIZE - 1; x >= 0; x--)
-            {
-                for (var z = CHUNK_SIZE - 1; z >= 0; z--)
-                {
-                    foreach (var item in _array[x,z].GetVisibleIterator())
-                    {
-                        var y = item.Item1;
-                        var block = item.Item2;
-                        yield return new Tuple<Position, Block.BlockType> (
-                            new Position (x, y, z), block);
+            foreach (var item in _array[x,z].GetVisibleIterator()) {
+                var y = item.Item1;
+                var block = item.Item2;
+                yield return new Tuple<Position, Block.BlockType> (
+                    new Position (x, y, z), block);
+            }
+        }
+        public IEnumerable<Tuple<Position, Block.BlockType>> GetVisibleIterator(Facing direction)
+        {
+            switch (direction) {
+            case Facing.North:
+                for (var x = 0; x < CHUNK_SIZE; x++) {
+                    for (var z = 0; z < CHUNK_SIZE; z++) {
+                        foreach (var item in GetVisibleIterator (x, z)) {
+                            yield return item;
+                        }
                     }
                 }
+                break;
+            case Facing.South:
+                for (var x = CHUNK_SIZE - 1; x >= 0; x--) {
+                    for (var z = CHUNK_SIZE - 1; z >= 0; z--) {
+                        foreach (var item in GetVisibleIterator (x, z)) {
+                            yield return item;
+                        }
+                    }
+                }
+                break;
+            case Facing.East:
+                for (var x = CHUNK_SIZE - 1; x >= 0; x--) {
+                    for (var z = 0; z < CHUNK_SIZE; z++) {
+                        foreach (var item in GetVisibleIterator (x, z)) {
+                            yield return item;
+                        }
+                    }
+                }
+                break;
+            case Facing.West:
+                for (var x = 0; x < CHUNK_SIZE; x++) {
+                    for (var z = CHUNK_SIZE - 1; z >= 0; z--) {
+                        foreach (var item in GetVisibleIterator (x, z)) {
+                            yield return item;
+                        }
+                    }
+                }
+                break;
             }
         }
 
