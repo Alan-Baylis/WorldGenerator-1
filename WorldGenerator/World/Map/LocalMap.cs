@@ -110,20 +110,6 @@ namespace Sean.WorldGenerator
             }
         }
 
-        public void Render ()
-        {
-            for (int x = MinZChunk; x < MaxXChunk; x++) {
-                System.Text.StringBuilder builder = new System.Text.StringBuilder ();
-                for (int z = MinZChunk; z < MaxZChunk; z++)
-                {
-                    int idx = x * MaxChunkLimit + z;
-                    if (!mapChunks.ContainsKey(idx)) continue;
-                    mapChunks[idx].Chunk.Render();
-                }
-            }
-        }
-
-
     }
 }
 

@@ -51,6 +51,7 @@
     <Compile Include="Blocks.cs" />
     <Compile Include="Chunk.cs" />
     <Compile Include="Chunks.cs" />
+    <Compile Include="Global.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

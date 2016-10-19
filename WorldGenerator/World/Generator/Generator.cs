@@ -14,7 +14,7 @@ namespace Sean.WorldGenerator
         private PerlinNoise perlinNoise;
         private const int octaves = 1;
         private const double persistence = 0.4;
-        private int chunkMidpoint = Settings.CHUNK_SIZE / 2;
+        private int chunkMidpoint = Global.CHUNK_SIZE / 2;
 
         public Generator(int seed)
         {
@@ -106,7 +106,7 @@ namespace Sean.WorldGenerator
                 maxX = Settings.globalMapSize,
                 minY = Settings.minNoiseHeight,
                 maxY = Settings.maxNoiseHeight,
-                scale = Settings.CHUNK_SIZE,
+                scale = Global.CHUNK_SIZE,
             };
 
             var heightMap = new Array<int>(worldSize);
@@ -148,9 +148,9 @@ namespace Sean.WorldGenerator
             var worldSize = new ArraySize()
             {
                 minZ = chunk.ChunkCoords.WorldCoordsZ,
-                maxZ = chunk.ChunkCoords.WorldCoordsZ + Settings.CHUNK_SIZE,
+                maxZ = chunk.ChunkCoords.WorldCoordsZ + Global.CHUNK_SIZE,
                 minX = chunk.ChunkCoords.WorldCoordsX,
-                maxX = chunk.ChunkCoords.WorldCoordsX + Settings.CHUNK_SIZE,
+                maxX = chunk.ChunkCoords.WorldCoordsX + Global.CHUNK_SIZE,
                 minY = Settings.minNoiseHeight,
                 maxY = Settings.maxNoiseHeight,
                 scale = 1,
@@ -165,7 +165,7 @@ namespace Sean.WorldGenerator
                         //double p = perlinNoise.OctavePerlin(worldSize, x, y, z, octaveCount, persistence);
                         double p = terrainGenerator.get((double)x/Settings.FRACTAL_SIZE, (double)(worldSize.maxY-y)/Settings.maxNoiseHeight, (double)z/Settings.FRACTAL_SIZE);
                         var blockType = p > 0.5 ? Block.BlockType.Dirt : Block.BlockType.Air;
-                        chunk.Blocks[x % Settings.CHUNK_SIZE, y, z % Settings.CHUNK_SIZE] = new Block(blockType);
+                        chunk.Blocks[x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE] = new Block(blockType);
                         if (blockType != Block.BlockType.Air)
                         {
                             break; // Leave rest below ground as hidden
@@ -210,9 +210,9 @@ namespace Sean.WorldGenerator
 
 		private void GenerateChunk(Chunk chunk)
 		{
-            for (var x = chunk.ChunkCoords.WorldCoordsX; x < chunk.ChunkCoords.WorldCoordsX + Settings.CHUNK_SIZE; x++)
+            for (var x = chunk.ChunkCoords.WorldCoordsX; x < chunk.ChunkCoords.WorldCoordsX + Global.CHUNK_SIZE; x++)
 			{
-                for (var z = chunk.ChunkCoords.WorldCoordsZ; z < chunk.ChunkCoords.WorldCoordsZ + Settings.CHUNK_SIZE; z++)
+                for (var z = chunk.ChunkCoords.WorldCoordsZ; z < chunk.ChunkCoords.WorldCoordsZ + Global.CHUNK_SIZE; z++)
 				{
                     for (var y = 0; y <= Math.Max(chunk.HeightMap[x,z], Settings.waterLevel); y++)
 					{
@@ -283,7 +283,7 @@ namespace Sean.WorldGenerator
 							blockType = Settings.Random.Next(0, 5) == 0 ? Block.BlockType.Gravel : Block.BlockType.Rock;
 							//blockType = Block.BlockType.Air; //replace with this to do some quick seismic on what the mineral generator is doing
 						}
-                        chunk.Blocks[x % Settings.CHUNK_SIZE, y, z % Settings.CHUNK_SIZE] = new Block(blockType);
+                        chunk.Blocks[x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE] = new Block(blockType);
 					}
 
                     if (chunk.MineralMap[x, z] < chunk.HeightMap[x, z] - 5 && chunk.MineralMap[x, z] % 1f > 0.80f)

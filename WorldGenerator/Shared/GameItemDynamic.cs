@@ -27,7 +27,7 @@ namespace Sean.WorldGenerator
 			IsMoving = true;
 			if (!World.GameItems.ContainsKey(Id)) World.GameItems.TryAdd(Id, this);
             var chunk = World.LocalMap.Chunk(coords);
-			if (!chunk.GameItems.ContainsKey(Id)) chunk.GameItems.TryAdd(Id, this);
+			//if (!chunk.GameItems.ContainsKey(Id)) chunk.GameItems.TryAdd(Id, this);
 		}
 
 		public GameItemDynamic(XmlNode xmlNode) : base(xmlNode)
@@ -40,7 +40,7 @@ namespace Sean.WorldGenerator
 			try
 			{
                 var chunk = World.LocalMap.Chunk(Coords);
-				if (!chunk.GameItems.ContainsKey(Id)) chunk.GameItems.TryAdd(Id, this);
+				//if (!chunk.GameItems.ContainsKey(Id)) chunk.GameItems.TryAdd(Id, this);
 			}
 			catch (Exception)
 			{
@@ -183,10 +183,10 @@ namespace Sean.WorldGenerator
 				//Moving to a new chunk
                 var oldChunk = World.LocalMap.Chunk(Coords);
 				GameItemDynamic remove;
-				oldChunk.GameItems.TryRemove(Id, out remove);
+				//oldChunk.GameItems.TryRemove(Id, out remove);
 
                 var newChunk = World.LocalMap.Chunk(proposedCoords);
-				if (!newChunk.GameItems.ContainsKey(Id)) newChunk.GameItems.TryAdd(Id, this);
+				//if (!newChunk.GameItems.ContainsKey(Id)) newChunk.GameItems.TryAdd(Id, this);
 			}
 			Coords = proposedCoords;
 			LastUpdate = DateTime.Now;
@@ -228,7 +228,7 @@ namespace Sean.WorldGenerator
 					case GameItemType.Projectile:
                     var chunk = World.LocalMap.Chunk(decayItem.Coords);
 						GameItemDynamic remove;
-						chunk.GameItems.TryRemove(decayItem.Id, out remove);
+						//chunk.GameItems.TryRemove(decayItem.Id, out remove);
 						World.GameItems.TryRemove(decayItem.Id, out remove);
 						break;
 				}

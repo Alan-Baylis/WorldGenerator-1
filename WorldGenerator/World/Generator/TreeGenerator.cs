@@ -19,8 +19,8 @@ namespace Sean.WorldGenerator
 			for (int tree = 0; tree < numberOfTreesToGenerate; tree++)
 			{
 				//returns number avoiding upper chunk boundaries ensuring cross chunk placements dont touch each other
-                int xProposedInChunk = Settings.Random.Next(0, Settings.CHUNK_SIZE - 1);
-                int zProposedInChunk = Settings.Random.Next(0, Settings.CHUNK_SIZE - 1);
+                int xProposedInChunk = Settings.Random.Next(0, Global.CHUNK_SIZE - 1);
+                int zProposedInChunk = Settings.Random.Next(0, Global.CHUNK_SIZE - 1);
 				int yProposed = chunk.HeightMap[xProposedInChunk, zProposedInChunk];
 
 				var block = chunk.Blocks[xProposedInChunk, yProposed, zProposedInChunk];

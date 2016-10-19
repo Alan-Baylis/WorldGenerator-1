@@ -186,32 +186,30 @@ namespace Sean.Shared
         }
     }
 
-    public class Blocks // TODO - merge with shared
+    public class Blocks 
     {
-        private const int CHUNK_SIZE = 32; // TODO - move
-        private const int CHUNK_HEIGHT = 128; // TODO - move
         public readonly BlocksColumn[,] _array;
 
         public Blocks()
         {
-            _array = new BlocksColumn[CHUNK_SIZE, CHUNK_SIZE];
-            for (int x = 0; x < CHUNK_SIZE; x++) {
-                for (int z = 0; z < CHUNK_SIZE; z++) {
-                    _array [x, z] = new BlocksColumn (CHUNK_HEIGHT);
+            _array = new BlocksColumn[Global.CHUNK_SIZE, Global.CHUNK_SIZE];
+            for (int x = 0; x < Global.CHUNK_SIZE; x++) {
+                for (int z = 0; z < Global.CHUNK_SIZE; z++) {
+                    _array [x, z] = new BlocksColumn (Global.CHUNK_HEIGHT);
                 }
             }
         }
 
         public Block this[Coords coords]
         {
-            get { return _array[coords.Xblock % CHUNK_SIZE, coords.Zblock % CHUNK_SIZE][coords.Yblock]; }
-            set { _array[coords.Xblock % CHUNK_SIZE, coords.Zblock % CHUNK_SIZE][coords.Yblock] = value; }
+            get { return _array[coords.Xblock % Global.CHUNK_SIZE, coords.Zblock % Global.CHUNK_SIZE][coords.Yblock]; }
+            set { _array[coords.Xblock % Global.CHUNK_SIZE, coords.Zblock % Global.CHUNK_SIZE][coords.Yblock] = value; }
         }
 
         public Block this[Position position]
         {
-            get { return _array[position.X % CHUNK_SIZE, position.Z % CHUNK_SIZE][position.Y]; }
-            set { _array[position.X % CHUNK_SIZE, position.Z % CHUNK_SIZE][position.Y] = value; }
+            get { return _array[position.X % Global.CHUNK_SIZE, position.Z % Global.CHUNK_SIZE][position.Y]; }
+            set { _array[position.X % Global.CHUNK_SIZE, position.Z % Global.CHUNK_SIZE][position.Y] = value; }
         }
 
         private IEnumerable<Tuple<Position, Block.BlockType>> GetVisibleIterator(int x, int z)
@@ -227,8 +225,8 @@ namespace Sean.Shared
         {
             switch (direction) {
             case Facing.North:
-                for (var x = 0; x < CHUNK_SIZE; x++) {
-                    for (var z = 0; z < CHUNK_SIZE; z++) {
+                for (var x = 0; x < Global.CHUNK_SIZE; x++) {
+                    for (var z = 0; z < Global.CHUNK_SIZE; z++) {
                         foreach (var item in GetVisibleIterator (x, z)) {
                             yield return item;
                         }
@@ -236,8 +234,8 @@ namespace Sean.Shared
                 }
                 break;
             case Facing.South:
-                for (var x = CHUNK_SIZE - 1; x >= 0; x--) {
-                    for (var z = CHUNK_SIZE - 1; z >= 0; z--) {
+                for (var x = Global.CHUNK_SIZE - 1; x >= 0; x--) {
+                    for (var z = Global.CHUNK_SIZE - 1; z >= 0; z--) {
                         foreach (var item in GetVisibleIterator (x, z)) {
                             yield return item;
                         }
@@ -245,8 +243,8 @@ namespace Sean.Shared
                 }
                 break;
             case Facing.East:
-                for (var x = CHUNK_SIZE - 1; x >= 0; x--) {
-                    for (var z = 0; z < CHUNK_SIZE; z++) {
+                for (var x = Global.CHUNK_SIZE - 1; x >= 0; x--) {
+                    for (var z = 0; z < Global.CHUNK_SIZE; z++) {
                         foreach (var item in GetVisibleIterator (x, z)) {
                             yield return item;
                         }
@@ -254,8 +252,8 @@ namespace Sean.Shared
                 }
                 break;
             case Facing.West:
-                for (var x = 0; x < CHUNK_SIZE; x++) {
-                    for (var z = CHUNK_SIZE - 1; z >= 0; z--) {
+                for (var x = 0; x < Global.CHUNK_SIZE; x++) {
+                    for (var z = Global.CHUNK_SIZE - 1; z >= 0; z--) {
                         foreach (var item in GetVisibleIterator (x, z)) {
                             yield return item;
                         }
@@ -279,9 +277,9 @@ namespace Sean.Shared
         {
             using (var memoryStream = new System.IO.MemoryStream())
             {
-                for (var x = 0; x < CHUNK_SIZE; x++)
+                for (var x = 0; x < Global.CHUNK_SIZE; x++)
                 {
-                    for (var z = 0; z < CHUNK_SIZE; z++)
+                    for (var z = 0; z < Global.CHUNK_SIZE; z++)
                     {
                         var column = _array[x, z].Serialize();
                         memoryStream.Write(column,0,column.Length);
@@ -295,9 +293,9 @@ namespace Sean.Shared
         {
             using (var memoryStream = new System.IO.MemoryStream(data))
             {
-                for (var x = 0; x < CHUNK_SIZE; x++)
+                for (var x = 0; x < Global.CHUNK_SIZE; x++)
                 {
-                    for (var z = 0; z < CHUNK_SIZE; z++)
+                    for (var z = 0; z < Global.CHUNK_SIZE; z++)
                     {
                         _array[x, z].Deserialize(memoryStream);
                     }

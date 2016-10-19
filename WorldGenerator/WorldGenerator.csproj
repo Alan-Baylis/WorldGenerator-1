@@ -43,13 +43,10 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Shared\AddBlock.cs" />
-    <Compile Include="Shared\Chunk.cs" />
     <Compile Include="Shared\GameAction.cs" />
     <Compile Include="Shared\GameObject.cs" />
-    <Compile Include="Shared\LightSource.cs" />
     <Compile Include="Shared\Lighting.cs" />
     <Compile Include="Shared\UiTextGraphics.cs" />
-    <Compile Include="World\Chunks.cs" />
     <Compile Include="World\Constants.cs" />
     <Compile Include="World\Map\MapChunk.cs" />
     <Compile Include="World\Map\WorldMap.cs" />
@@ -73,6 +70,7 @@
     <Compile Include="Shared\GameItemDynamic.cs" />
     <Compile Include="Shared\GameItemStatic.cs" />
     <Compile Include="World\Map\Water.cs" />
+    <Compile Include="Shared\LightSource.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

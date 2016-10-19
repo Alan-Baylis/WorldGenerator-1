@@ -6,7 +6,6 @@ namespace Sean.Shared
 {
 	public class Chunks : IEnumerable
 	{
-        public const int CHUNK_SIZE = 32; // TODO - move
 		public Chunks()
 		{
             _chunks = new ConcurrentDictionary<long, Chunk> ();
@@ -20,14 +19,14 @@ namespace Sean.Shared
         }
         private ChunkCoords CoordToChunkCoords(Coords coord)
         {
-            int x = coord.Xblock / CHUNK_SIZE;
-            int z = coord.Zblock / CHUNK_SIZE;
+            int x = coord.Xblock / Global.CHUNK_SIZE;
+            int z = coord.Zblock / Global.CHUNK_SIZE;
             return new ChunkCoords(x,z);
         }
         private ChunkCoords PositionToChunkCoords(Position position)
         {
-            int x = position.X / CHUNK_SIZE;
-            int z = position.Z / CHUNK_SIZE;
+            int x = position.X / Global.CHUNK_SIZE;
+            int z = position.Z / Global.CHUNK_SIZE;
             return new ChunkCoords(x,z);
         }
 

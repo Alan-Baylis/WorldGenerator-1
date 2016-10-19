@@ -1,6 +1,7 @@
 ﻿using System;
 using Sean.Shared.Comms;
 using Sean.WorldGenerator;
+using Sean.Shared;
 
 namespace Sean.WorldServer
 {
