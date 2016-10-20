@@ -142,6 +142,50 @@ namespace Sean.WorldGenerator
             return biosphereGenerator.get((double)x, (double)z);
         }
 
+        public void Generate(Chunk chunk)
+		{
+            Debug.WriteLine("Generating new chunk: " + chunk.ChunkCoords);
+            var worldSize = new ArraySize()
+            {
+                minZ = chunk.ChunkCoords.WorldCoordsZ,
+                maxZ = chunk.ChunkCoords.WorldCoordsZ + Global.CHUNK_SIZE,
+                minX = chunk.ChunkCoords.WorldCoordsX,
+                maxX = chunk.ChunkCoords.WorldCoordsX + Global.CHUNK_SIZE,
+                minY = Settings.minNoiseHeight,
+                maxY = Settings.maxNoiseHeight,
+                scale = 1,
+            };
+
+            GenerateChunkCells(chunk, 
+                chunk.ChunkCoords.WorldCoordsX + Global.CHUNK_SIZE/2, 
+                Settings.maxNoiseHeight, 
+                chunk.ChunkCoords.WorldCoordsZ + Global.CHUNK_SIZE/2);
+
+            chunk.BuildHeightMap();
+            //GenerateChunk(chunk);
+
+            /*
+			//loop through chunks again for actions that require the neighboring chunks to be built
+			Debug.WriteLine("Completing growth in chunks and building heightmaps...");
+            Debug.WriteLine("Completing growth in chunks...", 0, 0);
+			foreach (Chunk chunk in World.Chunks)
+			{
+				//build heightmap here only so we know where to place trees/clutter (it will get built again on world load anyway)
+				chunk.BuildHeightMap();
+
+				var takenPositions = new List<Position>(); //positions taken by tree or clutter, ensures neither spawn on top of or directly touching another
+
+				//generate trees
+				if (World.GenerateWithTrees) TreeGenerator.Generate(chunk, takenPositions);
+
+				//generate clutter
+				//ClutterGenerator.Generate(chunk, takenPositions);
+			}
+
+			Debug.WriteLine("World generation complete.");
+            */
+        }
+
         private void GenerateChunkCells(Chunk chunk, int x, int y, int z)
         {
             var block = GenerateCell(x, y, z);
@@ -169,69 +213,6 @@ namespace Sean.WorldGenerator
             double p = terrainGenerator.get((double)x / Settings.FRACTAL_SIZE, (double)(Settings.maxNoiseHeight - y) / Settings.maxNoiseHeight, (double)z / Settings.FRACTAL_SIZE);
             var blockType = p > 0.5 ? Block.BlockType.Dirt : Block.BlockType.Air;
             return new Block(blockType);
-        }
-
-        public void Generate(Chunk chunk)
-		{
-            Debug.WriteLine("Generating new chunk: " + chunk.ChunkCoords);
-            var worldSize = new ArraySize()
-            {
-                minZ = chunk.ChunkCoords.WorldCoordsZ,
-                maxZ = chunk.ChunkCoords.WorldCoordsZ + Global.CHUNK_SIZE,
-                minX = chunk.ChunkCoords.WorldCoordsX,
-                maxX = chunk.ChunkCoords.WorldCoordsX + Global.CHUNK_SIZE,
-                minY = Settings.minNoiseHeight,
-                maxY = Settings.maxNoiseHeight,
-                scale = 1,
-            };
-
-            for (int z = worldSize.minZ; z < worldSize.maxZ; z += worldSize.scale)
-            {
-                for (int x = worldSize.minX; x < worldSize.maxX; x += worldSize.scale)
-                {
-                    for (int y = worldSize.maxY - 1; y >= worldSize.minY; y--)
-                    {
-                        var block = GenerateCell(x, y, z);
-                        chunk.Blocks[x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE] = block;
-                        if (block.Type != Block.BlockType.Air)
-                        {
-                            break; // Leave rest below ground as hidden
-                        }
-                    }
-                }
-            }
-
-            chunk.BuildHeightMap();
-            //GenerateChunk(chunk);
-
-            /*
-			//loop through chunks again for actions that require the neighboring chunks to be built
-			Debug.WriteLine("Completing growth in chunks and building heightmaps...");
-            Debug.WriteLine("Completing growth in chunks...", 0, 0);
-			foreach (Chunk chunk in World.Chunks)
-			{
-				//build heightmap here only so we know where to place trees/clutter (it will get built again on world load anyway)
-				chunk.BuildHeightMap();
-
-				var takenPositions = new List<Position>(); //positions taken by tree or clutter, ensures neither spawn on top of or directly touching another
-
-				//generate trees
-				if (World.GenerateWithTrees) TreeGenerator.Generate(chunk, takenPositions);
-
-				//generate clutter
-				//ClutterGenerator.Generate(chunk, takenPositions);
-			}
-
-			Debug.WriteLine("World generation complete.");
-            */
-
-            //default sun to directly overhead in new worlds
-            //SkyHost.SunAngleRadians = OpenTK.MathHelper.PiOver2;
-            //SkyHost.SunLightStrength = SkyHost.BRIGHTEST_SKYLIGHT_STRENGTH;
-
-            //Debug.WriteLine("New world saving...");
-            //World.SaveToDisk();
-            //Debug.WriteLine("New world save complete.");
         }
 
 		private void GenerateChunk(Chunk chunk)
