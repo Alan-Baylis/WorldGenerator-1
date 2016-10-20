@@ -146,18 +146,21 @@ namespace Sean.WorldGenerator
         {
             var block = GenerateCell(x, y, z);
             chunk.Blocks[x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE] = block;
-            if (x > chunk.ChunkCoords.WorldCoordsX)
-            { }
-            if (x < chunk.ChunkCoords.WorldCoordsX + Global.CHUNK_SIZE)
-            { }
-            if (z > chunk.ChunkCoords.WorldCoordsZ)
-            { }
-            if (z < chunk.ChunkCoords.WorldCoordsZ + Global.CHUNK_SIZE)
-            { }
-            if (y > Settings.minNoiseHeight)
-            { }
-            if (y < Settings.maxNoiseHeight)
-            { }
+            if (block.IsTransparent)
+            {
+                if (x > chunk.ChunkCoords.WorldCoordsX && chunk.Blocks[x - 1, y, z].Type != Block.BlockType.Unknown)
+                    GenerateChunkCells(chunk, x - 1, y, z);
+                if (x < chunk.ChunkCoords.WorldCoordsX + Global.CHUNK_SIZE && chunk.Blocks[x + 1, y, z].Type != Block.BlockType.Unknown)
+                    GenerateChunkCells(chunk, x + 1, y, z);
+                if (z > chunk.ChunkCoords.WorldCoordsZ && chunk.Blocks[x, y, z - 1].Type != Block.BlockType.Unknown)
+                    GenerateChunkCells(chunk, x, y, z - 1);
+                if (z < chunk.ChunkCoords.WorldCoordsZ + Global.CHUNK_SIZE && chunk.Blocks[x, y, z + 1].Type != Block.BlockType.Unknown)
+                    GenerateChunkCells(chunk, x, y, z + 1);
+                if (y > Settings.minNoiseHeight && chunk.Blocks[x, y - 1, z].Type != Block.BlockType.Unknown)
+                    GenerateChunkCells(chunk, x, y - 1, z);
+                if (y < Settings.maxNoiseHeight && chunk.Blocks[x, y + 1, z].Type != Block.BlockType.Unknown)
+                    GenerateChunkCells(chunk, x, y + 1, z);
+            }
 
         }
         private Block GenerateCell(int x, int y, int z)
