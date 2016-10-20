@@ -142,6 +142,32 @@ namespace Sean.WorldGenerator
             return biosphereGenerator.get((double)x, (double)z);
         }
 
+        private void GenerateChunkCells(Chunk chunk, int x, int y, int z)
+        {
+            var block = GenerateCell(x, y, z);
+            chunk.Blocks[x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE] = block;
+            if (x > chunk.ChunkCoords.WorldCoordsX)
+            { }
+            if (x < chunk.ChunkCoords.WorldCoordsX + Global.CHUNK_SIZE)
+            { }
+            if (z > chunk.ChunkCoords.WorldCoordsZ)
+            { }
+            if (z < chunk.ChunkCoords.WorldCoordsZ + Global.CHUNK_SIZE)
+            { }
+            if (y > Settings.minNoiseHeight)
+            { }
+            if (y < Settings.maxNoiseHeight)
+            { }
+
+        }
+        private Block GenerateCell(int x, int y, int z)
+        {
+            //double p = perlinNoise.OctavePerlin(worldSize, x, y, z, octaveCount, persistence);
+            double p = terrainGenerator.get((double)x / Settings.FRACTAL_SIZE, (double)(Settings.maxNoiseHeight - y) / Settings.maxNoiseHeight, (double)z / Settings.FRACTAL_SIZE);
+            var blockType = p > 0.5 ? Block.BlockType.Dirt : Block.BlockType.Air;
+            return new Block(blockType);
+        }
+
         public void Generate(Chunk chunk)
 		{
             Debug.WriteLine("Generating new chunk: " + chunk.ChunkCoords);
@@ -162,14 +188,11 @@ namespace Sean.WorldGenerator
                 {
                     for (int y = worldSize.maxY - 1; y >= worldSize.minY; y--)
                     {
-                        //double p = perlinNoise.OctavePerlin(worldSize, x, y, z, octaveCount, persistence);
-                        double p = terrainGenerator.get((double)x/Settings.FRACTAL_SIZE, (double)(worldSize.maxY-y)/Settings.maxNoiseHeight, (double)z/Settings.FRACTAL_SIZE);
-                        var blockType = p > 0.5 ? Block.BlockType.Dirt : Block.BlockType.Air;
-                        chunk.Blocks[x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE] = new Block(blockType);
-                        if (blockType != Block.BlockType.Air)
+                        var block = GenerateCell(x, y, z);
+                        chunk.Blocks[x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE] = block;
+                        if (block.Type != Block.BlockType.Air)
                         {
                             break; // Leave rest below ground as hidden
-                            // TODO - fill in the gaps in the landscape
                         }
                     }
                 }
