@@ -197,7 +197,8 @@ namespace Sean.WorldGenerator
                 var x = pos.X;
                 var y = pos.Y;
                 var z = pos.Z;
-                if (chunk.Blocks[x % Global.CHUNK_SIZE - 1, y, z % Global.CHUNK_SIZE].Type == Block.BlockType.Unknown)
+                //Console.WriteLine ($"{x},{y},{z}");
+                if (chunk.Blocks[x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE].Type == Block.BlockType.Unknown)
                 {
                     var block = GenerateCell(x, y, z);
                     chunk.Blocks[x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE] = block;
@@ -205,15 +206,15 @@ namespace Sean.WorldGenerator
                     {
                         if (x > chunk.ChunkCoords.WorldCoordsX && chunk.Blocks[x % Global.CHUNK_SIZE - 1, y, z % Global.CHUNK_SIZE].Type == Block.BlockType.Unknown)
                             _generateQueue.Enqueue(new Position(x - 1, y, z));
-                        if (x < chunk.ChunkCoords.WorldCoordsX + Global.CHUNK_SIZE && chunk.Blocks[x % Global.CHUNK_SIZE + 1, y, z % Global.CHUNK_SIZE].Type == Block.BlockType.Unknown)
+                        if (x < chunk.ChunkCoords.WorldCoordsX + Global.CHUNK_SIZE -1 && chunk.Blocks[x % Global.CHUNK_SIZE + 1, y, z % Global.CHUNK_SIZE].Type == Block.BlockType.Unknown)
                             _generateQueue.Enqueue(new Position(x + 1, y, z));
                         if (z > chunk.ChunkCoords.WorldCoordsZ && chunk.Blocks[x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE - 1].Type == Block.BlockType.Unknown)
                             _generateQueue.Enqueue(new Position(x, y, z - 1));
-                        if (z < chunk.ChunkCoords.WorldCoordsZ + Global.CHUNK_SIZE && chunk.Blocks[x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE + 1].Type == Block.BlockType.Unknown)
+                        if (z < chunk.ChunkCoords.WorldCoordsZ + Global.CHUNK_SIZE -1 && chunk.Blocks[x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE + 1].Type == Block.BlockType.Unknown)
                             _generateQueue.Enqueue(new Position(x, y, z + 1));
                         if (y > Settings.minNoiseHeight && chunk.Blocks[x % Global.CHUNK_SIZE, y - 1, z % Global.CHUNK_SIZE].Type == Block.BlockType.Unknown)
                             _generateQueue.Enqueue(new Position(x, y - 1, z));
-                        if (y < Settings.maxNoiseHeight && chunk.Blocks[x % Global.CHUNK_SIZE, y + 1, z % Global.CHUNK_SIZE].Type == Block.BlockType.Unknown)
+                        if (y < Settings.maxNoiseHeight -1 && chunk.Blocks[x % Global.CHUNK_SIZE, y + 1, z % Global.CHUNK_SIZE].Type == Block.BlockType.Unknown)
                             _generateQueue.Enqueue(new Position(x, y + 1, z));
                     }
                 }
