@@ -156,10 +156,12 @@ namespace Sean.WorldGenerator
                 scale = 1,
             };
 
-            GenerateChunkCells(chunk, 
+            _generateQueue = new UniqueQueue<Position>();
+            _generateQueue.Enqueue(new Position(
                 chunk.ChunkCoords.WorldCoordsX + Global.CHUNK_SIZE/2, 
                 Settings.maxNoiseHeight, 
-                chunk.ChunkCoords.WorldCoordsZ + Global.CHUNK_SIZE/2);
+                chunk.ChunkCoords.WorldCoordsZ + Global.CHUNK_SIZE/2));
+            GenerateChunkCells(chunk);
 
             chunk.BuildHeightMap();
             //GenerateChunk(chunk);
@@ -186,26 +188,36 @@ namespace Sean.WorldGenerator
             */
         }
 
-        private void GenerateChunkCells(Chunk chunk, int x, int y, int z)
+        private UniqueQueue<Position> _generateQueue;
+        private void GenerateChunkCells(Chunk chunk)
         {
-            var block = GenerateCell(x, y, z);
-            chunk.Blocks[x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE] = block;
-            if (block.IsTransparent)
+            while (_generateQueue.Count > 0)
             {
-                if (x > chunk.ChunkCoords.WorldCoordsX && chunk.Blocks[x - 1, y, z].Type != Block.BlockType.Unknown)
-                    GenerateChunkCells(chunk, x - 1, y, z);
-                if (x < chunk.ChunkCoords.WorldCoordsX + Global.CHUNK_SIZE && chunk.Blocks[x + 1, y, z].Type != Block.BlockType.Unknown)
-                    GenerateChunkCells(chunk, x + 1, y, z);
-                if (z > chunk.ChunkCoords.WorldCoordsZ && chunk.Blocks[x, y, z - 1].Type != Block.BlockType.Unknown)
-                    GenerateChunkCells(chunk, x, y, z - 1);
-                if (z < chunk.ChunkCoords.WorldCoordsZ + Global.CHUNK_SIZE && chunk.Blocks[x, y, z + 1].Type != Block.BlockType.Unknown)
-                    GenerateChunkCells(chunk, x, y, z + 1);
-                if (y > Settings.minNoiseHeight && chunk.Blocks[x, y - 1, z].Type != Block.BlockType.Unknown)
-                    GenerateChunkCells(chunk, x, y - 1, z);
-                if (y < Settings.maxNoiseHeight && chunk.Blocks[x, y + 1, z].Type != Block.BlockType.Unknown)
-                    GenerateChunkCells(chunk, x, y + 1, z);
+                var pos = _generateQueue.Dequeue();
+                var x = pos.X;
+                var y = pos.Y;
+                var z = pos.Z;
+                if (chunk.Blocks[x % Global.CHUNK_SIZE - 1, y, z % Global.CHUNK_SIZE].Type == Block.BlockType.Unknown)
+                {
+                    var block = GenerateCell(x, y, z);
+                    chunk.Blocks[x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE] = block;
+                    if (block.IsTransparent)
+                    {
+                        if (x > chunk.ChunkCoords.WorldCoordsX && chunk.Blocks[x % Global.CHUNK_SIZE - 1, y, z % Global.CHUNK_SIZE].Type == Block.BlockType.Unknown)
+                            _generateQueue.Enqueue(new Position(x - 1, y, z));
+                        if (x < chunk.ChunkCoords.WorldCoordsX + Global.CHUNK_SIZE && chunk.Blocks[x % Global.CHUNK_SIZE + 1, y, z % Global.CHUNK_SIZE].Type == Block.BlockType.Unknown)
+                            _generateQueue.Enqueue(new Position(x + 1, y, z));
+                        if (z > chunk.ChunkCoords.WorldCoordsZ && chunk.Blocks[x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE - 1].Type == Block.BlockType.Unknown)
+                            _generateQueue.Enqueue(new Position(x, y, z - 1));
+                        if (z < chunk.ChunkCoords.WorldCoordsZ + Global.CHUNK_SIZE && chunk.Blocks[x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE + 1].Type == Block.BlockType.Unknown)
+                            _generateQueue.Enqueue(new Position(x, y, z + 1));
+                        if (y > Settings.minNoiseHeight && chunk.Blocks[x % Global.CHUNK_SIZE, y - 1, z % Global.CHUNK_SIZE].Type == Block.BlockType.Unknown)
+                            _generateQueue.Enqueue(new Position(x, y - 1, z));
+                        if (y < Settings.maxNoiseHeight && chunk.Blocks[x % Global.CHUNK_SIZE, y + 1, z % Global.CHUNK_SIZE].Type == Block.BlockType.Unknown)
+                            _generateQueue.Enqueue(new Position(x, y + 1, z));
+                    }
+                }
             }
-
         }
         private Block GenerateCell(int x, int y, int z)
         {
