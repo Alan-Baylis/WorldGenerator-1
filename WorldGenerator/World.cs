@@ -51,7 +51,6 @@ namespace Sean.WorldGenerator
         //public ConcurrentDictionary<int, Mob> Mobs { get; private set; }
         public static ConcurrentDictionary<int, GameItemDynamic> GameItems { get; private set; }
 
-
         #region Properties (Saved)
         public static WorldType WorldType { get; set; }
         /// <summary>Original Raw Seed used to generate this world. Blank if no seed was used.</summary>
@@ -66,7 +65,6 @@ namespace Sean.WorldGenerator
         {
             get { return System.Threading.Interlocked.Increment(ref GameObjectIdSeq); }
         }
-
 
         private static int _sizeInChunksX;
         /// <summary>Number of chunks in X direction that make up the world.</summary>
@@ -118,7 +116,6 @@ namespace Sean.WorldGenerator
         public static Array<bool> GlobalOceanMap { get { return worldMap.OceanMap; } }
         public static Array<int> GlobalTemperatureMap { get { return worldMap.TemperatureMap; } }
         public static Array<int> GlobalBiosphereMap { get { return worldMap.BiosphereMap; } }
-
 
         static World ()
         {
@@ -181,7 +178,8 @@ namespace Sean.WorldGenerator
         /// </summary>
         internal static bool IsValidBlockLocation(int x, int y, int z)
         {
-            return x >= 0 && x < SizeInBlocksX && y >= 0 && y < Global.CHUNK_HEIGHT && z >= 0 && z < World.SizeInBlocksZ;
+            return y >= 0 && y < Global.CHUNK_HEIGHT && 
+                localMap.IsChunkLoaded (new ChunkCoords(x / Global.CHUNK_SIZE, z / Global.CHUNK_SIZE));
         }
 
         internal static bool IsOnChunkBorder(int x, int z)
@@ -202,7 +200,6 @@ namespace Sean.WorldGenerator
                 (z < World.SizeInBlocksZ - 1 && GetHeightMapLevel(x, z + 1) <= y) ||
                 (z > 0 && GetHeightMapLevel(x, z - 1) <= y);
         }
-
 
 
         internal static bool IsValidItemLocation(Position position)

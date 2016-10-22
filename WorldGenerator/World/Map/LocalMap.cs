@@ -49,7 +49,17 @@ namespace Sean.WorldGenerator
         {
             return GetOrCreate(x, z); 
         }
-
+        /*
+        internal bool IsChunkLoaded(int x, int z)
+        {
+            lock (mapChunks)
+            {
+                if (x > MaxChunkLimit || x < -MaxChunkLimit || z > MaxChunkLimit || z < -MaxChunkLimit) throw new ArgumentException("Chunk index exceeded");
+                int idx = x * MaxChunkLimit + z;
+                return mapChunks.ContainsKey(idx);
+            }
+        }
+        */
         public bool IsChunkLoaded(ChunkCoords chunkCoords)
         {
             lock (mapChunks)
@@ -84,30 +94,34 @@ namespace Sean.WorldGenerator
         private Chunk GetOrCreate(int x, int z)
         {
             Console.WriteLine ($"Getting chunk {x},{z}");
-            lock (mapChunks)
-            {
-                if (x > MaxChunkLimit || x < -MaxChunkLimit || z > MaxChunkLimit || z < -MaxChunkLimit) throw new ArgumentException("Chunk index exceeded");
+            Chunk chunk = null;
+            lock (mapChunks) {
+                if (x > MaxChunkLimit || x < -MaxChunkLimit || z > MaxChunkLimit || z < -MaxChunkLimit)
+                    throw new ArgumentException ("Chunk index exceeded");
                 int idx = x * MaxChunkLimit + z;
-                if (!mapChunks.ContainsKey(idx))
-                {
-                    Console.WriteLine($"Generating {x},{z}");
-                    var mapChunk = new MapChunk();
-                    var chunkCoords = new ChunkCoords(x, z);
-                    mapChunk.Chunk = new Chunk(chunkCoords);
-                    generator.Generate(mapChunk.Chunk);
-                    mapChunks[idx] = mapChunk;
-
-                    if (x > MaxXChunk)
-                        MaxXChunk = x;
-                    if (x < MinXChunk)
-                        MinXChunk = x;
-                    if (z > MaxZChunk)
-                        MaxZChunk = z;
-                    if (z < MinZChunk)
-                        MinZChunk = z;
+                if (mapChunks.ContainsKey (idx)) {
+                    return mapChunks [idx].Chunk;
                 }
-                return mapChunks[idx].Chunk;
+
+                // Create Chunk
+                Console.WriteLine ($"Generating {x},{z}");
+                var mapChunk = new MapChunk ();
+                var chunkCoords = new ChunkCoords (x, z);
+                chunk = new Chunk (chunkCoords);
+                mapChunk.Chunk = chunk;
+                mapChunks [idx] = mapChunk;
+
+                if (x > MaxXChunk)
+                    MaxXChunk = x;
+                if (x < MinXChunk)
+                    MinXChunk = x;
+                if (z > MaxZChunk)
+                    MaxZChunk = z;
+                if (z < MinZChunk)
+                    MinZChunk = z;
             }
+            generator.Generate(chunk);
+            return chunk;
         }
 
     }

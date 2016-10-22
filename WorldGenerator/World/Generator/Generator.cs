@@ -161,6 +161,36 @@ namespace Sean.WorldGenerator
                 chunk.ChunkCoords.WorldCoordsX + Global.CHUNK_SIZE/2, 
                 Settings.maxNoiseHeight, 
                 chunk.ChunkCoords.WorldCoordsZ + Global.CHUNK_SIZE/2));
+
+            if (World.IsChunkLoaded (new ChunkCoords (chunk.ChunkCoords.X - 1, chunk.ChunkCoords.Z))) {
+                for (var z = chunk.MinPosition.Z; z < chunk.MaxPosition.Z; z++) {
+                    for (var y = chunk.MinPosition.Y; y < chunk.MinPosition.Y; y++) {
+                        ExpandSearchCheckBlock(chunk.MinPosition.X - 1, y, z);
+                    }
+                }
+            }
+            if (World.IsChunkLoaded (new ChunkCoords (chunk.ChunkCoords.X + 1, chunk.ChunkCoords.Z))) {
+                for (var z = chunk.MinPosition.Z; z < chunk.MaxPosition.Z; z++) {
+                    for (var y = chunk.MinPosition.Y; y < chunk.MinPosition.Y; y++) {
+                        ExpandSearchCheckBlock(chunk.MaxPosition.X + 1, y, z);
+                    }
+                }
+            }
+            if (World.IsChunkLoaded (new ChunkCoords (chunk.ChunkCoords.X, chunk.ChunkCoords.Z - 1))) {
+                for (var x = chunk.MinPosition.X; x < chunk.MaxPosition.X; x++) {
+                    for (var y = chunk.MinPosition.Y; y < chunk.MinPosition.Y; y++) {
+                        ExpandSearchCheckBlock(x, y, chunk.MinPosition.Z - 1);
+                    }
+                }
+            }
+            if (World.IsChunkLoaded (new ChunkCoords (chunk.ChunkCoords.X, chunk.ChunkCoords.Z + 1))) {
+                for (var x = chunk.MinPosition.X; x < chunk.MaxPosition.X; x++) {
+                    for (var y = chunk.MinPosition.Y; y < chunk.MinPosition.Y; y++) {
+                        ExpandSearchCheckBlock(x, y, chunk.MaxPosition.Z + 1);
+                    }
+                }
+            }
+                
             GenerateChunkCells(chunk);
 
             chunk.BuildHeightMap();
@@ -197,28 +227,28 @@ namespace Sean.WorldGenerator
                 var x = pos.X;
                 var y = pos.Y;
                 var z = pos.Z;
-                //Console.WriteLine ($"{x},{y},{z}");
                 if (chunk.Blocks[x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE].Type == Block.BlockType.Unknown)
                 {
                     var block = GenerateCell(x, y, z);
                     chunk.Blocks[x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE] = block;
                     if (block.IsTransparent)
                     {
-                        if (x > chunk.ChunkCoords.WorldCoordsX && chunk.Blocks[x % Global.CHUNK_SIZE - 1, y, z % Global.CHUNK_SIZE].Type == Block.BlockType.Unknown)
-                            _generateQueue.Enqueue(new Position(x - 1, y, z));
-                        if (x < chunk.ChunkCoords.WorldCoordsX + Global.CHUNK_SIZE -1 && chunk.Blocks[x % Global.CHUNK_SIZE + 1, y, z % Global.CHUNK_SIZE].Type == Block.BlockType.Unknown)
-                            _generateQueue.Enqueue(new Position(x + 1, y, z));
-                        if (z > chunk.ChunkCoords.WorldCoordsZ && chunk.Blocks[x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE - 1].Type == Block.BlockType.Unknown)
-                            _generateQueue.Enqueue(new Position(x, y, z - 1));
-                        if (z < chunk.ChunkCoords.WorldCoordsZ + Global.CHUNK_SIZE -1 && chunk.Blocks[x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE + 1].Type == Block.BlockType.Unknown)
-                            _generateQueue.Enqueue(new Position(x, y, z + 1));
-                        if (y > Settings.minNoiseHeight && chunk.Blocks[x % Global.CHUNK_SIZE, y - 1, z % Global.CHUNK_SIZE].Type == Block.BlockType.Unknown)
-                            _generateQueue.Enqueue(new Position(x, y - 1, z));
-                        if (y < Settings.maxNoiseHeight -1 && chunk.Blocks[x % Global.CHUNK_SIZE, y + 1, z % Global.CHUNK_SIZE].Type == Block.BlockType.Unknown)
-                            _generateQueue.Enqueue(new Position(x, y + 1, z));
+                        ExpandSearchCheckBlock (x - 1, y, z);
+                        ExpandSearchCheckBlock (x + 1, y, z);
+                        if (y-1 >= Settings.minNoiseHeight)
+                            ExpandSearchCheckBlock (x, y - 1, z);
+                        if (y+1 < Settings.maxNoiseHeight)
+                            ExpandSearchCheckBlock (x, y + 1, z);
+                        ExpandSearchCheckBlock (x, y, z - 1);
+                        ExpandSearchCheckBlock (x, y, z + 1);
                     }
                 }
             }
+        }
+        private void ExpandSearchCheckBlock(int x,int y,int z)
+        {
+            if (World.IsValidBlockLocation(x, y, z) && World.GetBlock(x,y,z).Type == Block.BlockType.Unknown)
+                _generateQueue.Enqueue (new Position (x, y, z));
         }
         private Block GenerateCell(int x, int y, int z)
         {
