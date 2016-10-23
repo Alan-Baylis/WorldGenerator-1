@@ -39,7 +39,7 @@ namespace Sean.Shared
         }
         private Block GetBlock(int y)
         {
-            int height = 0;
+            int height = -1;
             foreach (ArrayItem item in _array) {
                 height += item.Count;
                 if (height >= y) {

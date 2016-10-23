@@ -22,7 +22,7 @@ namespace WorldViewer
         public Form1()
         {
             InitializeComponent();
-            currentChunk = new Sean.Shared.ChunkCoords(50, 50);
+            currentChunk = new Sean.Shared.ChunkCoords(64, 28);
             textBox1.Text = "Keys: W,A,S,D";
         }
 

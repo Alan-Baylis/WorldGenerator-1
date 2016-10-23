@@ -172,6 +172,8 @@ namespace Sean.WorldGenerator
         }
         internal static void SetBlock (int x, int y, int z, Block block)
         {
+            if (block.Type == Block.BlockType.Unknown)
+                Console.WriteLine ("Setting Unknown block?");
             localMap.Chunk (x / Global.CHUNK_SIZE, z / Global.CHUNK_SIZE).Blocks [x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE] = block;
         }
 
