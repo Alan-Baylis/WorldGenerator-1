@@ -221,16 +221,25 @@ namespace Sean.WorldGenerator
         private UniqueQueue<Position> _generateQueue;
         private void GenerateChunkCells(Chunk chunk)
         {
+            //List<Position> generated = new List<Position> ();
             while (_generateQueue.Count > 0)
             {
                 var pos = _generateQueue.Dequeue();
+                //Console.WriteLine (pos);
                 var x = pos.X;
                 var y = pos.Y;
                 var z = pos.Z;
-                if (chunk.Blocks[x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE].Type == Block.BlockType.Unknown)
+                if (World.GetBlock(x,y,z).Type == Block.BlockType.Unknown)
                 {
+                    //if (generated.Contains (pos))
+                    //    Console.WriteLine ("Hey, we've already done this block?");
                     var block = GenerateCell(x, y, z);
-                    chunk.Blocks[x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE] = block;
+                    if (block.Type == Block.BlockType.Unknown)
+                        Console.WriteLine ("Unknown block type generated?");
+                    World.SetBlock (x, y, z, block);
+                    if (World.GetBlock (x, y, z).Type == Block.BlockType.Unknown)
+                        Console.WriteLine ("Block not set?");
+                    //generated.Add (pos);
                     if (block.IsTransparent)
                     {
                         ExpandSearchCheckBlock (x - 1, y, z);

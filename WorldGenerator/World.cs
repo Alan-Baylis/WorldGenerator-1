@@ -170,6 +170,10 @@ namespace Sean.WorldGenerator
         {
             return localMap.Chunk(x / Global.CHUNK_SIZE, z / Global.CHUNK_SIZE).Blocks[x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE];
         }
+        internal static void SetBlock (int x, int y, int z, Block block)
+        {
+            localMap.Chunk (x / Global.CHUNK_SIZE, z / Global.CHUNK_SIZE).Blocks [x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE] = block;
+        }
 
         /// <summary>
         /// Is this position a valid block location. Includes blocks on the base of the world even though they cannot be removed.
