@@ -4,7 +4,7 @@ using System.Diagnostics;
 using Sean.Shared;
 using NoiseLibrary;
 
-namespace Sean.WorldGenerator
+namespace Sean.WorldGenerator.Scripting
 {
 	public class Generator
 	{

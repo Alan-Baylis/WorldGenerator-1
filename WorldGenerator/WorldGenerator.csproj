@@ -72,6 +72,14 @@
     <Compile Include="Shared\GameItemStatic.cs" />
     <Compile Include="World\Map\Water.cs" />
     <Compile Include="Shared\LightSource.cs" />
+    <Compile Include="Scripting\Character.cs" />
+    <Compile Include="Scripting\Construction.cs" />
+    <Compile Include="Scripting\GraphicsAlgorithms.cs" />
+    <Compile Include="Scripting\Knowledge.cs" />
+    <Compile Include="Scripting\Map.cs" />
+    <Compile Include="Scripting\PathFinder.cs" />
+    <Compile Include="Scripting\ScriptHost.cs" />
+    <Compile Include="Scripting\Tasks.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
@@ -80,5 +88,8 @@
       <Project>{4D280CA6-39A9-4400-B365-688930CE654D}</Project>
       <Name>Shared</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Scripting\" />
   </ItemGroup>
 </Project>
