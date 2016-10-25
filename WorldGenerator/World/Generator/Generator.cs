@@ -194,52 +194,23 @@ namespace Sean.WorldGenerator
             GenerateChunkCells(chunk);
 
             chunk.BuildHeightMap();
-            //GenerateChunk(chunk);
-
-            /*
-			//loop through chunks again for actions that require the neighboring chunks to be built
-			Debug.WriteLine("Completing growth in chunks and building heightmaps...");
-            Debug.WriteLine("Completing growth in chunks...", 0, 0);
-			foreach (Chunk chunk in World.Chunks)
-			{
-				//build heightmap here only so we know where to place trees/clutter (it will get built again on world load anyway)
-				chunk.BuildHeightMap();
-
-				var takenPositions = new List<Position>(); //positions taken by tree or clutter, ensures neither spawn on top of or directly touching another
-
-				//generate trees
-				if (World.GenerateWithTrees) TreeGenerator.Generate(chunk, takenPositions);
-
-				//generate clutter
-				//ClutterGenerator.Generate(chunk, takenPositions);
-			}
-
-			Debug.WriteLine("World generation complete.");
-            */
         }
 
         private UniqueQueue<Position> _generateQueue;
         private void GenerateChunkCells(Chunk chunk)
         {
-            //List<Position> generated = new List<Position> ();
             while (_generateQueue.Count > 0)
             {
                 var pos = _generateQueue.Dequeue();
-                //Console.WriteLine (pos);
                 var x = pos.X;
                 var y = pos.Y;
                 var z = pos.Z;
                 if (World.GetBlock(x,y,z).Type == Block.BlockType.Unknown)
                 {
-                    //if (generated.Contains (pos))
-                    //    Console.WriteLine ("Hey, we've already done this block?");
                     var block = GenerateCell(x, y, z);
-                    if (block.Type == Block.BlockType.Unknown)
-                        Console.WriteLine ("Unknown block type generated?");
+                    if (block.Type == Block.BlockType.Unknown) Console.WriteLine ("Unknown block type generated?");
                     World.SetBlock (x, y, z, block);
-                    if (World.GetBlock (x, y, z).Type == Block.BlockType.Unknown)
-                        Console.WriteLine ("Block not set?");
-                    //generated.Add (pos);
+                    if (World.GetBlock (x, y, z).Type == Block.BlockType.Unknown) Console.WriteLine ("Block not set?");
                     if (block.IsTransparent)
                     {
                         ExpandSearchCheckBlock (x - 1, y, z);
@@ -267,6 +238,7 @@ namespace Sean.WorldGenerator
             return new Block(blockType);
         }
 
+        /*
 		private void GenerateChunk(Chunk chunk)
 		{
             for (var x = chunk.ChunkCoords.WorldCoordsX; x < chunk.ChunkCoords.WorldCoordsX + Global.CHUNK_SIZE; x++)
@@ -379,6 +351,6 @@ namespace Sean.WorldGenerator
 					}
 				}
 			}
-		}
+		}*/
 	}
 }
