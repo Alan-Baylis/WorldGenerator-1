@@ -535,13 +535,13 @@ namespace Sean.WorldGenerator.Scripting
         {
             return
                 ((World.GetBlock(loc.X -1, loc.Y, loc.Z -1).Type == target)
-                    || ((World.GetBlock(loc.X-1, loc.Y, loc.Z).GetBlock().Type == target)
-                    || ((World.GetBlock(loc.X-1, loc.Y, loc.Z+1).GetBlock().Type == target)
-                    || ((World.GetBlock(loc.X, loc.Y, loc.Z+1).GetBlock().Type == target)
-                    || ((World.GetBlock(loc.X+1, loc.Y, loc.Z+1).GetBlock().Type == target)
-                    || ((World.GetBlock(loc.X+1, loc.Y, loc.Z).GetBlock().Type == target)
-                    || ((World.GetBlock(loc.X+1, loc.Y, loc.Z-1).GetBlock().Type == target)
-                    || ((World.GetBlock(loc.X, loc.Y, loc.Z-1).GetBlock().Type == target));
+                    || (World.GetBlock(loc.X-1, loc.Y, loc.Z).Type == target)
+                    || (World.GetBlock(loc.X-1, loc.Y, loc.Z+1).Type == target)
+                    || (World.GetBlock(loc.X, loc.Y, loc.Z+1).Type == target)
+                    || (World.GetBlock(loc.X+1, loc.Y, loc.Z+1).Type == target)
+                    || (World.GetBlock(loc.X+1, loc.Y, loc.Z).Type == target)
+                    || (World.GetBlock(loc.X+1, loc.Y, loc.Z-1).Type == target)
+                    || (World.GetBlock(loc.X, loc.Y, loc.Z-1).Type == target));
         }
 
         /*
