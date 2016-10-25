@@ -29,14 +29,20 @@ namespace WorldViewer
         private void DrawMaps()
         {
             var currentCursor = this.Cursor;
-            this.Cursor = Cursors.WaitCursor;
-            this.localPictureBox.Image = this.DrawLocal(this.localPictureBox.Width, this.localPictureBox.Height);
-            this.worldPictureBox.Image = this.DrawAllChunks(this.worldPictureBox.Width, this.worldPictureBox.Height);
-            this.pictureBox1.Image = this.DrawGlobalMap(this.pictureBox1.Width, this.pictureBox1.Height, selectedView);
-            //this.terrainPictureBox.Image = this.DrawTerrain(this.terrainPictureBox.Width, this.terrainPictureBox.Height);
+            try
+            {
+                this.Cursor = Cursors.WaitCursor;
+                this.localPictureBox.Image = this.DrawLocal(this.localPictureBox.Width, this.localPictureBox.Height);
+                this.worldPictureBox.Image = this.DrawAllChunks(this.worldPictureBox.Width, this.worldPictureBox.Height);
+                this.pictureBox1.Image = this.DrawGlobalMap(this.pictureBox1.Width, this.pictureBox1.Height, selectedView);
+                //this.terrainPictureBox.Image = this.DrawTerrain(this.terrainPictureBox.Width, this.terrainPictureBox.Height);
 
-            this.elevationForm.DrawImages(currentChunk);
-
+                this.elevationForm.DrawImages(currentChunk);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Exception - {e.Message}");
+            }
             this.Cursor = currentCursor;
         }
 
@@ -274,22 +280,21 @@ namespace WorldViewer
 
         private void Form1_Shown(object sender, EventArgs e)
         {
-            parametersForm = new ParametersForm();
-            parametersForm.Show();
+            //parametersForm = new ParametersForm();
+            //parametersForm.Show();
             elevationForm = new ElevationForm();
             elevationForm.Show();
             DrawMaps();
         }
 
-        private void OnRadioButtonCheckedChanged(object sender, EventArgs e)
-        {
-            selectedView = View.HeightMap;
-            if (heightRadioButton.Checked) selectedView = View.HeightMap;
-            if (tempRadioButton.Checked) selectedView = View.Temp;
-            if (bioRadioButton.Checked) selectedView = View.Biosphere;
-            if (waterRadioButton.Checked) selectedView = View.Water;
-            DrawMaps();
-        }
-
+        //private void OnRadioButtonCheckedChanged(object sender, EventArgs e)
+        //{
+        //    selectedView = View.HeightMap;
+        //    if (heightRadioButton.Checked) selectedView = View.HeightMap;
+        //    if (tempRadioButton.Checked) selectedView = View.Temp;
+        //    if (bioRadioButton.Checked) selectedView = View.Biosphere;
+        //    if (waterRadioButton.Checked) selectedView = View.Water;
+        //    DrawMaps();
+        //}
     }
 }
