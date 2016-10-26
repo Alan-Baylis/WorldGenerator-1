@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Sean.Shared;
 
-namespace Sean.WorldGenerator.Scripting
+namespace Sean.WorldServer.Scripting
 {
     class GraphicsAlgorithms
     {

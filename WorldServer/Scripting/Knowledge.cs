@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using Sean.Shared;
 
-namespace Sean.WorldGenerator.Scripting
+namespace Sean.WorldServer.Scripting
 {
+    /*
     public class Time
     {
         public int time;
@@ -86,5 +87,6 @@ namespace Sean.WorldGenerator.Scripting
 		private const int MinBlockPositions = 100;
 		private Dictionary<Block.BlockType, List<KnownBlockLocation>> knownBlockLocations;
     }
+    */
 }
 

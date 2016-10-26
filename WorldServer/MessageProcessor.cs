@@ -73,6 +73,12 @@ namespace Sean.WorldServer
             ClientConnection.EnqueueMessage(clientId, msg);
             WebSocketListener.SendMessage(clientId, msg);
         }
+        private static void SendBroadcastMessage(Message msg)
+        {
+            Console.WriteLine($"[MessageProcessor.SendBroadcastMessage] Sending message to all");
+            ClientConnection.BroadcastMessage(msg);
+            WebSocketListener.BroadcastMessage(msg);
+        }
 
         private static void SendOk(Guid clientId)
         {
@@ -108,6 +114,19 @@ namespace Sean.WorldServer
                 Data = chunk.Serialize()
             };
             SendMessage(clientId, msg);
+        }
+
+        public static void SendCharacterUpdate(Character character)
+        {
+            var msg = new Message()
+            {
+                MapCharacterUpdate = new MapCharacterUpdateMessage()
+                {
+                    CharacterId = character.Id,
+                    Position = character.Location
+                }
+            };
+            SendBroadcastMessage(msg);
         }
 
         public static void SendError(Guid clientId, string reason)

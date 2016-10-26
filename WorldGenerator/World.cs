@@ -159,14 +159,23 @@ namespace Sean.WorldGenerator
 
         #region Lookup Functions
         /// <summary>Get a block using world coords.</summary>
-        internal static Block GetBlock(ref Coords coords)
+        public static Block GetBlock(ref Coords coords)
         {
             return localMap.Chunk(coords).Blocks[coords];
         }
 
+        /// <summary>
+        /// Get a block using world coords. Looks up the chunk from the world chunks array and then the block in the chunk blocks array.
+        /// Therefore if you have a chunk and chunk relative xyz its faster to get the block straight from the chunk blocks array.
+        /// </summary>
+        public static Block GetBlock(Position position)
+        {
+            return localMap.Chunk(position).Blocks[position];
+        }
+
         /// <summary>Get a block using world x,y,z. Use this overload to avoid constructing coords when they arent needed.</summary>
         /// <remarks>For example, this provided ~40% speed increase in the World.PropagateLight function compared to constructing coords and calling the above overload.</remarks>
-        internal static Block GetBlock(int x, int y, int z)
+        public static Block GetBlock(int x, int y, int z)
         {
             return localMap.Chunk(x / Global.CHUNK_SIZE, z / Global.CHUNK_SIZE).Blocks[x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE];
         }
@@ -182,10 +191,19 @@ namespace Sean.WorldGenerator
         /// This is because the cursor can still point at them, they can still receive light, etc.
         /// Coords/Position structs have the same method. Use this one to avoid contructing coords/position when they arent needed. Large performance boost in some cases.
         /// </summary>
-        internal static bool IsValidBlockLocation(int x, int y, int z)
+        public static bool IsValidBlockLocation(int x, int y, int z)
         {
             return y >= 0 && y < Global.CHUNK_HEIGHT && 
                 localMap.IsChunkLoaded (new ChunkCoords(x / Global.CHUNK_SIZE, z / Global.CHUNK_SIZE));
+        }
+
+        public static bool IsValidBlockLocation(Position position)
+        {
+            return IsValidBlockLocation(position.X, position.Y, position.Z);
+        }
+        public static bool IsValidBlockLocation(Coords coords)
+        {
+            return IsValidBlockLocation(coords.Xblock, coords.Yblock, coords.Zblock);
         }
 
         internal static bool IsOnChunkBorder(int x, int z)
@@ -193,7 +211,7 @@ namespace Sean.WorldGenerator
             return x % Global.CHUNK_SIZE == 0 || z % Global.CHUNK_SIZE == 0 || x % Global.CHUNK_SIZE == Global.CHUNK_SIZE - 1 || z % Global.CHUNK_SIZE == Global.CHUNK_SIZE - 1;
         }
 
-        internal static int GetHeightMapLevel(int x, int z)
+        public static int GetHeightMapLevel(int x, int z)
         {
             return LocalMap.Chunk(x / Global.CHUNK_SIZE, z / Global.CHUNK_SIZE).HeightMap[x % Global.CHUNK_SIZE, z % Global.CHUNK_SIZE];
         }
@@ -245,15 +263,6 @@ namespace Sean.WorldGenerator
                 chunks.Add(localMap.Chunk(position.X / Global.CHUNK_SIZE, (position.Z + 1) / Global.CHUNK_SIZE)); //add front chunk
             }
             return chunks;
-        }
-
-        internal static bool IsValidBlockLocation(Position position)
-        {
-            return IsValidBlockLocation(position.X, position.Y, position.Z); 
-        }
-        internal static bool IsValidBlockLocation(Coords coords)
-        {
-            return IsValidBlockLocation(coords.Xblock, coords.Yblock, coords.Zblock); 
         }
 
         internal static bool IsValidPlayerLocation(Coords coords)
@@ -321,14 +330,6 @@ namespace Sean.WorldGenerator
             return AdjacentPositions(coord.ToPosition());
         }
 
-        /// <summary>
-        /// Get a block using world coords. Looks up the chunk from the world chunks array and then the block in the chunk blocks array.
-        /// Therefore if you have a chunk and chunk relative xyz its faster to get the block straight from the chunk blocks array.
-        /// </summary>
-        internal static Block GetBlock(Position position)
-        {
-            return localMap.Chunk(position).Blocks[position];
-        }
         #endregion
 
         #region Block Place

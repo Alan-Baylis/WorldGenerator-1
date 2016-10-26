@@ -8,6 +8,7 @@ namespace Sean.WorldServer
     public static class WorldEvents
     {
         private static Dictionary<ChunkCoords, List<Guid>> registrations;
+        private static bool _firstChunk = true;
 
         static WorldEvents()
         {
@@ -27,6 +28,11 @@ namespace Sean.WorldServer
             }
             registrations[chunkCoords].Add(clientId);
             MessageProcessor.SendMap (clientId, chunk);
+
+            if (_firstChunk)
+            {
+                CharacterManager.AddRandomCharacters(new Position(chunkCoords.WorldCoordsX + Global.CHUNK_SIZE / 2, 0, chunkCoords.WorldCoordsZ + Global.CHUNK_SIZE / 2));
+            }
         }
         public static void ChunkIgnore(ChunkCoords chunkCoords, Guid clientId)
         {

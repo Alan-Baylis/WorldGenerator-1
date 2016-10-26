@@ -43,6 +43,13 @@ namespace Sean.WorldServer
                 return;
             clientsList[clientId].SendMessage(message);
         }
+        public static void BroadcastMessage(Message message)
+        {
+            foreach (var clientId in clientsList.Keys)
+            {
+                clientsList[clientId].SendMessage(message);
+            }
+        }
 
         private static void StartListening()
         {

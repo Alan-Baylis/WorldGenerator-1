@@ -98,9 +98,9 @@ namespace Sean.Shared.Comms
     public class MapCharacterUpdateMessage
     {
         [DataMember]
-        public Position Position { get; set; }
-        [DataMember]
         public int CharacterId { get; set; }
+        [DataMember]
+        public Position Position { get; set; }
     }
 
     [DataContract]

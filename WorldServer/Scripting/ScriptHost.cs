@@ -4,11 +4,11 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Mono.CSharp;
 using System.IO;
 using Sean.Shared;
+using Sean.WorldGenerator;
 
-namespace Sean.WorldGenerator.Scripting
+namespace Sean.WorldServer.Scripting
 {
     // A class to share context between our ScriptDriver and Mono's Evaluator
     public static class ScriptHost// : IScriptHost

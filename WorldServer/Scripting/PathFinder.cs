@@ -3,8 +3,9 @@ using System.Text;
 using System.IO;
 using System.Collections.Generic;
 using Sean.Shared;
+using Sean.WorldGenerator;
 
-namespace Sean.WorldGenerator.Scripting
+namespace Sean.WorldServer.Scripting
 {
     public class PathFinder
     {
@@ -123,7 +124,6 @@ namespace Sean.WorldGenerator.Scripting
         private int ScrMaxY = 0;
         private int ScrGridSizeX = 0;
         private int ScrGridSizeY = 0;
-        private Map map;
         private Character character;
         private int fScore;
         private Dictionary<Position, LocationScore> scores;
@@ -132,9 +132,8 @@ namespace Sean.WorldGenerator.Scripting
         private int characterCount;
         private List<Position> openset;
 
-        public PathFinder (Map map)
+        public PathFinder ()
         {
-            this.map = map;
             fScore = 0;
             gScore = 0;
             scores = new Dictionary<Position, LocationScore> ();
@@ -223,7 +222,7 @@ namespace Sean.WorldGenerator.Scripting
             return route;
         }
 
-        public List<Position> FindPaths (Position start, Knowledge knowledge, Block.BlockType stopAtType = Block.BlockType.Air, int maxSearch = 100)
+        public List<Position> FindPaths (Position start, Block.BlockType stopAtType = Block.BlockType.Air, int maxSearch = 100)
 		{
 			int searched = 0;
 			Position current = start;
@@ -241,7 +240,7 @@ namespace Sean.WorldGenerator.Scripting
 
 				foreach (Position neighbour in NeighbourBlocks(current))
 				{
-                    if (neighbour.GetBlock().Type == stopAtType)
+                    if (World.GetBlock(neighbour).Type == stopAtType)
                     {
                         Console.WriteLine ("Found route from {0} to {1} after checking {2} locations", start, current, searched);
                         List<Position> route = new List<Position>();
@@ -252,7 +251,7 @@ namespace Sean.WorldGenerator.Scripting
                         }
                         return route;
                     }
-					knowledge.Add(neighbour, start, GetGScore(current));
+					//knowledge.Add(neighbour, start, GetGScore(current));
 				}
 				List<Position> neighbours = NeighbourNodes (current);
 				foreach (Position neighbour in neighbours) {
@@ -276,7 +275,7 @@ namespace Sean.WorldGenerator.Scripting
             return null;
         }
 
-        public List<Position> FindPath (Position start, Position destination, Knowledge knowledge, int maxSearch = 100)
+        public List<Position> FindPath (Position start, Position destination, int maxSearch = 100)
         {
             int searched = 0;
             Position current = start;
@@ -334,7 +333,7 @@ namespace Sean.WorldGenerator.Scripting
         {
             foreach (Position check in ListBlocksByRange(start))
             {
-                if (check.GetBlock().Type == target)
+                if (World.GetBlock(check).Type == target)
                     yield return check;
 			}
         }
@@ -452,11 +451,11 @@ namespace Sean.WorldGenerator.Scripting
 		{
             foreach (Position pt in GraphicsAlgorithms.FindIntersectingBlocks(start.ToPosition(), end.ToPosition()))
             {
-                if (!pt.IsValidBlockLocation)
+                if (!World.IsValidBlockLocation(pt))
                 {
                     return end.ToPosition();
                 }
-                if (pt.GetBlock().IsSolid)
+                if (World.GetBlock(pt).IsSolid)
                 {
 					return pt;
                 }
@@ -638,31 +637,31 @@ namespace Sean.WorldGenerator.Scripting
 			Position dn2 = pos + new Position (0, -2, 0);
 			Position dn3 = pos + new Position(0,-3,0);
 
-			if (up3.GetBlock ().IsSolid)
+			if (World.GetBlock(up3).IsSolid)
 				yield return up3;
-			if (up2.GetBlock ().IsSolid)
+			if (World.GetBlock(up2).IsSolid)
 				yield return up2;
-			if (up1.GetBlock ().IsSolid)
+			if (World.GetBlock(up1).IsSolid)
 				yield return up1;
-			if (pos.GetBlock ().IsSolid)
+			if (World.GetBlock(pos).IsSolid)
 			{
 				yield return pos;
 				yield break;
 			} 
 
-			if (dn1.GetBlock().IsSolid)
+			if (World.GetBlock(dn1).IsSolid)
 			{
 				yield return dn1;
 				yield break;
 			}
 
-		  	if (dn2.GetBlock().IsSolid)
+		  	if (World.GetBlock(dn2).IsSolid)
 			{
 				yield return dn2;
 				yield break;
 			}
 
-			if (dn3.GetBlock().IsSolid)
+			if (World.GetBlock(dn3).IsSolid)
 			{
 				yield return dn3;
 				yield break;
@@ -697,19 +696,19 @@ namespace Sean.WorldGenerator.Scripting
             Position dn2 = pos + new Position(0,-2,0);
             //Position dn3 = pos + new Position(0,-3,0);
 
-            if (dn1.GetBlock().IsSolid && pos.GetBlock().IsTransparent && up1.GetBlock().IsTransparent)
+            if (World.GetBlock(dn1).IsSolid && World.GetBlock(pos).IsTransparent && World.GetBlock(up1).IsTransparent)
             {
                 // Walk straight
                 neighbours.Add(pos);
                 return;
             }
-            if (pos.GetBlock().IsSolid && up1.GetBlock().IsTransparent && up2.GetBlock().IsTransparent)
+            if (World.GetBlock(pos).IsSolid && World.GetBlock(up1).IsTransparent && World.GetBlock(up2).IsTransparent)
             {
                 // Jump up one
                 neighbours.Add(up1);
                 return;               
             }
-            if (dn2.GetBlock().IsSolid && dn1.GetBlock().IsTransparent && pos.GetBlock().IsTransparent)
+            if (World.GetBlock(dn2).IsSolid && World.GetBlock(dn1).IsTransparent && World.GetBlock(pos).IsTransparent)
             {
                 // Drop down one
                 neighbours.Add(dn1);

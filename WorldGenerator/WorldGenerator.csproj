@@ -59,9 +59,7 @@
     <Compile Include="World\Render\TexCoordsShort.cs" />
     <Compile Include="World\Generator\Misc.cs" />
     <Compile Include="World\Map\Cell.cs" />
-    <Compile Include="World\Objects\Character.cs" />
     <Compile Include="World\Map\Location.cs" />
-    <Compile Include="World\Objects\CharacterManager.cs" />
     <Compile Include="World\Map\LocalMap.cs" />
     <Compile Include="Shared\Vector3.cs" />
     <Compile Include="Shared\Vector4.cs" />
@@ -72,14 +70,6 @@
     <Compile Include="Shared\GameItemStatic.cs" />
     <Compile Include="World\Map\Water.cs" />
     <Compile Include="Shared\LightSource.cs" />
-    <Compile Include="Scripting\Character.cs" />
-    <Compile Include="Scripting\Construction.cs" />
-    <Compile Include="Scripting\GraphicsAlgorithms.cs" />
-    <Compile Include="Scripting\Knowledge.cs" />
-    <Compile Include="Scripting\Map.cs" />
-    <Compile Include="Scripting\PathFinder.cs" />
-    <Compile Include="Scripting\ScriptHost.cs" />
-    <Compile Include="Scripting\Tasks.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
@@ -89,7 +79,5 @@
       <Name>Shared</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Scripting\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

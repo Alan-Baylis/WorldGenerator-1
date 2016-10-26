@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Sean.WorldGenerator.Scripting
+namespace Sean.WorldServer.Scripting
 {
 //    public class Character : ICharacter
 //    {

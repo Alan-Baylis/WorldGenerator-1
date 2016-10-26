@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using Sean.Shared;
 
-namespace Sean.WorldGenerator.Scripting
+namespace Sean.WorldServer.Scripting
 {
+    /*
     internal class Tasks
     {
         public Tasks ()
@@ -165,17 +166,15 @@ namespace Sean.WorldGenerator.Scripting
             List<Position> route = null;
 
             route = chr.path.FindPaths(chr.Position, chr.knowledge, blockType, 10000);
-            /*
-            foreach (Position blockPos in chr.knowledge.GetNearestBlocks(blockType, chr.Position))
-            {
-                 route = chr.path.FindPath(chr.Position, blockPos);
-                 if (route != null)
-                 {
-                    Console.WriteLine("Found route to nearby item");
-                    break;
-                 }
-            }
-            */
+            //foreach (Position blockPos in chr.knowledge.GetNearestBlocks(blockType, chr.Position))
+            //{
+            //     route = chr.path.FindPath(chr.Position, blockPos);
+            //     if (route != null)
+            //     {
+            //        Console.WriteLine("Found route to nearby item");
+            //        break;
+            //     }
+            //}
 
             if (route == null)
             {
@@ -275,5 +274,6 @@ namespace Sean.WorldGenerator.Scripting
             chr.RemoveTask (this);
         }
     }
+    */
 }
 

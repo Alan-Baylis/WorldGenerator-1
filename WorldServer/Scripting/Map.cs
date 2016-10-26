@@ -4,8 +4,9 @@ using System.Text;
 using System.Collections.Generic;
 using Sean.Shared;
 
-namespace Sean.WorldGenerator.Scripting
+namespace Sean.WorldServer.Scripting
 {
+    /*
     public class WorldObject
     {
         public bool passable = false;
@@ -158,5 +159,6 @@ namespace Sean.WorldGenerator.Scripting
         private Dictionary<Position, Block> gameMap;
         private List<Character> characters;
     }
+    */
 }
 

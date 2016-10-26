@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using Sean.Shared;
 
-namespace Sean.WorldGenerator.Scripting
+namespace Sean.WorldServer.Scripting
 {
+    /*
     public class Construction
     {
         private Construction ()
@@ -62,5 +63,6 @@ namespace Sean.WorldGenerator.Scripting
             return start;
         }
     }
+    */
 }
 
