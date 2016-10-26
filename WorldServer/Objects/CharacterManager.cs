@@ -18,29 +18,29 @@ namespace Sean.WorldServer
             int x, y, z;
             Character character;
 
-            x = centre.X + (rnd.Next() * 32 - 10);
-            z = centre.Z + (rnd.Next() * 32 - 10);
+            x = centre.X + (rnd.Next() / (int.MaxValue/32) - 10);
+            z = centre.Z + (rnd.Next() / (int.MaxValue/32) - 10);
             y = World.GetHeightMapLevel(x, z);
             character = new Character() { Id = 1, Name = "Chr1", Location = new Position(x, y, z) };
             _characters.Add(character.Id, character);
             MessageProcessor.SendCharacterUpdate(character);
 
-            x = centre.X + (rnd.Next() * 32 - 10);
-            z = centre.Z + (rnd.Next() * 32 - 10);
+            x = centre.X + (rnd.Next() / (int.MaxValue/32) - 10);
+            z = centre.Z + (rnd.Next() / (int.MaxValue/32) - 10);
             y = World.GetHeightMapLevel(x, z);
             character = new Character() { Id = 2, Name = "Chr2", Location = new Position(x, y, z) };
             _characters.Add(character.Id, character);
             MessageProcessor.SendCharacterUpdate(character);
 
-            x = centre.X + (rnd.Next() * 32 - 10);
-            z = centre.Z + (rnd.Next() * 32 - 10);
+            x = centre.X + (rnd.Next() / (int.MaxValue/32) - 10);
+            z = centre.Z + (rnd.Next() / (int.MaxValue/32) - 10);
             y = World.GetHeightMapLevel(x, z);
             character = new Character() { Id = 3, Name = "Chr3", Location = new Position(x, y, z) };
             _characters.Add(character.Id, character);
             MessageProcessor.SendCharacterUpdate(character);
 
-            x = centre.X + (rnd.Next() * 32 - 10);
-            z = centre.Z + (rnd.Next() * 32 - 10);
+            x = centre.X + (rnd.Next() / (int.MaxValue/32) - 10);
+            z = centre.Z + (rnd.Next() / (int.MaxValue/32) - 10);
             y = World.GetHeightMapLevel(x, z);
             character = new Character() { Id = 4, Name = "Chr4", Location = new Position(x, y, z) };
             _characters.Add(character.Id, character);

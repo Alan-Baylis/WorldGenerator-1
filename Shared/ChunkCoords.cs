@@ -7,31 +7,24 @@ namespace Sean.Shared
     [DataContract]
     public struct ChunkCoords : System.IComparable 
 	{
-        public const int CHUNK_SIZE = 32;
         public static int MaxChunkLimit = (int)Math.Sqrt(int.MaxValue);
 
 		public ChunkCoords(int x, int z)
 		{
 			X = x;
 			Z = z;
-            WorldCoordsX = X * CHUNK_SIZE;
-            WorldCoordsZ = Z * CHUNK_SIZE;
 		}
             
         public ChunkCoords(ref Position position)
         {
             var coords = position.ToCoords ();
-            X = coords.Xblock / CHUNK_SIZE;
-            Z = coords.Zblock / CHUNK_SIZE;
-            WorldCoordsX = X * CHUNK_SIZE;
-            WorldCoordsZ = Z * CHUNK_SIZE;
+            X = coords.Xblock / Global.CHUNK_SIZE;
+            Z = coords.Zblock / Global.CHUNK_SIZE;
         }
 		public ChunkCoords(ref Coords coords)
 		{
-            X = coords.Xblock / CHUNK_SIZE;
-            Z = coords.Zblock / CHUNK_SIZE;
-            WorldCoordsX = X * CHUNK_SIZE;
-            WorldCoordsZ = Z * CHUNK_SIZE;
+            X = coords.Xblock / Global.CHUNK_SIZE;
+            Z = coords.Zblock / Global.CHUNK_SIZE;
 		}
 
         [DataMember]
@@ -40,9 +33,9 @@ namespace Sean.Shared
 		public readonly int Z;
 
 		/// <summary>X coord of this chunk in world block coords.</summary>
-		public int WorldCoordsX;
+        public int WorldCoordsX { get { return X * Global.CHUNK_SIZE; } }
 		/// <summary>Z coord of this chunk in world block coords.</summary>
-		public int WorldCoordsZ;
+        public int WorldCoordsZ { get { return Z * Global.CHUNK_SIZE; } }
 
 		public static bool operator ==(ChunkCoords c1, ChunkCoords c2)
 		{
