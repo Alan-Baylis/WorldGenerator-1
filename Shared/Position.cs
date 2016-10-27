@@ -7,7 +7,7 @@ namespace Sean.Shared
 	/// Specifies a block position in world coordinates using 3 integers.
 	/// Used for buffering vertex position data to a VBO.
 	/// </summary>
-	public struct Position
+	public class Position
 	{
         public Position(int x, int y, int z)
 		{
@@ -58,12 +58,12 @@ namespace Sean.Shared
         [Obsolete]public int[] Array { get { return new[] {X, Y, Z}; } }
 
 		/// <summary>Get the exact distance from the supplied coords.</summary>
-		public float GetDistanceExact(ref Position position)
+		public float GetDistanceExact(Position position)
 		{
 			return (float)Math.Sqrt(Math.Pow(X - position.X, 2) + Math.Pow(Y - position.Y, 2) + Math.Pow(Z - position.Z, 2));
 		}
 
-        public int GetDistanceRough(ref Position position)
+        public int GetDistanceRough(Position position)
         {   
             // TODO - improve speed
             return (int)Math.Sqrt(Math.Pow(X - position.X, 2) + Math.Pow(Y - position.Y, 2) + Math.Pow(Z - position.Z, 2));

@@ -21,7 +21,7 @@ namespace Sean.WorldGenerator
 		/// <param name="position">Position to create at. This will be a block position and therefore defaults to the back/left corner of the block initially.</param>
 		/// <param name="type">Light source type to create.</param>
 		/// <param name="attachedToFace">Face being attached to within this block.</param>
-		public LightSource(ref Position position, LightSourceType type, Face attachedToFace) : base(ref position, attachedToFace)
+		public LightSource(Position position, LightSourceType type, Face attachedToFace) : base(position, attachedToFace)
 		{
 			Type = type;
 			switch (type)

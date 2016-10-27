@@ -15,7 +15,7 @@ namespace Sean.Shared
 			Z = z;
 		}
             
-        public ChunkCoords(ref Position position)
+        public ChunkCoords(Position position)
         {
             var coords = position.ToCoords ();
             X = coords.Xblock / Global.CHUNK_SIZE;

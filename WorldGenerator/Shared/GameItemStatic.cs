@@ -13,7 +13,7 @@ namespace Sean.WorldGenerator
 	{
 		#region Constructors
 		/// <summary>Use this constructor to create brand new items that will have the Coords shifted accordingly during creation.</summary>
-		protected GameItemStatic(ref Position position, Face attachedToFace)
+		protected GameItemStatic(Position position, Face attachedToFace)
 		{
 			Coords = position.ToCoords();
 			AttachedToFace = attachedToFace;

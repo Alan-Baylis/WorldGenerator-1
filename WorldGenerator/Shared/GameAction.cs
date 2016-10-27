@@ -107,7 +107,7 @@ namespace Sean.WorldGenerator
 			_byteQueueIndex += count;
 		}
 
-		protected void Write(ref Position position)
+		protected void Write(Position position)
 		{
 			Write(position.ToByteArray(), Position.SIZE);
 		}

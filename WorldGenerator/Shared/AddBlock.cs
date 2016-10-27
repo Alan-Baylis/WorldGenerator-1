@@ -10,7 +10,7 @@ namespace Sean.WorldGenerator
 			DataLength = Position.SIZE + sizeof(ushort); //coords + block type
 		}
 
-		public AddBlock(ref Position position, Block.BlockType blockType) : this()
+		public AddBlock(Position position, Block.BlockType blockType) : this()
 		{
 			if (blockType == Block.BlockType.Air) throw new Exception("You can't place air, use RemoveBlock");
 			Position = position;
@@ -29,7 +29,7 @@ namespace Sean.WorldGenerator
 		protected override void Queue()
 		{
 			base.Queue();
-			Write(ref Position);
+			Write(Position);
 			Write((ushort)BlockType);
 		}
 

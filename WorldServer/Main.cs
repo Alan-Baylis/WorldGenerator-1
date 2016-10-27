@@ -59,6 +59,7 @@ namespace Sean.WorldServer
             ServerSocketListener.Run();
             WebSocketListener.Run ();
             WebServerListener.Run();
+            GameThread.Run();
             //ClientSocket.SendMessage ();
 
             // Rest web server
