@@ -33,6 +33,7 @@ namespace Sean.WorldServer
             {
                 while (true)
                 {
+                    CharacterManager.UpdateJobs ();
                     CharacterManager.MoveCharacters();
                     Thread.Sleep(5000);
                 }

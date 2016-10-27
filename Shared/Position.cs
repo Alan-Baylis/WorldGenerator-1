@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Sean.Shared
 {
@@ -7,6 +8,7 @@ namespace Sean.Shared
 	/// Specifies a block position in world coordinates using 3 integers.
 	/// Used for buffering vertex position data to a VBO.
 	/// </summary>
+    [DataContract]
 	public class Position
 	{
         public Position(int x, int y, int z)
@@ -26,8 +28,11 @@ namespace Sean.Shared
 			Z = BitConverter.ToInt32(bytes, startIndex + sizeof(int) * 2);
 		}
 
+        [DataMember]
 		public int X;
+        [DataMember]
 		public int Y;
+        [DataMember]
 		public int Z;
 
         public const int SIZE = sizeof(int) * 3;

@@ -14,46 +14,71 @@ namespace Sean.WorldServer
 
         public static void AddRandomCharacters(Position centre)
         {
-            int x, y, z;
+            int x, y, z, x1,y1,z1;
             Character character;
 
             x = centre.X + Settings.Random.Next(-15, 15);
             z = centre.Z + Settings.Random.Next(-15, 15);
             y = World.GetHeightMapLevel(x, z);
-            character = new Character() { Id = 1, Name = "Chr1", Location = new Position(x, y, z) };
+            x1 = centre.X + Settings.Random.Next(-15, 15);
+            z1 = centre.Z + Settings.Random.Next(-15, 15);
+            y1 = World.GetHeightMapLevel(x1, z1);
+            character = new Character() { Id = 1, Name = "Chr1", Location = new Position(x, y, z), Destination = new Position(x1,y1,z1) };
             _characters.Add(character.Id, character);
             MessageProcessor.SendCharacterUpdate(character);
 
             x = centre.X + Settings.Random.Next(-15, 15);
             z = centre.Z + Settings.Random.Next(-15, 15);
             y = World.GetHeightMapLevel(x, z);
-            character = new Character() { Id = 2, Name = "Chr2", Location = new Position(x, y, z) };
+            x1 = centre.X + Settings.Random.Next(-15, 15);
+            z1 = centre.Z + Settings.Random.Next(-15, 15);
+            y1 = World.GetHeightMapLevel(x1, z1);
+            character = new Character() { Id = 2, Name = "Chr2", Location = new Position(x, y, z), Destination = new Position(x1,y1,z1) };
             _characters.Add(character.Id, character);
             MessageProcessor.SendCharacterUpdate(character);
 
             x = centre.X + Settings.Random.Next(-15, 15);
             z = centre.Z + Settings.Random.Next(-15, 15);
             y = World.GetHeightMapLevel(x, z);
-            character = new Character() { Id = 3, Name = "Chr3", Location = new Position(x, y, z) };
+            x1 = centre.X + Settings.Random.Next(-15, 15);
+            z1 = centre.Z + Settings.Random.Next(-15, 15);
+            y1 = World.GetHeightMapLevel(x1, z1);
+            character = new Character() { Id = 3, Name = "Chr3", Location = new Position(x, y, z), Destination = new Position(x1,y1,z1) };
             _characters.Add(character.Id, character);
             MessageProcessor.SendCharacterUpdate(character);
 
             x = centre.X + Settings.Random.Next(-15, 15);
             z = centre.Z + Settings.Random.Next(-15, 15);
             y = World.GetHeightMapLevel(x, z);
-            character = new Character() { Id = 4, Name = "Chr4", Location = new Position(x, y, z) };
+            x1 = centre.X + Settings.Random.Next(-15, 15);
+            z1 = centre.Z + Settings.Random.Next(-15, 15);
+            y1 = World.GetHeightMapLevel(x1, z1);
+            character = new Character() { Id = 4, Name = "Chr4", Location = new Position(x, y, z), Destination = new Position(x1,y1,z1) };
             _characters.Add(character.Id, character);
             MessageProcessor.SendCharacterUpdate(character);
         }
 
+        public static void UpdateJobs()
+        {
+            foreach (var character in _characters.Values) {
+                if (character.Location != character.Destination && character.WalkPath.Count == 0)
+                {
+                    var pathFinder = new Scripting.PathFinder ();
+                    character.WalkPath = pathFinder.FindPath (character.Location, character.Destination);
+                }
+            }
+        }
         public static void MoveCharacters()
         {
             foreach (var character in _characters.Values)
             {
-                character.Location.X += Settings.Random.Next(-1, 1);
-                character.Location.Z += Settings.Random.Next(-1, 1);
-                character.Location.Y = World.GetHeightMapLevel(character.Location.X, character.Location.Z);
-                MessageProcessor.SendCharacterUpdate(character);
+                if (character.WalkPath.Count != 0) {
+                    Position newPosition = character.WalkPath.Dequeue();
+                    character.Location.X = newPosition.X;
+                    character.Location.Z = newPosition.Z;
+                    character.Location.Y = newPosition.Y;
+                    MessageProcessor.SendCharacterUpdate (character);
+                }
             }
         }
 

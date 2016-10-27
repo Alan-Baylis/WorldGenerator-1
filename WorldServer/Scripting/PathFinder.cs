@@ -124,7 +124,7 @@ namespace Sean.WorldServer.Scripting
         private int ScrMaxY = 0;
         private int ScrGridSizeX = 0;
         private int ScrGridSizeY = 0;
-        private Character character;
+        //private Character character;
         private int fScore;
         private Dictionary<Position, LocationScore> scores;
         private int gScore;
@@ -158,13 +158,13 @@ namespace Sean.WorldServer.Scripting
             return (int)(xzy * 10);
         }
 
-        public List<Position> FindPath (Position start, Position goal)
+        public Queue<Position> FindPath (Position start, Position goal)
 		{
-			List<Position> route = new List<Position> ();
+			var route = new Queue<Position> ();
 			int maxSearch = 100;
 			int searched = 0;
 			Position current = start;
-			route.Add (goal);
+			route.Enqueue(goal);
 			scores.Clear ();
 			openset.Clear ();
 
@@ -215,7 +215,7 @@ namespace Sean.WorldServer.Scripting
                 //Position current = goal;
                 while (current != start)
                 {
-                    route.Add (current);
+                    route.Enqueue(current);
                     current = GetCameFrom (current);
                 }
             }
@@ -518,12 +518,12 @@ namespace Sean.WorldServer.Scripting
             }
         }
 
-        public List<Position> FindPathToNearestBlock(Position start, Block.BlockType target)
+        public Queue<Position> FindPathToNearestBlock(Position start, Block.BlockType target)
         {
             foreach(Position pos in FindNearestBlock(start, target))
             {
                 //Console.WriteLine ("Block at {0}", pos);
-                List<Position> route = FindPath (start, pos);
+                var route = FindPath (start, pos);
                 if (route != null)
                     return route;
             }
