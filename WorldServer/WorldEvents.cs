@@ -17,12 +17,12 @@ namespace Sean.WorldServer
 
         public static void RequestWorldMap(Guid clientId)
         {
-            var map = World.GlobalMap;
+            var map = MainClass.WorldInstance.GlobalMap;
             MessageProcessor.SendWorldMap(clientId, map);
         }
         public static void ChunkRegister(ChunkCoords chunkCoords, Guid clientId)
         {
-            var chunk = World.GetChunk(chunkCoords);
+            var chunk = MainClass.WorldInstance.GetChunk(chunkCoords);
             if (!registrations.ContainsKey (chunkCoords)) {
                 registrations [chunkCoords] = new List<Guid> ();
             }
@@ -31,6 +31,7 @@ namespace Sean.WorldServer
 
             if (_firstChunk)
             {
+                _firstChunk = false;
                 CharacterManager.AddRandomCharacters(new Position(chunkCoords.WorldCoordsX + Global.CHUNK_SIZE / 2, 0, chunkCoords.WorldCoordsZ + Global.CHUNK_SIZE / 2));
             }
         }

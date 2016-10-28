@@ -8,6 +8,7 @@ namespace Sean.WorldServer
     {
         public Character ()
         {
+            WalkPath = new Queue<Position>();
         }
 
         public int Id { get; set; }

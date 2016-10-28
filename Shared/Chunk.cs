@@ -121,6 +121,8 @@ namespace Sean.Shared
                         if (y > HighestNonAirLevel && block.Type != Block.BlockType.Air) HighestNonAirLevel = y;
                         if (block.IsTransparent) continue;
                         HeightMap[x, z] = y;
+                        if (block.Type == Block.BlockType.Dirt)
+                            Blocks[x, y, z] = new Block(Block.BlockType.Grass);
                         break;
                     }
 

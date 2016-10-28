@@ -4,6 +4,7 @@ using Sean.Shared;
 
 namespace Sean.WorldGenerator
 {
+    /*
 	public abstract class GameObject
 	{
 		protected GameObject()
@@ -56,4 +57,5 @@ namespace Sean.WorldGenerator
 			return xmlNode;
 		}
 	}
+    */
 }

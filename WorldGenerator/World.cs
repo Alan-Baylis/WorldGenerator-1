@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Sean.Shared;
 using System.Collections.Concurrent;
-using System.Linq;
 
 namespace Sean.WorldGenerator
 {
@@ -41,34 +40,46 @@ namespace Sean.WorldGenerator
         Desert = 3
     }
 
-    public static class World
+    public class World : IWorld
     {
-        public delegate void WorldEventHandler(WorldEventArgs e);
-        public static event WorldEventHandler WorldEvents;
+        public World()
+        {
+            //Mobs = new ConcurrentDictionary<int, Mob>();
+            //GameItems = new ConcurrentDictionary<int, GameItemDynamic>();
 
-        private static LocalMap localMap;
-        private static WorldMap worldMap;
+            RawSeed = 123456; //settingsNode.Attributes["RawSeed"].Value;
+            GeneratorVersion = "1.0";// settingsNode.Attributes["GeneratorVersion"].Value;
+            GameObjectIdSeq = 1; //int.Parse(settingsNode.Attributes["GameObjectIdSeq"].Value);
+            WorldType = WorldType.Grass;// (WorldType)Convert.ToInt32(settingsNode.Attributes["WorldType"].Value);
+
+            worldMap = new WorldMap(this, RawSeed);
+            localMap = new LocalMap(this, RawSeed);
+        }
+
+        public delegate void WorldEventHandler(WorldEventArgs e);
+        public event WorldEventHandler WorldEvents;
+
+        private LocalMap localMap;
+        private WorldMap worldMap;
         //public ConcurrentDictionary<int, Mob> Mobs { get; private set; }
-        public static ConcurrentDictionary<int, GameItemDynamic> GameItems { get; private set; }
+        //public ConcurrentDictionary<int, GameItemDynamic> GameItems { get; private set; }
 
         #region Properties (Saved)
-        public static WorldType WorldType { get; set; }
+        public WorldType WorldType { get; set; }
         /// <summary>Original Raw Seed used to generate this world. Blank if no seed was used.</summary>
-        public static int RawSeed { get; set; }
+        public int RawSeed { get; set; }
         /// <summary>Original program version used when this world was generated.</summary>
-        public static string GeneratorVersion { get; set; }
+        public string GeneratorVersion { get; set; }
 
-        public static int ChunkSize { get; set; } 
-
-        public static int GameObjectIdSeq;
-        public static int NextGameObjectId
+        public int GameObjectIdSeq;
+        public int NextGameObjectId
         {
             get { return System.Threading.Interlocked.Increment(ref GameObjectIdSeq); }
         }
 
-        private static int _sizeInChunksX;
+        private int _sizeInChunksX;
         /// <summary>Number of chunks in X direction that make up the world.</summary>
-        public static int SizeInChunksX
+        public int SizeInChunksX
         {
             get { return _sizeInChunksX; }
             set
@@ -78,9 +89,9 @@ namespace Sean.WorldGenerator
             }
         }
 
-        private static int _sizeInChunksZ;
+        private int _sizeInChunksZ;
         /// <summary>Number of chunks in Z direction that make up the world.</summary>
-        public static int SizeInChunksZ
+        public int SizeInChunksZ
         {
             get { return _sizeInChunksZ; }
             set
@@ -91,66 +102,51 @@ namespace Sean.WorldGenerator
         }
 
         /// <summary>Number of blocks in X direction that make up the world.</summary>
-        public static int SizeInBlocksX { get; private set; }
+        public int SizeInBlocksX { get; private set; }
 
         /// <summary>Number of blocks in Z direction that make up the world.</summary>
-        public static int SizeInBlocksZ { get; private set; }
+        public int SizeInBlocksZ { get; private set; }
 
-        public static int MaxXChunk { get { return LocalMap.MaxXChunk; } }
-        public static int MinXChunk { get { return LocalMap.MinXChunk; } }
-        public static int MaxZChunk { get { return LocalMap.MaxZChunk; } }
-        public static int MinZChunk { get { return LocalMap.MinZChunk; } }
+        public int MaxXChunk { get { return LocalMap.MaxXChunk; } }
+        public int MinXChunk { get { return LocalMap.MinXChunk; } }
+        public int MaxZChunk { get { return LocalMap.MaxZChunk; } }
+        public int MinZChunk { get { return LocalMap.MinZChunk; } }
 
         #endregion
 
         #region Properties (Dynamic)
         /// <summary>True when the world has been completely loaded from disk for server and single player or when world has been completely received in multiplayer.</summary>
-        public static bool IsLoaded { get; set; }
-        //public static Chunks Chunks;
-        public static bool GenerateWithTrees = true;
+        public bool IsLoaded { get; set; }
+        //public Chunks Chunks;
+        public bool GenerateWithTrees = true;
         #endregion
 
-        internal static LocalMap LocalMap { get { return localMap; } }
+        internal LocalMap LocalMap { get { return localMap; } }
 
-        public static Array<int> GlobalMap { get { return worldMap.GlobalMap; } }
-        public static Array<bool> GlobalOceanMap { get { return worldMap.OceanMap; } }
-        public static Array<int> GlobalTemperatureMap { get { return worldMap.TemperatureMap; } }
-        public static Array<int> GlobalBiosphereMap { get { return worldMap.BiosphereMap; } }
+        public Array<int> GlobalMap { get { return worldMap.GlobalMap; } }
+        public Array<bool> GlobalOceanMap { get { return worldMap.OceanMap; } }
+        public Array<int> GlobalTemperatureMap { get { return worldMap.TemperatureMap; } }
+        public Array<int> GlobalBiosphereMap { get { return worldMap.BiosphereMap; } }
 
-        static World ()
-        {
-            //Mobs = new ConcurrentDictionary<int, Mob>();
-            GameItems = new ConcurrentDictionary<int, GameItemDynamic>();
 
-            RawSeed = 123456; //settingsNode.Attributes["RawSeed"].Value;
-            GeneratorVersion = "1.0";// settingsNode.Attributes["GeneratorVersion"].Value;
-            GameObjectIdSeq = 1; //int.Parse(settingsNode.Attributes["GameObjectIdSeq"].Value);
-            WorldType = WorldType.Grass;// (WorldType)Convert.ToInt32(settingsNode.Attributes["WorldType"].Value);
-
-            ChunkSize = 32;
-
-            worldMap = new WorldMap(RawSeed);
-            localMap = new LocalMap(RawSeed);
-        }
-
-        public static bool IsChunkLoaded(ChunkCoords chunkCoords)
+        public bool IsChunkLoaded(ChunkCoords chunkCoords)
         { return localMap.IsChunkLoaded(chunkCoords); }
 
-        public static int GetChunkSize()
+        public int GetChunkSize()
         {
             return Global.CHUNK_SIZE;
         }
-        //public static ChunkCoords GetChunkCoords(Position position)
+        //public ChunkCoords GetChunkCoords(Position position)
         //{
         //    return new ChunkCoords (position.X / Settings.CHUNK_SIZE, position.Z / Settings.CHUNK_SIZE); 
         //}
-        public static Chunk GetChunk(ChunkCoords chunkCoords)
+        public Chunk GetChunk(ChunkCoords chunkCoords)
         {
             var chunk = localMap.Chunk(chunkCoords);
             return chunk;
         }
 
-        public static void PutBlock(Position position, Block.BlockType blockType)
+        public void PutBlock(Position position, Block.BlockType blockType)
         {
             PlaceBlock(position, blockType);
         }
@@ -159,7 +155,7 @@ namespace Sean.WorldGenerator
 
         #region Lookup Functions
         /// <summary>Get a block using world coords.</summary>
-        public static Block GetBlock(ref Coords coords)
+        public Block GetBlock(ref Coords coords)
         {
             return localMap.Chunk(coords).Blocks[coords];
         }
@@ -168,18 +164,24 @@ namespace Sean.WorldGenerator
         /// Get a block using world coords. Looks up the chunk from the world chunks array and then the block in the chunk blocks array.
         /// Therefore if you have a chunk and chunk relative xyz its faster to get the block straight from the chunk blocks array.
         /// </summary>
-        public static Block GetBlock(Position position)
+        public Block GetBlock(Position position)
         {
             return localMap.Chunk(position).Blocks[position];
         }
 
         /// <summary>Get a block using world x,y,z. Use this overload to avoid constructing coords when they arent needed.</summary>
         /// <remarks>For example, this provided ~40% speed increase in the World.PropagateLight function compared to constructing coords and calling the above overload.</remarks>
-        public static Block GetBlock(int x, int y, int z)
+        public Block GetBlock(int x, int y, int z)
         {
             return localMap.Chunk(x / Global.CHUNK_SIZE, z / Global.CHUNK_SIZE).Blocks[x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE];
         }
-        internal static void SetBlock (int x, int y, int z, Block block)
+        public void SetBlock(Position position, Block block)
+        {
+            if (block.Type == Block.BlockType.Unknown)
+                Console.WriteLine("Setting Unknown block?");
+            localMap.Chunk(position).Blocks[position.X % Global.CHUNK_SIZE, position.Y, position.Z % Global.CHUNK_SIZE] = block;
+        }
+        public void SetBlock (int x, int y, int z, Block block)
         {
             if (block.Type == Block.BlockType.Unknown)
                 Console.WriteLine ("Setting Unknown block?");
@@ -191,47 +193,47 @@ namespace Sean.WorldGenerator
         /// This is because the cursor can still point at them, they can still receive light, etc.
         /// Coords/Position structs have the same method. Use this one to avoid contructing coords/position when they arent needed. Large performance boost in some cases.
         /// </summary>
-        public static bool IsValidBlockLocation(int x, int y, int z)
+        public bool IsValidBlockLocation(int x, int y, int z)
         {
             return y >= 0 && y < Global.CHUNK_HEIGHT && 
                 localMap.IsChunkLoaded (new ChunkCoords(x / Global.CHUNK_SIZE, z / Global.CHUNK_SIZE));
         }
 
-        public static bool IsValidBlockLocation(Position position)
+        public bool IsValidBlockLocation(Position position)
         {
             return IsValidBlockLocation(position.X, position.Y, position.Z);
         }
-        public static bool IsValidBlockLocation(Coords coords)
+        public bool IsValidBlockLocation(Coords coords)
         {
             return IsValidBlockLocation(coords.Xblock, coords.Yblock, coords.Zblock);
         }
 
-        internal static bool IsOnChunkBorder(int x, int z)
+        internal bool IsOnChunkBorder(int x, int z)
         {
             return x % Global.CHUNK_SIZE == 0 || z % Global.CHUNK_SIZE == 0 || x % Global.CHUNK_SIZE == Global.CHUNK_SIZE - 1 || z % Global.CHUNK_SIZE == Global.CHUNK_SIZE - 1;
         }
 
-        public static int GetHeightMapLevel(int x, int z)
+        public int GetHeightMapLevel(int x, int z)
         {
             return LocalMap.Chunk(x / Global.CHUNK_SIZE, z / Global.CHUNK_SIZE).HeightMap[x % Global.CHUNK_SIZE, z % Global.CHUNK_SIZE];
         }
 
         /// <summary>Check if any of 4 directly adjacent blocks receive direct sunlight. Uses the heightmap so that the server can also use this method. If the server stored light info then it could be used instead.</summary>
-        internal static bool HasAdjacentBlockReceivingDirectSunlight(int x, int y, int z)
+        internal bool HasAdjacentBlockReceivingDirectSunlight(int x, int y, int z)
         {
-            return (x < World.SizeInBlocksX - 1 && GetHeightMapLevel(x + 1, z) <= y) ||
+            return (x < SizeInBlocksX - 1 && GetHeightMapLevel(x + 1, z) <= y) ||
                 (x > 0 && GetHeightMapLevel(x - 1, z) <= y) ||
-                (z < World.SizeInBlocksZ - 1 && GetHeightMapLevel(x, z + 1) <= y) ||
+                (z < SizeInBlocksZ - 1 && GetHeightMapLevel(x, z + 1) <= y) ||
                 (z > 0 && GetHeightMapLevel(x, z - 1) <= y);
         }
 
 
-        internal static bool IsValidItemLocation(Position position)
+        internal bool IsValidItemLocation(Position position)
         {
             return IsValidBlockLocation(position.X, 0, position.Z) && position.Y >= 0; 
         }
 
-        internal static bool IsOnChunkBorder(Position position)
+        internal bool IsOnChunkBorder(Position position)
         {
             return IsOnChunkBorder(position.X, position.Z);
         }
@@ -241,7 +243,7 @@ namespace Sean.WorldGenerator
         /// Get a List of chunks this block is bordering. Result count must be in the range 0-2 because a block can border at most 2 chunks at a time.
         /// Accounts for world edges and does not add results in those cases.
         /// </summary>
-        internal static List<Chunk> BorderChunks(Position position)
+        internal List<Chunk> BorderChunks(Position position)
         {
             var chunks = new List<Chunk>();
             //check in X direction
@@ -249,7 +251,7 @@ namespace Sean.WorldGenerator
             {
                 chunks.Add(localMap.Chunk((position.X - 1) / Global.CHUNK_SIZE, position.Z / Global.CHUNK_SIZE)); //add left chunk
             }
-            else if (position.X < World.SizeInBlocksX - 1 && position.X % Global.CHUNK_SIZE == Global.CHUNK_SIZE - 1)
+            else if (position.X < SizeInBlocksX - 1 && position.X % Global.CHUNK_SIZE == Global.CHUNK_SIZE - 1)
             {
                 chunks.Add(localMap.Chunk((position.X + 1) / Global.CHUNK_SIZE, position.Z / Global.CHUNK_SIZE)); //add right chunk
             }
@@ -258,36 +260,36 @@ namespace Sean.WorldGenerator
             {
                 chunks.Add(localMap.Chunk(position.X / Global.CHUNK_SIZE, (position.Z - 1) / Global.CHUNK_SIZE)); //add back chunk
             }
-            else if (position.Z < World.SizeInBlocksZ - 1 && position.Z % Global.CHUNK_SIZE == Global.CHUNK_SIZE - 1)
+            else if (position.Z < SizeInBlocksZ - 1 && position.Z % Global.CHUNK_SIZE == Global.CHUNK_SIZE - 1)
             {
                 chunks.Add(localMap.Chunk(position.X / Global.CHUNK_SIZE, (position.Z + 1) / Global.CHUNK_SIZE)); //add front chunk
             }
             return chunks;
         }
 
-        internal static bool IsValidPlayerLocation(Coords coords)
+        internal bool IsValidPlayerLocation(Coords coords)
         {
-            return coords.Xf >= 0 && coords.Xf < World.SizeInBlocksX
+            return coords.Xf >= 0 && coords.Xf < SizeInBlocksX
                 && coords.Yf >= 0 && coords.Yf <= 600 //can't see anything past 600
-                && coords.Zf >= 0 && coords.Zf < World.SizeInBlocksZ
+                && coords.Zf >= 0 && coords.Zf < SizeInBlocksZ
                 && (coords.Yf >= Global.CHUNK_HEIGHT || !GetBlock(coords.ToPosition()).IsSolid)
                 && (coords.Yf + 1 >= Global.CHUNK_HEIGHT || !GetBlock(coords.Xblock, coords.Yblock + 1, coords.Zblock).IsSolid)
                 && (coords.Yf % 1 < Constants.PLAYER_HEADROOM || coords.Yf + 2 >= Global.CHUNK_HEIGHT || !GetBlock(coords.Xblock, coords.Yblock + 2, coords.Zblock).IsSolid); //the player can occupy 3 blocks
         }
 
-        internal static bool IsValidItemLocation(Coords coords)
+        internal bool IsValidItemLocation(Coords coords)
         {
             return IsValidBlockLocation(coords.Xblock, 0, coords.Zblock) && coords.Yf >= 0;
         }
 
         [Obsolete("Only usages moved to Position.")]
-        internal static bool IsOnChunkBorder(Coords coords)
+        internal bool IsOnChunkBorder(Coords coords)
         {
             return IsOnChunkBorder(coords.Xblock, coords.Zblock);
         }
 
         /// <summary>Get a List of the 6 directly adjacent positions. Exclude positions that are outside the world or on the base of the world.</summary>
-        internal static List<Position> AdjacentPositions(Position position)
+        internal List<Position> AdjacentPositions(Position position)
         {
             var positions = new List<Position>();
             var left = new Position(position.X - 1, position.Y, position.Z);
@@ -306,7 +308,7 @@ namespace Sean.WorldGenerator
         }
 
         /// <summary>Get a List of the 6 directly adjacent positions and corresponding faces. Exclude positions that are outside the world or on the base of the world.</summary>
-        internal static List<Tuple<Position, Face>> AdjacentPositionFaces(Position position)
+        internal List<Tuple<Position, Face>> AdjacentPositionFaces(Position position)
         {
             var positions = new List<Tuple<Position, Face>>();
             var left = new Position(position.X - 1, position.Y, position.Z);
@@ -325,7 +327,7 @@ namespace Sean.WorldGenerator
         }
 
         /// <summary>Get a List of the 6 directly adjacent positions. Exclude positions that are outside the world or on the base of the world.</summary>
-        internal static List<Position> AdjacentPositions(Coords coord)
+        internal List<Position> AdjacentPositions(Coords coord)
         {
             return AdjacentPositions(coord.ToPosition());
         }
@@ -337,7 +339,7 @@ namespace Sean.WorldGenerator
         /// <param name="position">position to place the block at</param>
         /// <param name="type">type of block to place</param>
         /// <param name="isMultipleBlockPlacement">Use this when placing multiple blocks at once so lighting and chunk queueing only happens once.</param>
-        internal static void PlaceBlock(Position position, Block.BlockType type, bool isMultipleBlockPlacement = false)
+        internal void PlaceBlock(Position position, Block.BlockType type, bool isMultipleBlockPlacement = false)
         {
             if (!IsValidBlockLocation(position) || position.Y <= 0) return;
 
@@ -486,7 +488,7 @@ namespace Sean.WorldGenerator
         /// <param name="endPosition">stop placing blocks at</param>
         /// <param name="type">type of block to place</param>
         /// <param name="isMultipleCuboidPlacement">Use this when placing multiple cuboids at once so lighting and chunk queueing only happens once.</param>
-        internal static void PlaceCuboid(Position startPosition, Position endPosition, Block.BlockType type, bool isMultipleCuboidPlacement = false)
+        internal void PlaceCuboid(Position startPosition, Position endPosition, Block.BlockType type, bool isMultipleCuboidPlacement = false)
         {
             for (var x = Math.Min(startPosition.X, endPosition.X); x <= Math.Max(startPosition.X, endPosition.X); x++)
             {
@@ -506,7 +508,7 @@ namespace Sean.WorldGenerator
         /// Save the world to disk. Let the caller decide if this should be in a thread because in some situations it shouldnt (ie: when loading a newly generated world the file has to be saved first).
         /// This is only called by a standalone server or a server thread running in single player. In single player the user can also manually initiate a save in which case this will be called using a Task.
         /// </summary>
-        internal static void SaveToDisk()
+        internal void SaveToDisk()
         {
             /*
             if (File.Exists(Settings.WorldFileTempPath)) File.Delete(Settings.WorldFileTempPath);
@@ -547,7 +549,7 @@ namespace Sean.WorldGenerator
         /// Called from Server.Controller class only. The scenarios where we load from disk are if this is a server launching with a previously saved world
         /// or if this is a single player and the server thread is loading the previously saved world.
         /// </summary>
-        internal static void LoadFromDisk()
+        internal void LoadFromDisk()
         {
             /*
             var stopwatch = new Stopwatch();
@@ -602,7 +604,7 @@ namespace Sean.WorldGenerator
 */         
         }
 
-        internal static void LoadChunk(Chunk chunk, byte[] bytes)
+        internal void LoadChunk(Chunk chunk, byte[] bytes)
         {
             Buffer.BlockCopy(bytes, 0, chunk.Blocks._array, 0, bytes.Length);
             chunk.BuildHeightMap();
@@ -615,10 +617,10 @@ namespace Sean.WorldGenerator
         /// -could become a circular array down the road if we want even bigger worlds.
         /// -could also hold both sky light and item light by using bit operations, both values 0-15 can fit in one byte
         /// </remarks>
-        internal static byte[, ,] SkyLightMap;
+        internal byte[, ,] SkyLightMap;
 
         /// <summary>Item lightmap of the entire world. Stored separately because item light is not affected by the sky.</summary>
-        internal static byte[, ,] ItemLightMap;
+        internal byte[, ,] ItemLightMap;
 
         #endregion
     }

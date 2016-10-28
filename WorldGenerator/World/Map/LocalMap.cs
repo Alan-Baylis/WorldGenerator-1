@@ -11,23 +11,23 @@ namespace Sean.WorldGenerator
         public int MinXChunk { get; set; }
         public int MaxZChunk { get; set; }
         public int MinZChunk { get; set; }
-        public int MaxXPosition { get { return MaxXChunk * World.ChunkSize; } }
-        public int MinXPosition { get { return MinXChunk * World.ChunkSize; } }
-        public int MaxZPosition { get { return MaxZChunk * World.ChunkSize; } }
-        public int MinZPosition { get { return MinZChunk * World.ChunkSize; } }
+        public int MaxXPosition { get { return MaxXChunk * Global.CHUNK_SIZE; } }
+        public int MinXPosition { get { return MinXChunk * Global.CHUNK_SIZE; } }
+        public int MaxZPosition { get { return MaxZChunk * Global.CHUNK_SIZE; } }
+        public int MinZPosition { get { return MinZChunk * Global.CHUNK_SIZE; } }
 
         private Dictionary<int, MapChunk> mapChunks;
         private Generator generator;
         private static int MaxChunkLimit = (int)Math.Sqrt(int.MaxValue);
 
-        public LocalMap(int seed)
+        public LocalMap(IWorld world, int seed)
         {
             MaxXChunk = int.MinValue;
             MinXChunk = int.MaxValue;
             MaxZChunk = int.MinValue;
             MinZChunk = int.MaxValue;
             mapChunks = new Dictionary<int, MapChunk> ();
-            this.generator = new Generator(seed);
+            this.generator = new Generator(world, seed);
         }
          
         /*
@@ -78,16 +78,16 @@ namespace Sean.WorldGenerator
         /// <summary>Get a chunk from the array. Based on world block coords.</summary>
         public Chunk Chunk(Position position)
         {
-            int x = (position.X / World.ChunkSize);
-            int z = (position.Z / World.ChunkSize);
+            int x = (position.X / Global.CHUNK_SIZE);
+            int z = (position.Z / Global.CHUNK_SIZE);
             return GetOrCreate(x, z);
         }
 
         /// <summary>Get a chunk from the array. Based on more accurate world object coords.</summary>
         public Chunk Chunk(Coords coords)
         {
-            int x = (coords.Xblock / World.ChunkSize);
-            int z = (coords.Zblock / World.ChunkSize);
+            int x = (coords.Xblock / Global.CHUNK_SIZE);
+            int z = (coords.Zblock / Global.CHUNK_SIZE);
             return GetOrCreate(x, z);
         }
 

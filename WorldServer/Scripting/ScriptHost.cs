@@ -28,10 +28,10 @@ namespace Sean.WorldServer.Scripting
             Console.WriteLine ("AddProjectile");
         }
 
-        public static void AddStaticItem (int characterId, Coords coords, StaticItemType staticItemType, ushort subType, Face attachedToFace, int gameObjectId)
-        {
-            Console.WriteLine ("AddStaticItem");
-        }
+        //public static void AddStaticItem (int characterId, Coords coords, StaticItemType staticItemType, ushort subType, Face attachedToFace, int gameObjectId)
+        //{
+        //    Console.WriteLine ("AddStaticItem");
+        //}
 
         //public static void AddStructure (int characterId, Position position, StructureType structureType, Facing frontFace)
         //{

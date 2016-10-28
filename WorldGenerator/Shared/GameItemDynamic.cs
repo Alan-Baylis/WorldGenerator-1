@@ -5,6 +5,7 @@ using Sean.Shared;
 
 namespace Sean.WorldGenerator
 {
+    /*
 	public enum GameItemType
 	{
 		BlockItem,
@@ -237,4 +238,5 @@ namespace Sean.WorldGenerator
 		}
 		#endregion
 	}
+    */
 }

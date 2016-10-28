@@ -13,8 +13,10 @@ namespace Sean.WorldGenerator
 		private const byte MAX_TRUNK_HEIGHT = 9;
 		private const byte DISTANCE_TOLERANCE = 4;
 
-		public static void Generate(Chunk chunk, List<Position> takenPositions)
-		{
+		public static void Generate(IWorld world, Chunk chunk)
+        {
+            Console.WriteLine("Generating Trees");
+            var takenPositions = new List <Position>();
 			int numberOfTreesToGenerate = Settings.Random.Next(MIN_TREES_PER_CHUNK, MAX_TREES_PER_CHUNK + 1);
 			for (int tree = 0; tree < numberOfTreesToGenerate; tree++)
 			{
@@ -44,12 +46,13 @@ namespace Sean.WorldGenerator
 					var trunkPosition = new Position(xProposedInWorld, yProposed + yTrunkLevel, zProposedInWorld);
 					if (yTrunkLevel < treeHeight) //place the trunk
 					{
-						chunk.Blocks[trunkPosition] = new Block(isElmTree ? Block.BlockType.ElmTree : Block.BlockType.Tree);
+                        chunk.Blocks[trunkPosition] = new Block(Block.BlockType.Tree);// isElmTree ? Block.BlockType.ElmTree : Block.BlockType.Tree);
 					}
 					else //place leaves on the top 2 blocks of the trunk instead of more trunk pieces
 					{
-						chunk.Blocks[trunkPosition] = new Block(World.WorldType == WorldType.Winter ? Block.BlockType.SnowLeaves : Block.BlockType.Leaves);
-					}
+                        chunk.Blocks[trunkPosition] = new Block(Block.BlockType.Leaves);
+                            //new Block(world.WorldType == WorldType.Winter ? Block.BlockType.SnowLeaves : Block.BlockType.Leaves);
+                    }
 
 					//place leaves at this trunk level
 					if (yTrunkLevel < 3) continue;
@@ -60,20 +63,22 @@ namespace Sean.WorldGenerator
 							if (leafX == 0 && leafZ == 0) continue; //dont replace the trunk
 							if (Math.Sqrt(leafX * leafX + leafZ * leafZ + Math.Pow(treeHeight - leafRadius - yTrunkLevel + 1, 2)) > leafRadius) continue;
 							var leafPosition = new Position(xProposedInWorld + leafX, yProposed + yTrunkLevel, zProposedInWorld + leafZ);
-                            var leafCoords = leafPosition.ToCoords();
-                            if (World.IsValidBlockLocation(leafPosition) && World.GetBlock(ref leafCoords).Type == Block.BlockType.Air)
+                            if (world.IsValidBlockLocation(leafPosition) && world.GetBlock(leafPosition).Type == Block.BlockType.Air)
 							{
                                 //need to get the chunk because this block could be expanding into an adjacent chunk
-                                World.LocalMap.Chunk(leafPosition).Blocks[leafPosition] = new Block(World.WorldType == WorldType.Winter ? Block.BlockType.SnowLeaves : Block.BlockType.Leaves);
+                                world.SetBlock(leafPosition, new Block(Block.BlockType.Leaves));
+                                // World.WorldType == WorldType.Winter ? Block.BlockType.SnowLeaves : Block.BlockType.Leaves);
 							}
 						}
 					}
 				}
 			}
-		}
+            Console.WriteLine($"{numberOfTreesToGenerate} trees generated");
+
+        }
 
 		/// <summary>Check if the proposed position has already been taken or would be within the distance tolerance of another taken position.</summary>
-		public static bool IsPositionTaken(List<Position> takenPositions, int xProposed, int zProposed, byte distanceTolerance)
+		private static bool IsPositionTaken(List<Position> takenPositions, int xProposed, int zProposed, byte distanceTolerance)
 		{
 			//dont use the Y in this check
 			return takenPositions.Any(takenPosition => Math.Abs(xProposed - takenPosition.X) + Math.Abs(zProposed - takenPosition.Z) <= distanceTolerance);

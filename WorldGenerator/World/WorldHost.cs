@@ -81,10 +81,10 @@ namespace Sean.WorldGenerator
             //    c.ChunkBuildState = Chunk.BuildState.QueuedInitialFar; });
 
             //reset the LastUpdate on all items so they don't go flying
-            foreach (var gameItem in World.GameItems.Values)
-            {
-                gameItem.LastUpdate = DateTime.Now;
-            }
+            //foreach (var gameItem in World.GameItems.Values)
+            //{
+            //    gameItem.LastUpdate = DateTime.Now;
+            //}
         }
    #endregion
 

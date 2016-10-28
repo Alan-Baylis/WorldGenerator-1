@@ -63,12 +63,6 @@ namespace Sean
         public const byte MAXIMUM_DISTANCE_TO_VIEW_NAMEPLATES = 90;
 #endregion
         
-        #region Math
-        public const float PI_TIMES_2 = (float)Math.PI * 2;
-        public const float PI_OVER_6 = (float)Math.PI / 6;
-        public const float PI_OVER_12 = (float)Math.PI / 12;
-#endregion
-        
         #region Physics
         public const float GRAVITY = -9.81f;
         public const float ITEM_HOVER_DIST = 0.05f;

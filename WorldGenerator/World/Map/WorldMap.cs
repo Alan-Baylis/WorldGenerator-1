@@ -17,9 +17,9 @@ namespace Sean.WorldGenerator
         public Array<int> TemperatureMap { get; private set; }
         public Array<int> BiosphereMap { get; private set; }
 
-        public WorldMap(int seed)
+        public WorldMap(IWorld world, int seed)
         {
-            this.generator = new Generator(seed);
+            this.generator = new Generator(world, seed);
             Generate();
         }
 

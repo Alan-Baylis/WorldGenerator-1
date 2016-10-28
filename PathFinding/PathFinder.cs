@@ -1,11 +1,8 @@
 using System;
-using System.Text;
-using System.IO;
 using System.Collections.Generic;
 using Sean.Shared;
-using Sean.WorldGenerator;
 
-namespace Sean.WorldServer.Scripting
+namespace Sean.PathFinding
 {
     public class PathFinder
     {
@@ -131,9 +128,11 @@ namespace Sean.WorldServer.Scripting
         private bool openSet;
         private int characterCount;
         private List<Position> openset;
+        private IWorld world;
 
-        public PathFinder ()
+        public PathFinder (IWorld world)
         {
+            this.world = world;
             fScore = 0;
             gScore = 0;
             scores = new Dictionary<Position, LocationScore> ();
@@ -204,8 +203,8 @@ namespace Sean.WorldServer.Scripting
 
 			if (searched >= maxSearch) 
 			{
-				//Console.WriteLine ("Could not find path from {0} to {1}", start, goal);
-				return null;
+				Console.WriteLine ("Could not find path from {0} to {1}", start, goal);
+				return new Queue<Position>();
 			}
 			else
             //if (GetFScore (goal) > 0) // Found path
@@ -240,7 +239,7 @@ namespace Sean.WorldServer.Scripting
 
 				foreach (Position neighbour in NeighbourBlocks(current))
 				{
-                    if (World.GetBlock(neighbour).Type == stopAtType)
+                    if (world.GetBlock(neighbour).Type == stopAtType)
                     {
                         Console.WriteLine ("Found route from {0} to {1} after checking {2} locations", start, current, searched);
                         List<Position> route = new List<Position>();
@@ -333,7 +332,7 @@ namespace Sean.WorldServer.Scripting
         {
             foreach (Position check in ListBlocksByRange(start))
             {
-                if (World.GetBlock(check).Type == target)
+                if (world.GetBlock(check).Type == target)
                     yield return check;
 			}
         }
@@ -451,11 +450,11 @@ namespace Sean.WorldServer.Scripting
 		{
             foreach (Position pt in GraphicsAlgorithms.FindIntersectingBlocks(start.ToPosition(), end.ToPosition()))
             {
-                if (!World.IsValidBlockLocation(pt))
+                if (!world.IsValidBlockLocation(pt))
                 {
                     return end.ToPosition();
                 }
-                if (World.GetBlock(pt).IsSolid)
+                if (world.GetBlock(pt).IsSolid)
                 {
 					return pt;
                 }
@@ -533,14 +532,14 @@ namespace Sean.WorldServer.Scripting
         private bool NextToTarget(Position loc, Block.BlockType target)
         {
             return
-                ((World.GetBlock(loc.X -1, loc.Y, loc.Z -1).Type == target)
-                    || (World.GetBlock(loc.X-1, loc.Y, loc.Z).Type == target)
-                    || (World.GetBlock(loc.X-1, loc.Y, loc.Z+1).Type == target)
-                    || (World.GetBlock(loc.X, loc.Y, loc.Z+1).Type == target)
-                    || (World.GetBlock(loc.X+1, loc.Y, loc.Z+1).Type == target)
-                    || (World.GetBlock(loc.X+1, loc.Y, loc.Z).Type == target)
-                    || (World.GetBlock(loc.X+1, loc.Y, loc.Z-1).Type == target)
-                    || (World.GetBlock(loc.X, loc.Y, loc.Z-1).Type == target));
+                ((world.GetBlock(loc.X -1, loc.Y, loc.Z -1).Type == target)
+                    || (world.GetBlock(loc.X-1, loc.Y, loc.Z).Type == target)
+                    || (world.GetBlock(loc.X-1, loc.Y, loc.Z+1).Type == target)
+                    || (world.GetBlock(loc.X, loc.Y, loc.Z+1).Type == target)
+                    || (world.GetBlock(loc.X+1, loc.Y, loc.Z+1).Type == target)
+                    || (world.GetBlock(loc.X+1, loc.Y, loc.Z).Type == target)
+                    || (world.GetBlock(loc.X+1, loc.Y, loc.Z-1).Type == target)
+                    || (world.GetBlock(loc.X, loc.Y, loc.Z-1).Type == target));
         }
 
         /*
@@ -637,31 +636,31 @@ namespace Sean.WorldServer.Scripting
 			Position dn2 = pos + new Position (0, -2, 0);
 			Position dn3 = pos + new Position(0,-3,0);
 
-			if (World.GetBlock(up3).IsSolid)
+			if (world.GetBlock(up3).IsSolid)
 				yield return up3;
-			if (World.GetBlock(up2).IsSolid)
+			if (world.GetBlock(up2).IsSolid)
 				yield return up2;
-			if (World.GetBlock(up1).IsSolid)
+			if (world.GetBlock(up1).IsSolid)
 				yield return up1;
-			if (World.GetBlock(pos).IsSolid)
+			if (world.GetBlock(pos).IsSolid)
 			{
 				yield return pos;
 				yield break;
 			} 
 
-			if (World.GetBlock(dn1).IsSolid)
+			if (world.GetBlock(dn1).IsSolid)
 			{
 				yield return dn1;
 				yield break;
 			}
 
-		  	if (World.GetBlock(dn2).IsSolid)
+		  	if (world.GetBlock(dn2).IsSolid)
 			{
 				yield return dn2;
 				yield break;
 			}
 
-			if (World.GetBlock(dn3).IsSolid)
+			if (world.GetBlock(dn3).IsSolid)
 			{
 				yield return dn3;
 				yield break;
@@ -696,19 +695,19 @@ namespace Sean.WorldServer.Scripting
             Position dn2 = pos + new Position(0,-2,0);
             //Position dn3 = pos + new Position(0,-3,0);
 
-            if (World.GetBlock(dn1).IsSolid && World.GetBlock(pos).IsTransparent && World.GetBlock(up1).IsTransparent)
+            if (world.GetBlock(dn1).IsSolid && world.GetBlock(pos).IsTransparent && world.GetBlock(up1).IsTransparent)
             {
                 // Walk straight
                 neighbours.Add(pos);
                 return;
             }
-            if (World.GetBlock(pos).IsSolid && World.GetBlock(up1).IsTransparent && World.GetBlock(up2).IsTransparent)
+            if (world.GetBlock(pos).IsSolid && world.GetBlock(up1).IsTransparent && world.GetBlock(up2).IsTransparent)
             {
                 // Jump up one
                 neighbours.Add(up1);
                 return;               
             }
-            if (World.GetBlock(dn2).IsSolid && World.GetBlock(dn1).IsTransparent && World.GetBlock(pos).IsTransparent)
+            if (world.GetBlock(dn2).IsSolid && world.GetBlock(dn1).IsTransparent && world.GetBlock(pos).IsTransparent)
             {
                 // Drop down one
                 neighbours.Add(dn1);

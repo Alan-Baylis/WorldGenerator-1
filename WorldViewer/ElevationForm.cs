@@ -16,8 +16,11 @@ namespace WorldViewer
 {
     public partial class ElevationForm : Form
     {
-        public ElevationForm()
+        IWorld WorldInstance;
+
+        public ElevationForm(IWorld world)
         {
+            WorldInstance = world;
             InitializeComponent();
         }
 
@@ -30,7 +33,7 @@ namespace WorldViewer
 
         private Bitmap DrawTerrainZ(ChunkCoords currentChunk, int width, int height)
         {
-            var chunk = World.GetChunk(currentChunk);
+            var chunk = WorldInstance.GetChunk(currentChunk);
             var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
             var graphics = Graphics.FromImage(bitmap);
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
@@ -54,7 +57,7 @@ namespace WorldViewer
 
         private Bitmap DrawTerrainX(ChunkCoords currentChunk, int width, int height)
         {
-            var chunk = World.GetChunk(currentChunk);
+            var chunk = WorldInstance.GetChunk(currentChunk);
             var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
             var graphics = Graphics.FromImage(bitmap);
             graphics.SmoothingMode = SmoothingMode.AntiAlias;

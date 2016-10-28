@@ -3,6 +3,7 @@ using Sean.Shared;
 
 namespace Sean.WorldGenerator
 {
+    /*
 	public class AddBlock : GameAction
 	{
 		public AddBlock()
@@ -50,12 +51,11 @@ namespace Sean.WorldGenerator
 			//ConnectedPlayer.Inventory[(int)BlockType] -= 1;
 
             // TODO - send to all players
-            /*
-			foreach (var player in Server.Controller.Players.Values)
-			{
-				new AddBlock(ref Position, BlockType) { ConnectedPlayer = player }.Send();
-			}
-            */         
+			//foreach (var player in Server.Controller.Players.Values)
+			//{
+			//	new AddBlock(ref Position, BlockType) { ConnectedPlayer = player }.Send();
+			//}
 		}
 	}
+*/
 }

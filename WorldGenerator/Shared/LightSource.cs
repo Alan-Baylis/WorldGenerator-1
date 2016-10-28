@@ -4,6 +4,7 @@ using Sean.Shared;
 
 namespace Sean.WorldGenerator
 {
+    /*
 	public enum LightSourceType { PlaceholderTorch, Lantern }
 
 	public class LightSource : GameItemStatic
@@ -135,4 +136,5 @@ namespace Sean.WorldGenerator
 			return xmlNode;
 		}
 	}
+    */
 }

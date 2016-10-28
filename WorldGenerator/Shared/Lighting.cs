@@ -6,6 +6,7 @@ using Sean.Shared;
 
 namespace Sean.WorldGenerator
 {
+    /*
 	public static class Lighting
 	{
 		/// <summary>
@@ -263,24 +264,23 @@ namespace Sean.WorldGenerator
 			}
 			#endregion
 
-            /*
-			//at this point the lighting in this chunk is finished, so add to gigantic world light map
-			//-couldnt do it before now because lighting isnt finalized until the cross chunk pulling is done
-			//-this is essentially a copy of an array into a larger array
-			for (int x = 0; x < Chunk.CHUNK_SIZE; x++)
-			{
-				int worldX = chunk.Coords.WorldCoordsX + x;
-				for (int z = 0; z < Chunk.CHUNK_SIZE; z++)
-				{
-					int worldZ = chunk.Coords.WorldCoordsZ + z;
-					for (int y = 0; y < Chunk.CHUNK_HEIGHT; y++)
-					{
-						World.SkyLightMap[worldX, y, worldZ] = chunk.SkyLightMapInitial[x, y, z];
-						World.ItemLightMap[worldX, y, worldZ] = chunk.ItemLightMapInitial[x, y, z];
-					}
-				}
-			}
-            */
+			////at this point the lighting in this chunk is finished, so add to gigantic world light map
+			////-couldnt do it before now because lighting isnt finalized until the cross chunk pulling is done
+			////-this is essentially a copy of an array into a larger array
+			//for (int x = 0; x < Chunk.CHUNK_SIZE; x++)
+			//{
+			//	int worldX = chunk.Coords.WorldCoordsX + x;
+			//	for (int z = 0; z < Chunk.CHUNK_SIZE; z++)
+			//	{
+			//		int worldZ = chunk.Coords.WorldCoordsZ + z;
+			//		for (int y = 0; y < Chunk.CHUNK_HEIGHT; y++)
+			//		{
+			//			World.SkyLightMap[worldX, y, worldZ] = chunk.SkyLightMapInitial[x, y, z];
+			//			World.ItemLightMap[worldX, y, worldZ] = chunk.ItemLightMapInitial[x, y, z];
+			//		}
+			//	}
+			//}
 		}
 	}
+*/
 }

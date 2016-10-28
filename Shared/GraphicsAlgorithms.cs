@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Sean.Shared;
 
-namespace Sean.WorldServer.Scripting
+namespace Sean.Shared
 {
-    class GraphicsAlgorithms
+    public class GraphicsAlgorithms
     {
+        public const float PI_TIMES_2 = (float)Math.PI * 2;
+        public const float PI_OVER_6 = (float)Math.PI / 6;
+        public const float PI_OVER_12 = (float)Math.PI / 12;
+
         /// <summary>
         /// Bresenham's line algorithm
         /// </summary>
@@ -172,8 +173,8 @@ namespace Sean.WorldServer.Scripting
         public static Position FastTan (int angle, int radius)
         {
             // TODO
-            return new Position ((int)(radius * Math.Sin (Constants.PI_TIMES_2 * angle / 360)),
-                                (int)(radius * Math.Cos (Constants.PI_TIMES_2 * angle / 360)), 0);
+            return new Position ((int)(radius * Math.Sin (PI_TIMES_2 * angle / 360)),
+                                (int)(radius * Math.Cos (PI_TIMES_2 * angle / 360)), 0);
         }
 
         /// <summary>

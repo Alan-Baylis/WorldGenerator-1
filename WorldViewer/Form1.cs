@@ -13,6 +13,7 @@ namespace WorldViewer
         ParametersForm parametersForm;
         ElevationForm elevationForm;
         View selectedView;
+        World WorldInstance;
 
         private enum View
         {
@@ -24,6 +25,7 @@ namespace WorldViewer
             InitializeComponent();
             currentChunk = new Sean.Shared.ChunkCoords(64, 28);
             textBox1.Text = "Keys: W,A,S,D";
+            WorldInstance = new World();
         }
 
         private void DrawMaps()
@@ -48,7 +50,7 @@ namespace WorldViewer
 
         private void OnGlobalMapMouseDoubleClick(object sender, MouseEventArgs e)
         {
-            var map = World.GlobalMap;
+            var map = WorldInstance.GlobalMap;
             currentChunk = new Sean.Shared.ChunkCoords (
                 Settings.globalChunkSize * e.X / this.pictureBox1.Width,
                 Settings.globalChunkSize * e.Y / this.pictureBox1.Height);
@@ -92,7 +94,7 @@ namespace WorldViewer
 
         public Bitmap DrawLocal(int width, int height)
         {
-            var chunk = World.GetChunk(currentChunk);
+            var chunk = WorldInstance.GetChunk(currentChunk);
             var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
             var graphics = Graphics.FromImage(bitmap);
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
@@ -119,24 +121,24 @@ namespace WorldViewer
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
             int xOri = 0;
-            for (int x = World.MinXChunk; x <= World.MaxXChunk; x++)
+            for (int x = WorldInstance.MinXChunk; x <= WorldInstance.MaxXChunk; x++)
             {
                 int zOri = 0;
-                for (int z = World.MinZChunk; z <= World.MaxZChunk; z++)
+                for (int z = WorldInstance.MinZChunk; z <= WorldInstance.MaxZChunk; z++)
                 {
                     var coords = new Sean.Shared.ChunkCoords(x, z);
-                    if (World.IsChunkLoaded(coords))
+                    if (WorldInstance.IsChunkLoaded(coords))
                     {
-                        var chunk = World.GetChunk(coords);
+                        var chunk = WorldInstance.GetChunk(coords);
                         DrawChunk(graphics, chunk, xOri, zOri);
                     }
                     if (coords == currentChunk)
                     {
-                        graphics.DrawRectangle(new Pen(Color.FromArgb(255, 255,0,0)), xOri, zOri, World.ChunkSize-1, World.ChunkSize-1);
+                        graphics.DrawRectangle(new Pen(Color.FromArgb(255, 255,0,0)), xOri, zOri, Global.CHUNK_SIZE - 1, Global.CHUNK_SIZE - 1);
                     }
-                    zOri = zOri + World.ChunkSize;
+                    zOri = zOri + Global.CHUNK_SIZE;
                 }
-                xOri = xOri + World.ChunkSize;
+                xOri = xOri + Global.CHUNK_SIZE;
             }
             return bitmap;
         }
@@ -160,8 +162,8 @@ namespace WorldViewer
             var graphics = Graphics.FromImage(bitmap);
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-            var map = World.GlobalMap;
-            var ocean = World.GlobalOceanMap;
+            var map = WorldInstance.GlobalMap;
+            var ocean = WorldInstance.GlobalOceanMap;
             for (int w = 1; w<width; w++)
             {
                 for (int h=1;h<height;h++)
@@ -180,10 +182,10 @@ namespace WorldViewer
                         switch (selectedView)
                         {
                             case View.Temp:
-                                color = Color.FromArgb(255, 0, World.GlobalTemperatureMap[x,z], 0);
+                                color = Color.FromArgb(255, 0, WorldInstance.GlobalTemperatureMap[x,z], 0);
                                 break;
                             case View.Biosphere:
-                                color = Color.FromArgb(255, 0, World.GlobalBiosphereMap[x, z], 0);
+                                color = Color.FromArgb(255, 0, WorldInstance.GlobalBiosphereMap[x, z], 0);
                                 break;
                             default:
                             case View.HeightMap:
@@ -203,7 +205,7 @@ namespace WorldViewer
         private Bitmap DrawTerrain(int width, int height)
         {
             var boxImage = imageList.Images["box_blue"];
-            var chunk = World.GetChunk(currentChunk);
+            var chunk = WorldInstance.GetChunk(currentChunk);
             var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
             var graphics = Graphics.FromImage(bitmap);
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
@@ -282,7 +284,7 @@ namespace WorldViewer
         {
             //parametersForm = new ParametersForm();
             //parametersForm.Show();
-            elevationForm = new ElevationForm();
+            elevationForm = new ElevationForm(WorldInstance);
             elevationForm.Show();
             DrawMaps();
         }

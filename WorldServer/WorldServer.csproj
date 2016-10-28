@@ -75,10 +75,8 @@
     <Compile Include="ClientSocket.cs" />
     <Compile Include="Scripting\Character.cs" />
     <Compile Include="Scripting\Construction.cs" />
-    <Compile Include="Scripting\GraphicsAlgorithms.cs" />
     <Compile Include="Scripting\Knowledge.cs" />
     <Compile Include="Scripting\Map.cs" />
-    <Compile Include="Scripting\PathFinder.cs" />
     <Compile Include="Scripting\ScriptHost.cs" />
     <Compile Include="Scripting\Tasks.cs" />
     <Compile Include="ServerSocketListener.cs" />
@@ -93,6 +91,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <ProjectReference Include="..\PathFinding\PathFinding.csproj">
+      <Project>{cbd66195-e5cc-4ada-8717-1900ba0082db}</Project>
+      <Name>PathFinding</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WorldGenerator\WorldGenerator.csproj">
       <Project>{ED9CDEB6-5F1F-4C58-8F57-F216266F4B79}</Project>
       <Name>WorldGenerator</Name>

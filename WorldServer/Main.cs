@@ -8,6 +8,8 @@ namespace Sean.WorldServer
 {
     static class MainClass
 	{
+        static public World WorldInstance = new World();
+
 		static public void Main(String[] args)
 		{
 			Console.WriteLine("World Server...");

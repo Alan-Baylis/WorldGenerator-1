@@ -3,6 +3,7 @@ using Sean.Shared;
 
 namespace Sean.WorldGenerator
 {
+    /*
 	public enum StaticItemType { Clutter, LightSource }
 
 	/// <summary>
@@ -46,4 +47,5 @@ namespace Sean.WorldGenerator
 		/// </summary>
 		public Face AttachedToFace;
 	}
+    */
 }

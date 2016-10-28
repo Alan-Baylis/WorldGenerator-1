@@ -1,4 +1,5 @@
-﻿using Sean.Shared;
+﻿using Sean.PathFinding;
+using Sean.Shared;
 using Sean.WorldGenerator;
 using System;
 using System.Collections.Generic;
@@ -19,40 +20,40 @@ namespace Sean.WorldServer
 
             x = centre.X + Settings.Random.Next(-15, 15);
             z = centre.Z + Settings.Random.Next(-15, 15);
-            y = World.GetHeightMapLevel(x, z);
+            y = MainClass.WorldInstance.GetHeightMapLevel(x, z);
             x1 = centre.X + Settings.Random.Next(-15, 15);
             z1 = centre.Z + Settings.Random.Next(-15, 15);
-            y1 = World.GetHeightMapLevel(x1, z1);
+            y1 = MainClass.WorldInstance.GetHeightMapLevel(x1, z1);
             character = new Character() { Id = 1, Name = "Chr1", Location = new Position(x, y, z), Destination = new Position(x1,y1,z1) };
             _characters.Add(character.Id, character);
             MessageProcessor.SendCharacterUpdate(character);
 
             x = centre.X + Settings.Random.Next(-15, 15);
             z = centre.Z + Settings.Random.Next(-15, 15);
-            y = World.GetHeightMapLevel(x, z);
+            y = MainClass.WorldInstance.GetHeightMapLevel(x, z);
             x1 = centre.X + Settings.Random.Next(-15, 15);
             z1 = centre.Z + Settings.Random.Next(-15, 15);
-            y1 = World.GetHeightMapLevel(x1, z1);
+            y1 = MainClass.WorldInstance.GetHeightMapLevel(x1, z1);
             character = new Character() { Id = 2, Name = "Chr2", Location = new Position(x, y, z), Destination = new Position(x1,y1,z1) };
             _characters.Add(character.Id, character);
             MessageProcessor.SendCharacterUpdate(character);
 
             x = centre.X + Settings.Random.Next(-15, 15);
             z = centre.Z + Settings.Random.Next(-15, 15);
-            y = World.GetHeightMapLevel(x, z);
+            y = MainClass.WorldInstance.GetHeightMapLevel(x, z);
             x1 = centre.X + Settings.Random.Next(-15, 15);
             z1 = centre.Z + Settings.Random.Next(-15, 15);
-            y1 = World.GetHeightMapLevel(x1, z1);
+            y1 = MainClass.WorldInstance.GetHeightMapLevel(x1, z1);
             character = new Character() { Id = 3, Name = "Chr3", Location = new Position(x, y, z), Destination = new Position(x1,y1,z1) };
             _characters.Add(character.Id, character);
             MessageProcessor.SendCharacterUpdate(character);
 
             x = centre.X + Settings.Random.Next(-15, 15);
             z = centre.Z + Settings.Random.Next(-15, 15);
-            y = World.GetHeightMapLevel(x, z);
+            y = MainClass.WorldInstance.GetHeightMapLevel(x, z);
             x1 = centre.X + Settings.Random.Next(-15, 15);
             z1 = centre.Z + Settings.Random.Next(-15, 15);
-            y1 = World.GetHeightMapLevel(x1, z1);
+            y1 = MainClass.WorldInstance.GetHeightMapLevel(x1, z1);
             character = new Character() { Id = 4, Name = "Chr4", Location = new Position(x, y, z), Destination = new Position(x1,y1,z1) };
             _characters.Add(character.Id, character);
             MessageProcessor.SendCharacterUpdate(character);
@@ -63,7 +64,7 @@ namespace Sean.WorldServer
             foreach (var character in _characters.Values) {
                 if (character.Location != character.Destination && character.WalkPath.Count == 0)
                 {
-                    var pathFinder = new Scripting.PathFinder ();
+                    var pathFinder = new PathFinder (MainClass.WorldInstance);
                     character.WalkPath = pathFinder.FindPath (character.Location, character.Destination);
                 }
             }

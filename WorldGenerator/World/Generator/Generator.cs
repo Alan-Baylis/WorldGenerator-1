@@ -10,14 +10,15 @@ namespace Sean.WorldGenerator
 	{
         private CImplicitModuleBase terrainGenerator;
         private CImplicitModuleBase biosphereGenerator;
-
+        private IWorld worldInstance;
         private PerlinNoise perlinNoise;
         private const int octaves = 1;
         private const double persistence = 0.4;
         private int chunkMidpoint = Global.CHUNK_SIZE / 2;
 
-        public Generator(int seed)
+        public Generator(IWorld world, int seed)
         {
+            worldInstance = world;
             perlinNoise = new PerlinNoise(seed, 100);
 
             terrainGenerator = CreateTerrainGenerator();
@@ -162,28 +163,28 @@ namespace Sean.WorldGenerator
                 Settings.maxNoiseHeight, 
                 chunk.ChunkCoords.WorldCoordsZ + Global.CHUNK_SIZE/2));
 
-            if (World.IsChunkLoaded (new ChunkCoords (chunk.ChunkCoords.X - 1, chunk.ChunkCoords.Z))) {
+            if (worldInstance.IsChunkLoaded (new ChunkCoords (chunk.ChunkCoords.X - 1, chunk.ChunkCoords.Z))) {
                 for (var z = chunk.MinPosition.Z; z < chunk.MaxPosition.Z; z++) {
                     for (var y = chunk.MinPosition.Y; y < chunk.MinPosition.Y; y++) {
                         ExpandSearchCheckBlock(chunk.MinPosition.X - 1, y, z);
                     }
                 }
             }
-            if (World.IsChunkLoaded (new ChunkCoords (chunk.ChunkCoords.X + 1, chunk.ChunkCoords.Z))) {
+            if (worldInstance.IsChunkLoaded (new ChunkCoords (chunk.ChunkCoords.X + 1, chunk.ChunkCoords.Z))) {
                 for (var z = chunk.MinPosition.Z; z < chunk.MaxPosition.Z; z++) {
                     for (var y = chunk.MinPosition.Y; y < chunk.MinPosition.Y; y++) {
                         ExpandSearchCheckBlock(chunk.MaxPosition.X + 1, y, z);
                     }
                 }
             }
-            if (World.IsChunkLoaded (new ChunkCoords (chunk.ChunkCoords.X, chunk.ChunkCoords.Z - 1))) {
+            if (worldInstance.IsChunkLoaded (new ChunkCoords (chunk.ChunkCoords.X, chunk.ChunkCoords.Z - 1))) {
                 for (var x = chunk.MinPosition.X; x < chunk.MaxPosition.X; x++) {
                     for (var y = chunk.MinPosition.Y; y < chunk.MinPosition.Y; y++) {
                         ExpandSearchCheckBlock(x, y, chunk.MinPosition.Z - 1);
                     }
                 }
             }
-            if (World.IsChunkLoaded (new ChunkCoords (chunk.ChunkCoords.X, chunk.ChunkCoords.Z + 1))) {
+            if (worldInstance.IsChunkLoaded (new ChunkCoords (chunk.ChunkCoords.X, chunk.ChunkCoords.Z + 1))) {
                 for (var x = chunk.MinPosition.X; x < chunk.MaxPosition.X; x++) {
                     for (var y = chunk.MinPosition.Y; y < chunk.MinPosition.Y; y++) {
                         ExpandSearchCheckBlock(x, y, chunk.MaxPosition.Z + 1);
@@ -194,6 +195,8 @@ namespace Sean.WorldGenerator
             GenerateChunkCells(chunk);
 
             chunk.BuildHeightMap();
+
+            TreeGenerator.Generate(worldInstance, chunk);
         }
 
         private UniqueQueue<Position> _generateQueue;
@@ -205,12 +208,12 @@ namespace Sean.WorldGenerator
                 var x = pos.X;
                 var y = pos.Y;
                 var z = pos.Z;
-                if (World.GetBlock(x,y,z).Type == Block.BlockType.Unknown)
+                if (worldInstance.GetBlock(x,y,z).Type == Block.BlockType.Unknown)
                 {
                     var block = GenerateCell(x, y, z);
                     if (block.Type == Block.BlockType.Unknown) Console.WriteLine ("Unknown block type generated?");
-                    World.SetBlock (x, y, z, block);
-                    if (World.GetBlock (x, y, z).Type == Block.BlockType.Unknown) Console.WriteLine ("Block not set?");
+                    worldInstance.SetBlock (x, y, z, block);
+                    if (worldInstance.GetBlock (x, y, z).Type == Block.BlockType.Unknown) Console.WriteLine ("Block not set?");
                     if (block.IsTransparent)
                     {
                         ExpandSearchCheckBlock (x - 1, y, z);
@@ -227,7 +230,7 @@ namespace Sean.WorldGenerator
         }
         private void ExpandSearchCheckBlock(int x,int y,int z)
         {
-            if (World.IsValidBlockLocation(x, y, z) && World.GetBlock(x,y,z).Type == Block.BlockType.Unknown)
+            if (worldInstance.IsValidBlockLocation(x, y, z) && worldInstance.GetBlock(x,y,z).Type == Block.BlockType.Unknown)
                 _generateQueue.Enqueue (new Position (x, y, z));
         }
         private Block GenerateCell(int x, int y, int z)
