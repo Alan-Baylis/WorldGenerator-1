@@ -13,6 +13,18 @@ namespace Sean.WorldServer
         static WorldEvents()
         {
             registrations = new Dictionary<ChunkCoords, List<Guid>>();
+            MainClass.WorldInstance.WorldEvents += OnGeneratorWorldEvents;
+        }
+
+        private static void OnGeneratorWorldEvents(WorldEventArgs e)
+        {
+            var chunkCoords = new ChunkCoords(e.blockLocation);
+            if (!registrations.ContainsKey(chunkCoords))
+            {
+                return;
+            }
+            foreach (var client in registrations[chunkCoords])
+                MessageProcessor.SendMapUpdate(client, e.blockLocation, e.action, e.block);
         }
 
         public static void RequestWorldMap(Guid clientId)

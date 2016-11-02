@@ -75,7 +75,7 @@ namespace Sean.WorldServer
         }
         private static void SendBroadcastMessage(Message msg)
         {
-            Console.WriteLine($"[MessageProcessor.SendBroadcastMessage] Sending message to all");
+            //Console.WriteLine($"[MessageProcessor.SendBroadcastMessage] Sending message to all");
             ClientConnection.BroadcastMessage(msg);
             WebSocketListener.BroadcastMessage(msg);
         }
@@ -115,7 +115,18 @@ namespace Sean.WorldServer
             };
             SendMessage(clientId, msg);
         }
-
+        public static void SendMapUpdate(Guid clientId,  Position blockLocation, ItemAction action, Block block)
+        {
+            var msg = new Message()
+            {
+                MapUpdate = new MapUpdateMessage()
+                {
+                    Position = blockLocation,
+                    NewBlock = block
+                }
+            };
+            SendMessage(clientId, msg);
+        }
         public static void SendCharacterUpdate(Character character)
         {
             var msg = new Message()

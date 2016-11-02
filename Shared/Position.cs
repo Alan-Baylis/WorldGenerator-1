@@ -74,16 +74,6 @@ namespace Sean.Shared
             return (int)Math.Sqrt(Math.Pow(X - position.X, 2) + Math.Pow(Y - position.Y, 2) + Math.Pow(Z - position.Z, 2));
         }
 
-		public static bool operator ==(Position p1, Position p2)
-		{
-			return p1.X == p2.X && p1.Y == p2.Y && p1.Z == p2.Z;
-		}
-
-		public static bool operator !=(Position p1, Position p2)
-		{
-			return p1.X != p2.X || p1.Y != p2.Y || p1.Z != p2.Z;
-		}
-
         public static Position operator+ (Position p1, Position p2)
         {
             return new Position (p1.X + p2.X, p1.Y + p2.Y, p1.Z + p2.Z);

@@ -7,9 +7,9 @@ namespace Sean.WorldGenerator
 {
     public class WorldEventArgs : EventArgs
     {
-        Position blockLocation;
-        ItemAction action;
-        Block block;
+        public Position blockLocation;
+        public ItemAction action;
+        public Block block;
     }     
 
     public enum ChunkEventTarget
@@ -175,17 +175,29 @@ namespace Sean.WorldGenerator
         {
             return localMap.Chunk(x / Global.CHUNK_SIZE, z / Global.CHUNK_SIZE).Blocks[x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE];
         }
+        public void SetBlock(int x, int y, int z, Block block)
+        {
+            SetBlock(new Position(x, y, z), block);
+        }
         public void SetBlock(Position position, Block block)
         {
             if (block.Type == Block.BlockType.Unknown)
                 Console.WriteLine("Setting Unknown block?");
-            localMap.Chunk(position).Blocks[position.X % Global.CHUNK_SIZE, position.Y, position.Z % Global.CHUNK_SIZE] = block;
+
+            var chunk = localMap.Chunk(position);
+            chunk.Blocks[position.X % Global.CHUNK_SIZE, position.Y, position.Z % Global.CHUNK_SIZE] = block;
+
+            if (chunk.FinishedGeneration)
+            {
+                FireWorldEvent(position, ItemAction.Add, block);
+            }
         }
-        public void SetBlock (int x, int y, int z, Block block)
+       
+
+        private void FireWorldEvent(Position blockLocation, ItemAction action, Block block)
         {
-            if (block.Type == Block.BlockType.Unknown)
-                Console.WriteLine ("Setting Unknown block?");
-            localMap.Chunk (x / Global.CHUNK_SIZE, z / Global.CHUNK_SIZE).Blocks [x % Global.CHUNK_SIZE, y, z % Global.CHUNK_SIZE] = block;
+            if (this.WorldEvents != null)
+                this.WorldEvents.Invoke(new WorldEventArgs() { action = action, block = block, blockLocation = blockLocation });
         }
 
         /// <summary>

@@ -37,6 +37,7 @@ namespace Sean.Shared
         public byte[,,] SkyLightMapInitial;
         public byte[,,] ItemLightMapInitial;
 
+        public bool FinishedGeneration { get; set; }
         public int ChunkSize {  get { return Global.CHUNK_SIZE; } }
         public Position MinPosition { get { 
                 return 
@@ -49,9 +50,9 @@ namespace Sean.Shared
         public Position MaxPosition { get { 
                 return 
                     new Position (
-                        ChunkCoords.WorldCoordsX + Global.CHUNK_SIZE,
+                        ChunkCoords.WorldCoordsX + Global.CHUNK_SIZE-1,
                         Global.CHUNK_HEIGHT,
-                        ChunkCoords.WorldCoordsZ + Global.CHUNK_SIZE);
+                        ChunkCoords.WorldCoordsZ + Global.CHUNK_SIZE-1);
             }
         }
 

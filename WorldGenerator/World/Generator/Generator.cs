@@ -146,6 +146,7 @@ namespace Sean.WorldGenerator
         public void Generate(Chunk chunk)
 		{
             Debug.WriteLine("Generating new chunk: " + chunk.ChunkCoords);
+            chunk.FinishedGeneration = false;
             var worldSize = new ArraySize()
             {
                 minZ = chunk.ChunkCoords.WorldCoordsZ,
@@ -163,31 +164,49 @@ namespace Sean.WorldGenerator
                 Settings.maxNoiseHeight, 
                 chunk.ChunkCoords.WorldCoordsZ + Global.CHUNK_SIZE/2));
 
-            if (worldInstance.IsChunkLoaded (new ChunkCoords (chunk.ChunkCoords.X - 1, chunk.ChunkCoords.Z))) {
+            if (worldInstance.IsChunkLoaded(new ChunkCoords(chunk.ChunkCoords.X - 1, chunk.ChunkCoords.Z))) {
                 for (var z = chunk.MinPosition.Z; z < chunk.MaxPosition.Z; z++) {
-                    for (var y = chunk.MinPosition.Y; y < chunk.MinPosition.Y; y++) {
-                        ExpandSearchCheckBlock(chunk.MinPosition.X - 1, y, z);
+                    for (var y = chunk.MinPosition.Y; y < chunk.MaxPosition.Y; y++)
+                    {
+                        var block = worldInstance.GetBlock(chunk.MinPosition.X - 1, y, z);
+                        //if (block.Type == Block.BlockType.Unknown)
+                        //    _generateQueue.Enqueue(new Position(chunk.MinPosition.X - 1, y, z));
+                        //else 
+                        if (block.IsTransparent) _generateQueue.Enqueue(new Position(chunk.MinPosition.X, y, z));
                     }
                 }
             }
             if (worldInstance.IsChunkLoaded (new ChunkCoords (chunk.ChunkCoords.X + 1, chunk.ChunkCoords.Z))) {
                 for (var z = chunk.MinPosition.Z; z < chunk.MaxPosition.Z; z++) {
-                    for (var y = chunk.MinPosition.Y; y < chunk.MinPosition.Y; y++) {
-                        ExpandSearchCheckBlock(chunk.MaxPosition.X + 1, y, z);
+                    for (var y = chunk.MinPosition.Y; y < chunk.MaxPosition.Y; y++)
+                    {
+                        var block = worldInstance.GetBlock(chunk.MaxPosition.X + 1, y, z);
+                        //if (block.Type == Block.BlockType.Unknown)
+                        //    _generateQueue.Enqueue(new Position(chunk.MaxPosition.X + 1, y, z));
+                        //else 
+                        if (block.IsTransparent) _generateQueue.Enqueue(new Position(chunk.MaxPosition.X, y, z));
                     }
                 }
             }
             if (worldInstance.IsChunkLoaded (new ChunkCoords (chunk.ChunkCoords.X, chunk.ChunkCoords.Z - 1))) {
                 for (var x = chunk.MinPosition.X; x < chunk.MaxPosition.X; x++) {
-                    for (var y = chunk.MinPosition.Y; y < chunk.MinPosition.Y; y++) {
-                        ExpandSearchCheckBlock(x, y, chunk.MinPosition.Z - 1);
+                    for (var y = chunk.MinPosition.Y; y < chunk.MaxPosition.Y; y++) {
+                        var block = worldInstance.GetBlock(x, y, chunk.MinPosition.Z - 1);
+                        //if (block.Type == Block.BlockType.Unknown)
+                        //    _generateQueue.Enqueue(new Position(x, y, chunk.MinPosition.Z - 1));
+                        //else 
+                        if (block.IsTransparent) _generateQueue.Enqueue(new Position(x, y, chunk.MinPosition.Z));
                     }
                 }
             }
             if (worldInstance.IsChunkLoaded (new ChunkCoords (chunk.ChunkCoords.X, chunk.ChunkCoords.Z + 1))) {
                 for (var x = chunk.MinPosition.X; x < chunk.MaxPosition.X; x++) {
-                    for (var y = chunk.MinPosition.Y; y < chunk.MinPosition.Y; y++) {
-                        ExpandSearchCheckBlock(x, y, chunk.MaxPosition.Z + 1);
+                    for (var y = chunk.MinPosition.Y; y < chunk.MaxPosition.Y; y++) {
+                        var block = worldInstance.GetBlock(x, y, chunk.MaxPosition.Z + 1);
+                        //if (block.Type == Block.BlockType.Unknown)
+                        //    _generateQueue.Enqueue(new Position(x, y, chunk.MaxPosition.Z + 1));
+                        //else 
+                        if (block.IsTransparent) _generateQueue.Enqueue(new Position(x, y, chunk.MaxPosition.Z));
                     }
                 }
             }
@@ -197,6 +216,7 @@ namespace Sean.WorldGenerator
             chunk.BuildHeightMap();
 
             TreeGenerator.Generate(worldInstance, chunk);
+            chunk.FinishedGeneration = true;
         }
 
         private UniqueQueue<Position> _generateQueue;
@@ -205,6 +225,11 @@ namespace Sean.WorldGenerator
             while (_generateQueue.Count > 0)
             {
                 var pos = _generateQueue.Dequeue();
+                if (pos == null)
+                {
+                    Console.WriteLine("Null position in queue?");
+                    continue;
+                }
                 var x = pos.X;
                 var y = pos.Y;
                 var z = pos.Z;
