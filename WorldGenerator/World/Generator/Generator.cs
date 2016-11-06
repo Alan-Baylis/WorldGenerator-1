@@ -165,7 +165,7 @@ namespace Sean.WorldGenerator
                 chunk.ChunkCoords.WorldCoordsZ + Global.CHUNK_SIZE/2));
 
             if (worldInstance.IsChunkLoaded(new ChunkCoords(chunk.ChunkCoords.X - 1, chunk.ChunkCoords.Z))) {
-                for (var z = chunk.MinPosition.Z; z < chunk.MaxPosition.Z; z++) {
+                for (var z = chunk.MinPosition.Z; z <= chunk.MaxPosition.Z; z++) {
                     for (var y = chunk.MinPosition.Y; y < chunk.MaxPosition.Y; y++)
                     {
                         var block = worldInstance.GetBlock(chunk.MinPosition.X - 1, y, z);
@@ -177,7 +177,7 @@ namespace Sean.WorldGenerator
                 }
             }
             if (worldInstance.IsChunkLoaded (new ChunkCoords (chunk.ChunkCoords.X + 1, chunk.ChunkCoords.Z))) {
-                for (var z = chunk.MinPosition.Z; z < chunk.MaxPosition.Z; z++) {
+                for (var z = chunk.MinPosition.Z; z <= chunk.MaxPosition.Z; z++) {
                     for (var y = chunk.MinPosition.Y; y < chunk.MaxPosition.Y; y++)
                     {
                         var block = worldInstance.GetBlock(chunk.MaxPosition.X + 1, y, z);
@@ -189,7 +189,7 @@ namespace Sean.WorldGenerator
                 }
             }
             if (worldInstance.IsChunkLoaded (new ChunkCoords (chunk.ChunkCoords.X, chunk.ChunkCoords.Z - 1))) {
-                for (var x = chunk.MinPosition.X; x < chunk.MaxPosition.X; x++) {
+                for (var x = chunk.MinPosition.X; x <= chunk.MaxPosition.X; x++) {
                     for (var y = chunk.MinPosition.Y; y < chunk.MaxPosition.Y; y++) {
                         var block = worldInstance.GetBlock(x, y, chunk.MinPosition.Z - 1);
                         //if (block.Type == Block.BlockType.Unknown)
@@ -200,7 +200,7 @@ namespace Sean.WorldGenerator
                 }
             }
             if (worldInstance.IsChunkLoaded (new ChunkCoords (chunk.ChunkCoords.X, chunk.ChunkCoords.Z + 1))) {
-                for (var x = chunk.MinPosition.X; x < chunk.MaxPosition.X; x++) {
+                for (var x = chunk.MinPosition.X; x <= chunk.MaxPosition.X; x++) {
                     for (var y = chunk.MinPosition.Y; y < chunk.MaxPosition.Y; y++) {
                         var block = worldInstance.GetBlock(x, y, chunk.MaxPosition.Z + 1);
                         //if (block.Type == Block.BlockType.Unknown)
@@ -233,6 +233,7 @@ namespace Sean.WorldGenerator
                 var x = pos.X;
                 var y = pos.Y;
                 var z = pos.Z;
+                  
                 if (worldInstance.GetBlock(x,y,z).Type == Block.BlockType.Unknown)
                 {
                     var block = GenerateCell(x, y, z);
