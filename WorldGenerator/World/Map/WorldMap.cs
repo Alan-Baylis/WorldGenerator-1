@@ -12,6 +12,7 @@ namespace Sean.WorldGenerator
         private Generator generator;
         private const int oceanLevel = 40;
 
+        public Array<int> IslandMap { get; private set; }
         public Array<int> GlobalMap { get; private set; }
         public Array<bool> OceanMap { get; private set; }
         public Array<int> TemperatureMap { get; private set; }
@@ -30,6 +31,12 @@ namespace Sean.WorldGenerator
             OceanMap = DefineOcean(GlobalMap);
             TemperatureMap = DefineTemperature(GlobalMap);
             BiosphereMap = DefineBiosphere(GlobalMap, TemperatureMap);
+        }
+
+        public Array<int> GenerateIslandMap(uint octaves, double freq, int x, int z)
+        {
+            IslandMap = generator.GenerateIslandMap(octaves, freq, x, z);
+            return IslandMap;
         }
 
         private Array<bool> DefineOcean(Array<int> globalMap)

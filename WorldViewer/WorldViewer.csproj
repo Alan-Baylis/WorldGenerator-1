@@ -60,6 +60,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="IslandForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="IslandForm.Designer.cs">
+      <DependentUpon>IslandForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ParametersForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -73,6 +79,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IslandForm.resx">
+      <DependentUpon>IslandForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ParametersForm.resx">
       <DependentUpon>ParametersForm.cs</DependentUpon>

@@ -129,6 +129,11 @@ namespace Sean.WorldGenerator
         public Array<int> GlobalBiosphereMap { get { return worldMap.BiosphereMap; } }
 
 
+        public Array<int> IslandMap(uint octaves, double freq, int x, int z)
+        {
+            return worldMap.GenerateIslandMap(octaves, freq, x, z);
+        }
+
         public bool IsChunkLoaded(ChunkCoords chunkCoords)
         { return localMap.IsChunkLoaded(chunkCoords); }
 

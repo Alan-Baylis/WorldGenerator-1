@@ -8,6 +8,7 @@ namespace Sean.WorldGenerator
 {
 	public class Generator
 	{
+        private CImplicitModuleBase islandGenerator;
         private CImplicitModuleBase terrainGenerator;
         private CImplicitModuleBase biosphereGenerator;
         private IWorld worldInstance;
@@ -88,12 +89,67 @@ namespace Sean.WorldGenerator
             return coastline_highland_lowland_select;
         }
 
+        private CImplicitModuleBase CreateIslandTerrainGenerator(uint octaves, double freq)
+        {
+            var ground_gradient = new CImplicitGradient(x1: 0, x2: 0, y1: 0, y2: 1);
+            var island_shape_fractal = new CImplicitFractal(type: EFractalTypes.MULTI, 
+                basistype: CImplicitBasisFunction.EBasisTypes.GRADIENT, interptype: CImplicitBasisFunction.EInterpTypes.QUINTIC, octaves: octaves, freq: freq);
+            var island_autocorrect = new CImplicitAutoCorrect(source: island_shape_fractal, low: 0, high: 1);
+            var island_scale = new CImplicitScaleOffset(source: island_autocorrect, scale: 0.25, offset: -0.40);
+            var island_y_scale = new CImplicitScaleDomain(source: island_scale, y: 0);
+            var island_terrain = new CImplicitTranslateDomain(source: ground_gradient, tx: 0.0, ty: island_y_scale, tz: 0.0);
+            return island_terrain;
+        }
+
         private CImplicitModuleBase CreateBiosphereGenerator()
         {
-            var bio_type_fractal = new CImplicitFractal(type: EFractalTypes.FBM, basistype: CImplicitBasisFunction.EBasisTypes.GRADIENT, interptype: CImplicitBasisFunction.EInterpTypes.QUINTIC, octaves: 3, freq: 0.5);
+            var bio_type_fractal = new CImplicitFractal(type: EFractalTypes.FBM, 
+                basistype: CImplicitBasisFunction.EBasisTypes.GRADIENT, interptype: CImplicitBasisFunction.EInterpTypes.QUINTIC, octaves: 3, freq: 0.5);
             var bio_autocorrect = new CImplicitAutoCorrect(source: bio_type_fractal, low: 0, high: 1);
 
             return bio_autocorrect;
+        }
+
+        public Array<int> GenerateIslandMap(uint octaves = 8, double freq = 0.42, int xOffset = 4800, int zOffset = 5600)
+        {
+            islandGenerator = CreateIslandTerrainGenerator(octaves, freq);
+            Debug.WriteLine("Generating island map");
+            var worldSize = new ArraySize()
+            {
+                minZ = 0,
+                maxZ = Settings.globalMapSize,
+                minX = 0,
+                maxX = Settings.globalMapSize,
+                minY = Settings.minNoiseHeight,
+                maxY = Settings.maxNoiseHeight,
+                scale = Global.CHUNK_SIZE,
+            };
+
+            var heightMap = new Array<int>(worldSize);
+            for (int z = worldSize.minZ; z < worldSize.maxZ; z += worldSize.scale)
+            {
+                for (int x = worldSize.minX; x < worldSize.maxX; x += worldSize.scale)
+                {
+                    int d = worldSize.maxY - worldSize.minY;
+                    int y = (worldSize.maxY + worldSize.minY) / 2;
+                    while (d > 1)
+                    {
+                        d /= 2;
+                        var p = islandGenerator.get(
+                            (double)(x + xOffset + chunkMidpoint) / Settings.FRACTAL_SIZE, 
+                            (double)y / Settings.maxNoiseHeight, 
+                            (double)(z + zOffset + chunkMidpoint) / Settings.FRACTAL_SIZE);
+                        if (p < 0.5)
+                            y += d;
+                        else
+                            y -= d;
+                    }
+                    if (y < worldSize.minY) y = worldSize.minY;
+                    if (y > worldSize.maxY) y = worldSize.maxY;
+                    heightMap[x, z] = worldSize.maxY - y;
+                }
+            }
+            return heightMap;
         }
 
         public Array<int> GenerateGlobalMap()
@@ -169,9 +225,6 @@ namespace Sean.WorldGenerator
                     for (var y = chunk.MinPosition.Y; y < chunk.MaxPosition.Y; y++)
                     {
                         var block = worldInstance.GetBlock(chunk.MinPosition.X - 1, y, z);
-                        //if (block.Type == Block.BlockType.Unknown)
-                        //    _generateQueue.Enqueue(new Position(chunk.MinPosition.X - 1, y, z));
-                        //else 
                         if (block.IsTransparent) _generateQueue.Enqueue(new Position(chunk.MinPosition.X, y, z));
                     }
                 }
@@ -181,9 +234,6 @@ namespace Sean.WorldGenerator
                     for (var y = chunk.MinPosition.Y; y < chunk.MaxPosition.Y; y++)
                     {
                         var block = worldInstance.GetBlock(chunk.MaxPosition.X + 1, y, z);
-                        //if (block.Type == Block.BlockType.Unknown)
-                        //    _generateQueue.Enqueue(new Position(chunk.MaxPosition.X + 1, y, z));
-                        //else 
                         if (block.IsTransparent) _generateQueue.Enqueue(new Position(chunk.MaxPosition.X, y, z));
                     }
                 }
@@ -192,9 +242,6 @@ namespace Sean.WorldGenerator
                 for (var x = chunk.MinPosition.X; x <= chunk.MaxPosition.X; x++) {
                     for (var y = chunk.MinPosition.Y; y < chunk.MaxPosition.Y; y++) {
                         var block = worldInstance.GetBlock(x, y, chunk.MinPosition.Z - 1);
-                        //if (block.Type == Block.BlockType.Unknown)
-                        //    _generateQueue.Enqueue(new Position(x, y, chunk.MinPosition.Z - 1));
-                        //else 
                         if (block.IsTransparent) _generateQueue.Enqueue(new Position(x, y, chunk.MinPosition.Z));
                     }
                 }
@@ -203,9 +250,6 @@ namespace Sean.WorldGenerator
                 for (var x = chunk.MinPosition.X; x <= chunk.MaxPosition.X; x++) {
                     for (var y = chunk.MinPosition.Y; y < chunk.MaxPosition.Y; y++) {
                         var block = worldInstance.GetBlock(x, y, chunk.MaxPosition.Z + 1);
-                        //if (block.Type == Block.BlockType.Unknown)
-                        //    _generateQueue.Enqueue(new Position(x, y, chunk.MaxPosition.Z + 1));
-                        //else 
                         if (block.IsTransparent) _generateQueue.Enqueue(new Position(x, y, chunk.MaxPosition.Z));
                     }
                 }
