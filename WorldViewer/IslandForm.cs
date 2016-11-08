@@ -1,15 +1,8 @@
-﻿using Sean.Shared;
-using Sean.WorldGenerator;
+﻿using Sean.WorldGenerator;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace WorldViewer
@@ -19,9 +12,10 @@ namespace WorldViewer
         World WorldInstance;
         int waterLevel = 27;
         uint octaves = 8;
-        double freq = 0.42;
-        int x = 4800;
-        int z = 5600;
+        double freq = 1.2;
+        double x = 5.65;
+        double z = 2.52;
+        double scale = 0.22;
 
         public IslandForm(World world)
         {
@@ -34,8 +28,9 @@ namespace WorldViewer
             waterLevel = (int)this.param1.Value;
             octaves = (uint)this.param2.Value;
             freq = (double)this.param3.Value;
-            x = (int)this.param4.Value;
-            z = (int)this.param5.Value;
+            x = (double)this.param4.Value;
+            z = (double)this.param5.Value;
+            scale = (double)this.param6.Value;
             DrawMaps();
         }
 
@@ -45,8 +40,9 @@ namespace WorldViewer
             this.param1.Value = waterLevel;
             this.param2.Value = octaves;
             this.param3.Value = (decimal)freq;
-            this.param4.Value = x;
-            this.param5.Value = z;
+            this.param4.Value = (decimal)x;
+            this.param5.Value = (decimal)z;
+            this.param6.Value = (decimal)scale;
         }
 
         private void DrawMaps()
@@ -70,7 +66,7 @@ namespace WorldViewer
             var graphics = Graphics.FromImage(bitmap);
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-            var map = WorldInstance.IslandMap(octaves, freq, x, z);
+            var map = WorldInstance.IslandMap(octaves, freq, x, z, scale);
 
             int scrScale = 2;
             int w = 0;

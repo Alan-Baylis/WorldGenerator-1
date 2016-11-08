@@ -33,9 +33,9 @@ namespace Sean.WorldGenerator
             BiosphereMap = DefineBiosphere(GlobalMap, TemperatureMap);
         }
 
-        public Array<int> GenerateIslandMap(uint octaves, double freq, int x, int z)
+        public Array<int> GenerateIslandMap(uint octaves, double freq, double x, double z, double scale)
         {
-            IslandMap = generator.GenerateIslandMap(octaves, freq, x, z);
+            IslandMap = generator.GenerateIslandMap(octaves, freq, x, z, scale);
             return IslandMap;
         }
 
