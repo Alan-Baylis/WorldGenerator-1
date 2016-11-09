@@ -10,7 +10,8 @@ namespace WorldViewer
     public partial class IslandForm : Form
     {
         World WorldInstance;
-        int waterLevel = 27;
+        Bitmap bitmap;
+        int waterLevel = 71;
         uint octaves = 8;
         double freq = 1.2;
         double x = 5.65;
@@ -62,7 +63,7 @@ namespace WorldViewer
 
         private Bitmap DrawIslandMap(int width, int height)
         {
-            var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+            bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
             var graphics = Graphics.FromImage(bitmap);
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
@@ -98,5 +99,9 @@ namespace WorldViewer
             return bitmap;
         }
 
+        private void OnMouseClick(object sender, MouseEventArgs e)
+        {
+            outputTextBox.Text = bitmap.GetPixel(e.X, e.Y).G.ToString();
+        }
     }
 }

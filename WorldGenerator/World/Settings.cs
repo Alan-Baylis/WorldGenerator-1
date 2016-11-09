@@ -11,7 +11,7 @@ namespace Sean.WorldGenerator
     /// </summary>
     public static class Settings
     {
-        public const int waterLevel = 20;
+        public const int waterLevel = 50;
         public const int FRACTAL_SIZE = Global.CHUNK_SIZE * 20;
         public const int globalMapSize = 128*Global.CHUNK_SIZE;
         public const int minNoiseHeight = 0;

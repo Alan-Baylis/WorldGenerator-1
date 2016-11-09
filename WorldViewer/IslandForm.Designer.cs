@@ -44,6 +44,7 @@
             this.label7 = new System.Windows.Forms.Label();
             this.param7 = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
+            this.outputTextBox = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.param1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.param2)).BeginInit();
@@ -72,6 +73,7 @@
             this.pictureBox1.Size = new System.Drawing.Size(512, 512);
             this.pictureBox1.TabIndex = 6;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnMouseClick);
             // 
             // param1
             // 
@@ -212,17 +214,17 @@
             // 
             this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(540, 201);
+            this.label6.Location = new System.Drawing.Point(540, 173);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(13, 13);
+            this.label6.Size = new System.Drawing.Size(34, 13);
             this.label6.TabIndex = 18;
-            this.label6.Text = "6";
+            this.label6.Text = "Scale";
             // 
             // param6
             // 
             this.param6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.param6.DecimalPlaces = 2;
-            this.param6.Location = new System.Drawing.Point(608, 199);
+            this.param6.Location = new System.Drawing.Point(608, 171);
             this.param6.Maximum = new decimal(new int[] {
             999999,
             0,
@@ -276,11 +278,20 @@
             this.label5.TabIndex = 16;
             this.label5.Text = "Z Offset";
             // 
+            // outputTextBox
+            // 
+            this.outputTextBox.Location = new System.Drawing.Point(543, 504);
+            this.outputTextBox.Name = "outputTextBox";
+            this.outputTextBox.ReadOnly = true;
+            this.outputTextBox.Size = new System.Drawing.Size(140, 20);
+            this.outputTextBox.TabIndex = 21;
+            // 
             // IslandForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(695, 567);
+            this.Controls.Add(this.outputTextBox);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.param7);
             this.Controls.Add(this.label6);
@@ -332,5 +343,6 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.NumericUpDown param7;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox outputTextBox;
     }
 }
