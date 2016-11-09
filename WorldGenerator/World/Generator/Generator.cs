@@ -28,7 +28,7 @@ namespace Sean.WorldGenerator
 
         private CImplicitModuleBase CreateTerrainGenerator()
         { 
-            var ground_gradient = new CImplicitGradient(x1: 0, x2: 0, y1: 0, y2: 1);
+            var ground_gradient = new CImplicitGradient(x1: 0, x2: 0, y1: -1, y2: 1);
             
             var lowland_shape_fractal = new CImplicitFractal(type: EFractalTypes.BILLOW, basistype: CImplicitBasisFunction.EBasisTypes.GRADIENT, interptype: CImplicitBasisFunction.EInterpTypes.QUINTIC, octaves: 2, freq: 1.25);
             var lowland_autocorrect = new CImplicitAutoCorrect(source: lowland_shape_fractal, low: -1, high: 1);

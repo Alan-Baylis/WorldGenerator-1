@@ -11,7 +11,7 @@ namespace WorldViewer
     {
         World WorldInstance;
         Bitmap bitmap;
-        int waterLevel = 71;
+        int waterLevel = Sean.WorldGenerator.Settings.waterLevel;
         uint octaves = 8;
         double freq = 1.2;
         double x = 5.65;

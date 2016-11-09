@@ -59,7 +59,7 @@ namespace WorldViewer
         }
 
         private Sean.Shared.ChunkCoords currentChunk;
-        private const int WaterHeight = 20;
+        private const int WaterHeight = Sean.WorldGenerator.Settings.waterLevel;
 
         private void OnKeyPress(object sender, KeyPressEventArgs e)
         {
@@ -99,7 +99,7 @@ namespace WorldViewer
             var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
             var graphics = Graphics.FromImage(bitmap);
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
-
+            var avgHeight = 0;
             var xSize = width / chunk.ChunkSize;
             var zSize = height / chunk.ChunkSize;
             for (int x = 0; x < chunk.ChunkSize; x++)
@@ -107,11 +107,14 @@ namespace WorldViewer
                 for (int z = 0; z < chunk.ChunkSize; z++)
                 {
                     var pt = chunk.HeightMap[x + chunk.HeightMap.Size.minX, z + chunk.HeightMap.Size.minZ];
+                    avgHeight += pt;
                     var color = pt < 20 ? Color.FromArgb(255, 0, 0, 255) : Color.FromArgb(255, 0, pt, 0);
                     //var color = Color.FromArgb(255, 0, pt, 0);
                     graphics.FillRectangle(new SolidBrush(color), x * xSize, z * zSize, xSize, zSize);
                 }
             }
+            avgHeight /= (chunk.ChunkSize * chunk.ChunkSize);
+            Console.WriteLine($"Avg Height = {avgHeight}");
             return bitmap;
         }
 
