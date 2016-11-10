@@ -48,7 +48,7 @@ namespace Sean.Shared.Comms
         private Guid clientId;
         public TcpClient socket = null;
         private const int MaxMessageLength = 1024;
-        private const int MaxDataMessageLength = 4194305;
+        private const int MaxDataMessageLength = 16777216;
 
         public void StartClient()
         {
@@ -66,7 +66,7 @@ namespace Sean.Shared.Comms
             {
                 int bytesRead = networkStream.Read(data, totalBytesRead, length-totalBytesRead);
                 totalBytesRead += bytesRead;
-                Console.WriteLine($"[ClientConnection.ReadBytes] Read:{totalBytesRead} of {length}");
+                //Console.WriteLine($"[ClientConnection.ReadBytes] Read:{totalBytesRead} of {length}");
             }
             while (totalBytesRead < length);
             return data;
@@ -101,7 +101,7 @@ namespace Sean.Shared.Comms
                         var dataLenBuffer = ReadBytes(networkStream, 4);
                         int dataLength = BitConverter.ToInt32(dataLenBuffer, 0);
                         if (dataLength > MaxDataMessageLength) throw new ApplicationException ($"Message data length {dataLength} too large");
-                        Console.WriteLine($"[ClientConnection.DoSocketReader] DataLength:{dataLength}");
+                        //Console.WriteLine($"[ClientConnection.DoSocketReader] DataLength:{dataLength}");
 
                         if (dataLength > 0)
                         {
@@ -109,7 +109,7 @@ namespace Sean.Shared.Comms
                         }
 
                         // Process Message
-                        Console.WriteLine($"Received: {msg.ToString()}");                    
+                        //Console.WriteLine($"Received: {msg.ToString()}");                    
                         processMessageFn(clientId, msg);
                     }
                 }
@@ -124,7 +124,7 @@ namespace Sean.Shared.Comms
         private Queue<Message> writeQueue = new Queue<Message>();
         private void DoSocketWriter()
         {
-            Console.WriteLine ($"[ClientConnection.DoSocketWriter] Writing on socket {socket}");
+            //Console.WriteLine ($"[ClientConnection.DoSocketWriter] Writing on socket {socket}");
             try {
                 NetworkStream networkStream = socket.GetStream ();
                 if (!networkStream.CanWrite)
@@ -140,13 +140,13 @@ namespace Sean.Shared.Comms
                     {
                         message.DestId = clientId;
                         message.FromId = serverId;
-                        Console.WriteLine($"Sending: {message.ToString()}");                    
+                        //Console.WriteLine($"Sending: {message.ToString()}");                    
                         var messageJson = Utilities.JsonSerialize<Message>(message);
                         var msgBuffer = Encoding.ASCII.GetBytes(messageJson);
 
                         networkStream.WriteByte((byte)(msgBuffer.Length/256));
                         networkStream.WriteByte((byte)(msgBuffer.Length%256));
-                        Console.WriteLine($"[ClientConnection.DoSocketWriter] Writing message length:{msgBuffer.Length}");
+                        //Console.WriteLine($"[ClientConnection.DoSocketWriter] Writing message length:{msgBuffer.Length}");
                         networkStream.Write(msgBuffer,0,msgBuffer.Length);
 
                         var dataLength = message.Data == null ? 0 : message.Data.Length;
@@ -156,7 +156,7 @@ namespace Sean.Shared.Comms
                         networkStream.WriteByte(intBytes[2]);
                         networkStream.WriteByte(intBytes[3]);
 
-                        Console.WriteLine($"[ClientConnection.DoSocketWriter] Writing data length:{dataLength}");
+                        //Console.WriteLine($"[ClientConnection.DoSocketWriter] Writing data length:{dataLength}");
                         if (message.Data != null)
                             networkStream.Write(message.Data,0,message.Data.Length);
 
