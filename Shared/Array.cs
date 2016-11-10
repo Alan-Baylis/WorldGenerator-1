@@ -154,7 +154,7 @@ namespace Sean.Shared
         public void DeSerialize(byte[] data)
         {
             var binaryFormatter = new BinaryFormatter();
-            using (var memoryStream = new System.IO.MemoryStream())
+            using (var memoryStream = new System.IO.MemoryStream(data))
             {
                 for (int z = 0; z < ToArrayCoord(_size.maxZ); z++)
                 {
