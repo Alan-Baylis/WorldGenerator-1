@@ -15,7 +15,6 @@ namespace Sean.WorldGenerator
         private PerlinNoise perlinNoise;
         private const int octaves = 1;
         private const double persistence = 0.4;
-        private int chunkMidpoint = Global.CHUNK_SIZE / 2;
 
         public Generator(IWorld world, int seed)
         {
@@ -135,9 +134,9 @@ namespace Sean.WorldGenerator
             var worldSize = new ArraySize()
             {
                 minZ = 0,
-                maxZ = Settings.globalMapSize,
+                maxZ = Settings.globalMapSize + Global.CHUNK_SIZE,
                 minX = 0,
-                maxX = Settings.globalMapSize,
+                maxX = Settings.globalMapSize + Global.CHUNK_SIZE,
                 minY = Settings.minNoiseHeight,
                 maxY = Settings.maxNoiseHeight,
                 scale = Global.CHUNK_SIZE,
@@ -155,10 +154,10 @@ namespace Sean.WorldGenerator
                         d /= 2;
                         var p = islandGenerator.get(
                             //(double)(x + xOffset + chunkMidpoint) / Settings.FRACTAL_SIZE, 
-                            (double)(x + chunkMidpoint) / Settings.FRACTAL_SIZE, 
+                            (double)x / Settings.FRACTAL_SIZE, 
                             (double)y / Settings.maxNoiseHeight, 
                             //(double)(z + zOffset + chunkMidpoint) / Settings.FRACTAL_SIZE);
-                            (double)(z + chunkMidpoint) / Settings.FRACTAL_SIZE);
+                            (double)z / Settings.FRACTAL_SIZE);
                         if (p < 0.5)
                             y += d;
                         else
@@ -178,9 +177,9 @@ namespace Sean.WorldGenerator
             var worldSize = new ArraySize()
             {
                 minZ = 0,
-                maxZ = Settings.globalMapSize,
+                maxZ = Settings.globalMapSize + Global.CHUNK_SIZE,
                 minX = 0,
-                maxX = Settings.globalMapSize,
+                maxX = Settings.globalMapSize + Global.CHUNK_SIZE,
                 minY = Settings.minNoiseHeight,
                 maxY = Settings.maxNoiseHeight,
                 scale = Global.CHUNK_SIZE,
@@ -196,7 +195,7 @@ namespace Sean.WorldGenerator
                     while (d > 1)
                     {
                         d /= 2;
-                        var p = terrainGenerator.get ((double)(x+chunkMidpoint) / Settings.FRACTAL_SIZE, (double)y / Settings.maxNoiseHeight, (double)(z+chunkMidpoint) / Settings.FRACTAL_SIZE);
+                        var p = terrainGenerator.get ((double)x / Settings.FRACTAL_SIZE, (double)y / Settings.maxNoiseHeight, (double)z / Settings.FRACTAL_SIZE);
                         if (p < 0.5)
                             y += d;
                         else
@@ -212,7 +211,7 @@ namespace Sean.WorldGenerator
 
         public double CalcGlobalBiosphere(int x, int z)
         {
-            return biosphereGenerator.get((double)(x+chunkMidpoint) / Settings.FRACTAL_SIZE, (double)(z+chunkMidpoint) / Settings.FRACTAL_SIZE);
+            return biosphereGenerator.get((double)x / Settings.FRACTAL_SIZE, (double)z / Settings.FRACTAL_SIZE);
         }
         public double CalcBiosphere(int x, int z)
         {

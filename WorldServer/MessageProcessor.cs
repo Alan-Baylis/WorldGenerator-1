@@ -69,7 +69,7 @@ namespace Sean.WorldServer
 
         private static void SendMessage(Guid clientId, Message msg)
         {
-            Console.WriteLine($"[MessageProcessor.SendMessage] Sending message to {clientId}");
+            //Console.WriteLine($"[MessageProcessor.SendMessage] Sending message to {clientId}");
             ClientConnection.EnqueueMessage(clientId, msg);
             WebSocketListener.SendMessage(clientId, msg);
         }

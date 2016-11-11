@@ -53,8 +53,8 @@ namespace WorldViewer
         {
             var map = WorldInstance.GlobalMap;
             currentChunk = new Sean.Shared.ChunkCoords (
-                Settings.globalChunkSize * e.X / this.pictureBox1.Width,
-                Settings.globalChunkSize * e.Y / this.pictureBox1.Height);
+                Settings.globalChunkCount * e.X / this.pictureBox1.Width,
+                Settings.globalChunkCount * e.Y / this.pictureBox1.Height);
             DrawMaps();
         }
 

@@ -161,7 +161,6 @@ namespace Sean.Shared
                     for (int x = 0; x < ToArrayCoord(_size.maxX); x++)
                     {
                         var item = (T)binaryFormatter.Deserialize(memoryStream);
-                        binaryFormatter.Serialize(memoryStream, item);
                         _data[z][x] = item;
                     }
                 }
