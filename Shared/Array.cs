@@ -140,11 +140,11 @@ namespace Sean.Shared
             var binaryFormatter = new BinaryFormatter();
             using (var memoryStream = new System.IO.MemoryStream())
             {
-                for (int z = 0; z < ToArrayCoord(_size.maxZ); z++)
+                for (int z = 0; z < _size.maxZ; z=z+_size.scale)
                 {
-                    for (int x = 0; x < ToArrayCoord (_size.maxX); x++) 
+                    for (int x = 0; x < _size.maxX; x=x+_size.scale) 
                     {
-                        var item = _data[z][x];
+                        var item = this[z,x];
                         binaryFormatter.Serialize(memoryStream, item);
                     }
                 }
@@ -156,12 +156,12 @@ namespace Sean.Shared
             var binaryFormatter = new BinaryFormatter();
             using (var memoryStream = new System.IO.MemoryStream(data))
             {
-                for (int z = 0; z < ToArrayCoord(_size.maxZ); z++)
+                for (int z = 0; z < _size.maxZ; z=z+_size.scale)
                 {
-                    for (int x = 0; x < ToArrayCoord(_size.maxX); x++)
+                    for (int x = 0; x < _size.maxX; x=x+_size.scale) 
                     {
                         var item = (T)binaryFormatter.Deserialize(memoryStream);
-                        _data[z][x] = item;
+                        this[z,x] = item;
                     }
                 }
             }
