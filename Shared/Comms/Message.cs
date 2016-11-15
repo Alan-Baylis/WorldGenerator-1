@@ -61,7 +61,7 @@ namespace Sean.Shared.Comms
         [DataMember]
         public int Scale { get; set; }
     }
-
+    
     [DataContract]
     public class MapRequestMessage
     {
@@ -146,7 +146,10 @@ namespace Sean.Shared.Comms
         public WorldMapRequestMessage WorldMapRequest { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
-        public WorldMapResponseMessage WorldMapResponse { get; set; }
+        public WorldMapResponseMessage WorldMapHeightResponse { get; set; }
+
+        [DataMember(EmitDefaultValue = false)]
+        public WorldMapResponseMessage WorldMapTerrainResponse { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
         public MapRequestMessage MapRequest { get; set; }
@@ -183,7 +186,7 @@ namespace Sean.Shared.Comms
             if (Login != null) text.Append($"Login({Login.Username}) ");
             if (Say != null) text.Append($"Say({Say.Text}) ");
             if (WorldMapRequest != null) text.Append($"WorldMapRequest() ");
-            if (WorldMapResponse != null) text.Append($"WorldMapResponse() ");
+            if (WorldMapHeightResponse != null) text.Append($"WorldMapResponse() ");
             if (MapRequest != null) text.Append($"MapRequest({MapRequest.Coords}) ");
             if (MapIgnore != null) text.Append($"MapIgnore({MapIgnore.Coords}) ");
             if (Map != null) text.Append($"Map({Map.MinPosition}) ");

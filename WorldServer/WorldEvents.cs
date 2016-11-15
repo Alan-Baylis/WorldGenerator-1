@@ -30,7 +30,10 @@ namespace Sean.WorldServer
         public static void RequestWorldMap(Guid clientId)
         {
             var map = MainClass.WorldInstance.GlobalMap;
-            MessageProcessor.SendWorldMap(clientId, map);
+            MessageProcessor.SendWorldHeightMap(clientId, map);
+
+            var blocks = MainClass.WorldInstance.GlobalMapTerrain;
+            MessageProcessor.SendWorldTerrainMap(clientId, map);
         }
         public static void ChunkRegister(ChunkCoords chunkCoords, Guid clientId)
         {

@@ -167,7 +167,7 @@ namespace WorldViewer
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
             var map = WorldInstance.GlobalMap;
-            var ocean = WorldInstance.GlobalOceanMap;
+            var terrain = WorldInstance.GlobalMapTerrain;
             for (int w = 1; w<width; w++)
             {
                 for (int h=1;h<height;h++)
@@ -175,7 +175,7 @@ namespace WorldViewer
                     int x = map.Size.maxX * w / width;
                     int z = map.Size.maxZ * h / height;
                     var pt = map[x,z];
-                    var isOcean = ocean[x, z];
+                    var isOcean = terrain[x, z] == 2;
                     Color color;
                     if (isOcean)
                     {

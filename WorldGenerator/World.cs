@@ -124,7 +124,7 @@ namespace Sean.WorldGenerator
         internal LocalMap LocalMap { get { return localMap; } }
 
         public Array<int> GlobalMap { get { return worldMap.GlobalMap; } }
-        public Array<bool> GlobalOceanMap { get { return worldMap.OceanMap; } }
+        public Array<int> GlobalMapTerrain { get { return worldMap.GlobalMapTerrain; } }
         public Array<int> GlobalTemperatureMap { get { return worldMap.TemperatureMap; } }
         public Array<int> GlobalBiosphereMap { get { return worldMap.BiosphereMap; } }
 
