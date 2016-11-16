@@ -46,14 +46,23 @@ namespace Sean.Shared.Comms
         public string Text { get; set; }
     }
 
+    public enum MapRequestType
+    {
+        HeightMap = 1,
+        Terrain = 2
+    }
     [DataContract]
     public class WorldMapRequestMessage
     {
+        [DataMember]
+        public MapRequestType MapRequestType { get; set; }
     }
 
     [DataContract]
     public class WorldMapResponseMessage
     {
+        [DataMember]
+        public MapRequestType MapRequestType { get; set; }
         [DataMember]
         public Position MinPosition { get; set; }
         [DataMember]
@@ -146,10 +155,7 @@ namespace Sean.Shared.Comms
         public WorldMapRequestMessage WorldMapRequest { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
-        public WorldMapResponseMessage WorldMapHeightResponse { get; set; }
-
-        [DataMember(EmitDefaultValue = false)]
-        public WorldMapResponseMessage WorldMapTerrainResponse { get; set; }
+        public WorldMapResponseMessage WorldMapResponse { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
         public MapRequestMessage MapRequest { get; set; }
@@ -186,7 +192,7 @@ namespace Sean.Shared.Comms
             if (Login != null) text.Append($"Login({Login.Username}) ");
             if (Say != null) text.Append($"Say({Say.Text}) ");
             if (WorldMapRequest != null) text.Append($"WorldMapRequest() ");
-            if (WorldMapHeightResponse != null) text.Append($"WorldMapResponse() ");
+            if (WorldMapResponse != null) text.Append($"WorldMapResponse() ");
             if (MapRequest != null) text.Append($"MapRequest({MapRequest.Coords}) ");
             if (MapIgnore != null) text.Append($"MapIgnore({MapIgnore.Coords}) ");
             if (Map != null) text.Append($"Map({Map.MinPosition}) ");

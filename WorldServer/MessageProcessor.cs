@@ -88,12 +88,13 @@ namespace Sean.WorldServer
             };
             SendMessage(clientId, msg);
         }
-        public static void SendWorldHeightMap(Guid clientId, Shared.Array<int> map)
+        public static void SendWorldMap(Guid clientId, MapRequestType mapType, Shared.Array<int> map)
         {
             var msg = new Message()
             {
-                WorldMapHeightResponse = new WorldMapResponseMessage()
+                WorldMapResponse = new WorldMapResponseMessage()
                 {
+                    MapRequestType = mapType,
                     MinPosition = new Shared.Position(map.Size.minX, map.Size.minY, map.Size.minZ),
                     MaxPosition = new Shared.Position(map.Size.maxX, map.Size.maxY, map.Size.maxZ),
                     Scale = map.Size.scale,
@@ -102,20 +103,7 @@ namespace Sean.WorldServer
             };
             SendMessage(clientId, msg);
         }
-        public static void SendWorldTerrainMap(Guid clientId, Shared.Array<int> map)
-        {
-            var msg = new Message()
-            {
-                WorldMapTerrainResponse = new WorldMapResponseMessage()
-                {
-                    MinPosition = new Shared.Position(map.Size.minX, map.Size.minY, map.Size.minZ),
-                    MaxPosition = new Shared.Position(map.Size.maxX, map.Size.maxY, map.Size.maxZ),
-                    Scale = map.Size.scale,
-                },
-                Data = map.Serialize()
-            };
-            SendMessage(clientId, msg);
-        }
+  
         public static void SendMap(Guid clientId, Chunk chunk)
         {
             var msg = new Message()

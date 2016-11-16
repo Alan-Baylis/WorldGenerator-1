@@ -38,9 +38,18 @@ namespace Sean.WorldGenerator
             return IslandMap;
         }
 
+        private const int WATER = 2;
+        private const int GRASS = 4;
         private Array<int> DefineTerrain(Array<int> globalMap)
         {
             var terrain = new Array<int>(globalMap.Size);
+            for (int z = globalMap.Size.minZ; z < globalMap.Size.maxZ; z += globalMap.Size.scale)
+            {
+                for (int x = globalMap.Size.minX; x < globalMap.Size.maxX; x += globalMap.Size.scale)
+                {
+                    terrain[x, z] = GRASS;
+                }
+            }
             for (int z = globalMap.Size.minZ; z < globalMap.Size.maxZ; z += globalMap.Size.scale)
             {
                 if (globalMap[globalMap.Size.minX, z] < Settings.waterLevel)
@@ -57,7 +66,6 @@ namespace Sean.WorldGenerator
             }
             return terrain;
         }
-        private const int WATER = 2;
         private void ExpandOcean(Array<int> globalMap, ref Array<int> terrain, int x, int z)
         {
             if (globalMap.IsValidCoord(x, z) && terrain[x, z] != WATER && globalMap[x, z] < Settings.waterLevel)

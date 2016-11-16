@@ -15,6 +15,7 @@ namespace Sean.WorldGenerator
         private PerlinNoise perlinNoise;
         private const int octaves = 1;
         private const double persistence = 0.4;
+        private int chunkMidpoint = Global.CHUNK_SIZE / 2;
 
         public Generator(IWorld world, int seed)
         {
@@ -147,17 +148,17 @@ namespace Sean.WorldGenerator
             {
                 for (int x = worldSize.minX; x < worldSize.maxX; x += worldSize.scale)
                 {
-                    int d = worldSize.maxY - worldSize.minY;
-                    int y = (worldSize.maxY + worldSize.minY) / 2;
+                    int d = Global.CHUNK_HEIGHT;
+                    int y = d / 2;
                     while (d > 1)
                     {
                         d /= 2;
                         var p = islandGenerator.get(
-                            //(double)(x + xOffset + chunkMidpoint) / Settings.FRACTAL_SIZE, 
-                            (double)x / Settings.FRACTAL_SIZE, 
+                            (double)(x + xOffset + chunkMidpoint) / Settings.FRACTAL_SIZE, 
+                            //(double)x / Settings.FRACTAL_SIZE, 
                             (double)y / Settings.maxNoiseHeight, 
-                            //(double)(z + zOffset + chunkMidpoint) / Settings.FRACTAL_SIZE);
-                            (double)z / Settings.FRACTAL_SIZE);
+                            (double)(z + zOffset + chunkMidpoint) / Settings.FRACTAL_SIZE);
+                            //(double)z / Settings.FRACTAL_SIZE);
                         if (p < 0.5)
                             y += d;
                         else
@@ -190,8 +191,8 @@ namespace Sean.WorldGenerator
             {
                 for (int x = worldSize.minX; x < worldSize.maxX; x += worldSize.scale)
                 {
-                    int d = worldSize.maxY - worldSize.minY;
-                    int y = (worldSize.maxY + worldSize.minY)/2;
+                    int d = worldSize.maxY;
+                    int y = d/2;
                     while (d > 1)
                     {
                         d /= 2;
