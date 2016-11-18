@@ -156,24 +156,6 @@ namespace Sean.WorldGenerator
             PlaceBlock(position, blockType);
         }
 
-
-        private const int WATER = 2;
-        private const int GRASS = 4;
-        private void GenerateRivers()
-        {
-            for (var i = 0; i < Settings.RiverCount; i++)
-            {
-                bool isWater = true;
-                while (isWater)
-                {
-                    var x = Settings.Random.Next(GlobalMap.Size.minX, GlobalMap.Size.maxX);
-                    var z = Settings.Random.Next(GlobalMap.Size.minZ, GlobalMap.Size.maxZ);
-                    isWater = (GlobalMapTerrain[x, z] == WATER);
-                }
-
-            }
-        }
-
         #region Lookup Functions
         /// <summary>Get a block using world coords.</summary>
         public Block GetBlock(ref Coords coords)

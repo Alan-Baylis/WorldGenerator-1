@@ -9,6 +9,7 @@ namespace Sean.WorldGenerator
 {
     internal class WorldMap
     {
+        private IWorld worldInstance;
         private Generator generator;
         private const int oceanLevel = 40;
 
@@ -32,14 +33,73 @@ namespace Sean.WorldGenerator
             BiosphereMap = DefineBiosphere(GlobalMap, TemperatureMap);
         }
 
+
+        private List<Position> WaterSources;
+        private const int WATER = 2;
+        private const int GRASS = 4;
+        private void GenerateRivers()
+        {
+            WaterSources = new List<Position> ();
+            for (var i = 0; i < Settings.RiverCount; i++)
+            {
+                int x=0, y=255, z=0; // TODO set y
+                bool isWater = true;
+                while (isWater)
+                {
+                    x = Settings.Random.Next(GlobalMap.Size.minX, GlobalMap.Size.maxX);
+                    z = Settings.Random.Next(GlobalMap.Size.minZ, GlobalMap.Size.maxZ);
+                    isWater = (GlobalMapTerrain[x, z] == WATER);
+                }
+                var pos = new Position (x, y, z);
+                var chunk = worldInstance.GetChunk (new ChunkCoords (pos));
+                WaterSources.Add(pos);
+                var block = new Block (Block.BlockType.Water);
+                worldInstance.SetBlock (x, y, z, block);
+            }
+
+            var expandWater = new UniqueQueue<Position> ();
+            foreach (var pos in WaterSources) {                
+                expandWater.Enqueue (pos);
+            }
+
+            while (expandWater.Count > 0) {
+                var pos = expandWater.Dequeue();
+                var x = pos.X;
+                var y = pos.Y;
+                var z = pos.Z;
+                if (worldInstance.GetBlock (x, y - 1, z).Type == Block.BlockType.Air) {
+                    worldInstance.SetBlock (x, y - 1, z, new Block (Block.BlockType.Water));
+                    expandWater.Enqueue (new Position (x, y - 1, z));
+                    continue; 
+                }
+
+                if (worldInstance.GetBlock (x-1, y, z).Type == Block.BlockType.Air) {
+                    worldInstance.SetBlock (x-1, y, z, new Block (Block.BlockType.Water));
+                    expandWater.Enqueue (new Position (x-1, y, z));
+                }
+                if (worldInstance.GetBlock (x+1, y, z).Type == Block.BlockType.Air) {
+                    worldInstance.SetBlock (x+1, y, z, new Block (Block.BlockType.Water));
+                    expandWater.Enqueue (new Position (x+1, y, z));
+                }
+                if (worldInstance.GetBlock (x, y, z-1).Type == Block.BlockType.Air) {
+                    worldInstance.SetBlock (x, y, z-1, new Block (Block.BlockType.Water));
+                    expandWater.Enqueue (new Position (x, y, z-1));
+                }
+                if (worldInstance.GetBlock (x, y, z+1).Type == Block.BlockType.Air) {
+                    worldInstance.SetBlock (x, y, z+1, new Block (Block.BlockType.Water));
+                    expandWater.Enqueue (new Position (x, y, z+1));
+                }
+            }
+
+        }
+
+
         public Array<int> GenerateIslandMap(uint octaves, double freq, double x, double z, double scale)
         {
             IslandMap = generator.GenerateIslandMap(octaves, freq, x, z, scale);
             return IslandMap;
         }
-
-        private const int WATER = 2;
-        private const int GRASS = 4;
+            
         private Array<byte> DefineTerrain(Array<byte> globalMap)
         {
             var terrain = new Array<byte>(globalMap.Size);
