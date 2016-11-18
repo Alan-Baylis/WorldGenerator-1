@@ -33,7 +33,7 @@ namespace Sean.WorldGenerator
             var lowland_gradient = new CImplicitGradient(x1: 0, x2: 0, y1: 0.8, y2: 1);
             var lowland_shape_fractal = new CImplicitFractal(type: EFractalTypes.BILLOW, basistype: CImplicitBasisFunction.EBasisTypes.GRADIENT, interptype: CImplicitBasisFunction.EInterpTypes.QUINTIC, octaves: 2, freq: 1.25);
             var lowland_autocorrect = new CImplicitAutoCorrect(source: lowland_shape_fractal, low: -1, high: 1);
-            var lowland_scale = new CImplicitScaleOffset(source: lowland_autocorrect, scale: 0.10, offset: 0.0);
+            var lowland_scale = new CImplicitScaleOffset(source: lowland_autocorrect, scale: 0.05, offset: 0.0);
             var lowland_cache = new CImplicitCache(lowland_scale);
             var lowland_y_scale = new CImplicitScaleDomain(source: lowland_cache, y: 0);
             var lowland_terrain = new CImplicitTranslateDomain(source: lowland_gradient, tx: 0.0, ty: lowland_y_scale, tz: 0.0);
@@ -49,7 +49,7 @@ namespace Sean.WorldGenerator
             var mountain_gradient = new CImplicitGradient(x1: 0, x2: 0, y1: 0.7, y2: 1);
             var mountain_shape_fractal = new CImplicitFractal(type: EFractalTypes.RIDGEDMULTI, basistype: CImplicitBasisFunction.EBasisTypes.GRADIENT, interptype: CImplicitBasisFunction.EInterpTypes.QUINTIC, octaves: 4, freq: 3);
             var mountain_autocorrect = new CImplicitAutoCorrect(source: mountain_shape_fractal, low: -1, high: 1);
-            var mountain_scale = new CImplicitScaleOffset(source: mountain_autocorrect, scale: 0.45, offset: 0.15);
+            var mountain_scale = new CImplicitScaleOffset(source: mountain_autocorrect, scale: 0.23, offset: 0.15);
             var mountain_cache = new CImplicitCache(mountain_scale);
             var mountain_y_scale = new CImplicitScaleDomain(source: mountain_cache, y: 0.25);
             var mountain_terrain = new CImplicitTranslateDomain(source: mountain_gradient, tx: 0.0, ty: mountain_y_scale, tz: 0.0);
@@ -88,6 +88,7 @@ namespace Sean.WorldGenerator
             var island_terrain = new CImplicitTranslateDomain(source: ground_gradient, tx: 0.0, ty: island_scale, tz: 0.0);
 
             var coastline_highland_lowland_select = new CImplicitTranslateDomain(source: mountain_lowland_select_cache, tx: 0.0, ty: island_terrain, tz: 0.0);
+            //var coastline_highland_lowland_select = mountain_lowland_select_cache;
 
             //var ground_select = new CImplicitSelect(low: 0, high: 1, threshold: 0.5, control: coastline_highland_lowland_select);
 
@@ -172,7 +173,7 @@ namespace Sean.WorldGenerator
             return heightMap;
         }
 
-        public Array<int> GenerateGlobalMap()
+        public Array<byte> GenerateGlobalMap()
         {
             Debug.WriteLine("Generating global map");
             var worldSize = new ArraySize()
@@ -186,7 +187,7 @@ namespace Sean.WorldGenerator
                 scale = Global.CHUNK_SIZE,
             };
 
-            var heightMap = new Array<int>(worldSize);
+            var heightMap = new Array<byte>(worldSize);
             for (int z = worldSize.minZ; z < worldSize.maxZ; z += worldSize.scale)
             {
                 for (int x = worldSize.minX; x < worldSize.maxX; x += worldSize.scale)
@@ -196,15 +197,16 @@ namespace Sean.WorldGenerator
                     while (d > 1)
                     {
                         d /= 2;
-                        var p = terrainGenerator.get ((double)x / Settings.FRACTAL_SIZE, (double)y / Settings.maxNoiseHeight, (double)z / Settings.FRACTAL_SIZE);
-                        if (p < 0.5)
-                            y += d;
-                        else
+                        //var p = terrainGenerator.get ((double)x / Settings.FRACTAL_SIZE, (double)y / Settings.maxNoiseHeight, (double)z / Settings.FRACTAL_SIZE);
+                        var block = GenerateCell(x, y, z);
+                        if (block.IsTransparent)
                             y -= d;
+                        else
+                            y += d;
                     }
                     if (y < worldSize.minY) y = worldSize.minY;
                     if (y > worldSize.maxY) y = worldSize.maxY;
-                    heightMap[x, z] = worldSize.maxY-y;
+                    heightMap[x, z] = (byte)y;
                 }
             }
             return heightMap;
@@ -234,8 +236,8 @@ namespace Sean.WorldGenerator
                 scale = 1,
             };
 
-            _generateQueue = new UniqueQueue<Position>();
-            _generateQueue.Enqueue(new Position(
+            var generateQueue = new UniqueQueue<Position>();
+            generateQueue.Enqueue(new Position(
                 chunk.ChunkCoords.WorldCoordsX + Global.CHUNK_SIZE/2, 
                 Settings.maxNoiseHeight, 
                 chunk.ChunkCoords.WorldCoordsZ + Global.CHUNK_SIZE/2));
@@ -245,7 +247,7 @@ namespace Sean.WorldGenerator
                     for (var y = chunk.MinPosition.Y; y < chunk.MaxPosition.Y; y++)
                     {
                         var block = worldInstance.GetBlock(chunk.MinPosition.X - 1, y, z);
-                        if (block.IsTransparent) _generateQueue.Enqueue(new Position(chunk.MinPosition.X, y, z));
+                        if (block.IsTransparent) generateQueue.Enqueue(new Position(chunk.MinPosition.X, y, z));
                     }
                 }
             }
@@ -254,7 +256,7 @@ namespace Sean.WorldGenerator
                     for (var y = chunk.MinPosition.Y; y < chunk.MaxPosition.Y; y++)
                     {
                         var block = worldInstance.GetBlock(chunk.MaxPosition.X + 1, y, z);
-                        if (block.IsTransparent) _generateQueue.Enqueue(new Position(chunk.MaxPosition.X, y, z));
+                        if (block.IsTransparent) generateQueue.Enqueue(new Position(chunk.MaxPosition.X, y, z));
                     }
                 }
             }
@@ -262,7 +264,7 @@ namespace Sean.WorldGenerator
                 for (var x = chunk.MinPosition.X; x <= chunk.MaxPosition.X; x++) {
                     for (var y = chunk.MinPosition.Y; y < chunk.MaxPosition.Y; y++) {
                         var block = worldInstance.GetBlock(x, y, chunk.MinPosition.Z - 1);
-                        if (block.IsTransparent) _generateQueue.Enqueue(new Position(x, y, chunk.MinPosition.Z));
+                        if (block.IsTransparent) generateQueue.Enqueue(new Position(x, y, chunk.MinPosition.Z));
                     }
                 }
             }
@@ -270,12 +272,12 @@ namespace Sean.WorldGenerator
                 for (var x = chunk.MinPosition.X; x <= chunk.MaxPosition.X; x++) {
                     for (var y = chunk.MinPosition.Y; y < chunk.MaxPosition.Y; y++) {
                         var block = worldInstance.GetBlock(x, y, chunk.MaxPosition.Z + 1);
-                        if (block.IsTransparent) _generateQueue.Enqueue(new Position(x, y, chunk.MaxPosition.Z));
+                        if (block.IsTransparent) generateQueue.Enqueue(new Position(x, y, chunk.MaxPosition.Z));
                     }
                 }
             }
                 
-            GenerateChunkCells(chunk);
+            GenerateChunkCells(chunk, generateQueue);
 
             chunk.BuildHeightMap();
 
@@ -283,12 +285,11 @@ namespace Sean.WorldGenerator
             chunk.FinishedGeneration = true;
         }
 
-        private UniqueQueue<Position> _generateQueue;
-        private void GenerateChunkCells(Chunk chunk)
+        private void GenerateChunkCells(Chunk chunk, UniqueQueue<Position> generateQueue)
         {
-            while (_generateQueue.Count > 0)
+            while (generateQueue.Count > 0)
             {
-                var pos = _generateQueue.Dequeue();
+                var pos = generateQueue.Dequeue();
                 if (pos == null)
                 {
                     Console.WriteLine("Null position in queue?");
@@ -306,22 +307,22 @@ namespace Sean.WorldGenerator
                     if (worldInstance.GetBlock (x, y, z).Type == Block.BlockType.Unknown) Console.WriteLine ("Block not set?");
                     if (block.IsTransparent)
                     {
-                        ExpandSearchCheckBlock (x - 1, y, z);
-                        ExpandSearchCheckBlock (x + 1, y, z);
+                        ExpandSearchCheckBlock (x - 1, y, z, generateQueue);
+                        ExpandSearchCheckBlock (x + 1, y, z, generateQueue);
                         if (y-1 >= Settings.minNoiseHeight)
-                            ExpandSearchCheckBlock (x, y - 1, z);
+                            ExpandSearchCheckBlock (x, y - 1, z, generateQueue);
                         if (y+1 < Settings.maxNoiseHeight)
-                            ExpandSearchCheckBlock (x, y + 1, z);
-                        ExpandSearchCheckBlock (x, y, z - 1);
-                        ExpandSearchCheckBlock (x, y, z + 1);
+                            ExpandSearchCheckBlock (x, y + 1, z, generateQueue);
+                        ExpandSearchCheckBlock (x, y, z - 1, generateQueue);
+                        ExpandSearchCheckBlock (x, y, z + 1, generateQueue);
                     }
                 }
             }
         }
-        private void ExpandSearchCheckBlock(int x,int y,int z)
+        private void ExpandSearchCheckBlock(int x,int y,int z, UniqueQueue<Position> generateQueue)
         {
             if (worldInstance.IsValidBlockLocation(x, y, z) && worldInstance.GetBlock(x,y,z).Type == Block.BlockType.Unknown)
-                _generateQueue.Enqueue (new Position (x, y, z));
+                generateQueue.Enqueue (new Position (x, y, z));
         }
         private Block GenerateCell(int x, int y, int z)
         {

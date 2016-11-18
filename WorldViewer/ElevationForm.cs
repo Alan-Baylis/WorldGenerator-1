@@ -43,7 +43,7 @@ namespace WorldViewer
             int x = chunk.ChunkSize / 2;
             for (int z = 0; z < chunk.ChunkSize; z++)
             {
-                for (int y = 0; y < 128; y++)
+                for (int y = 0; y < 256; y++)
                 {
                     if (chunk.Blocks[x, y, z].IsSolid)
                     {
@@ -67,7 +67,7 @@ namespace WorldViewer
             int z = chunk.ChunkSize / 2;
             for (int x = 0; x < chunk.ChunkSize; x++)
             {
-                for (int y = 0; y < 128; y++)
+                for (int y = 0; y < 256; y++)
                 {
                     if (chunk.Blocks[x, y, z].IsSolid)
                     {

@@ -123,10 +123,10 @@ namespace Sean.WorldGenerator
 
         internal LocalMap LocalMap { get { return localMap; } }
 
-        public Array<int> GlobalMap { get { return worldMap.GlobalMap; } }
-        public Array<int> GlobalMapTerrain { get { return worldMap.GlobalMapTerrain; } }
-        public Array<int> GlobalTemperatureMap { get { return worldMap.TemperatureMap; } }
-        public Array<int> GlobalBiosphereMap { get { return worldMap.BiosphereMap; } }
+        public Array<byte> GlobalMap { get { return worldMap.GlobalMap; } }
+        public Array<byte> GlobalMapTerrain { get { return worldMap.GlobalMapTerrain; } }
+        public Array<byte> GlobalTemperatureMap { get { return worldMap.TemperatureMap; } }
+        public Array<byte> GlobalBiosphereMap { get { return worldMap.BiosphereMap; } }
 
 
         public Array<int> IslandMap(uint octaves, double freq, double x, double z, double scale)
@@ -157,6 +157,22 @@ namespace Sean.WorldGenerator
         }
 
 
+        private const int WATER = 2;
+        private const int GRASS = 4;
+        private void GenerateRivers()
+        {
+            for (var i = 0; i < Settings.RiverCount; i++)
+            {
+                bool isWater = true;
+                while (isWater)
+                {
+                    var x = Settings.Random.Next(GlobalMap.Size.minX, GlobalMap.Size.maxX);
+                    var z = Settings.Random.Next(GlobalMap.Size.minZ, GlobalMap.Size.maxZ);
+                    isWater = (GlobalMapTerrain[x, z] == WATER);
+                }
+
+            }
+        }
 
         #region Lookup Functions
         /// <summary>Get a block using world coords.</summary>

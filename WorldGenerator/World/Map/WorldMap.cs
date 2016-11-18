@@ -13,10 +13,10 @@ namespace Sean.WorldGenerator
         private const int oceanLevel = 40;
 
         public Array<int> IslandMap { get; private set; }
-        public Array<int> GlobalMap { get; private set; }
-        public Array<int> GlobalMapTerrain { get; private set; }
-        public Array<int> TemperatureMap { get; private set; }
-        public Array<int> BiosphereMap { get; private set; }
+        public Array<byte> GlobalMap { get; private set; }
+        public Array<byte> GlobalMapTerrain { get; private set; }
+        public Array<byte> TemperatureMap { get; private set; }
+        public Array<byte> BiosphereMap { get; private set; }
 
         public WorldMap(IWorld world, int seed)
         {
@@ -40,9 +40,9 @@ namespace Sean.WorldGenerator
 
         private const int WATER = 2;
         private const int GRASS = 4;
-        private Array<int> DefineTerrain(Array<int> globalMap)
+        private Array<byte> DefineTerrain(Array<byte> globalMap)
         {
-            var terrain = new Array<int>(globalMap.Size);
+            var terrain = new Array<byte>(globalMap.Size);
             for (int z = globalMap.Size.minZ; z < globalMap.Size.maxZ; z += globalMap.Size.scale)
             {
                 for (int x = globalMap.Size.minX; x < globalMap.Size.maxX; x += globalMap.Size.scale)
@@ -50,55 +50,58 @@ namespace Sean.WorldGenerator
                     terrain[x, z] = GRASS;
                 }
             }
+            UniqueQueue<ChunkCoords> checkChunks = new UniqueQueue<ChunkCoords>();
             for (int z = globalMap.Size.minZ; z < globalMap.Size.maxZ; z += globalMap.Size.scale)
             {
                 if (globalMap[globalMap.Size.minX, z] < Settings.waterLevel)
-                    ExpandOcean(globalMap, ref terrain, globalMap.Size.minX, z);
+                    checkChunks.Enqueue(new ChunkCoords(globalMap.Size.minX, z));
                 if (globalMap[globalMap.Size.maxX-1, z] < Settings.waterLevel)
-                    ExpandOcean(globalMap, ref terrain, globalMap.Size.maxX-1, z);
+                    checkChunks.Enqueue(new ChunkCoords(globalMap.Size.maxX-1, z));
             }
             for (int x = globalMap.Size.minX; x < globalMap.Size.maxX; x += globalMap.Size.scale)
             {
                 if (globalMap[x, globalMap.Size.minZ] < Settings.waterLevel)
-                    ExpandOcean(globalMap, ref terrain, x, globalMap.Size.minZ);
+                    checkChunks.Enqueue(new ChunkCoords(x, globalMap.Size.minZ));
                 if (globalMap[x, globalMap.Size.maxZ-1] < Settings.waterLevel)
-                    ExpandOcean(globalMap, ref terrain, x, globalMap.Size.maxZ-1);
+                    checkChunks.Enqueue(new ChunkCoords(x, globalMap.Size.maxZ-1));
             }
+            while (checkChunks.Count > 0)
+            {
+                var pos = checkChunks.Dequeue();
+                if (globalMap.IsValidCoord(pos.X, pos.Z) && terrain[pos.X, pos.Z] != WATER && globalMap[pos.X, pos.Z] < Settings.waterLevel)
+                {
+                    terrain[pos.X, pos.Z] = WATER;
+                    checkChunks.Enqueue(new ChunkCoords(pos.X + globalMap.Size.scale, pos.Z));
+                    checkChunks.Enqueue(new ChunkCoords(pos.X - globalMap.Size.scale, pos.Z));
+                    checkChunks.Enqueue(new ChunkCoords(pos.X, pos.Z + globalMap.Size.scale));
+                    checkChunks.Enqueue(new ChunkCoords(pos.X, pos.Z - globalMap.Size.scale));
+                }
+            }
+
             return terrain;
         }
-        private void ExpandOcean(Array<int> globalMap, ref Array<int> terrain, int x, int z)
+        private Array<byte> DefineTemperature(Array<byte> globalMap)
         {
-            if (globalMap.IsValidCoord(x, z) && terrain[x, z] != WATER && globalMap[x, z] < Settings.waterLevel)
-            {
-                terrain[x, z] = WATER;
-                ExpandOcean(globalMap, ref terrain, x + globalMap.Size.scale, z);
-                ExpandOcean(globalMap, ref terrain, x - globalMap.Size.scale, z);
-                ExpandOcean(globalMap, ref terrain, x, z + globalMap.Size.scale);
-                ExpandOcean(globalMap, ref terrain, x, z - globalMap.Size.scale);
-            }
-        }
-        private Array<int> DefineTemperature(Array<int> globalMap)
-        {
-            var temp = new Array<int>(globalMap.Size);
+            var temp = new Array<byte>(globalMap.Size);
             for (int x = globalMap.Size.minX; x < globalMap.Size.maxX; x += globalMap.Size.scale)
             {
                 for (int z = globalMap.Size.minZ; z < globalMap.Size.maxZ; z += globalMap.Size.scale)
                 {
                     var h = (globalMap.Size.maxY - globalMap[x, z]) * 50 / globalMap.Size.maxY;
                     var l = z * 50 / globalMap.Size.maxZ;
-                    temp[x, z] = (h + l) / 2;
+                    temp[x, z] = (byte)((h + l) / 2);
                 }
             }
             return temp;
         }
-        private Array<int> DefineBiosphere(Array<int> globalMap, Array<int> temperatureMap)
+        private Array<byte> DefineBiosphere(Array<byte> globalMap, Array<byte> temperatureMap)
         {
-            var bio = new Array<int>(globalMap.Size);
+            var bio = new Array<byte>(globalMap.Size);
             for (int x = globalMap.Size.minX; x < globalMap.Size.maxX; x += globalMap.Size.scale)
             {
                 for (int z = globalMap.Size.minZ; z < globalMap.Size.maxZ; z += globalMap.Size.scale)
                 {
-                    bio[x,z] = (int)(generator.CalcGlobalBiosphere(x, z) * 255);
+                    bio[x,z] = (byte)(generator.CalcGlobalBiosphere(x, z) * 255);
                 }
             }
             return bio;

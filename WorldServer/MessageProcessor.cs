@@ -88,7 +88,7 @@ namespace Sean.WorldServer
             };
             SendMessage(clientId, msg);
         }
-        public static void SendWorldMap(Guid clientId, MapRequestType mapType, Shared.Array<int> map)
+        public static void SendWorldMap(Guid clientId, MapRequestType mapType, Shared.Array<byte> map)
         {
             var msg = new Message()
             {
