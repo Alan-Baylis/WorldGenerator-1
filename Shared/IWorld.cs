@@ -14,5 +14,8 @@
         bool IsChunkLoaded(ChunkCoords coords);
         Chunk GetChunk(ChunkCoords coords);
 
+        Array<byte> GlobalMap { get; }
+        Array<byte> GlobalMapTerrain { get; }
+
     }
 }

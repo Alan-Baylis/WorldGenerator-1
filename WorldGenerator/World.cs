@@ -54,6 +54,7 @@ namespace Sean.WorldGenerator
 
             worldMap = new WorldMap(this, RawSeed);
             localMap = new LocalMap(this, RawSeed);
+            water = new Water(this);
         }
 
         public delegate void WorldEventHandler(WorldEventArgs e);
@@ -61,6 +62,7 @@ namespace Sean.WorldGenerator
 
         private LocalMap localMap;
         private WorldMap worldMap;
+        private Water water;
         //public ConcurrentDictionary<int, Mob> Mobs { get; private set; }
         //public ConcurrentDictionary<int, GameItemDynamic> GameItems { get; private set; }
 
@@ -365,7 +367,7 @@ namespace Sean.WorldGenerator
             if (type == Block.BlockType.Air)
             {
                 //if destroying a block under water, fill with water instead of air
-                if (position.Y + 1 < Global.CHUNK_HEIGHT && GetBlock(position.X, position.Y + 1, position.Z).Type == Block.BlockType.Water) type = Block.BlockType.Water;
+                if (position.Y + 1 < Global.CHUNK_HEIGHT && GetBlock(position.X, position.Y + 1, position.Z).Type == Block.BlockType.Ocean) type = Block.BlockType.Ocean;
             }
 
             var chunk = localMap.Chunk(position);
@@ -378,7 +380,7 @@ namespace Sean.WorldGenerator
             chunk.Blocks[position] = block; //insert the new block
             chunk.UpdateHeightMap(ref block, position.X % Global.CHUNK_SIZE, position.Y, position.Z % Global.CHUNK_SIZE);
 
-            if (!isTransparentBlock || type == Block.BlockType.Water)
+            if (!isTransparentBlock || type == Block.BlockType.Ocean)
             {
                 var below = position;
                 below.Y--;
@@ -395,7 +397,7 @@ namespace Sean.WorldGenerator
             {
                 switch (type)
                 {
-                case Block.BlockType.Water:
+                case Block.BlockType.Ocean:
                     chunk.WaterExpanding = true;
                     break;
                 case Block.BlockType.Air:
@@ -420,7 +422,7 @@ namespace Sean.WorldGenerator
                             adjacent = new Position(position.X, position.Y, position.Z - 1);
                             break;
                         }
-                        if (IsValidBlockLocation(adjacent) && GetBlock(adjacent).Type == Block.BlockType.Water)
+                        if (IsValidBlockLocation(adjacent) && GetBlock(adjacent).Type == Block.BlockType.Ocean)
                         {
                             localMap.Chunk(adjacent).WaterExpanding = true;
                         }

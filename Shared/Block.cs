@@ -29,7 +29,7 @@ namespace Sean.Shared
 
 			//Naturally occurring
 			Air = 1,
-			Water = 2,
+			Ocean = 2,
 			Dirt = 3,
 			Grass,
 			Snow,
@@ -50,6 +50,16 @@ namespace Sean.Shared
 			Lava,
 			LavaRock,
 			
+            // Water
+            WaterSource = 30,
+            Water1,
+            Water2,
+            Water3,
+            Water4,
+            Water5,
+            Water6,
+            Water7,
+
 			//Crafted Material
 			WoodTile1 = 50,
 			WoodTile2,
@@ -104,7 +114,7 @@ namespace Sean.Shared
 			switch (type)
 			{
 				case BlockType.Air:
-				case BlockType.Water:
+				case BlockType.Ocean:
 					return false;
 				default:
 					return true;
@@ -137,7 +147,7 @@ namespace Sean.Shared
 				case BlockType.Air:
 				case BlockType.Leaves:
 				case BlockType.SnowLeaves:
-				case BlockType.Water:
+				case BlockType.Ocean:
 				case BlockType.PrisonBars:
 				case BlockType.SteelDoorTop:
 					return true;
@@ -173,7 +183,7 @@ namespace Sean.Shared
 		{
 			switch (type)
 			{
-				case BlockType.Water:
+				case BlockType.Ocean:
 					return BlockTextureType.Water;
 				case BlockType.Grass:
 					switch (face)
