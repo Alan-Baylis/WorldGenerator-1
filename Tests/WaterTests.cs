@@ -65,7 +65,7 @@ namespace Tests
             {
                 return GetBlock(coord.X, coord.Y);
             }
-            private int GetBlock(int x, int y)
+            public int GetBlock(int x, int y)
             {
                 if (x < 0 || x >= Width || y < 0 || y >= Height)
                     return 0;
@@ -75,7 +75,7 @@ namespace Tests
             {
                 SetBlock(coord.X, coord.Y, block);
             }
-            private void SetBlock(int x, int y, int block)
+            public void SetBlock(int x, int y, int block)
             {
                 if (x < 0 || x >= Width || y < 0 || y >= Height)
                     return;
@@ -144,7 +144,7 @@ namespace Tests
             public List<Coord> Find (BlockType block)
             {
                 var results = new List<Coord> ();
-                for (int y = 0; y < Height; y++) {
+                for (int y = Height-1; y >=0; y--) {
                     for (int x = 0; x < Width; x++) {
                         if (GetBlock (x, y) == block)
                             results.Add (new Coord(x,y));
@@ -205,26 +205,51 @@ namespace Tests
                     FollowStream(ref s, x, y-1);
             }
 
+            private void AddPressure(int x, int y, int p, ref Grid results)
+            {
+                if (results.GetBlock (x, y) != 0)
+                    return;
+                results.SetBlock (x, y, p);
+                if (grid [x + 1, y] == BlockType.Water)
+                    AddPressure (x + 1, y, p, ref results);
+
+                if (grid [x - 1, y] == BlockType.Water)
+                    AddPressure (x - 1, y, p, ref results);
+
+                if (grid [x, y-1] == BlockType.Water)
+                    AddPressure (x, y-1, p+1, ref results);
+            }
+
             public Grid CalcPressure()
             {
+                // Find highest water
                 var basePress = new Grid();
-                var cells = new UniqueQueue<Coord>();
-                foreach (var w in Find(BlockType.Water))
-                {
-                    if (grid[w.X, w.Y + 1] != BlockType.Water)
-                    {
-                        basePress[w.X, w.Y] = 1;
-                        cells.Enqueue(w);
+                for (int y = Height-1; y >=0; y--) {
+                    for (int x = 0; x < Width; x++) {
+                        if (grid [x, y] == BlockType.Water && grid[x,y+1] != BlockType.Dirt)
+                        {
+                            AddPressure (x, y, 1, ref basePress);
+                        }
                     }
                 }
-
-                for (int y = 0; y < Height; y++)
-                {
-                    for (int x = 0; x < Width; x++)
-                    {
-                        basePress[x, y] = CalcPressure(x, y);
-                    }
-                }
+                    
+                //var cells = new UniqueQueue<Coord>();
+                //foreach (var w in Find(BlockType.Water))
+                //{
+                //    if (grid[w.X, w.Y + 1] != BlockType.Water)
+                //    {
+                //        basePress[w.X, w.Y] = 1;
+                //        cells.Enqueue(w);
+                //    }
+                //}
+                //
+                //for (int y = 0; y < Height; y++)
+                //{
+                //    for (int x = 0; x < Width; x++)
+                //    {
+                //        basePress[x, y] = CalcPressure(x, y);
+                //    }
+                //}
                 return basePress;
             }
             public int CalcPressure(int x,int y)
@@ -241,30 +266,15 @@ namespace Tests
         public static void Test ()
         {
             var grid = new BlockGrid();
-            grid.LoadRow(9, "####################");
-            grid.LoadRow(8, "#~~~~~   ~~~~~~~~~~#");
-            grid.LoadRow(7, "#~~~~~~~~~~#~~~#####");
-            grid.LoadRow(6, "#~~#####~~~####~~~~#");
-            grid.LoadRow(5, "#~#######~~~~~~~~~~#");
-            grid.LoadRow(4, "#~~##~ ##~~~~~~#~~ #");
-            grid.LoadRow(3, "#*~##~~###~~~~~#~~ #");
-            grid.LoadRow(2, "#~~##~~##~~~~~~#~~ #");
-            grid.LoadRow(1, "#~~#~~~~~~## ~~~~~ #");
-            grid.LoadRow(0, "####################");
-
-            var pres = grid.CalcPressure();
-            pres.Render();
-
-            grid = new BlockGrid();
             grid.LoadRow (9, "####################");
             grid.LoadRow (8, "#                  #");
             grid.LoadRow (7, "#          #   #####");
-            grid.LoadRow (6, "#  #####   ####    #");
+            grid.LoadRow (6, "#  ####### #####   #");
             grid.LoadRow (5, "# #######          #");
             grid.LoadRow (4, "#  ##  ##      #   #");
             grid.LoadRow (3, "#* ##  ###     #   #");
-            grid.LoadRow (2, "#  ##  ##      #   #");
-            grid.LoadRow (1, "#  #      ##       #");
+            grid.LoadRow (2, "#  ##  #       #   #");
+            grid.LoadRow (1, "#      #####       #");
             grid.LoadRow (0, "####################");
 
             for (int i = 0; i < 10; i++) {
@@ -273,15 +283,10 @@ namespace Tests
                 System.Threading.Thread.Sleep (5000);
             }
         }
-
+            
         private static void Process(BlockGrid grid)
         {
-            //foreach (var s in grid.Find(BlockType.WaterSource))
-            //{
-            //    if (grid[s.X, s.Y + 1] == BlockType.Air)
-            //        grid[s.X, s.Y + 1] = BlockType.Water;
-            //}
-
+            
             var pres = grid.CalcPressure();
             pres.Render();
 
