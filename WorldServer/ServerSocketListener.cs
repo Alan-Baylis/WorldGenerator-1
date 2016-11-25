@@ -5,6 +5,7 @@ using System.Threading;
 using System.Collections.Generic;
 using Sean.Shared.Comms;
 using System.Net;
+using Sean.Shared;
 
 namespace Sean.WorldServer
 {
@@ -37,18 +38,18 @@ namespace Sean.WorldServer
 
                 TcpListener serverSocket = new TcpListener(localEP);
                 serverSocket.Start();
-                Console.WriteLine($"TcpSocket waiting for a connection on port {ServerListenPort}...");
+                Log.WriteInfo($"TcpSocket waiting for a connection on port {ServerListenPort}...");
                 while (true) {
                     var socket = serverSocket.AcceptTcpClient();
-                    Console.WriteLine("Client joined");
+                    Log.WriteInfo("Client joined");
                     var client = ClientConnection.CreateClientConnection(socket, MessageProcessor.ServerProcessMessage);
                     client.StartClient();
                 }
                 serverSocket.Stop();
-                Console.WriteLine("Ending Listening Server");
+                Log.WriteInfo("Ending Listening Server");
             }
             catch (Exception e) {
-                Console.WriteLine("Exception caught in ServerSocketListener - {0}", e.ToString());
+                Log.WriteError($"Exception caught in ServerSocketListener - {e.ToString()}");
             }
 	    }
 	}

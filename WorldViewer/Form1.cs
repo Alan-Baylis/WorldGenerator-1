@@ -44,7 +44,7 @@ namespace WorldViewer
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Exception - {e.Message}");
+                Log.WriteError($"Exception - {e.Message}");
             }
             this.Cursor = currentCursor;
         }
@@ -114,7 +114,7 @@ namespace WorldViewer
                 }
             }
             avgHeight /= (chunk.ChunkSize * chunk.ChunkSize);
-            Console.WriteLine($"Avg Height = {avgHeight}");
+            Log.WriteInfo($"Avg Height = {avgHeight}");
             return bitmap;
         }
 

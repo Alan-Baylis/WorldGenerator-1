@@ -21,7 +21,7 @@ namespace Sean.WorldServer.Scripting
 
         public void AddOrRemoveBlock(Position position, Block.BlockType blockType)
         {
-            Console.WriteLine ("AddOrRemoveBlock {0} at {1}", blockType, position);
+            Log.WriteInfo ("AddOrRemoveBlock {0} at {1}", blockType, position);
             blocks[position] = blockType;
         }
 

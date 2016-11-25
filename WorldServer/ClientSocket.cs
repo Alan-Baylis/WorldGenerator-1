@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using Sean.Shared.Comms;
+using Sean.Shared;
 
 namespace Sean.WorldServer
 {
@@ -79,13 +80,13 @@ namespace Sean.WorldServer
 
         private void Connect() 
         {
-            Console.WriteLine("SynchronousSocketClient.StartClient");
+            Log.WriteInfo("SynchronousSocketClient.StartClient");
             IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
             socket = new Socket(
                 AddressFamily.InterNetwork, 
                 SocketType.Stream, ProtocolType.Tcp );
             socket.Connect(remoteEP);
-            Console.WriteLine("Socket connected to {0}", socket.RemoteEndPoint.ToString());
+            Log.WriteInfo($"Socket connected to {socket.RemoteEndPoint.ToString()}");
         }
 
         public void SendMessage(Message message, byte[] data)
@@ -93,33 +94,34 @@ namespace Sean.WorldServer
             try {
                 if (!IsConnected) Connect();
                 // Encode the data string into a byte array.
-/*
-                var messageBytes = MessageParser.WriteMessage (message);
+                /*
+                                var messageBytes = MessageParser.WriteMessage (message);
 
-                //byte[] msg = Encoding.ASCII.GetBytes ("This is a test<EOF>");
-                var msg = new byte[messageBytes.Length + data.Length];
-                //msg[0] = (byte)((messageBytes.Length + data.Length)/256);
-                //msg[1] = (byte)((messageBytes.Length + data.Length)%256);
-                messageBytes.CopyTo(msg, 0);
-                data.CopyTo(msg, messageBytes.Length);
+                                //byte[] msg = Encoding.ASCII.GetBytes ("This is a test<EOF>");
+                                var msg = new byte[messageBytes.Length + data.Length];
+                                //msg[0] = (byte)((messageBytes.Length + data.Length)/256);
+                                //msg[1] = (byte)((messageBytes.Length + data.Length)%256);
+                                messageBytes.CopyTo(msg, 0);
+                                data.CopyTo(msg, messageBytes.Length);
 
-                System.Text.StringBuilder builder = new System.Text.StringBuilder();
-                for (int z = 0; z < 20; z++)
-                {
-                    builder.Append(msg[z]);
-                    builder.Append(",");
-                }
-                Console.WriteLine(builder.ToString());
+                                System.Text.StringBuilder builder = new System.Text.StringBuilder();
+                                for (int z = 0; z < 20; z++)
+                                {
+                                    builder.Append(msg[z]);
+                                    builder.Append(",");
+                                }
+                                Log.WriteInfo(builder.ToString());
 
-                int bytesSent = socket.Send (msg);
-                Console.WriteLine("SynchronousSocketClient.SendMessage sent {0} bytes", bytesSent);
-*/                
-            } catch (ArgumentNullException ane) {
-                Console.WriteLine ("ArgumentNullException : {0}", ane.Message);
+                                int bytesSent = socket.Send (msg);
+                                Log.WriteInfo("SynchronousSocketClient.SendMessage sent {0} bytes", bytesSent);
+                */
+            }
+            catch (ArgumentNullException ane) {
+                Log.WriteError($"ArgumentNullException : {ane.Message}");
             } catch (SocketException se) {
-                Console.WriteLine ("SocketException : {0}", se.Message);
+                Log.WriteError($"SocketException : {se.Message}");
             } catch (Exception ex) {
-                Console.WriteLine ("Unexpected exception : {0}", ex.Message);
+                Log.WriteError($"Unexpected exception : {ex.Message}");
             }
         }
 
@@ -130,11 +132,11 @@ namespace Sean.WorldServer
                 // Receive the response from the remote device.
                 byte[] bytes = new byte[1024];
                 int bytesRec = socket.Receive (bytes);
-                Console.WriteLine("SynchronousSocketClient.RecvMessage received {0} bytes", bytesRec);
+                Log.WriteError($"SynchronousSocketClient.RecvMessage received {bytesRec} bytes");
              } catch (SocketException se) {
-                Console.WriteLine ("SocketException : {0}", se.Message);
+                Log.WriteError($"SocketException : {se.Message}");
             } catch (Exception ex) {
-                Console.WriteLine ("Unexpected exception : {0}", ex.Message);
+                Log.WriteError($"Unexpected exception : {ex.Message}");
             }
         }
     }

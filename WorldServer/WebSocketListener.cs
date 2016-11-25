@@ -6,6 +6,7 @@ using WebSocketSharp;
 using System.Net;
 using Sean.Shared.Comms;
 using System.Collections.Generic;
+using Sean.Shared;
 
 namespace Sean.WorldServer
 {
@@ -57,7 +58,7 @@ namespace Sean.WorldServer
             {
                 var ServerListeningPort = 8083;
                 var wssv = new WebSocketServer($"ws://localhost:{ServerListeningPort}");
-                Console.WriteLine($"Websocket waiting for a connection on port {ServerListeningPort}...");
+                Log.WriteInfo($"Websocket waiting for a connection on port {ServerListeningPort}...");
                 //wssv.AddWebSocketService<Echo>("/Echo");
                 wssv.AddWebSocketService<WorldWebSocketClientConnection>("/WebSocket");
                 wssv.Start();
@@ -67,7 +68,7 @@ namespace Sean.WorldServer
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exception caught in WebSocketListener - {0}", e.ToString());
+                Log.WriteInfo($"Exception caught in WebSocketListener - {e.ToString()}");
             }
         }
     }
@@ -80,7 +81,7 @@ namespace Sean.WorldServer
             IgnoreExtensions = true;
             clientId = Guid.NewGuid ();
             WebSocketListener.clientsList[clientId] = this;
-            Console.WriteLine ($"Connected {ID}={clientId}");
+            Shared.Log.WriteInfo($"Connected {ID}={clientId}");
         }
 
         private Sean.Shared.Comms.ClientConnection.ProcessMessage processMessageFn = MessageProcessor.ServerProcessMessage;
@@ -93,7 +94,7 @@ namespace Sean.WorldServer
         {
             try
             {
-                Console.WriteLine ($"received from {clientId}");
+                Shared.Log.WriteInfo($"received from {clientId}");
                 var data = e.RawData;
 
                 // Message
@@ -113,7 +114,7 @@ namespace Sean.WorldServer
                 Array.Copy (data, 2 + messageLength, dataLenBuffer, 0, 4);
                 int dataLength = BitConverter.ToInt32(dataLenBuffer, 0);
                 if (dataLength > MaxDataMessageLength) throw new ApplicationException ($"Message data length {dataLength} too large");
-                Console.WriteLine($"[ClientConnection.DoSocketReader] DataLength:{dataLength}");
+                Shared.Log.WriteInfo($"[ClientConnection.DoSocketReader] DataLength:{dataLength}");
 
                 if (dataLength > 0)
                 {
@@ -122,14 +123,14 @@ namespace Sean.WorldServer
                 }
 
                 // Process Message
-                Console.WriteLine($"Received: {msg.ToString()}");                    
+                Shared.Log.WriteInfo($"Received: {msg.ToString()}");                    
                 processMessageFn(clientId, msg);
 
                 //Sessions.Broadcast(e.Data);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[OnMessage] Exception: {ex.Message}");
+                Shared.Log.WriteError($"[OnMessage] Exception: {ex.Message}");
             }
         }
 
@@ -137,7 +138,7 @@ namespace Sean.WorldServer
         {
             message.DestId = clientId;
             message.FromId = serverId;
-            Console.WriteLine($"Sending: {message.ToString()}");
+            Shared.Log.WriteInfo($"Sending: {message.ToString()}");
 
             using (var memoryStream = new System.IO.MemoryStream())
             {
@@ -146,7 +147,7 @@ namespace Sean.WorldServer
 
                 memoryStream.WriteByte((byte)(msgBuffer.Length / 256));
                 memoryStream.WriteByte((byte)(msgBuffer.Length % 256));
-                Console.WriteLine($"[SendMessage] Writing message length:{msgBuffer.Length}");
+                Shared.Log.WriteInfo($"[SendMessage] Writing message length:{msgBuffer.Length}");
                 memoryStream.Write(msgBuffer, 0, msgBuffer.Length);
 
                 var dataLength = message.Data == null ? 0 : message.Data.Length;
@@ -156,7 +157,7 @@ namespace Sean.WorldServer
                 memoryStream.WriteByte(intBytes[1]);
                 memoryStream.WriteByte(intBytes[0]);
 
-                Console.WriteLine($"[SendMessage] Writing data length:{dataLength}");
+                Shared.Log.WriteInfo($"[SendMessage] Writing data length:{dataLength}");
                 if (message.Data != null)
                     memoryStream.Write(message.Data, 0, message.Data.Length);
 
@@ -167,7 +168,7 @@ namespace Sean.WorldServer
 
         protected override void OnError (ErrorEventArgs e)
         {
-            Console.WriteLine ($"OnError {ID}: {e.Message}");
+            Shared.Log.WriteError($"OnError {ID}: {e.Message}");
         }
     }
 

@@ -4,6 +4,7 @@ using System.Text;
 using System.Net;
 using WebSocketSharp.Server; // TODO - switch to standard httpServer ?
 using WebSocketSharp;
+using Sean.Shared;
 
 namespace Sean.WorldServer
 {
@@ -29,7 +30,7 @@ namespace Sean.WorldServer
             {
                 var ServerListeningPort = 8080;
                 var httpsv = new HttpServer (ServerListeningPort);
-                Console.WriteLine($"Webserver waiting for a connection on port {ServerListeningPort}...");
+                Log.WriteInfo($"Webserver waiting for a connection on port {ServerListeningPort}...");
                 //var httpsv = new HttpServer (5963, true);
                 //var httpsv = new HttpServer (System.Net.IPAddress.Parse ("127.0.0.1"), 4649);
                 //var httpsv = new HttpServer (System.Net.IPAddress.Parse ("127.0.0.1"), 5963, true);
@@ -84,21 +85,21 @@ namespace Sean.WorldServer
 
                 httpsv.Start ();
                 if (httpsv.IsListening) {
-                    //Console.WriteLine ("Listening on port {0}", httpsv.Port);
+                    //Log.WriteInfo ("Listening on port {0}", httpsv.Port);
                     foreach (var path in httpsv.WebSocketServices.Paths)
-                        Console.WriteLine ("- {0}", path);
+                        Log.WriteInfo($"- {path}");
                 }
                 
                 while (true)
                 {}
 
                 //httpsv.Stop ();
-                //Console.WriteLine("Ending Listening Server");
+                //Log.WriteInfo("Ending Listening Server");
 
             }
             catch (Exception e) 
             {
-                Console.WriteLine("Exception caught in WebServerListener - {0}", e.ToString());
+                Log.WriteInfo($"Exception caught in WebServerListener - {e.ToString()}");
             }
         }
     }

@@ -187,7 +187,7 @@ namespace Sean.WorldGenerator
         public void SetBlock(Position position, Block block)
         {
             if (block.Type == Block.BlockType.Unknown)
-                Console.WriteLine("Setting Unknown block?");
+                Log.WriteError("Setting Unknown block?");
 
             var chunk = localMap.Chunk(position);
             chunk.Blocks[position.X % Global.CHUNK_SIZE, position.Y, position.Z % Global.CHUNK_SIZE] = block;

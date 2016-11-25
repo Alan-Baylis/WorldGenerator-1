@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Owin.Hosting;
 using Sean.WorldGenerator;
+using Sean.Shared;
 
 namespace Sean.WorldServer
 {
@@ -12,7 +10,10 @@ namespace Sean.WorldServer
 
 		static public void Main(String[] args)
 		{
-			Console.WriteLine("World Server...");
+            Console.WriteLine("World Server starting...");
+
+            var console = new DisplayConsole();
+            var gridWindow = console.AddWindow("grid", 2, 2, 18, 18);
 
             /*
             // Start OWIN host 
@@ -21,10 +22,10 @@ namespace Sean.WorldServer
             { 
                 HttpClient client = new HttpClient(); 
                 var response = client.GetAsync(baseAddress + "api/Test").Result; // Test call
-                Console.WriteLine(response); 
-                Console.WriteLine(response.Content.ReadAsStringAsync().Result); 
+                Log.WriteInfo(response); 
+                Log.WriteInfo(response.Content.ReadAsStringAsync().Result); 
             }
-            Console.WriteLine("Press any key to continue");
+            Log.WriteInfo("Press any key to continue");
             Console.ReadKey();
             */
 
@@ -45,7 +46,7 @@ namespace Sean.WorldServer
             };
             var data = PerlinNoise.GetIntMap(worldSize, 8);
             data.Render ();
-            Console.WriteLine ();
+            Log.WriteInfo ();
             */
 
             //var d = new Array<int> (new ArraySize(){minX=50, maxX=100, minZ=50, maxZ=100, scale=5});
@@ -64,15 +65,26 @@ namespace Sean.WorldServer
             GameThread.Run();
             //ClientSocket.SendMessage ();
 
+            var chunk = MainClass.WorldInstance.GetChunk(new ChunkCoords(20,20));
+            var y = chunk.DeepestTransparentLevel + 5;
+            for (var x = 0; x < Global.CHUNK_SIZE; x++)
+            {
+                for (var z = 0; z < Global.CHUNK_SIZE; z++)
+                    {
+                    var block = chunk.Blocks[x, y, z];
+                    gridWindow.WriteChar(x, z, block.IsSolid ? '#':' ');
+                }
+            }
+
             // Rest web server
             //string baseUri = "http://localhost:8085";
-            //Console.WriteLine("Starting web Server...");
+            //Log.WriteInfo("Starting web Server...");
             //WebApp.Start<WebHostStartup>(baseUri);
-            //Console.WriteLine("Server running at {0}", baseUri);
+            //Log.WriteInfo("Server running at {0}", baseUri);
 
-            Console.WriteLine("Press any key to exit");
+            Log.WriteInfo("Press any key to exit");
             Console.ReadKey();
-            Console.WriteLine("Shutting down");
+            Log.WriteInfo("Shutting down");
             ServerSocketListener.Stop();
             WebSocketListener.Stop();
             WebServerListener.Stop();

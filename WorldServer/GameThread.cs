@@ -6,6 +6,7 @@ using WebSocketSharp;
 using System.Net;
 using Sean.Shared.Comms;
 using System.Collections.Generic;
+using Sean.Shared;
 
 namespace Sean.WorldServer
 {
@@ -40,7 +41,7 @@ namespace Sean.WorldServer
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"GameThread crashed - {ex.Message}");
+                Log.WriteError($"GameThread crashed - {ex.Message}");
             }
         }
        

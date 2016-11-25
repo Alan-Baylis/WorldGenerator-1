@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sean.Shared;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,7 +23,7 @@ namespace WorldViewer
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Exception - {e.Message}");
+                Log.WriteError($"Exception - {e.Message}");
             }
         }
     }

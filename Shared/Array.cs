@@ -74,7 +74,7 @@ namespace Sean.Shared
             {
                 builder.Append(_data[x]);
             }
-            Console.WriteLine(builder.ToString());
+            Log.WriteInfo(builder.ToString());
         }
             
         private T[] _data;

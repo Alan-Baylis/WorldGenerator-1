@@ -1,4 +1,5 @@
-﻿using Sean.WorldGenerator;
+﻿using Sean.Shared;
+using Sean.WorldGenerator;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -56,7 +57,7 @@ namespace WorldViewer
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Exception - {e.Message}");
+                Log.WriteError($"Exception - {e.Message}");
             }
             this.Cursor = currentCursor;
         }

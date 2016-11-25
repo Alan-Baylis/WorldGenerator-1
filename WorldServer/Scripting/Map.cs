@@ -152,7 +152,7 @@ namespace Sean.WorldServer.Scripting
                             str.Append (" ");
                     }
                 }
-                Console.WriteLine ("{0}", str.ToString ());
+                Log.WriteInfo ("{0}", str.ToString ());
             }
         }
 

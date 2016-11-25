@@ -25,7 +25,7 @@ namespace Sean.WorldServer
                 ProcessMapUpdate(clientId, msg);
             if (msg.QueryServer != null)
                 ProcessQueryServer(clientId, msg);
-            //Console.WriteLine("[ClientConnection.ProcessMessage] Unexpected message");
+            //Log.WriteError("[ClientConnection.ProcessMessage] Unexpected message");
             //SendError(clientId, "Unexpected message");
         }
 
@@ -43,7 +43,7 @@ namespace Sean.WorldServer
         }
         private static void ProcessSay(Guid clientId, Message msg)
         {
-            Console.WriteLine($"{clientId} says \"{msg.Say.Text}\"");
+            Log.WriteInfo($"{clientId} says \"{msg.Say.Text}\"");
         }
         private static void ProcessWorldMapRequest(Guid clientId, Message msg)
         {
@@ -69,13 +69,13 @@ namespace Sean.WorldServer
 
         private static void SendMessage(Guid clientId, Message msg)
         {
-            //Console.WriteLine($"[MessageProcessor.SendMessage] Sending message to {clientId}");
+            //Log.WriteInfo($"[MessageProcessor.SendMessage] Sending message to {clientId}");
             ClientConnection.EnqueueMessage(clientId, msg);
             WebSocketListener.SendMessage(clientId, msg);
         }
         private static void SendBroadcastMessage(Message msg)
         {
-            //Console.WriteLine($"[MessageProcessor.SendBroadcastMessage] Sending message to all");
+            //Log.WriteInfo($"[MessageProcessor.SendBroadcastMessage] Sending message to all");
             ClientConnection.BroadcastMessage(msg);
             WebSocketListener.BroadcastMessage(msg);
         }

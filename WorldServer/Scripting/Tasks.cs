@@ -47,13 +47,13 @@ namespace Sean.WorldServer.Scripting
         
         internal override void DoTask (Character chr, FrameEventArgs e)
         {
-            Console.WriteLine ("{0}:Finding path to {1}", chr.Id, destination);
+            Log.WriteInfo ("{0}:Finding path to {1}", chr.Id, destination);
             List<Position> route = null;
 
             route = chr.path.FindPath(chr.Position, destination, chr.knowledge, 10000);
             if (route == null)
             {
-                Console.WriteLine ("{0}:Can't find route to target", chr.Id);
+                Log.WriteInfo ("{0}:Can't find route to target", chr.Id);
                 // TODO - what?
                 return;
             }
@@ -80,22 +80,22 @@ namespace Sean.WorldServer.Scripting
             Position moveTo = route [index];
             if (moveTo.GetBlock().IsSolid)
             {
-                Console.WriteLine ("{0}:Route blocked", chr.Id);
+                Log.WriteInfo ("{0}:Route blocked", chr.Id);
                 chr.RemoveTask (this);
             }
             else
             {
-                //Console.WriteLine ("Moving to {0}", moveTo);
+                //Log.WriteInfo ("Moving to {0}", moveTo);
                 chr.MoveTo (moveTo, e);
 
                 if (chr.Position == moveTo)
                 {
-					//Console.WriteLine ("Moved to {0}", moveTo);
+					//Log.WriteInfo ("Moved to {0}", moveTo);
                     index--;
                 }
                 if (index == 0)
                 {
-                    Console.WriteLine ("{0}:At destination", chr.Id);
+                    Log.WriteInfo ("{0}:At destination", chr.Id);
                     chr.RemoveTask (this);
 				}
             }
@@ -106,12 +106,12 @@ namespace Sean.WorldServer.Scripting
 //    {
 //        internal void DoTask (Character chr)
 //        {
-//            Console.WriteLine ("Searching");
+//            Log.WriteInfo ("Searching");
 //            
 //            List<Position> route = chr.path.FindPathToNearest (chr.Position, loc => loc.Type == Block.BlockType.);
 //            if (route.Count <= 1)
 //            {
-//                Console.WriteLine ("Don't know where to go?");
+//                Log.WriteInfo ("Don't know where to go?");
 //                return;
 //            }
 //            
@@ -147,7 +147,7 @@ namespace Sean.WorldServer.Scripting
     {
         internal override void DoTask (Character chr, FrameEventArgs e)
         {
-            Console.WriteLine ("{0}:Looking around", chr.Id);
+            Log.WriteInfo ("{0}:Looking around", chr.Id);
 			chr.path.FindPaths(chr.Position, chr.knowledge);
             chr.RemoveTask (this);
         }
@@ -162,7 +162,7 @@ namespace Sean.WorldServer.Scripting
 
         internal override void DoTask (Character chr, FrameEventArgs e)
         {
-            Console.WriteLine ("{0}:Collect item", chr.Id);
+            Log.WriteInfo ("{0}:Collect item", chr.Id);
             List<Position> route = null;
 
             route = chr.path.FindPaths(chr.Position, chr.knowledge, blockType, 10000);
@@ -171,14 +171,14 @@ namespace Sean.WorldServer.Scripting
             //     route = chr.path.FindPath(chr.Position, blockPos);
             //     if (route != null)
             //     {
-            //        Console.WriteLine("Found route to nearby item");
+            //        Log.WriteInfo("Found route to nearby item");
             //        break;
             //     }
             //}
 
             if (route == null)
             {
-                Console.WriteLine ("{0}:Can't see any target item, Gather than waiting 10 seconds", chr.Id);
+                Log.WriteInfo ("{0}:Can't see any target item, Gather than waiting 10 seconds", chr.Id);
 
                 chr.AddTask (new WaitTask(10));
                 chr.AddTask( new LookAroundTask());
@@ -206,7 +206,7 @@ namespace Sean.WorldServer.Scripting
 
         internal override void DoTask (Character chr, FrameEventArgs e)
         {
-            Console.WriteLine ("{0}:ChopBlocksAtPosTask {1}", chr.Id, position);
+            Log.WriteInfo ("{0}:ChopBlocksAtPosTask {1}", chr.Id, position);
             foreach (Position pos in chr.path.NeighbourBlocks(position))
             {
                 if (pos.GetBlock().Type == blockType)
@@ -233,7 +233,7 @@ namespace Sean.WorldServer.Scripting
         {
             if (position.GetBlock().Type == blockType)
             {
-                Console.WriteLine ("{0}:Chopping {1}", chr.Id, blockType);
+                Log.WriteInfo ("{0}:Chopping {1}", chr.Id, blockType);
                 AddOrRemoveBlock(chr, position, Block.BlockType.Air); // replace with air
             }
             chr.RemoveTask (this);
@@ -243,7 +243,7 @@ namespace Sean.WorldServer.Scripting
         {
             if (!position.IsValidBlockLocation)
             {
-                Console.WriteLine("{0}:Invalid block location", chr.Id);
+                Log.WriteInfo("{0}:Invalid block location", chr.Id);
                 return;
             }
             
@@ -263,7 +263,7 @@ namespace Sean.WorldServer.Scripting
         private Dictionary<Position, Block.BlockType> blocks;
         internal override void DoTask (Character chr, FrameEventArgs e)
         {
-            Console.WriteLine ("{0}:Building {1}", chr.Id, blueprint);
+            Log.WriteInfo ("{0}:Building {1}", chr.Id, blueprint);
             blocks = Construction.Instance.GetConstruction(blueprint);
             if (blocks == null)
             {

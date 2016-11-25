@@ -132,7 +132,7 @@ namespace Sean.WorldGenerator
         public Array<int> GenerateIslandMap(uint octaves = 8, double freq = 0.42, double xOffset = 0, double zOffset = 0, double scale = 1.0)
         {
             islandGenerator = CreateIslandTerrainGenerator(octaves, freq, xOffset, zOffset, scale);
-            Debug.WriteLine("Generating island map");
+            Log.WriteInfo("Generating island map");
             var worldSize = new ArraySize()
             {
                 minZ = 0,
@@ -175,7 +175,7 @@ namespace Sean.WorldGenerator
 
         public Array<byte> GenerateGlobalMap()
         {
-            Debug.WriteLine("Generating global map");
+            Log.WriteInfo("Generating global map");
             var worldSize = new ArraySize()
             {
                 minZ = 0,
@@ -223,7 +223,7 @@ namespace Sean.WorldGenerator
 
         public void Generate(Chunk chunk)
 		{
-            Debug.WriteLine("Generating new chunk: " + chunk.ChunkCoords);
+            Log.WriteInfo("Generating new chunk: " + chunk.ChunkCoords);
             chunk.FinishedGeneration = false;
             var worldSize = new ArraySize()
             {
@@ -292,7 +292,7 @@ namespace Sean.WorldGenerator
                 var pos = generateQueue.Dequeue();
                 if (pos == null)
                 {
-                    Console.WriteLine("Null position in queue?");
+                    Log.WriteError("Null position in queue?");
                     continue;
                 }
                 var x = pos.X;
@@ -302,9 +302,9 @@ namespace Sean.WorldGenerator
                 if (worldInstance.GetBlock(x,y,z).Type == Block.BlockType.Unknown)
                 {
                     var block = GenerateCell(x, y, z);
-                    if (block.Type == Block.BlockType.Unknown) Console.WriteLine ("Unknown block type generated?");
+                    if (block.Type == Block.BlockType.Unknown) Log.WriteError("Unknown block type generated?");
                     worldInstance.SetBlock (x, y, z, block);
-                    if (worldInstance.GetBlock (x, y, z).Type == Block.BlockType.Unknown) Console.WriteLine ("Block not set?");
+                    if (worldInstance.GetBlock (x, y, z).Type == Block.BlockType.Unknown) Log.WriteError("Block not set?");
                     if (block.IsTransparent)
                     {
                         ExpandSearchCheckBlock (x - 1, y, z, generateQueue);

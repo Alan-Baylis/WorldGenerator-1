@@ -15,116 +15,116 @@ namespace Sean.WorldServer.Scripting
     {
         public static void AddBlock (int characterId, Position position, Block.BlockType blockType)
         {
-            Console.WriteLine ("AddBlock");
+            Log.WriteInfo("AddBlock");
         }
 
         public static void AddBlockItem (int characterId, Coords coords, Vector3 velocity, Block.BlockType blockType, int gameObjectId)
         {
-            Console.WriteLine ("AddBlockItem");
+            Log.WriteInfo("AddBlockItem");
         }
 
         public static void AddProjectile (int characterId, Coords coords, Vector3 velocity, Block.BlockType blockType, bool allowBounce, int gameObjectId)
         {
-            Console.WriteLine ("AddProjectile");
+            Log.WriteInfo("AddProjectile");
         }
 
         //public static void AddStaticItem (int characterId, Coords coords, StaticItemType staticItemType, ushort subType, Face attachedToFace, int gameObjectId)
         //{
-        //    Console.WriteLine ("AddStaticItem");
+        //    Log.WriteInfo ("AddStaticItem");
         //}
 
         //public static void AddStructure (int characterId, Position position, StructureType structureType, Facing frontFace)
         //{
-        //    Console.WriteLine ("AddStructure");
+        //    Log.WriteInfo ("AddStructure");
         //}
 
         public static void ChatMsg (int characterId, string message)
         {
-            Console.WriteLine ("ChatMsg");
+            Log.WriteInfo("ChatMsg");
         }
 
         public static void PickupBlockItem (int characterId, int gameObjectId)
         {
-            Console.WriteLine ("PickupBlockItem");
+            Log.WriteInfo("PickupBlockItem");
         }
 
         public static void CharacterMove (int characterId, Coords coords)
         {
-            Console.WriteLine ("CharacterMove");
+            Log.WriteInfo("CharacterMove");
         }
 
         public static void RemoveBlock (int characterId, Position position)
         {
-            Console.WriteLine ("RemoveBlock");
+            Log.WriteInfo("RemoveBlock");
         }
 
         public static void RemoveBlockItem (int characterId, int gameObjectId, bool isDecayed)
         {
-            Console.WriteLine ("RemoveBlockItem");
+            Log.WriteInfo("RemoveBlockItem");
         }
     }
 
     //Main Program
-//    class ScriptDriver
-//    {
-//        private object mutex = new object ();
-//
-//        public void Init ()
-//        {
-//            //MapManager.Instance.LoadMap (System.IO.Path.Combine ("Resources", "Map1.bmp"));
-//            path = new PathFinder (MapManager.Instance);
-//        }
-//   
-//        private PathFinder path;
-        //private Character chr1, chr2, chr3;
-            
-//        private Position GetRandomLocation ()
-//        {
-//            Random rnd = new Random ();
-//            Position pt = new Position ();
-//            do
-//            {
-//                pt.X = rnd.Next (MapManager.Instance.MapXSize);
-//                pt.Y = rnd.Next (MapManager.Instance.MapYSize);
-//            } while (MapManager.Instance.GetLocation(pt).IsWall);
-//            return pt;
-//        }
-            
-        //public void Run ()
-        //{
-        //    while (true)
-        //    {
-        //        Step ();
-        //        Console.ReadKey ();
-        //    }
-        //}
-            
-//        public void Step ()
-//        {
-//            //List<Location> sight = map.CanSee(chr1.GetLocation(), Direction.NorthWest);
-//            chr1.UpdateKnownMap ();
-//            chr1.DoTasks ();
-//            chr1.Dump ();
-//            //map.Dump(route);
-//        }
-//
-//        public void Execute (Hexpoint.Blox.GameObjects.Units.Character character)
-//        {
-//            lock (mutex)
-//            {
-//                try
-//                {
-//                    Console.WriteLine ("Executing script for {0}", character.Id);
-//
-//                }
-//                catch (Exception ex)
-//                {
-//                    Console.WriteLine ("Script error...");
-//                    Console.WriteLine (ex.Message);
-//                }
-//            }
-//        }
-//    }
+    //    class ScriptDriver
+    //    {
+    //        private object mutex = new object ();
+    //
+    //        public void Init ()
+    //        {
+    //            //MapManager.Instance.LoadMap (System.IO.Path.Combine ("Resources", "Map1.bmp"));
+    //            path = new PathFinder (MapManager.Instance);
+    //        }
+    //   
+    //        private PathFinder path;
+    //private Character chr1, chr2, chr3;
+
+    //        private Position GetRandomLocation ()
+    //        {
+    //            Random rnd = new Random ();
+    //            Position pt = new Position ();
+    //            do
+    //            {
+    //                pt.X = rnd.Next (MapManager.Instance.MapXSize);
+    //                pt.Y = rnd.Next (MapManager.Instance.MapYSize);
+    //            } while (MapManager.Instance.GetLocation(pt).IsWall);
+    //            return pt;
+    //        }
+
+    //public void Run ()
+    //{
+    //    while (true)
+    //    {
+    //        Step ();
+    //        Console.ReadKey ();
+    //    }
+    //}
+
+    //        public void Step ()
+    //        {
+    //            //List<Location> sight = map.CanSee(chr1.GetLocation(), Direction.NorthWest);
+    //            chr1.UpdateKnownMap ();
+    //            chr1.DoTasks ();
+    //            chr1.Dump ();
+    //            //map.Dump(route);
+    //        }
+    //
+    //        public void Execute (Hexpoint.Blox.GameObjects.Units.Character character)
+    //        {
+    //            lock (mutex)
+    //            {
+    //                try
+    //                {
+    //                    Log.WriteInfo ("Executing script for {0}", character.Id);
+    //
+    //                }
+    //                catch (Exception ex)
+    //                {
+    //                    Log.WriteInfo ("Script error...");
+    //                    Log.WriteInfo (ex.Message);
+    //                }
+    //            }
+    //        }
+    //    }
 
 
 } // namespace

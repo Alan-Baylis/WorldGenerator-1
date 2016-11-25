@@ -93,7 +93,7 @@ namespace Sean.WorldGenerator
 
         private Chunk GetOrCreate(int x, int z)
         {
-            //Console.WriteLine ($"Getting chunk {x},{z}");
+            //Log.WriteInfo ($"Getting chunk {x},{z}");
             Chunk chunk = null;
             lock (mapChunks) {
                 if (x > MaxChunkLimit || x < -MaxChunkLimit || z > MaxChunkLimit || z < -MaxChunkLimit)
@@ -104,7 +104,7 @@ namespace Sean.WorldGenerator
                 }
 
                 // Create Chunk
-                Console.WriteLine ($"Generating {x},{z}");
+                Log.WriteInfo($"Generating {x},{z}");
                 var mapChunk = new MapChunk ();
                 var chunkCoords = new ChunkCoords (x, z);
                 chunk = new Chunk (chunkCoords);

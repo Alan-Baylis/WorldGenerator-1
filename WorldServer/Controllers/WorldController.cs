@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Net.Http;
+using Sean.Shared;
 
 namespace Sean.WorldServer
 {
@@ -14,7 +15,7 @@ namespace Sean.WorldServer
         [Route("Player/{playerId}/LookingAt?x={x}&y={y}")]
         public async Task<bool> LookingAt(int playerId, int x, int z)
         {
-            Console.WriteLine ("Player {0} at {1},{2}", playerId, x,z);
+            Log.WriteInfo($"Player {playerId} at {x},{z}");
             return true;
         }
 

@@ -105,7 +105,7 @@ namespace Sean.PathFinding
             Position minPoint = new Position (0, 0, 0);
             foreach (Position i in locations)
             {
-                //Console.WriteLine("{0} = {1}, {2}", i, GetGScore(i), GetFScore(i));
+                //Log.WriteInfo("{0} = {1}, {2}", i, GetGScore(i), GetFScore(i));
                 int fscore = GetFScore (i);
                 if (fscore < min)
                 {
@@ -203,14 +203,14 @@ namespace Sean.PathFinding
 
 			if (searched >= maxSearch) 
 			{
-				Console.WriteLine ("Could not find path from {0} to {1}", start, goal);
+                Log.WriteInfo($"Could not find path from {start} to {goal}");
 				return new Queue<Position>();
 			}
 			else
             //if (GetFScore (goal) > 0) // Found path
             //if (DistBetween(current, goal) < WithinRangeScore)
             {
-				Console.WriteLine ("Found route from {0} to {1} after checking {2} locations", start, goal, searched);
+                Log.WriteInfo($"Found route from {start} to {goal} after checking {searched} locations");
                 //Position current = goal;
                 while (current != start)
                 {
@@ -241,7 +241,7 @@ namespace Sean.PathFinding
 				{
                     if (world.GetBlock(neighbour).Type == stopAtType)
                     {
-                        Console.WriteLine ("Found route from {0} to {1} after checking {2} locations", start, current, searched);
+                        Log.WriteInfo($"Found route from {start} to {current} after checking {searched} locations");
                         List<Position> route = new List<Position>();
                         while (current != start)
                         {
@@ -292,7 +292,7 @@ namespace Sean.PathFinding
 
                 if (current == destination)
                 {
-                    Console.WriteLine ("Found route from {0} to {1} after checking {2} locations", start, current, searched);
+                    Log.WriteInfo("Found route from {start} to {current} after checking {searched} locations");
                     List<Position> route = new List<Position>();
                     while (current != start)
                     {
@@ -521,7 +521,7 @@ namespace Sean.PathFinding
         {
             foreach(Position pos in FindNearestBlock(start, target))
             {
-                //Console.WriteLine ("Block at {0}", pos);
+                //Log.WriteInfo ("Block at {0}", pos);
                 var route = FindPath (start, pos);
                 if (route != null)
                     return route;
