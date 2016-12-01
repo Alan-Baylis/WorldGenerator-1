@@ -95,8 +95,10 @@ namespace Sean.Shared
 
             // Scrolling - Get rid of the scroll bars by making the buffer the same size as the window
             Console.SetWindowSize(65, 33);
-            Console.BufferWidth = 65;
-            Console.BufferHeight = 33;
+           
+            //// Windows
+            //Console.BufferWidth = 65;
+            //Console.BufferHeight = 33;
 
             //// Make the window much smaller than the buffer and scroll around
             //Console.SetWindowSize(20, 5);

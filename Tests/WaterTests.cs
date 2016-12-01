@@ -285,11 +285,28 @@ namespace Tests
         }
             
         private static void Process(BlockGrid grid)
-        {
-            
+        {            
             var pres = grid.CalcPressure();
             pres.Render();
 
+            var water = grid.Find (BlockType.Water);
+            water.AddRange(grid.Find (BlockType.WaterSource));
+            var moveTo = new SortedList<int,Coord>();
+            foreach (var w in water) {
+                if (grid [w.X+1, w.Y] == BlockType.Air)
+                    moveTo.Add (w.Y, new Coord (w.X+1, w.Y));
+                if (grid [w.X, w.Y+1] == BlockType.Air)
+                    moveTo.Add (w.Y+1, new Coord (w.X, w.Y+1));
+                if (grid [w.X-1, w.Y] == BlockType.Air)
+                    moveTo.Add (w.Y, new Coord (w.X-1, w.Y));
+                if (grid [w.X, w.Y-1] == BlockType.Air)
+                    moveTo.Add (w.Y-1, new Coord (w.X, w.Y-1));
+            }
+
+            grid.SetBlock(moveTo.Values[0], BlockType.Water);
+
+
+            /*
             foreach (var s in grid.Find(BlockType.WaterSource))
             {
                 var stream = grid.FindStream(s);
@@ -327,6 +344,7 @@ namespace Tests
                 }
                 grid.SetBlock(p[0], BlockType.Water);
             }
+            */
 
 
             //var water = grid.FindNeighbours(BlockType.Water);
