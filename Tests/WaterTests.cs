@@ -277,21 +277,21 @@ namespace Tests
             grid.LoadRow (1, "#      #####       #");
             grid.LoadRow (0, "####################");
 
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 100; i++) {
                 grid.Render ();
                 Process (grid);
-                System.Threading.Thread.Sleep (5000);
+                System.Threading.Thread.Sleep (2000);
             }
         }
             
         private static void Process(BlockGrid grid)
         {            
-            var pres = grid.CalcPressure();
-            pres.Render();
+            //var pres = grid.CalcPressure();
+            //pres.Render();
 
             var water = grid.Find (BlockType.Water);
             water.AddRange(grid.Find (BlockType.WaterSource));
-            var moveTo = new SortedList<int,Coord>();
+            var moveTo = new SortedList<int, Coord>(new DuplicateKeyComparer<int>());
             foreach (var w in water) {
                 if (grid [w.X+1, w.Y] == BlockType.Air)
                     moveTo.Add (w.Y, new Coord (w.X+1, w.Y));
@@ -390,6 +390,21 @@ namespace Tests
 
         }
        
+    }
+
+    /// <summary>
+    /// Comparer for comparing two keys, handling equality as beeing greater
+    /// Use this Comparer e.g. with SortedLists or SortedDictionaries, that don't allow duplicate keys
+    /// </summary>
+    /// <typeparam name="TKey"></typeparam>
+    public class DuplicateKeyComparer<TKey> : IComparer<TKey> where TKey : IComparable
+    {
+        public int Compare(TKey x, TKey y)
+        {
+            int result = x.CompareTo(y);
+            if (result == 0) return 1;   // Handle equality as beeing greater
+            else return result;
+        }
     }
 }
 
