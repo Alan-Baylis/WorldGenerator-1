@@ -44,6 +44,8 @@ namespace Sean.Shared
         public int Y;
         public int Width;
         public int Height;
+        private int cursorX;
+        private int cursorY;
 
         public DisplayConsoleWindow(int x, int y, int width, int height)
         {
@@ -57,6 +59,23 @@ namespace Sean.Shared
         {
             Console.SetCursorPosition(X+1+x, Y+1+y);
             Console.Write(chr);
+        }
+        public void Clear()
+        {
+            cursorX = 0;
+            cursorY = 0;
+            // TODO
+        }
+        public void Write(string str)
+        {
+            foreach(var chr in str)
+            {
+                if (cursorX >= Width)
+                {
+                    cursorX = 0; cursorY++;
+                }
+                WriteChar(cursorX, cursorY, chr);
+            }
         }
 
         public void RenderBorder()

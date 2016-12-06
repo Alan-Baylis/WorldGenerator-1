@@ -152,6 +152,10 @@ namespace Sean.WorldGenerator
             var chunk = localMap.Chunk(chunkCoords);
             return chunk;
         }
+        public List<ChunkCoords> LoadedChunks()
+        {
+            return localMap.LoadedChunks();
+        }
 
         public void PutBlock(Position position, Block.BlockType blockType)
         {

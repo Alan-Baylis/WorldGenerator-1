@@ -16,11 +16,11 @@ namespace Tests
             FallingWater = 3,
             WaterSource = 4
         }
-        private class Coord
+        private class Position
         {
             public int X;
             public int Y;
-            public Coord(int x, int y)
+            public Position(int x, int y)
             {
                 X = x;
                 Y = y;
@@ -28,7 +28,7 @@ namespace Tests
 
             public override bool Equals(object obj)
             {
-                return X == ((Coord)obj).X && Y == ((Coord)obj).Y;
+                return X == ((Position)obj).X && Y == ((Position)obj).Y;
             }
         }
         private class Grid
@@ -61,7 +61,7 @@ namespace Tests
                 }
             }
 
-            public int GetBlock(Coord coord)
+            public int GetBlock(Position coord)
             {
                 return GetBlock(coord.X, coord.Y);
             }
@@ -71,7 +71,7 @@ namespace Tests
                     return 0;
                 return grid[x, y];
             }
-            public void SetBlock(Coord coord, int block)
+            public void SetBlock(Position coord, int block)
             {
                 SetBlock(coord.X, coord.Y, block);
             }
@@ -121,7 +121,7 @@ namespace Tests
                 }
             }
 
-            public BlockType GetBlock (Coord coord)
+            public BlockType GetBlock (Position coord)
             {
                 return GetBlock (coord.X, coord.Y);
             }
@@ -131,7 +131,7 @@ namespace Tests
                     return BlockType.Dirt;
                 return grid [x, y];
             }
-            public void SetBlock (Coord coord, BlockType block)
+            public void SetBlock (Position coord, BlockType block)
             {
                 SetBlock (coord.X, coord.Y, block);
             }
@@ -141,53 +141,68 @@ namespace Tests
                     return;
                 grid [x, y] = block;
             }
-            public List<Coord> Find (BlockType block)
+            public List<Position> Find (BlockType block)
             {
-                var results = new List<Coord> ();
+                var results = new List<Position> ();
                 for (int y = Height-1; y >=0; y--) {
                     for (int x = 0; x < Width; x++) {
                         if (GetBlock (x, y) == block)
-                            results.Add (new Coord(x,y));
+                            results.Add (new Position(x,y));
                     }
                 }
                 return results;
             }
-            public List<Coord> FindNeighbours (BlockType block)
+            public List<Position> FindWater()
             {
-                var results = new List<Coord> ();
+                var results = new List<Position>();
+                for (int y = Height - 1; y >= 0; y--)
+                {
+                    for (int x = 0; x < Width; x++)
+                    {
+                        var b = GetBlock(x, y);
+                        if (b == BlockType.WaterSource || b == BlockType.Water || b == BlockType.FallingWater)
+                            results.Add(new Position(x, y));
+                    }
+                }
+                return results;
+            }
+
+            public List<Position> FindNeighbours (BlockType block)
+            {
+                var results = new List<Position> ();
                 for (int y = 0; y < Height; y++) {
                     for (int x = 0; x < Width; x++) {
                         if (GetBlock (x+1, y) == block)
-                            results.Add (new Coord(x+1,y));
+                            results.Add (new Position(x+1,y));
                         if (GetBlock (x-1, y) == block)
-                            results.Add (new Coord(x-1,y));
+                            results.Add (new Position(x-1,y));
                         if (GetBlock (x, y+1) == block)
-                            results.Add (new Coord(x,y+1));
+                            results.Add (new Position(x,y+1));
                         if (GetBlock (x, y-1) == block)
-                            results.Add (new Coord(x,y-1));
+                            results.Add (new Position(x,y-1));
 
                         if (GetBlock (x+1, y+1) == block)
-                            results.Add (new Coord(x+1,y+1));
+                            results.Add (new Position(x+1,y+1));
                         if (GetBlock (x+1, y-1) == block)
-                            results.Add (new Coord(x+1,y-1));
+                            results.Add (new Position(x+1,y-1));
                         if (GetBlock (x-1, y-1) == block)
-                            results.Add (new Coord(x-1,y-1));
+                            results.Add (new Position(x-1,y-1));
                         if (GetBlock (x-1, y+1) == block)
-                            results.Add (new Coord(x-1,y+1));
+                            results.Add (new Position(x-1,y+1));
                     }
                 }
                 return results;
             }
 
-            public List<Coord> FindStream(Coord coord)
+            public List<Position> FindStream(Position coord)
             {
-                var stream = new List<Coord> ();
+                var stream = new List<Position> ();
                 FollowStream(ref stream, coord.X, coord.Y);
                 return stream;
             }
-            private void FollowStream(ref List<Coord> s, int x,int y)
+            private void FollowStream(ref List<Position> s, int x,int y)
             {
-                var coord = new Coord(x, y);
+                var coord = new Position(x, y);
                 if (s.Contains(coord))
                     return;
                 s.Add(coord);
@@ -289,23 +304,32 @@ namespace Tests
             //var pres = grid.CalcPressure();
             //pres.Render();
 
-            var water = grid.Find (BlockType.Water);
+            var water = grid.FindWater ();
             water.AddRange(grid.Find (BlockType.WaterSource));
-            var moveTo = new SortedList<int, Coord>(new DuplicateKeyComparer<int>());
+            var moveTo = new SortedList<int, Position>(new DuplicateKeyComparer<int>());
             foreach (var w in water) {
                 if (grid [w.X+1, w.Y] == BlockType.Air)
-                    moveTo.Add (w.Y, new Coord (w.X+1, w.Y));
+                    moveTo.Add (w.Y, new Position (w.X+1, w.Y));
                 if (grid [w.X, w.Y+1] == BlockType.Air)
-                    moveTo.Add (w.Y+1, new Coord (w.X, w.Y+1));
+                    moveTo.Add (w.Y+1, new Position (w.X, w.Y+1));
                 if (grid [w.X-1, w.Y] == BlockType.Air)
-                    moveTo.Add (w.Y, new Coord (w.X-1, w.Y));
+                    moveTo.Add (w.Y, new Position (w.X-1, w.Y));
                 if (grid [w.X, w.Y-1] == BlockType.Air)
-                    moveTo.Add (w.Y-1, new Coord (w.X, w.Y-1));
+                    moveTo.Add (w.Y-1, new Position (w.X, w.Y-1));
             }
 
-            grid.SetBlock(moveTo.Values[0], BlockType.Water);
+            var newBlock = moveTo.Values[0];
+            BlockType newBlockType = BlockType.Water;
+            if (grid[newBlock.X, newBlock.Y - 1] == BlockType.Air)
+                newBlockType = BlockType.FallingWater;
+            grid.SetBlock(newBlock, newBlockType);
 
-
+            // Convert falling water to water
+            foreach (var w in grid.Find(BlockType.FallingWater))
+            {
+                if (grid[w.X + 1, w.Y] == BlockType.Water || grid[w.X - 1, w.Y] == BlockType.Water)
+                    grid[w.X, w.Y] = BlockType.Water;
+            }
             /*
             foreach (var s in grid.Find(BlockType.WaterSource))
             {

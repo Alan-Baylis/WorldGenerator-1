@@ -12,9 +12,7 @@ namespace Sean.WorldServer
 		{
             Console.WriteLine("World Server starting...");
 
-            var console = new DisplayConsole();
-            var gridWindow = console.AddWindow("grid", 2, 2, 18, 18);
-
+            var gui = new WorldServer.Gui();
             /*
             // Start OWIN host 
             string baseAddress = "http://localhost:9000/"; 
@@ -65,16 +63,7 @@ namespace Sean.WorldServer
             GameThread.Run();
             //ClientSocket.SendMessage ();
 
-            var chunk = MainClass.WorldInstance.GetChunk(new ChunkCoords(20,20));
-            var y = chunk.DeepestTransparentLevel + 5;
-            for (var x = 0; x < Global.CHUNK_SIZE; x++)
-            {
-                for (var z = 0; z < Global.CHUNK_SIZE; z++)
-                    {
-                    var block = chunk.Blocks[x, y, z];
-                    gridWindow.WriteChar(x, z, block.IsSolid ? '#':' ');
-                }
-            }
+            gui.Run();
 
             // Rest web server
             //string baseUri = "http://localhost:8085";
@@ -82,8 +71,11 @@ namespace Sean.WorldServer
             //WebApp.Start<WebHostStartup>(baseUri);
             //Log.WriteInfo("Server running at {0}", baseUri);
 
-            Log.WriteInfo("Press any key to exit");
-            Console.ReadKey();
+            // TODO - shutdown event
+            while (true)
+            {
+                System.Threading.Thread.Sleep(5000);
+            }
             Log.WriteInfo("Shutting down");
             ServerSocketListener.Stop();
             WebSocketListener.Stop();

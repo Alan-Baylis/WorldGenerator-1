@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameThread.cs" />
+    <Compile Include="Gui.cs" />
     <Compile Include="Objects\Character.cs" />
     <Compile Include="Objects\CharacterManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

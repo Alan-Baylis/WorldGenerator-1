@@ -74,6 +74,18 @@ namespace Sean.WorldGenerator
         {
             return GetOrCreate (chunkCoords.X, chunkCoords.Z);
         }
+        public List<ChunkCoords> LoadedChunks()
+        {
+            lock (mapChunks)
+            {
+                var chunks = new List<ChunkCoords>();
+                foreach(var chunk in mapChunks)
+                {
+                    chunks.Add(chunk.Value.Chunk.ChunkCoords);
+                }
+                return chunks;
+            }
+        }
 
         /// <summary>Get a chunk from the array. Based on world block coords.</summary>
         public Chunk Chunk(Position position)

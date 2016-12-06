@@ -46,6 +46,7 @@
     <Compile Include="Shared\GameAction.cs" />
     <Compile Include="Shared\GameObject.cs" />
     <Compile Include="Shared\Lighting.cs" />
+    <Compile Include="Shared\Misc.cs" />
     <Compile Include="Shared\UiTextGraphics.cs" />
     <Compile Include="Shared\UniqueQueue.cs" />
     <Compile Include="World\Constants.cs" />
