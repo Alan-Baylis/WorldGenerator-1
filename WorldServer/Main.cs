@@ -72,7 +72,7 @@ namespace Sean.WorldServer
             //Log.WriteInfo("Server running at {0}", baseUri);
 
             // TODO - shutdown event
-            while (true)
+            while (gui.IsRunning)
             {
                 System.Threading.Thread.Sleep(5000);
             }

@@ -75,6 +75,7 @@ namespace Sean.Shared
                     cursorX = 0; cursorY++;
                 }
                 WriteChar(cursorX, cursorY, chr);
+                cursorX++;
             }
         }
 

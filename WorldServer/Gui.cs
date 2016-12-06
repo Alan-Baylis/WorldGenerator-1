@@ -10,6 +10,7 @@ namespace Sean.WorldServer
 {
     public class Gui
     {
+        public bool IsRunning = true;
         private DisplayConsole console;
         private DisplayConsoleWindow gridWindow;
         private DisplayConsoleWindow chunksWindow;
@@ -53,6 +54,10 @@ namespace Sean.WorldServer
                     case ConsoleKey.UpArrow:
                         selectedChunk = Math.Max(1, selectedChunk--);
                         break;
+                case ConsoleKey.Escape:
+                        IsRunning = false;
+                        return;
+                        break;
                 }
                 //System.Threading.Thread.Sleep(1000);
             }
@@ -73,7 +78,7 @@ namespace Sean.WorldServer
                     }
                 }
             }
-            gridWindow.Clear();
+            chunksWindow.Clear();
             numChunks = 0;
             chunkX = 0;
             chunkZ = 0;
