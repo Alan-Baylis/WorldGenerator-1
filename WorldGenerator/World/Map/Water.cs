@@ -42,7 +42,7 @@ namespace Sean.WorldGenerator
                 EmptyCoords.Remove(pos);
             Coords.Add(pos);
 
-            var block = new Block(Block.BlockType.WaterSource);
+            var block = new Block(Block.BlockType.Water1);
             worldInstance.SetBlock(pos.X, pos.Y, pos.Z, block);
             worldInstance.GlobalMap.Set(pos.X, pos.Z, RIVER);
 
@@ -51,6 +51,7 @@ namespace Sean.WorldGenerator
             AddIfEmpty(pos.X-1, pos.Y, pos.Z);
             AddIfEmpty(pos.X, pos.Y, pos.Z+1);
             AddIfEmpty(pos.X, pos.Y, pos.Z-1);
+            AddIfEmpty(pos.X, pos.Y + 1, pos.Z);
         }
         private void AddIfEmpty(int x,int y,int z)
         {
@@ -64,7 +65,9 @@ namespace Sean.WorldGenerator
         public Water (IWorld world)
         {
             worldInstance = world;
-            GenerateRivers();
+            Rivers = new List<River>();
+            Run();
+            //GenerateRivers();
 
             //ProcessWater(); // TODO - run from own thread
         }
@@ -75,30 +78,43 @@ namespace Sean.WorldGenerator
         private const int WATER = 2; // TODO - stick these somewhere
         private const int GRASS = 4;
         private const int RIVER = 5;
-        private void GenerateRivers()
-        {
-            Rivers = new List<River>();
-            for (var i = 0; i < Settings.RiverCount; i++)
-            {
-                int x = 0, y = 255, z = 0; // TODO set y
-                bool isWater = true;
-                while (isWater)
-                {
-                    x = Settings.Random.Next(worldInstance.GlobalMap.Size.minX, worldInstance.GlobalMap.Size.maxX);
-                    z = Settings.Random.Next(worldInstance.GlobalMap.Size.minZ, worldInstance.GlobalMap.Size.maxZ);
-                    isWater = (worldInstance.GlobalMapTerrain[x, z] == WATER);
-                }
-                var pos = new Position(x, y, z);
-                var river = new River(worldInstance, pos);
-                Rivers.Add(river);
-            }
 
+        public void Run()
+        {
             thread = new Thread(new ThreadStart(StartThread));
             thread.Start();
         }
 
+        private void CreateRiver()
+        {
+            for (var i = 0; i < Settings.RiverCount; i++)
+            {
+                var pos = worldInstance.GetRandomLocationOnLoadedChunk();
+                bool isWater = true;
+                while (isWater)
+                {
+                    pos = worldInstance.GetRandomLocationOnLoadedChunk();
+                    isWater = (worldInstance.GlobalMapTerrain[pos.X, pos.Z] == WATER);
+                }
+
+                pos.Y = 255;
+                var b = worldInstance.GetBlock(pos);
+                while (b.IsTransparent)
+                {
+                    pos.Y--;
+                    b = worldInstance.GetBlock(pos);
+                }
+                var river = new River(worldInstance, pos);
+                Rivers.Add(river);
+            }
+        }
+
         private void StartThread()
         {
+            while (worldInstance.LoadedChunkCount == 0)
+            {
+                System.Threading.Thread.Sleep(5000);
+            }
             while (true)
             {
                 foreach (var river in Rivers)

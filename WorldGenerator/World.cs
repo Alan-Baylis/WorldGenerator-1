@@ -129,7 +129,7 @@ namespace Sean.WorldGenerator
         public Array<byte> GlobalMapTerrain { get { return worldMap.GlobalMapTerrain; } }
         public Array<byte> GlobalTemperatureMap { get { return worldMap.TemperatureMap; } }
         public Array<byte> GlobalBiosphereMap { get { return worldMap.BiosphereMap; } }
-
+        public int LoadedChunkCount { get { return localMap.LoadedChunksCount(); } }
 
         public Array<int> IslandMap(uint octaves, double freq, double x, double z, double scale)
         {
@@ -138,6 +138,13 @@ namespace Sean.WorldGenerator
 
         public bool IsChunkLoaded(ChunkCoords chunkCoords)
         { return localMap.IsChunkLoaded(chunkCoords); }
+
+        public Position GetRandomLocationOnLoadedChunk()
+        {
+            int x = Settings.Random.Next(LocalMap.MinXPosition, LocalMap.MaxXPosition);
+            int z = Settings.Random.Next(LocalMap.MinZPosition, LocalMap.MaxZPosition);
+            return new Position(x, Global.CHUNK_HEIGHT, z);
+        }
 
         public int GetChunkSize()
         {

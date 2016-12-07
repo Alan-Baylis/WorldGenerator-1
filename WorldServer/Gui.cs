@@ -74,7 +74,14 @@ namespace Sean.WorldServer
                     for (var z = 0; z < Global.CHUNK_SIZE; z++)
                     {
                         var block = chunk.Blocks[x, y, z];
-                        gridWindow.WriteChar(x, z, block.IsSolid ? '#' : ' ');
+                        char c = block.IsSolid ? '#' : ' ';
+                        if (block.Type == Block.BlockType.Unknown) c = '.';
+                        if (block.Type == Block.BlockType.Water1) c = '~';
+                        if (block.Type == Block.BlockType.WaterSource) c = '~';
+                        if (block.Type == Block.BlockType.Tree) c = '$';
+                        if (block.Type == Block.BlockType.Leaves) c = '%';
+
+                        gridWindow.WriteChar(x, z, c);
                     }
                 }
             }

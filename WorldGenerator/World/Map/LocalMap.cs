@@ -87,6 +87,14 @@ namespace Sean.WorldGenerator
             }
         }
 
+        public int LoadedChunksCount()
+        {
+            lock (mapChunks)
+            {
+                return mapChunks.Count;
+            }
+        }
+
         /// <summary>Get a chunk from the array. Based on world block coords.</summary>
         public Chunk Chunk(Position position)
         {

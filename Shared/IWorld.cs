@@ -17,5 +17,8 @@
         Array<byte> GlobalMap { get; }
         Array<byte> GlobalMapTerrain { get; }
 
+        Position GetRandomLocationOnLoadedChunk();
+
+        int LoadedChunkCount { get; }
     }
 }
