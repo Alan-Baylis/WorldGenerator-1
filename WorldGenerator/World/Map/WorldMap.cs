@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Sean.Shared;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Sean.WorldGenerator
 {
@@ -11,6 +13,7 @@ namespace Sean.WorldGenerator
     {
         private Generator generator;
         private const int oceanLevel = 40;
+        private const string fileName = "global.map";
 
         public Array<int> IslandMap { get; private set; }
         public Array<byte> GlobalMap { get; private set; }
@@ -21,15 +24,66 @@ namespace Sean.WorldGenerator
         public WorldMap(IWorld world, int seed)
         {
             this.generator = new Generator(world, seed);
-            Generate();
+            Load ();
+            if (GlobalMap == null) {
+                Generate ();
+                Save ();
+            }
         }
-
-        public void Generate()
+        private void Generate()
         {
+            Log.WriteInfo ($"[WorldMap.Generate] Generating...");
             GlobalMap = generator.GenerateGlobalMap();
             GlobalMapTerrain = DefineTerrain(GlobalMap);
             TemperatureMap = DefineTemperature(GlobalMap);
             BiosphereMap = DefineBiosphere(GlobalMap, TemperatureMap);
+        }
+
+        private void Save()
+        {
+            try
+            {
+                Log.WriteInfo ($"[WorldMap.Saving] Saving '{fileName}'...");
+                using (FileStream stream = File.Create(fileName))
+                {
+                    var formatter = new BinaryFormatter();
+                    formatter.Serialize( stream, GlobalMap );
+                    formatter.Serialize( stream, GlobalMapTerrain );
+                    formatter.Serialize( stream, TemperatureMap );
+                    formatter.Serialize( stream, BiosphereMap );
+                    stream.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                Log.WriteError ($"[WorldMap.Save] Failed - {e.Message}");
+            }
+        }
+
+        private void Load()
+        {
+            try
+            {
+                if (File.Exists(fileName))
+                {
+                    Log.WriteInfo ($"[WorldMap.Load] Loading '{fileName}'...");
+                    using (var stream = File.OpenRead(fileName))
+                    {
+                        var formatter = new BinaryFormatter();
+                        GlobalMap = (Array<byte>)formatter.Deserialize( stream );
+                        GlobalMapTerrain = (Array<byte>)formatter.Deserialize( stream );
+                        TemperatureMap = (Array<byte>)formatter.Deserialize( stream );
+                        BiosphereMap = (Array<byte>)formatter.Deserialize( stream );
+                        stream.Close();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Log.WriteError ($"[WorldMap.Load] Failed - {e.Message}");
+                GlobalMap = null;
+                File.Delete (fileName);
+            }
         }
 
         public Array<int> GenerateIslandMap(uint octaves, double freq, double x, double z, double scale)

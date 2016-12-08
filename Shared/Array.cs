@@ -15,6 +15,7 @@ namespace Sean.Shared
         public float y;
     }
 
+    [Serializable]
     public class ArraySize
     {
         public int minZ;
@@ -26,6 +27,7 @@ namespace Sean.Shared
         public int maxY;
 
         public int scale = 1;
+
         public int zWidth { get { return maxZ - minZ; } }
         public int xHeight { get { return maxX - minX; } }
 
@@ -35,6 +37,7 @@ namespace Sean.Shared
         public int UnNormZ(double z) { return (int)(z * zWidth) + minZ; }
     }
 
+    [Serializable]
     public class ArrayLine<T> 
     {
         public ArrayLine (ArraySize size)
@@ -81,6 +84,7 @@ namespace Sean.Shared
         private ArraySize _size;
     }
 
+    [Serializable]
     public class Array<T>
     {
         public Array(int x, int z)
