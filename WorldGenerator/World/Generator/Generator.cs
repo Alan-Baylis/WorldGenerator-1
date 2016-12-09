@@ -19,6 +19,7 @@ namespace Sean.WorldGenerator
 
         public Generator(IWorld world, int seed)
         {
+            Log.WriteInfo($"Creating Terrain Generator...");
             worldInstance = world;
             perlinNoise = new PerlinNoise(seed, 100);
 
@@ -27,7 +28,7 @@ namespace Sean.WorldGenerator
         }
 
         private CImplicitModuleBase CreateTerrainGenerator()
-        { 
+        {
             var ground_gradient = new CImplicitGradient(x1: 0, x2: 0, y1: 0, y2: 1);
 
             var lowland_gradient = new CImplicitGradient(x1: 0, x2: 0, y1: 0.8, y2: 1);
@@ -127,50 +128,6 @@ namespace Sean.WorldGenerator
             var bio_autocorrect = new CImplicitAutoCorrect(source: bio_type_fractal, low: 0, high: 1);
 
             return bio_autocorrect;
-        }
-
-        public Array<int> GenerateIslandMap(uint octaves = 8, double freq = 0.42, double xOffset = 0, double zOffset = 0, double scale = 1.0)
-        {
-            islandGenerator = CreateIslandTerrainGenerator(octaves, freq, xOffset, zOffset, scale);
-            Log.WriteInfo("Generating island map");
-            var worldSize = new ArraySize()
-            {
-                minZ = 0,
-                maxZ = Settings.globalMapSize + Global.CHUNK_SIZE,
-                minX = 0,
-                maxX = Settings.globalMapSize + Global.CHUNK_SIZE,
-                minY = Settings.minNoiseHeight,
-                maxY = Settings.maxNoiseHeight,
-                scale = Global.CHUNK_SIZE,
-            };
-
-            var heightMap = new Array<int>(worldSize);
-            for (int z = worldSize.minZ; z < worldSize.maxZ; z += worldSize.scale)
-            {
-                for (int x = worldSize.minX; x < worldSize.maxX; x += worldSize.scale)
-                {
-                    int d = Global.CHUNK_HEIGHT;
-                    int y = d / 2;
-                    while (d > 1)
-                    {
-                        d /= 2;
-                        var p = islandGenerator.get(
-                            (double)(x + xOffset + chunkMidpoint) / Settings.FRACTAL_SIZE, 
-                            //(double)x / Settings.FRACTAL_SIZE, 
-                            (double)y / Settings.maxNoiseHeight, 
-                            (double)(z + zOffset + chunkMidpoint) / Settings.FRACTAL_SIZE);
-                            //(double)z / Settings.FRACTAL_SIZE);
-                        if (p < 0.5)
-                            y += d;
-                        else
-                            y -= d;
-                    }
-                    if (y < worldSize.minY) y = worldSize.minY;
-                    if (y > worldSize.maxY) y = worldSize.maxY;
-                    heightMap[x, z] = worldSize.maxY - y;
-                }
-            }
-            return heightMap;
         }
 
         public Array<byte> GenerateGlobalMap()

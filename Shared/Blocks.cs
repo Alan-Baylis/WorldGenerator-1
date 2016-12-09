@@ -1,5 +1,4 @@
 ﻿using System;
-using Sean.Shared;
 using System.Collections.Generic;
 using System.Collections;
 using System.Text;
@@ -188,7 +187,7 @@ namespace Sean.Shared
 
     public class Blocks 
     {
-        public readonly BlocksColumn[,] _array;
+        public BlocksColumn[,] _array;
 
         public Blocks()
         {

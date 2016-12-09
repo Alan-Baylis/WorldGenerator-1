@@ -12,7 +12,6 @@ namespace WorldViewer
     {
         ParametersForm parametersForm;
         ElevationForm elevationForm;
-        IslandForm islandForm;
         View selectedView;
         World WorldInstance;
 
@@ -290,8 +289,6 @@ namespace WorldViewer
             //parametersForm.Show();
             elevationForm = new ElevationForm(WorldInstance);
             elevationForm.Show();
-            islandForm = new IslandForm(WorldInstance);
-            islandForm.Show();
             DrawMaps();
         }
 

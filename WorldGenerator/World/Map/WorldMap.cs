@@ -15,15 +15,14 @@ namespace Sean.WorldGenerator
         private const int oceanLevel = 40;
         private const string fileName = "global.map";
 
-        public Array<int> IslandMap { get; private set; }
         public Array<byte> GlobalMap { get; private set; }
         public Array<byte> GlobalMapTerrain { get; private set; }
         public Array<byte> TemperatureMap { get; private set; }
         public Array<byte> BiosphereMap { get; private set; }
 
-        public WorldMap(IWorld world, int seed)
+        public WorldMap(IWorld world, Generator generator)
         {
-            this.generator = new Generator(world, seed);
+            this.generator = generator;
             Load ();
             if (GlobalMap == null) {
                 Generate ();
@@ -76,6 +75,7 @@ namespace Sean.WorldGenerator
                         BiosphereMap = (Array<byte>)formatter.Deserialize( stream );
                         stream.Close();
                     }
+                    Log.WriteInfo ($"[WorldMap.Load] Loaded '{fileName}'");
                 }
             }
             catch (Exception e)
@@ -84,12 +84,6 @@ namespace Sean.WorldGenerator
                 GlobalMap = null;
                 File.Delete (fileName);
             }
-        }
-
-        public Array<int> GenerateIslandMap(uint octaves, double freq, double x, double z, double scale)
-        {
-            IslandMap = generator.GenerateIslandMap(octaves, freq, x, z, scale);
-            return IslandMap;
         }
 
         // TODO - stick these somewhere

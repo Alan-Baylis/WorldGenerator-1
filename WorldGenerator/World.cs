@@ -52,14 +52,16 @@ namespace Sean.WorldGenerator
             GameObjectIdSeq = 1; //int.Parse(settingsNode.Attributes["GameObjectIdSeq"].Value);
             WorldType = WorldType.Grass;// (WorldType)Convert.ToInt32(settingsNode.Attributes["WorldType"].Value);
 
-            worldMap = new WorldMap(this, RawSeed);
-            localMap = new LocalMap(this, RawSeed);
+            generator = new Generator(this, RawSeed);
+            worldMap = new WorldMap(this, generator);
+            localMap = new LocalMap(this, generator);
             water = new Water(this);
         }
 
         public delegate void WorldEventHandler(WorldEventArgs e);
         public event WorldEventHandler WorldEvents;
 
+        private Generator generator;
         private LocalMap localMap;
         private WorldMap worldMap;
         private Water water;
@@ -130,11 +132,6 @@ namespace Sean.WorldGenerator
         public Array<byte> GlobalTemperatureMap { get { return worldMap.TemperatureMap; } }
         public Array<byte> GlobalBiosphereMap { get { return worldMap.BiosphereMap; } }
         public int LoadedChunkCount { get { return localMap.LoadedChunksCount(); } }
-
-        public Array<int> IslandMap(uint octaves, double freq, double x, double z, double scale)
-        {
-            return worldMap.GenerateIslandMap(octaves, freq, x, z, scale);
-        }
 
         public bool IsChunkLoaded(ChunkCoords chunkCoords)
         { return localMap.IsChunkLoaded(chunkCoords); }

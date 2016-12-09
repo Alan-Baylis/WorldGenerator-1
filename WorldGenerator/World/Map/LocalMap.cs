@@ -2,6 +2,9 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Sean.Shared;
+using System.Threading.Tasks;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Sean.WorldGenerator
 {
@@ -20,14 +23,14 @@ namespace Sean.WorldGenerator
         private Generator generator;
         private static int MaxChunkLimit = (int)Math.Sqrt(int.MaxValue);
 
-        public LocalMap(IWorld world, int seed)
+        public LocalMap(IWorld world, Generator generator)
         {
             MaxXChunk = int.MinValue;
             MinXChunk = int.MaxValue;
             MaxZChunk = int.MinValue;
             MinZChunk = int.MaxValue;
             mapChunks = new Dictionary<int, MapChunk> ();
-            this.generator = new Generator(world, seed);
+            this.generator = generator;
         }
          
         /*
@@ -123,6 +126,9 @@ namespace Sean.WorldGenerator
                     return mapChunks [idx].Chunk;
                 }
 
+                chunk = LoadChunk(new ChunkCoords(x, z));
+                if (chunk != null) return chunk;
+
                 // Create Chunk
                 Log.WriteInfo($"Generating {x},{z}");
                 var mapChunk = new MapChunk ();
@@ -141,9 +147,48 @@ namespace Sean.WorldGenerator
                     MinZChunk = z;
             }
             generator.Generate(chunk);
+            SaveChunk(chunk);
             return chunk;
         }
 
+        private void SaveChunk(Chunk chunk)
+        {
+            string fileName = Path.Combine("Chunks", $"chunk-{chunk.ChunkCoords.X}-{chunk.ChunkCoords.Z}.bin");
+            try
+            {
+                Log.WriteInfo($"Saving chunk {chunk.ChunkCoords}");
+                if (!Directory.Exists("Chunks")) Directory.CreateDirectory("Chunks");
+                var data = chunk.Serialize();
+                File.WriteAllBytes(fileName, data);
+            }
+            catch (Exception e)
+            {
+                Log.WriteError($"[WorldMap.Save] Failed - {e.Message}");
+            }
+        }
+
+        private Chunk LoadChunk(ChunkCoords coords)
+        {
+            Chunk chunk = null;
+            string fileName = Path.Combine("Chunks", $"chunk-{coords.X}-{coords.Z}.bin");
+            try
+            {
+                if (File.Exists(fileName))
+                {
+                    Log.WriteInfo($"[WorldMap.Load] Loading '{fileName}'...");
+                    var data = File.ReadAllBytes(fileName);
+                    chunk = Shared.Chunk.Deserialize(coords, data);
+                    Log.WriteInfo($"Loaded chunk {chunk.ChunkCoords}");
+                    return chunk;
+                }
+            }
+            catch (Exception e)
+            {
+                Log.WriteError($"[WorldMap.Load] Failed - {e.Message}");
+                File.Delete(fileName);
+            }
+            return null;
+        }
     }
 }
 

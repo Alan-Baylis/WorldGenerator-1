@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Xml;
 
 namespace Sean.Shared
 {
-	public class Chunk
+    public class Chunk
 	{
         #region Constructors
         public Chunk(ChunkCoords chunkCoords)
@@ -71,7 +67,6 @@ namespace Sean.Shared
         //public ConcurrentDictionary<int, GameItemDynamic> GameItems; //also stored at World level
         #endregion
 
-
         public byte[] Serialize()
         {
             return Blocks.Serialize();
@@ -93,7 +88,6 @@ namespace Sean.Shared
                     item.Item2);
             }
         }
-
 
         #region Height Map
         /// <summary>Y level of the deepest transparent block in this chunk. When building the vbo, we only need to start at 1 level below this.</summary>
