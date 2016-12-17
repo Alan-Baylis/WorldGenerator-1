@@ -9,8 +9,12 @@ namespace Sean.WorldGenerator
     {
         private IWorld worldInstance;
         public List<Shared.Position> Coords { get; set; }
-        public List<Shared.Position> EmptyCoords { get; set; }
         public Position Source { get; set; }
+
+        private List<Shared.Position> _emptyCoords;
+        private Dictionary<Shared.Position, float> _heights;
+        private float _minScore;
+        private Position _minPos;
 
         private const int WATER = 2; // TODO - stick these somewhere
         private const int GRASS = 4;
@@ -19,28 +23,28 @@ namespace Sean.WorldGenerator
         public River(IWorld world, Position source)
         {
             worldInstance = world;
+            var _minPos = new Position(0, Global.CHUNK_HEIGHT, 0);
+            float _minScore = Global.CHUNK_HEIGHT;
             Coords = new List<Position>();
-            EmptyCoords = new List<Position>();
+            _emptyCoords = new List<Position>();
+            _heights = new Dictionary<Position, float>();
             Source = source;
             Add(source);
+            CalcScore(source);
         }
         public void Grow()
         {
-            var minPos = new Position(0, Global.CHUNK_HEIGHT, 0);
-            foreach(var pos in EmptyCoords)
-            {
-                if (pos.Y < minPos.Y)
-                    minPos = pos;
-            }
-            Add(minPos);
+            Add(_minPos, _minScore);
         }
-        public void Add(Position pos)
+        public void Add(Position pos, float score)
         {
             if (pos.X == 0 && pos.Z == 0) return;
 
-            if (EmptyCoords.Contains(pos))
-                EmptyCoords.Remove(pos);
             Coords.Add(pos);
+            if (_emptyCoords.Contains(pos))
+                _emptyCoords.Remove(pos);
+            if (_heights.Contains(pos))
+                _heights.Remove(pos);
 
             var block = new Block(Block.BlockType.Water1);
             worldInstance.SetBlock(pos.X, pos.Y, pos.Z, block);
@@ -52,11 +56,47 @@ namespace Sean.WorldGenerator
             AddIfEmpty(pos.X, pos.Y, pos.Z+1);
             AddIfEmpty(pos.X, pos.Y, pos.Z-1);
             AddIfEmpty(pos.X, pos.Y + 1, pos.Z);
+
+            if (_minScore >= score)
+                FindNextLowest();
         }
+        
         private void AddIfEmpty(int x,int y,int z)
         {
             if (!worldInstance.GetBlock(x, y, z).IsSolid)
-                EmptyCoords.Add(new Position(x, y, z));
+            {
+                var pos = new Position(x,y,z);
+                _emptyCoords.Add(pos);
+                CalcScore(pos);
+            }
+        }
+        private void CalcScore(Position pos)
+        {
+            var chunk = new ChunkCoords(pos);
+            var loc = chunk.NormLocOnChunk(pos);
+            var a = worldInstance.GlobalMap[chunk.X+1,chunk.Z] * (1-loc.First);
+            var b = worldInstance.GlobalMap[chunk.X-1,chunk.Z] * loc.First;
+            var c = worldInstance.GlobalMap[chunk.X,chunk.Z+1] * (1-loc.Second);
+            var d = worldInstance.GlobalMap[chunk.X,chunk.Z-1] * loc.Second;
+            float score = (a+b+c+d) / 4;
+            _heights.Add(pos, pos.Y + (score / Global.CHUNK_HEIGHT));
+            if (score < _minScore)
+            {
+                _minScore = score;
+                _minPos = pos;
+            }
+        }
+        private void FindNextLowest()
+        {
+            foreach(var pos in _emptyCoords)
+            {
+                var score = _heights(pos);
+                if (score < _minScore)
+                {
+                    _minScore = score;
+                    _minPos = pos;
+                }
+            }
         }
     }
 

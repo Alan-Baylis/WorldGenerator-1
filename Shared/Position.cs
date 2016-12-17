@@ -112,5 +112,6 @@ namespace Sean.Shared
 		{
 			return new Coords(X, Y, Z);
 		}
+        
 	}
 }
