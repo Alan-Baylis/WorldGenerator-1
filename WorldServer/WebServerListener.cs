@@ -99,7 +99,7 @@ namespace Sean.WorldServer
             }
             catch (Exception e) 
             {
-                Log.WriteInfo($"Exception caught in WebServerListener - {e.ToString()}");
+                Log.WriteInfo($"Exception caught in WebServerListener - {e.Message}");
             }
         }
     }

@@ -78,6 +78,11 @@ namespace Sean.Shared
                 cursorX++;
             }
         }
+        public void WriteNewLine()
+        {
+            cursorX = 0;
+            cursorY++;
+        }
 
         public void RenderBorder()
         {

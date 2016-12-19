@@ -24,12 +24,12 @@ namespace Sean.WorldGenerator
         {
             worldInstance = world;
             var _minPos = new Position(0, Global.CHUNK_HEIGHT, 0);
-            float _minScore = Global.CHUNK_HEIGHT;
+            _minScore = Global.CHUNK_HEIGHT;
             Coords = new List<Position>();
             _emptyCoords = new List<Position>();
             _heights = new Dictionary<Position, float>();
             Source = source;
-            Add(source);
+            Add(source, _minScore);
             CalcScore(source);
         }
         public void Grow()
@@ -43,7 +43,7 @@ namespace Sean.WorldGenerator
             Coords.Add(pos);
             if (_emptyCoords.Contains(pos))
                 _emptyCoords.Remove(pos);
-            if (_heights.Contains(pos))
+            if (_heights.ContainsKey(pos))
                 _heights.Remove(pos);
 
             var block = new Block(Block.BlockType.Water1);
@@ -74,10 +74,10 @@ namespace Sean.WorldGenerator
         {
             var chunk = new ChunkCoords(pos);
             var loc = chunk.NormLocOnChunk(pos);
-            var a = worldInstance.GlobalMap[chunk.X+1,chunk.Z] * (1-loc.First);
-            var b = worldInstance.GlobalMap[chunk.X-1,chunk.Z] * loc.First;
-            var c = worldInstance.GlobalMap[chunk.X,chunk.Z+1] * (1-loc.Second);
-            var d = worldInstance.GlobalMap[chunk.X,chunk.Z-1] * loc.Second;
+            var a = worldInstance.GlobalMap[chunk.X+1,chunk.Z] * (1-loc.Item1);
+            var b = worldInstance.GlobalMap[chunk.X-1,chunk.Z] * loc.Item1;
+            var c = worldInstance.GlobalMap[chunk.X,chunk.Z+1] * (1-loc.Item2);
+            var d = worldInstance.GlobalMap[chunk.X,chunk.Z-1] * loc.Item2;
             float score = (a+b+c+d) / 4;
             _heights.Add(pos, pos.Y + (score / Global.CHUNK_HEIGHT));
             if (score < _minScore)
@@ -90,7 +90,7 @@ namespace Sean.WorldGenerator
         {
             foreach(var pos in _emptyCoords)
             {
-                var score = _heights(pos);
+                var score = _heights[pos];
                 if (score < _minScore)
                 {
                     _minScore = score;
@@ -155,6 +155,7 @@ namespace Sean.WorldGenerator
             {
                 System.Threading.Thread.Sleep(5000);
             }
+            CreateRiver();
             while (true)
             {
                 foreach (var river in Rivers)

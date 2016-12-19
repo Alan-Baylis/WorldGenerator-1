@@ -36,6 +36,7 @@ namespace Sean.WorldServer
 
         private void StartThread()
         {
+            MainClass.WorldInstance.GetChunk(new ChunkCoords(56,27)); // Get Something
             while (true)
             {
                 Render();
@@ -49,10 +50,10 @@ namespace Sean.WorldServer
                         y--;
                         break;
                     case ConsoleKey.DownArrow:
-                        selectedChunk = Math.Min(numChunks, selectedChunk++);
+                        selectedChunk = Math.Min(numChunks, ++selectedChunk);
                         break;
                     case ConsoleKey.UpArrow:
-                        selectedChunk = Math.Max(1, selectedChunk--);
+                        selectedChunk = Math.Max(1, --selectedChunk);
                         break;
                 case ConsoleKey.Escape:
                         IsRunning = false;
@@ -104,6 +105,7 @@ namespace Sean.WorldServer
                 }
 
                 chunksWindow.Write(chunk.ToString());
+                chunksWindow.WriteNewLine();
             }
         }
     }

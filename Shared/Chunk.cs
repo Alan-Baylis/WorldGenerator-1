@@ -52,14 +52,6 @@ namespace Sean.Shared
             }
         }
 
-        // Cell location within chunk, normalized to 0 - 1
-        public Tupple<float,float> NormLocOnChunk(Position pos)
-        {
-          return new Tupple<float,float>(
-            (float(pos.X % ChunkSize) / ChunkSize), 
-            (float(pos.Z % ChunkSize) / ChunkSize));
-        }
-
         /// <summary>Clutter contained in this chunk. Clutter can be stored at the chunk level only because it can never move off the chunk.</summary>
         /// <remarks>HashSet because currently Clutter cannot be added outside of initial world generation. Collection is locked during removal.</remarks>
         //public HashSet<Clutter> Clutters;

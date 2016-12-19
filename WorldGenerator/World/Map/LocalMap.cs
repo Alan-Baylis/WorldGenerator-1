@@ -118,6 +118,7 @@ namespace Sean.WorldGenerator
         {
             //Log.WriteInfo ($"Getting chunk {x},{z}");
             Chunk chunk = null;
+            bool loaded = false;
             lock (mapChunks) {
                 if (x > MaxChunkLimit || x < -MaxChunkLimit || z > MaxChunkLimit || z < -MaxChunkLimit)
                     throw new ArgumentException ("Chunk index exceeded");
@@ -127,13 +128,15 @@ namespace Sean.WorldGenerator
                 }
 
                 chunk = LoadChunk(new ChunkCoords(x, z));
-                if (chunk != null) return chunk;
-
+                if (chunk != null)
+                    loaded = true;
+               
                 // Create Chunk
                 Log.WriteInfo($"Generating {x},{z}");
                 var mapChunk = new MapChunk ();
                 var chunkCoords = new ChunkCoords (x, z);
-                chunk = new Chunk (chunkCoords);
+                if (!loaded)
+                    chunk = new Chunk (chunkCoords);
                 mapChunk.Chunk = chunk;
                 mapChunks [idx] = mapChunk;
 
@@ -146,8 +149,11 @@ namespace Sean.WorldGenerator
                 if (z < MinZChunk)
                     MinZChunk = z;
             }
-            generator.Generate(chunk);
-            SaveChunk(chunk);
+            if (!loaded)
+            {
+                generator.Generate(chunk);
+                SaveChunk(chunk);
+            }
             return chunk;
         }
 

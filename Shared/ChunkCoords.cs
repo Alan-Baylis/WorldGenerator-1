@@ -27,6 +27,14 @@ namespace Sean.Shared
             Z = coords.Zblock / Global.CHUNK_SIZE;
 		}
 
+        // Cell location within chunk, normalized to 0 - 1
+        public Tuple<float, float> NormLocOnChunk(Position pos)
+        {
+            return new Tuple<float, float>(
+              (float)(pos.X % Global.CHUNK_SIZE) / Global.CHUNK_SIZE,
+              (float)(pos.Z % Global.CHUNK_SIZE) / Global.CHUNK_SIZE);
+        }
+
         [DataMember]
 		public readonly int X;
         [DataMember]
