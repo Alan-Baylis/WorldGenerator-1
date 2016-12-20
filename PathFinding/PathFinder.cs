@@ -342,9 +342,10 @@ namespace Sean.PathFinding
 		{
 			//int depth = 100;
 			int fieldOfView = depth / 2;
-			Coords focus = location;
-			focus.Xf += (float)(Math.Cos (location.Direction) * depth);
-			focus.Zf += (float)(Math.Sin (location.Direction) * depth);
+			Coords focus = new Coords(
+                location.Xf + (float)(Math.Cos (location.Direction) * depth),
+                location.Yf,
+                location.Zf + (float)(Math.Sin (location.Direction) * depth));
 
             Position tl = new Position(-fieldOfView, 0, fieldOfView);
             Position tr = new Position(fieldOfView, 0, fieldOfView);
@@ -396,10 +397,10 @@ namespace Sean.PathFinding
 
         private Coords GetCoords(Coords focus, int x, int y, float direction)
 		{	
-		    Coords pt = focus;
-            pt.Xf -= (float)(Math.Sin(direction) * x);
-            pt.Zf += (float)(Math.Cos(direction) * x);
-			pt.Yf += y;
+            Coords pt = new Coords(
+                focus.Xf - (float)(Math.Sin(direction) * x),
+                focus.Zf + (float)(Math.Cos(direction) * x),
+                focus.Yf + y);
 			return pt;
 		}
 

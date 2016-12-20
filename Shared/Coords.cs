@@ -39,9 +39,9 @@ namespace Sean.Shared
 			_pitch = BitConverter.ToSingle(bytes, startIndex + sizeof(float) * 4);
 		}
 
-		public float Xf;
-		public float Yf;
-		public float Zf;
+		public readonly float Xf;
+		public readonly float Yf;
+		public readonly float Zf;
 
 		/// <summary>X coord of the corresponding block. Readonly because Xf can always be safely set instead and this prevents accidental truncating.</summary>
 		/// <remarks>the block coord is simply the truncated float</remarks>

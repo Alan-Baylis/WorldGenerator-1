@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using Sean.Shared;
 using NoiseLibrary;
 
@@ -12,16 +10,15 @@ namespace Sean.WorldGenerator
         private CImplicitModuleBase terrainGenerator;
         private CImplicitModuleBase biosphereGenerator;
         private IWorld worldInstance;
-        private PerlinNoise perlinNoise;
+        //private PerlinNoise perlinNoise;
         private const int octaves = 1;
         private const double persistence = 0.4;
-        private int chunkMidpoint = Global.CHUNK_SIZE / 2;
 
         public Generator(IWorld world, int seed)
         {
             Log.WriteInfo($"Creating Terrain Generator...");
             worldInstance = world;
-            perlinNoise = new PerlinNoise(seed, 100);
+            //perlinNoise = new PerlinNoise(seed, 100);
 
             terrainGenerator = CreateTerrainGenerator();
             biosphereGenerator = CreateBiosphereGenerator();

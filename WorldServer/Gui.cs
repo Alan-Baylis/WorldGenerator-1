@@ -36,7 +36,7 @@ namespace Sean.WorldServer
 
         private void StartThread()
         {
-            MainClass.WorldInstance.GetChunk(new ChunkCoords(56,27)); // Get Something
+            MainClass.WorldInstance.GetChunk(new ChunkCoords(112,54)); // Get Something
             while (true)
             {
                 Render();

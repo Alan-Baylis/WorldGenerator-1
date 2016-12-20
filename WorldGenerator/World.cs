@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Sean.Shared;
-using System.Collections.Concurrent;
 
 namespace Sean.WorldGenerator
 {
@@ -390,8 +389,7 @@ namespace Sean.WorldGenerator
 
             if (!isTransparentBlock || type == Block.BlockType.Ocean)
             {
-                var below = position;
-                below.Y--;
+                var below = new Position(position.X, position.Y - 1, position.Z);
                 if (below.Y > 0)
                 {
                     if (GetBlock(below).Type == Block.BlockType.Grass || GetBlock(below).Type == Block.BlockType.Snow)

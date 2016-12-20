@@ -1,11 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Text;
-using WebSocketSharp.Server;
-using WebSocketSharp;
-using System.Net;
-using Sean.Shared.Comms;
-using System.Collections.Generic;
 using Sean.Shared;
 
 namespace Sean.WorldServer

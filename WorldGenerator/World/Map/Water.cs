@@ -8,11 +8,11 @@ namespace Sean.WorldGenerator
     public class River
     {
         private IWorld worldInstance;
-        public List<Shared.Position> Coords { get; set; }
+        public HashSet<Position> Coords { get; set; }
         public Position Source { get; set; }
 
-        private List<Shared.Position> _emptyCoords;
-        private Dictionary<Shared.Position, float> _heights;
+        private HashSet<Position> _emptyCoords;
+        private Dictionary<Position, float> _heights;
         private float _minScore;
         private Position _minPos;
 
@@ -23,10 +23,10 @@ namespace Sean.WorldGenerator
         public River(IWorld world, Position source)
         {
             worldInstance = world;
-            var _minPos = new Position(0, Global.CHUNK_HEIGHT, 0);
+            _minPos = new Position(0, Global.CHUNK_HEIGHT, 0);
             _minScore = Global.CHUNK_HEIGHT;
-            Coords = new List<Position>();
-            _emptyCoords = new List<Position>();
+            Coords = new HashSet<Position>();
+            _emptyCoords = new HashSet<Position>();
             _heights = new Dictionary<Position, float>();
             Source = source;
             Add(source, _minScore);
@@ -41,10 +41,8 @@ namespace Sean.WorldGenerator
             if (pos.X == 0 && pos.Z == 0) return;
 
             Coords.Add(pos);
-            if (_emptyCoords.Contains(pos))
-                _emptyCoords.Remove(pos);
-            if (_heights.ContainsKey(pos))
-                _heights.Remove(pos);
+            _emptyCoords.Remove(pos);
+            _heights.Remove(pos);
 
             var block = new Block(Block.BlockType.Water1);
             worldInstance.SetBlock(pos.X, pos.Y, pos.Z, block);
@@ -57,13 +55,14 @@ namespace Sean.WorldGenerator
             AddIfEmpty(pos.X, pos.Y, pos.Z-1);
             AddIfEmpty(pos.X, pos.Y + 1, pos.Z);
 
-            if (_minScore >= score)
+            if (_minPos == pos)
                 FindNextLowest();
         }
         
         private void AddIfEmpty(int x,int y,int z)
         {
-            if (!worldInstance.GetBlock(x, y, z).IsSolid)
+            var block = worldInstance.GetBlock (x, y, z);
+            if (!block.IsSolid && !block.IsWater)
             {
                 var pos = new Position(x,y,z);
                 _emptyCoords.Add(pos);
@@ -74,12 +73,13 @@ namespace Sean.WorldGenerator
         {
             var chunk = new ChunkCoords(pos);
             var loc = chunk.NormLocOnChunk(pos);
-            var a = worldInstance.GlobalMap[chunk.X+1,chunk.Z] * (1-loc.Item1);
-            var b = worldInstance.GlobalMap[chunk.X-1,chunk.Z] * loc.Item1;
-            var c = worldInstance.GlobalMap[chunk.X,chunk.Z+1] * (1-loc.Item2);
-            var d = worldInstance.GlobalMap[chunk.X,chunk.Z-1] * loc.Item2;
+            var a = worldInstance.GlobalMap[pos.X+Global.CHUNK_SIZE,pos.Z] * (1-loc.Item1);
+            var b = worldInstance.GlobalMap[pos.X-Global.CHUNK_SIZE,pos.Z] * loc.Item1;
+            var c = worldInstance.GlobalMap[pos.X,pos.Z+Global.CHUNK_SIZE] * (1-loc.Item2);
+            var d = worldInstance.GlobalMap[pos.X,pos.Z-Global.CHUNK_SIZE] * loc.Item2;
             float score = (a+b+c+d) / 4;
-            _heights.Add(pos, pos.Y + (score / Global.CHUNK_HEIGHT));
+            if (!_heights.ContainsKey(pos))
+                _heights.Add(pos, pos.Y + (score / Global.CHUNK_HEIGHT));
             if (score < _minScore)
             {
                 _minScore = score;
@@ -88,6 +88,7 @@ namespace Sean.WorldGenerator
         }
         private void FindNextLowest()
         {
+            _minScore = Global.CHUNK_HEIGHT;
             foreach(var pos in _emptyCoords)
             {
                 var score = _heights[pos];
@@ -137,14 +138,16 @@ namespace Sean.WorldGenerator
                     isWater = (worldInstance.GlobalMapTerrain[pos.X, pos.Z] == WATER);
                 }
 
-                pos.Y = 255;
-                var b = worldInstance.GetBlock(pos);
+                var y = 255;
+                var b = worldInstance.GetBlock(pos.X, y, pos.Z);
                 while (b.IsTransparent)
                 {
-                    pos.Y--;
-                    b = worldInstance.GetBlock(pos);
+                    y--;
+                    b = worldInstance.GetBlock(pos.X, y, pos.Z);
                 }
-                var river = new River(worldInstance, pos);
+                var river = new River(worldInstance, new Position(pos.X, y , pos.Z));
+                var chunkCoords = new ChunkCoords (pos);
+                Log.WriteInfo ($"Creating river from chunk {chunkCoords}");
                 Rivers.Add(river);
             }
         }
@@ -162,7 +165,7 @@ namespace Sean.WorldGenerator
                 {
                     river.Grow();
                 }
-                System.Threading.Thread.Sleep(5000);
+                System.Threading.Thread.Sleep(2000);
             }
         }
     }

@@ -108,6 +108,9 @@ namespace Sean.Shared
 		{
 			get { return IsBlockTypeSolid(Type); }
 		}
+        public bool IsWater {
+            get { return IsBlockTypeWater (Type); }
+        }
 
 		public static bool IsBlockTypeSolid(BlockType type)
 		{
@@ -120,6 +123,23 @@ namespace Sean.Shared
 					return true;
 			}
 		}
+        public static bool IsBlockTypeWater(BlockType type)
+        {
+            switch (type) {
+            case BlockType.Water1:
+            case BlockType.Water2:
+            case BlockType.Water3:
+            case BlockType.Water4:
+            case BlockType.Water5:
+            case BlockType.Water6:
+            case BlockType.Water7:
+            case BlockType.WaterSource:
+            case BlockType.Ocean:
+                return true;
+            default:
+                return false;
+            }
+        }
 
         public static bool IsBlockTypeTree(BlockType type)
         {

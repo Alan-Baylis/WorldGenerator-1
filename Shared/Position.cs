@@ -9,7 +9,7 @@ namespace Sean.Shared
 	/// Used for buffering vertex position data to a VBO.
 	/// </summary>
     [DataContract]
-	public class Position
+    public class Position
 	{
         public Position(int x, int y, int z)
 		{
@@ -29,11 +29,11 @@ namespace Sean.Shared
 		}
 
         [DataMember]
-		public int X;
+		public readonly int X;
         [DataMember]
-		public int Y;
+		public readonly int Y;
         [DataMember]
-		public int Z;
+		public readonly int Z;
 
         public const int SIZE = sizeof(int) * 3;
 
@@ -98,7 +98,7 @@ namespace Sean.Shared
 
 		public override int GetHashCode()
 		{
-			return base.GetHashCode();
+            return X * Y * Z;
 		}
 
 		/// <summary>Returns block position in the format (x={0}, y={1}, z={2})</summary>

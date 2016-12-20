@@ -75,16 +75,12 @@ namespace Sean.WorldServer
             {
                 if (character.WalkPath.Count != 0) {
                     Position newPosition = character.WalkPath.Dequeue();
-                    character.Location.X = newPosition.X;
-                    character.Location.Z = newPosition.Z;
-                    character.Location.Y = newPosition.Y;
-                    MessageProcessor.SendCharacterUpdate (character);
+                    character.Location = newPosition;
                 }
             }
         }
 
         private static Dictionary<int, Character> _characters;
-        private static Random rnd = new Random();
     }
 }
 
