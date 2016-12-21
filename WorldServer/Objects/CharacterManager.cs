@@ -18,45 +18,62 @@ namespace Sean.WorldServer
             int x, y, z, x1,y1,z1;
             Character character;
 
-            x = centre.X + Settings.Random.Next(-15, 15);
-            z = centre.Z + Settings.Random.Next(-15, 15);
-            y = MainClass.WorldInstance.GetHeightMapLevel(x, z);
-            x1 = centre.X + Settings.Random.Next(-15, 15);
-            z1 = centre.Z + Settings.Random.Next(-15, 15);
-            y1 = MainClass.WorldInstance.GetHeightMapLevel(x1, z1);
-            character = new Character() { Id = 1, Name = "Chr1", Location = new Position(x, y, z), Destination = new Position(x1,y1,z1) };
-            _characters.Add(character.Id, character);
-            MessageProcessor.SendCharacterUpdate(character);
-
-            x = centre.X + Settings.Random.Next(-15, 15);
-            z = centre.Z + Settings.Random.Next(-15, 15);
-            y = MainClass.WorldInstance.GetHeightMapLevel(x, z);
-            x1 = centre.X + Settings.Random.Next(-15, 15);
-            z1 = centre.Z + Settings.Random.Next(-15, 15);
-            y1 = MainClass.WorldInstance.GetHeightMapLevel(x1, z1);
-            character = new Character() { Id = 2, Name = "Chr2", Location = new Position(x, y, z), Destination = new Position(x1,y1,z1) };
-            _characters.Add(character.Id, character);
-            MessageProcessor.SendCharacterUpdate(character);
-
-            x = centre.X + Settings.Random.Next(-15, 15);
-            z = centre.Z + Settings.Random.Next(-15, 15);
-            y = MainClass.WorldInstance.GetHeightMapLevel(x, z);
-            x1 = centre.X + Settings.Random.Next(-15, 15);
-            z1 = centre.Z + Settings.Random.Next(-15, 15);
-            y1 = MainClass.WorldInstance.GetHeightMapLevel(x1, z1);
-            character = new Character() { Id = 3, Name = "Chr3", Location = new Position(x, y, z), Destination = new Position(x1,y1,z1) };
-            _characters.Add(character.Id, character);
-            MessageProcessor.SendCharacterUpdate(character);
-
-            x = centre.X + Settings.Random.Next(-15, 15);
-            z = centre.Z + Settings.Random.Next(-15, 15);
-            y = MainClass.WorldInstance.GetHeightMapLevel(x, z);
-            x1 = centre.X + Settings.Random.Next(-15, 15);
-            z1 = centre.Z + Settings.Random.Next(-15, 15);
-            y1 = MainClass.WorldInstance.GetHeightMapLevel(x1, z1);
-            character = new Character() { Id = 4, Name = "Chr4", Location = new Position(x, y, z), Destination = new Position(x1,y1,z1) };
-            _characters.Add(character.Id, character);
-            MessageProcessor.SendCharacterUpdate(character);
+            try
+            {
+                x = centre.X + Settings.Random.Next(-15, 15);
+                z = centre.Z + Settings.Random.Next(-15, 15);
+                y = MainClass.WorldInstance.GetHeightMapLevel(x, z);
+                x1 = centre.X + Settings.Random.Next(-15, 15);
+                z1 = centre.Z + Settings.Random.Next(-15, 15);
+                y1 = MainClass.WorldInstance.GetHeightMapLevel(x1, z1);
+                character = new Character() { Id = 1, Name = "Chr1", Location = new Position(x, y, z), Destination = new Position(x1, y1, z1) };
+                _characters.Add(character.Id, character);
+                MessageProcessor.SendCharacterUpdate(character);
+            }
+            catch (Exception) // TODO GetHeightMapLevel used in this method sometimes throws
+            { }
+            try
+            {
+                x = centre.X + Settings.Random.Next(-15, 15);
+                z = centre.Z + Settings.Random.Next(-15, 15);
+                y = MainClass.WorldInstance.GetHeightMapLevel(x, z);
+                x1 = centre.X + Settings.Random.Next(-15, 15);
+                z1 = centre.Z + Settings.Random.Next(-15, 15);
+                y1 = MainClass.WorldInstance.GetHeightMapLevel(x1, z1);
+                character = new Character() { Id = 2, Name = "Chr2", Location = new Position(x, y, z), Destination = new Position(x1, y1, z1) };
+                _characters.Add(character.Id, character);
+                MessageProcessor.SendCharacterUpdate(character);
+            }
+            catch (Exception)
+            { }
+            try
+            {
+                x = centre.X + Settings.Random.Next(-15, 15);
+                z = centre.Z + Settings.Random.Next(-15, 15);
+                y = MainClass.WorldInstance.GetHeightMapLevel(x, z);
+                x1 = centre.X + Settings.Random.Next(-15, 15);
+                z1 = centre.Z + Settings.Random.Next(-15, 15);
+                y1 = MainClass.WorldInstance.GetHeightMapLevel(x1, z1);
+                character = new Character() { Id = 3, Name = "Chr3", Location = new Position(x, y, z), Destination = new Position(x1, y1, z1) };
+                _characters.Add(character.Id, character);
+                MessageProcessor.SendCharacterUpdate(character);
+            }
+            catch (Exception)
+            { }
+            try
+            {
+                x = centre.X + Settings.Random.Next(-15, 15);
+                z = centre.Z + Settings.Random.Next(-15, 15);
+                y = MainClass.WorldInstance.GetHeightMapLevel(x, z);
+                x1 = centre.X + Settings.Random.Next(-15, 15);
+                z1 = centre.Z + Settings.Random.Next(-15, 15);
+                y1 = MainClass.WorldInstance.GetHeightMapLevel(x1, z1);
+                character = new Character() { Id = 4, Name = "Chr4", Location = new Position(x, y, z), Destination = new Position(x1, y1, z1) };
+                _characters.Add(character.Id, character);
+                MessageProcessor.SendCharacterUpdate(character);
+            }
+            catch (Exception)
+            { }
         }
 
         public static void UpdateJobs()

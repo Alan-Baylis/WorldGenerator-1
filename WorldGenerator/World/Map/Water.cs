@@ -47,6 +47,7 @@ namespace Sean.WorldGenerator
             var block = new Block(Block.BlockType.Water1);
             worldInstance.SetBlock(pos.X, pos.Y, pos.Z, block);
             worldInstance.GlobalMap.Set(pos.X, pos.Z, RIVER);
+            Log.WriteInfo($"[River.Add] Adding {pos}");
 
             AddIfEmpty(pos.X, pos.Y - 1, pos.Z);
             AddIfEmpty(pos.X+1, pos.Y, pos.Z);
@@ -77,9 +78,9 @@ namespace Sean.WorldGenerator
             var b = worldInstance.GlobalMap[pos.X-Global.CHUNK_SIZE,pos.Z] * loc.Item1;
             var c = worldInstance.GlobalMap[pos.X,pos.Z+Global.CHUNK_SIZE] * (1-loc.Item2);
             var d = worldInstance.GlobalMap[pos.X,pos.Z-Global.CHUNK_SIZE] * loc.Item2;
-            float score = (a+b+c+d) / 4;
+            float score = pos.Y + ((a+b+c+d) / 4) / Global.CHUNK_HEIGHT;
             if (!_heights.ContainsKey(pos))
-                _heights.Add(pos, pos.Y + (score / Global.CHUNK_HEIGHT));
+                _heights.Add(pos, score);
             if (score < _minScore)
             {
                 _minScore = score;
