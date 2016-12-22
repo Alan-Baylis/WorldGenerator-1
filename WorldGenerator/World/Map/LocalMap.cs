@@ -119,26 +119,28 @@ namespace Sean.WorldGenerator
             //Log.WriteInfo ($"Getting chunk {x},{z}");
             Chunk chunk = null;
             bool loaded = false;
-            lock (mapChunks) {
+            lock (mapChunks)
+            {
                 if (x > MaxChunkLimit || x < -MaxChunkLimit || z > MaxChunkLimit || z < -MaxChunkLimit)
-                    throw new ArgumentException ("Chunk index exceeded");
+                    throw new ArgumentException("Chunk index exceeded");
                 int idx = x * MaxChunkLimit + z;
-                if (mapChunks.ContainsKey (idx)) {
-                    return mapChunks [idx].Chunk;
+                if (mapChunks.ContainsKey(idx))
+                {
+                    return mapChunks[idx].Chunk;
                 }
 
                 chunk = LoadChunk(new ChunkCoords(x, z));
                 if (chunk != null)
                     loaded = true;
-               
+
                 // Create Chunk
                 Log.WriteInfo($"Generating {x},{z}");
-                var mapChunk = new MapChunk ();
-                var chunkCoords = new ChunkCoords (x, z);
+                var mapChunk = new MapChunk();
+                var chunkCoords = new ChunkCoords(x, z);
                 if (!loaded)
-                    chunk = new Chunk (chunkCoords);
+                    chunk = new Chunk(chunkCoords);
                 mapChunk.Chunk = chunk;
-                mapChunks [idx] = mapChunk;
+                mapChunks[idx] = mapChunk;
 
                 if (x > MaxXChunk)
                     MaxXChunk = x;
@@ -148,11 +150,14 @@ namespace Sean.WorldGenerator
                     MaxZChunk = z;
                 if (z < MinZChunk)
                     MinZChunk = z;
-            }
-            if (!loaded)
-            {
-                generator.Generate(chunk);
-                SaveChunk(chunk);
+
+                if (!loaded)
+                {
+                    generator.Generate(chunk);
+                    SaveChunk(chunk);
+                }
+                chunk.FinishedGeneration = true;
+                Log.WriteInfo($"Chunk {chunk.ChunkCoords} generated");
             }
             return chunk;
         }
