@@ -275,7 +275,7 @@ namespace Sean.WorldGenerator
         }
         private void ExpandSearchCheckBlock(int x,int y,int z, UniqueQueue<Position> generateQueue)
         {
-            if (worldInstance.IsValidBlockLocation(x, y, z) && worldInstance.GetBlock(x,y,z).Type == Block.BlockType.Unknown)
+            if (worldInstance.IsLoadedBlockLocation(x, y, z) && worldInstance.GetBlock(x,y,z).Type == Block.BlockType.Unknown)
                 generateQueue.Enqueue (new Position (x, y, z));
         }
         private Block GenerateCell(int x, int y, int z)

@@ -451,7 +451,7 @@ namespace Sean.PathFinding
 		{
             foreach (Position pt in GraphicsAlgorithms.FindIntersectingBlocks(start.ToPosition(), end.ToPosition()))
             {
-                if (!world.IsValidBlockLocation(pt))
+                if (!world.IsLoadedBlockLocation(pt))
                 {
                     return end.ToPosition();
                 }

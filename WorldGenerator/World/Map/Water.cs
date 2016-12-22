@@ -10,6 +10,7 @@ namespace Sean.WorldGenerator
         private IWorld worldInstance;
         public HashSet<Position> Coords { get; set; }
         public Position Source { get; set; }
+        public bool Growing { get; private set; }
 
         private HashSet<Position> _emptyCoords;
         private Dictionary<Position, float> _heights;
@@ -23,6 +24,7 @@ namespace Sean.WorldGenerator
         public River(IWorld world, Position source)
         {
             worldInstance = world;
+            Growing = true;
             _minPos = new Position(0, Global.CHUNK_HEIGHT, 0);
             _minScore = Global.CHUNK_HEIGHT;
             Coords = new HashSet<Position>();
@@ -47,7 +49,7 @@ namespace Sean.WorldGenerator
             var block = new Block(Block.BlockType.Water1);
             worldInstance.SetBlock(pos.X, pos.Y, pos.Z, block);
             worldInstance.GlobalMap.Set(pos.X, pos.Z, RIVER);
-            Log.WriteInfo($"[River.Add] Adding {pos}");
+            //Log.WriteInfo($"[River.Add] Adding {pos}");
 
             AddIfEmpty(pos.X, pos.Y - 1, pos.Z);
             AddIfEmpty(pos.X+1, pos.Y, pos.Z);
@@ -62,8 +64,18 @@ namespace Sean.WorldGenerator
         
         private void AddIfEmpty(int x,int y,int z)
         {
+            if (!worldInstance.IsValidBlockLocation (x, y, z))
+                return;
+                
             var block = worldInstance.GetBlock (x, y, z);
-            if (!block.IsSolid && !block.IsWater)
+            if (block.IsWater) {
+                if (!Coords.Contains (new Position (x, y, z))) {
+                    // Have reached another river or the ocean
+                    Growing = false;
+                }
+                return;
+            }
+            if (!block.IsSolid)
             {
                 var pos = new Position(x,y,z);
                 _emptyCoords.Add(pos);
@@ -74,11 +86,18 @@ namespace Sean.WorldGenerator
         {
             var chunk = new ChunkCoords(pos);
             var loc = chunk.NormLocOnChunk(pos);
-            var a = worldInstance.GlobalMap[pos.X+Global.CHUNK_SIZE,pos.Z] * (1-loc.Item1);
-            var b = worldInstance.GlobalMap[pos.X-Global.CHUNK_SIZE,pos.Z] * loc.Item1;
-            var c = worldInstance.GlobalMap[pos.X,pos.Z+Global.CHUNK_SIZE] * (1-loc.Item2);
-            var d = worldInstance.GlobalMap[pos.X,pos.Z-Global.CHUNK_SIZE] * loc.Item2;
-            float score = pos.Y + ((a+b+c+d) / 4) / Global.CHUNK_HEIGHT;
+            float score;
+            try
+            {
+                var a = worldInstance.GlobalMap[pos.X+Global.CHUNK_SIZE,pos.Z] * (1-loc.Item1);
+                var b = worldInstance.GlobalMap[pos.X-Global.CHUNK_SIZE,pos.Z] * loc.Item1;
+                var c = worldInstance.GlobalMap[pos.X,pos.Z+Global.CHUNK_SIZE] * (1-loc.Item2);
+                var d = worldInstance.GlobalMap[pos.X,pos.Z-Global.CHUNK_SIZE] * loc.Item2;
+                score = pos.Y + ((a+b+c+d) / 4) / Global.CHUNK_HEIGHT;
+            }
+            catch (Exception) { // TODO Handle out of array bounds errors better
+                score = pos.Y;
+            }
             if (!_heights.ContainsKey(pos))
                 _heights.Add(pos, score);
             if (score < _minScore)
@@ -160,13 +179,16 @@ namespace Sean.WorldGenerator
                 System.Threading.Thread.Sleep(5000);
             }
             CreateRiver();
-            while (true)
+            bool growing = true;
+            while (growing)
             {
+                growing = false;
                 foreach (var river in Rivers)
                 {
                     river.Grow();
+                    growing |= river.Growing;
                 }
-                System.Threading.Thread.Sleep(2000);
+                //System.Threading.Thread.Sleep(500);
             }
         }
     }

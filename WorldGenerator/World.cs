@@ -212,24 +212,31 @@ namespace Sean.WorldGenerator
                 this.WorldEvents.Invoke(new WorldEventArgs() { action = action, block = block, blockLocation = blockLocation });
         }
 
+        public bool IsValidBlockLocation(int x, int y, int z)
+        {
+            return y >= 0 && y < Global.CHUNK_HEIGHT && 
+                x > GlobalMap.Size.minX && x < GlobalMap.Size.maxX &&
+                z > GlobalMap.Size.minZ && z < GlobalMap.Size.maxZ;
+        }
+
         /// <summary>
         /// Is this position a valid block location. Includes blocks on the base of the world even though they cannot be removed.
         /// This is because the cursor can still point at them, they can still receive light, etc.
         /// Coords/Position structs have the same method. Use this one to avoid contructing coords/position when they arent needed. Large performance boost in some cases.
         /// </summary>
-        public bool IsValidBlockLocation(int x, int y, int z)
+        public bool IsLoadedBlockLocation(int x, int y, int z)
         {
             return y >= 0 && y < Global.CHUNK_HEIGHT && 
                 localMap.IsChunkLoaded (new ChunkCoords(x / Global.CHUNK_SIZE, z / Global.CHUNK_SIZE));
         }
 
-        public bool IsValidBlockLocation(Position position)
+        public bool IsLoadedBlockLocation(Position position)
         {
-            return IsValidBlockLocation(position.X, position.Y, position.Z);
+            return IsLoadedBlockLocation(position.X, position.Y, position.Z);
         }
-        public bool IsValidBlockLocation(Coords coords)
+        public bool IsLoadedBlockLocation(Coords coords)
         {
-            return IsValidBlockLocation(coords.Xblock, coords.Yblock, coords.Zblock);
+            return IsLoadedBlockLocation(coords.Xblock, coords.Yblock, coords.Zblock);
         }
 
         internal bool IsOnChunkBorder(int x, int z)
@@ -254,7 +261,7 @@ namespace Sean.WorldGenerator
 
         internal bool IsValidItemLocation(Position position)
         {
-            return IsValidBlockLocation(position.X, 0, position.Z) && position.Y >= 0; 
+            return IsLoadedBlockLocation(position.X, 0, position.Z) && position.Y >= 0; 
         }
 
         internal bool IsOnChunkBorder(Position position)
@@ -303,7 +310,7 @@ namespace Sean.WorldGenerator
 
         internal bool IsValidItemLocation(Coords coords)
         {
-            return IsValidBlockLocation(coords.Xblock, 0, coords.Zblock) && coords.Yf >= 0;
+            return IsLoadedBlockLocation(coords.Xblock, 0, coords.Zblock) && coords.Yf >= 0;
         }
 
         [Obsolete("Only usages moved to Position.")]
@@ -317,17 +324,17 @@ namespace Sean.WorldGenerator
         {
             var positions = new List<Position>();
             var left = new Position(position.X - 1, position.Y, position.Z);
-            if (IsValidBlockLocation(left) && left.Y >= 1) positions.Add(left);
+            if (IsLoadedBlockLocation(left) && left.Y >= 1) positions.Add(left);
             var right = new Position(position.X + 1, position.Y, position.Z);
-            if (IsValidBlockLocation(right) && right.Y >= 1) positions.Add(right);
+            if (IsLoadedBlockLocation(right) && right.Y >= 1) positions.Add(right);
             var front = new Position(position.X, position.Y, position.Z + 1);
-            if (IsValidBlockLocation(front) && front.Y >= 1) positions.Add(front);
+            if (IsLoadedBlockLocation(front) && front.Y >= 1) positions.Add(front);
             var back = new Position(position.X, position.Y, position.Z - 1);
-            if (IsValidBlockLocation(back) && back.Y >= 1) positions.Add(back);
+            if (IsLoadedBlockLocation(back) && back.Y >= 1) positions.Add(back);
             var top = new Position(position.X, position.Y + 1, position.Z);
-            if (IsValidBlockLocation(top) && top.Y >= 1) positions.Add(top);
+            if (IsLoadedBlockLocation(top) && top.Y >= 1) positions.Add(top);
             var bottom = new Position(position.X, position.Y - 1, position.Z);
-            if (IsValidBlockLocation(bottom) && bottom.Y >= 1) positions.Add(bottom);
+            if (IsLoadedBlockLocation(bottom) && bottom.Y >= 1) positions.Add(bottom);
             return positions;
         }
 
@@ -336,17 +343,17 @@ namespace Sean.WorldGenerator
         {
             var positions = new List<Tuple<Position, Face>>();
             var left = new Position(position.X - 1, position.Y, position.Z);
-            if (IsValidBlockLocation(left) && left.Y >= 1) positions.Add(new Tuple<Position, Face>(left, Face.Left));
+            if (IsLoadedBlockLocation(left) && left.Y >= 1) positions.Add(new Tuple<Position, Face>(left, Face.Left));
             var right = new Position(position.X + 1, position.Y, position.Z);
-            if (IsValidBlockLocation(right) && right.Y >= 1) positions.Add(new Tuple<Position, Face>(right, Face.Right));
+            if (IsLoadedBlockLocation(right) && right.Y >= 1) positions.Add(new Tuple<Position, Face>(right, Face.Right));
             var front = new Position(position.X, position.Y, position.Z + 1);
-            if (IsValidBlockLocation(front) && front.Y >= 1) positions.Add(new Tuple<Position, Face>(front, Face.Front));
+            if (IsLoadedBlockLocation(front) && front.Y >= 1) positions.Add(new Tuple<Position, Face>(front, Face.Front));
             var back = new Position(position.X, position.Y, position.Z - 1);
-            if (IsValidBlockLocation(back) && back.Y >= 1) positions.Add(new Tuple<Position, Face>(back, Face.Back));
+            if (IsLoadedBlockLocation(back) && back.Y >= 1) positions.Add(new Tuple<Position, Face>(back, Face.Back));
             var top = new Position(position.X, position.Y + 1, position.Z);
-            if (IsValidBlockLocation(top) && top.Y >= 1) positions.Add(new Tuple<Position, Face>(top, Face.Top));
+            if (IsLoadedBlockLocation(top) && top.Y >= 1) positions.Add(new Tuple<Position, Face>(top, Face.Top));
             var bottom = new Position(position.X, position.Y - 1, position.Z);
-            if (IsValidBlockLocation(bottom) && bottom.Y >= 1) positions.Add(new Tuple<Position, Face>(bottom, Face.Bottom));
+            if (IsLoadedBlockLocation(bottom) && bottom.Y >= 1) positions.Add(new Tuple<Position, Face>(bottom, Face.Bottom));
             return positions;
         }
 
@@ -365,7 +372,7 @@ namespace Sean.WorldGenerator
         /// <param name="isMultipleBlockPlacement">Use this when placing multiple blocks at once so lighting and chunk queueing only happens once.</param>
         internal void PlaceBlock(Position position, Block.BlockType type, bool isMultipleBlockPlacement = false)
         {
-            if (!IsValidBlockLocation(position) || position.Y <= 0) return;
+            if (!IsLoadedBlockLocation(position) || position.Y <= 0) return;
 
             //this was a multiple block placement, prevent placing blocks on yourself and getting stuck; used to be able to place cuboids on yourself and get stuck
             //only check in single player for now because in multiplayer this could allow the blocks on different clients to get out of sync and placements of multiple blocks in multiplayer will be rare
@@ -428,7 +435,7 @@ namespace Sean.WorldGenerator
                             adjacent = new Position(position.X, position.Y, position.Z - 1);
                             break;
                         }
-                        if (IsValidBlockLocation(adjacent) && GetBlock(adjacent).Type == Block.BlockType.Ocean)
+                        if (IsLoadedBlockLocation(adjacent) && GetBlock(adjacent).Type == Block.BlockType.Ocean)
                         {
                             localMap.Chunk(adjacent).WaterExpanding = true;
                         }

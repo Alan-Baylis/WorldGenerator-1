@@ -2,8 +2,9 @@
 {
     public interface IWorld
     {
-        bool IsValidBlockLocation(Position position);
-        bool IsValidBlockLocation(int x, int y, int z);
+        bool IsValidBlockLocation (int x, int y, int z);
+        bool IsLoadedBlockLocation(Position position);
+        bool IsLoadedBlockLocation(int x, int y, int z);
 
         Block GetBlock(Position position);
         Block GetBlock(int x, int y, int z);

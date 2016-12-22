@@ -63,7 +63,7 @@ namespace Sean.WorldGenerator
 							if (leafX == 0 && leafZ == 0) continue; //dont replace the trunk
 							if (Math.Sqrt(leafX * leafX + leafZ * leafZ + Math.Pow(treeHeight - leafRadius - yTrunkLevel + 1, 2)) > leafRadius) continue;
 							var leafPosition = new Position(xProposedInWorld + leafX, yProposed + yTrunkLevel, zProposedInWorld + leafZ);
-                            if (world.IsValidBlockLocation(leafPosition) && world.GetBlock(leafPosition).Type == Block.BlockType.Air)
+                            if (world.IsLoadedBlockLocation(leafPosition) && world.GetBlock(leafPosition).Type == Block.BlockType.Air)
 							{
                                 //need to get the chunk because this block could be expanding into an adjacent chunk
                                 world.SetBlock(leafPosition, new Block(Block.BlockType.Leaves));
