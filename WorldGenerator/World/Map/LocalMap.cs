@@ -164,11 +164,12 @@ namespace Sean.WorldGenerator
 
         private void SaveChunk(Chunk chunk)
         {
-            string fileName = Path.Combine("Chunks", $"chunk-{chunk.ChunkCoords.X}-{chunk.ChunkCoords.Z}.bin");
+            string directory = Path.Combine ("Chunks", $"{chunk.ChunkCoords.X}");
+            string fileName = Path.Combine(directory, $"chunk-{chunk.ChunkCoords.X}-{chunk.ChunkCoords.Z}.bin");
             try
             {
                 Log.WriteInfo($"Saving chunk {chunk.ChunkCoords}");
-                if (!Directory.Exists("Chunks")) Directory.CreateDirectory("Chunks");
+                if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
                 var data = chunk.Serialize();
                 File.WriteAllBytes(fileName, data);
             }
@@ -181,7 +182,7 @@ namespace Sean.WorldGenerator
         private Chunk LoadChunk(ChunkCoords coords)
         {
             Chunk chunk = null;
-            string fileName = Path.Combine("Chunks", $"chunk-{coords.X}-{coords.Z}.bin");
+            string fileName = Path.Combine("Chunks", $"{coords.X}", $"chunk-{coords.X}-{coords.Z}.bin");
             try
             {
                 if (File.Exists(fileName))

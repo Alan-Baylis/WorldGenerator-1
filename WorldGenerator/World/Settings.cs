@@ -19,7 +19,7 @@ namespace Sean.WorldGenerator
         public const int globalChunkCount = 128;
         public const int globalMapSize = globalChunkCount * Global.CHUNK_SIZE;
 
-        public static Random Random = new Random();
+        public static Random Random = new Random(DateTime.Now.Second);
 
         private static Version _version;
         /// <summary>Store the version here so the game window can still know what version we are running.</summary>

@@ -64,8 +64,11 @@ namespace Sean.WorldGenerator
         
         private void AddIfEmpty(int x,int y,int z)
         {
-            if (!worldInstance.IsValidBlockLocation (x, y, z))
+            if (!worldInstance.IsValidBlockLocation (x, y, z)) {
+                // Have reached edge of map
+                Growing = false;
                 return;
+            }
                 
             var block = worldInstance.GetBlock (x, y, z);
             if (block.IsWater) {
@@ -94,6 +97,11 @@ namespace Sean.WorldGenerator
                 var c = worldInstance.GlobalMap[pos.X,pos.Z+Global.CHUNK_SIZE] * (1-loc.Item2);
                 var d = worldInstance.GlobalMap[pos.X,pos.Z-Global.CHUNK_SIZE] * loc.Item2;
                 score = pos.Y + ((a+b+c+d) / 4) / Global.CHUNK_HEIGHT;
+                var block = worldInstance.GetBlock (pos.X, pos.Y-1, pos.Z);
+                if (!block.IsSolid)
+                {
+                    score -= 0.5f;
+                }
             }
             catch (Exception) { // TODO Handle out of array bounds errors better
                 score = pos.Y;
