@@ -93,7 +93,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\PathFinding\PathFinding.csproj">
-      <Project>{cbd66195-e5cc-4ada-8717-1900ba0082db}</Project>
+      <Project>{CBD66195-E5CC-4ADA-8717-1900BA0082DB}</Project>
       <Name>PathFinding</Name>
     </ProjectReference>
     <ProjectReference Include="..\WorldGenerator\WorldGenerator.csproj">

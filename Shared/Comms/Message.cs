@@ -184,8 +184,8 @@ namespace Sean.Shared.Comms
         public override string ToString()
         {
             var text = new StringBuilder();
-            if (FromId != null) text.Append($"From:({FromId}) ");
-            if (DestId != null) text.Append($"To:({DestId}) ");
+            if (FromId != Guid.Empty) text.Append($"From:({FromId}) ");
+            if (DestId != Guid.Empty) text.Append($"To:({DestId}) ");
             if (Ping != null) text.Append($"Ping({Ping.Message}) ");
             if (Pong != null) text.Append($"Pong({Pong.Message}) ");
             if (Response != null) text.Append($"Response({Response.Code},{Response.Message}) ");
