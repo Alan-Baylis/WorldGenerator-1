@@ -2,26 +2,15 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
 using Sean.Shared;
-using System.Collections.Generic;
 
 namespace OpenTkClient
 {
-    public class Comms
+    public class ServerRemote : IServer
     {
-        private static Thread thread;
-		private static List<string> sent = new List<string>();
-
-        public static void Run()
+        private void Start()
         {
-            thread = new Thread(new ThreadStart(Start));
-            thread.Start();
-        }
-
-        private static void Start()
-        {
-            Console.WriteLine ("Hello World!");
+            Console.WriteLine ("Remote Server");
 
             try
             {
@@ -44,43 +33,14 @@ namespace OpenTkClient
                         Message = "Hi"
                     }
                 });
-
-		        Thread.Sleep (2000);
-                //ClientConnection.BroadcastMessage(new Message()
-                //{
-                //    WorldMapRequest = new WorldMapRequestMessage()
-                //});
-
-                SendGetWorldMap();
-				while(true)
-				{
-                    int x = Global.LookingAt.X / Global.CHUNK_SIZE;
-					int z = Global.LookingAt.Z / Global.CHUNK_SIZE;
-                    if (Global.Scale < 4)
-                    {
-                        SendGetMap(x, z);
-                        SendGetMap(x + 1, z);
-                        SendGetMap(x - 1, z);
-                        SendGetMap(x, z + 1);
-                        SendGetMap(x, z - 1);
-                        SendGetMap(x + 1, z + 1);
-                        SendGetMap(x + 1, z - 1);
-                        SendGetMap(x - 1, z + 1);
-                        SendGetMap(x - 1, z - 1);
-                    }
-					Thread.Sleep (2000);
-				}
-			
-                Console.WriteLine("Press any key to exit");
-                Console.ReadKey();
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exception caught in ServerSocketListener - {0}", e.ToString());
+                Console.WriteLine("Exception caught in ServerRemote - {0}", e.ToString());
             }
         }
 
-        private static void SendGetWorldMap()
+        private void SendGetWorldMap()
         {
             ClientConnection.BroadcastMessage(new Message()
             {
@@ -89,7 +49,7 @@ namespace OpenTkClient
             );
         }
 
-        private static void SendGetMap(int x, int z)
+        private void SendGetMap(int x, int z)
 		{
 			string hash = $"{x},{z}";
 			if (!sent.Contains(hash))
@@ -106,7 +66,7 @@ namespace OpenTkClient
 			}
 		}
 
-        public static void ProcessMessage(Guid clientId, Message msg)
+        private static void ProcessMessage(Guid clientId, Message msg)
         {
             try
             {
@@ -151,7 +111,5 @@ namespace OpenTkClient
                 Console.WriteLine("Exception caught in ProcessMessage - {0}", e.ToString());
             }
         }
-
     }
-
 }

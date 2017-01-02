@@ -45,7 +45,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CharacterManager.cs" />
-    <Compile Include="Comms.cs" />
     <Compile Include="IntroForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -59,6 +58,9 @@
     <Compile Include="MapManager.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="GameRenderer.cs" />
+    <Compile Include="ServerLocal.cs" />
+    <Compile Include="ServerRemote.cs" />
+    <Compile Include="Server.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

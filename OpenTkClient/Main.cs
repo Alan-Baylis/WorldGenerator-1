@@ -13,10 +13,13 @@
             using (GameRenderer gameRenderer = new GameRenderer())
             {
                 //Utilities.SetWindowTitle(example);
+                IServer server;
                 if (Global.IsLocalServer)
-                    Comms.Run(); // TODO
+                    server = new ServerLocal ();
                 else
-                    Comms.Run();
+                    server = new ServerRemote ();
+
+                Server.Run (server);
                 
                 gameRenderer.Run(30.0);
             }
