@@ -3,12 +3,13 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using Sean.Shared;
+using System.Collections.Generic;
 
 namespace OpenTkClient
 {
     public class ServerRemote : IServer
     {
-        private void Start()
+        public void Start()
         {
             Console.WriteLine ("Remote Server");
 
@@ -40,7 +41,7 @@ namespace OpenTkClient
             }
         }
 
-        private void SendGetWorldMap()
+        public void GetWorldMap()
         {
             ClientConnection.BroadcastMessage(new Message()
             {
@@ -49,7 +50,8 @@ namespace OpenTkClient
             );
         }
 
-        private void SendGetMap(int x, int z)
+        private static List<string> sent = new List<string>(); // TODO - do better
+        public void GetMap(int x, int z)
 		{
 			string hash = $"{x},{z}";
 			if (!sent.Contains(hash))
@@ -66,7 +68,7 @@ namespace OpenTkClient
 			}
 		}
 
-        private static void ProcessMessage(Guid clientId, Message msg)
+        private void ProcessMessage(Guid clientId, Message msg)
         {
             try
             {

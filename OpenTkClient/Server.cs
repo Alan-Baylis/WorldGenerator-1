@@ -14,11 +14,11 @@ namespace OpenTkClient
     public class Server
     {
         private static Thread thread;
-        private IServer server;
+        private static IServer server;
 
         public static void Run(IServer server)
         {
-            this.server = server;
+            server = server;
             thread = new Thread(new ThreadStart(Start));
             thread.Start();
         }
