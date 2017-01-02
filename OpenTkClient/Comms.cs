@@ -113,11 +113,29 @@ namespace OpenTkClient
                 //Console.WriteLine ($"Processing response... {msg.ToString ()}");
                 if (msg.Map != null)
                 {
-                    MapManager.AddChunk (msg);
+                    var position = msg.Map.MinPosition;
+                    var coords = new ChunkCoords (position);
+                    var chunk = Sean.Shared.Chunk.Deserialize (coords, msg.Data);
+                    MapManager.AddChunk (coords, chunk);
                 }
                 if (msg.WorldMapResponse != null)
                 {
-                    MapManager.SetWorldMap (msg);
+                    var size = new ArraySize()
+                    {
+                        scale = msg.WorldMapResponse.Scale,
+                        minX = msg.WorldMapResponse.MinPosition.X,
+                        minY = msg.WorldMapResponse.MinPosition.Y,
+                        minZ = msg.WorldMapResponse.MinPosition.Z,
+                        maxX = msg.WorldMapResponse.MaxPosition.X,
+                        maxY = msg.WorldMapResponse.MaxPosition.Y,
+                        maxZ = msg.WorldMapResponse.MaxPosition.Z,
+                    };
+                    var map = new Array<byte>(size);
+                    map.DeSerialize(msg.Data);
+                    if (msg.WorldMapResponse.MapRequestType == Sean.Shared.Comms.MapRequestType.HeightMap)
+                        MapManager.SetWorldMapHeight(map);
+                    else if (msg.WorldMapResponse.MapRequestType == Sean.Shared.Comms.MapRequestType.Terrain)
+                        MapManager.SetWorldMapTerrain(map);
                 }
                 if (msg.MapCharacterUpdate != null)
                 {

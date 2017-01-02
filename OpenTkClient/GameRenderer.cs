@@ -1,8 +1,4 @@
-﻿// This code was written for the OpenTK library and has been released
-// to the Public Domain.
-// It is provided "as is" without express or implied warranty of any kind.
-
-using System;
+﻿using System;
 using System.Drawing;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -10,7 +6,6 @@ using System.Drawing.Imaging;
 using Sean.Shared;
 using OpenTK.Input;
 using System.IO;
-using System.Collections.Generic;
 
 namespace OpenTkClient
 {
@@ -46,44 +41,11 @@ namespace OpenTkClient
 
         protected override void OnLoad(EventArgs e)
 		{
-            //GL.MatrixMode(MatrixMode.Projection);        // Select the Projection matrix for operation
-            //GL.LoadIdentity();                           // Reset Projection matrix
-            //GL.Ortho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0); // Set clipping area's left, right, bottom, top
-            //GL.Ortho(0, 800, 600, 0, -1, 1);             // Set clipping area's left, right, bottom, top
-            //GL.MatrixMode(MatrixMode.Modelview);         // Select the ModelView for operation
-            //GL.LoadIdentity();                           // Reset the Model View Matrix
-
-            //background color
             GL.ClearColor(Color.CornflowerBlue);
-            //GL.Ortho(0, 800, 600, 0, -1, 1);
-            //GL.Viewport(0, 0, 800, 600);
-
-            //set the view area
-            //GL.MatrixMode(MatrixMode.Projection);
-            //GL.LoadIdentity();
-            //GL.Ortho(-2, 2, -2, 2, -2, 2);
-
-            //now back to 'scene editing' mode
-            //GL.MatrixMode(MatrixMode.Modelview);
-            //GL.LoadIdentity();
-
-            //make things look nice
             GL.ShadeModel(ShadingModel.Smooth);
-
-            //set up our z-rendering logic
-            //GL.ClearDepth(1.0f);
             GL.Disable(EnableCap.DepthTest);
-            //GL.Enable(EnableCap.DepthTest);
-            //GL.DepthFunc(DepthFunction.Lequal);
-            //GL.DepthMask(true);
-            //GL.ClearColor(Color.Black);
-
-            //other improvements to quality
             GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
             GL.Hint(HintTarget.LineSmoothHint, HintMode.Nicest);
-
-            //initialize our scene data
-            //CreateVertexBuffer();
 
 			textures[(int)Block.BlockType.Unknown] = LoadTexture("block.png");
 			textures[(int)Block.BlockType.Rock] = LoadTexture("rock.png");
@@ -131,25 +93,6 @@ namespace OpenTkClient
             boxListLargeIndex = CompileLargeBox ();
         }
 
-        //void CreateVertexBuffer()
-        //{
-        //    vertices = new Vector3[2, 3];
-        //    vertices[0, 0] = new Vector3(-1f, -1f, (float)Math.Sin(time));
-        //    vertices[0, 1] = new Vector3(0.5f, -1f, (float)Math.Sin(time));
-        //    vertices[0, 2] = new Vector3(-0.25f, 1f, -(float)Math.Sin(time));
-        //    vertices[1, 0] = new Vector3(-0.5f, -1f, (float)Math.Cos(time));
-        //    vertices[1, 1] = new Vector3(1f, -1f, (float)Math.Cos(time));
-        //    vertices[1, 2] = new Vector3(0.25f, 1f, -(float)Math.Cos(time));
-
-        //    //MessageBox.Show("Length: " + vertices.Length.ToString());
-
-        //    GL.GenBuffers(1, out vbo);
-        //    GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-        //    GL.BufferData<Vector3>(BufferTarget.ArrayBuffer,
-        //                           new IntPtr(vertices.Length * Vector3.SizeInBytes),
-        //                           vertices, BufferUsageHint.StaticDraw);
-        //}
-
 		private int LoadTexture(string filename)
 		{
 			int texture;
@@ -157,8 +100,6 @@ namespace OpenTkClient
 
 			GL.GenTextures(1, out texture);
 			GL.BindTexture(TextureTarget.Texture2D, texture);
-
-			//bitmap.MakeTransparent(Color.Black);
 
             BitmapData data = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height),
                                               ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
@@ -283,16 +224,12 @@ namespace OpenTkClient
             //RenderGui();
             GL.MatrixMode(MatrixMode.Projection);        // Select the Projection matrix for operation
             GL.LoadIdentity();                           // Reset Projection matrix
-            //GL.Ortho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0); // Set clipping area's left, right, bottom, top
 			GL.Ortho(0, this.Width * Global.Scale, 0, this.Height * Global.Scale, -1.0, 1.0);             // Set clipping area's left, right, bottom, top
             GL.MatrixMode(MatrixMode.Modelview);         // Select the ModelView for operation
             GL.LoadIdentity();                           // Reset the Model View Matrix
 
-            //GL.Enable(EnableCap.Lighting);
             GL.Clear(ClearBufferMask.ColorBufferBit);// | ClearBufferMask.DepthBufferBit);
             GL.Disable(EnableCap.DepthTest);
-            //GL.Clear(ClearBufferMask.ColorBufferBit);
-            //RenderBlock((float)e.Time, new Block(Block.BlockType.Dirt), 100,100,0.1f);
 
             GL.PushMatrix();
             // Render World Map
@@ -350,7 +287,6 @@ namespace OpenTkClient
             }
             //Console.WriteLine ($"DrawCount:{drawCount}, Culled:{cullCount}");
 
-            //GL.Disable(EnableCap.DepthTest);
             SwapBuffers();
 		}
 
@@ -434,68 +370,6 @@ namespace OpenTkClient
             }
             GL.PopMatrix();
         }
-        /*
-        void RenderPoly(List<Position> poly)
-        {
-            GL.PushMatrix();
-            //GL.Disable(EnableCap.Lighting);
-            //GL.Disable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, textures[(int)TextureGrass]);
-            GL.Enable(EnableCap.Blend);
-            GL.Enable(EnableCap.Texture2D);
-            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-            GL.Begin(PrimitiveType.Quads);
-
-            Position pt = poly[0];
-            var scrPos = WorldToScreen(pt.X, pt.Y, pt.Z);
-            if (scrPos.Item1 < 0 || scrPos.Item1 > (this.Width * Global.Scale)
-                    || scrPos.Item2 < 0 || scrPos.Item2 > (this.Height * Global.Scale))
-            {
-                //cullCount++;
-            }
-            else
-            {
-                GL.TexCoord2(0.0f, 1.0f); GL.Vertex2(scrPos.Item1, scrPos.Item2);
-            }
-            pt = poly[1];
-            scrPos = WorldToScreen(pt.X, pt.Y, pt.Z);
-            if (scrPos.Item1 < 0 || scrPos.Item1 > (this.Width * Global.Scale)
-                    || scrPos.Item2 < 0 || scrPos.Item2 > (this.Height * Global.Scale))
-            {
-                //cullCount++;
-            }
-            else
-            {
-                GL.TexCoord2(1.0f, 1.0f); GL.Vertex2(scrPos.Item1, scrPos.Item2);
-            }
-            pt = poly[2];
-            scrPos = WorldToScreen(pt.X, pt.Y, pt.Z);
-            if (scrPos.Item1 < 0 || scrPos.Item1 > (this.Width * Global.Scale)
-                    || scrPos.Item2 < 0 || scrPos.Item2 > (this.Height * Global.Scale))
-            {
-                //cullCount++;
-            }
-            else
-            {
-                GL.TexCoord2(1.0f, 0.0f); GL.Vertex2(scrPos.Item1, scrPos.Item2);
-            }
-            pt = poly[3];
-            scrPos = WorldToScreen(pt.X, pt.Y, pt.Z);
-            if (scrPos.Item1 < 0 || scrPos.Item1 > (this.Width * Global.Scale)
-                    || scrPos.Item2 < 0 || scrPos.Item2 > (this.Height * Global.Scale))
-            {
-                //cullCount++;
-            }
-            else
-            {
-                GL.TexCoord2(0.0f, 0.0f); GL.Vertex2(scrPos.Item1, scrPos.Item2);
-            }
-            GL.End();
-            //GL.Enable(EnableCap.Lighting);
-            //GL.Enable(EnableCap.Texture2D);
-            GL.PopMatrix();
-        }
-        */
         int CompileBox()
         {
             int newList = GL.GenLists(1);

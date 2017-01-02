@@ -12,7 +12,7 @@ namespace OpenTkClient
 		public static Facing Direction;
 		public static int MaxChunkLimit = (int)Math.Sqrt(int.MaxValue);
         public static string ServerName = "localhost";
-
+        public static bool IsLocalServer;
     }
 }
 

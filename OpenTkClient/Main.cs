@@ -1,5 +1,4 @@
-﻿using System;
-namespace OpenTkClient
+﻿namespace OpenTkClient
 {
     public static class MainApp
     {
@@ -9,12 +8,17 @@ namespace OpenTkClient
             {
                 introForm.ShowDialog();
                 Global.ServerName = introForm.ServerName;
+                Global.IsLocalServer = introForm.IsLocalServer;
             }
-            using (GameRenderer example = new GameRenderer())
+            using (GameRenderer gameRenderer = new GameRenderer())
             {
                 //Utilities.SetWindowTitle(example);
-                Comms.Run();
-                example.Run(30.0);
+                if (Global.IsLocalServer)
+                    Comms.Run(); // TODO
+                else
+                    Comms.Run();
+                
+                gameRenderer.Run(30.0);
             }
         }
 

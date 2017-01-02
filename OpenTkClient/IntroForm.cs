@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace OpenTkClient
@@ -14,10 +7,13 @@ namespace OpenTkClient
     public partial class IntroForm : Form
     {
         public string ServerName { get; set; }
+        public bool IsLocalServer { get { return string.Compare(ServerName, localName, ignoreCase:true) == 0; } }
+        private string localName;
 
         public IntroForm()
         {
-            ServerName = Dns.GetHostName();
+            localName = Dns.GetHostName();
+            ServerName = localName;
             InitializeComponent();
             serverTextBox.Text = ServerName;
         }
