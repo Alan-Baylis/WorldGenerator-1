@@ -58,7 +58,9 @@
     <Compile Include="MapManager.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="GameRenderer.cs" />
-    <Compile Include="ServerLocal.cs" />
+    <Compile Include="ServerLocal.cs">
+      <DeployService-Deploy>True</DeployService-Deploy>
+    </Compile>
     <Compile Include="ServerRemote.cs" />
     <Compile Include="Server.cs" />
   </ItemGroup>
