@@ -68,7 +68,7 @@ namespace Sean.WorldServer
             }
             catch (Exception e)
             {
-                Log.WriteInfo($"Exception caught in WebSocketListener - {e.ToString()}");
+                Log.WriteInfo($"WebSocketListener crashed - {e.Message}");
             }
         }
     }

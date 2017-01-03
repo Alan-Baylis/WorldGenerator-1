@@ -182,21 +182,27 @@ namespace Sean.WorldGenerator
 
         private void StartThread()
         {
-            while (worldInstance.LoadedChunkCount == 0)
+            try
             {
-                System.Threading.Thread.Sleep(5000);
-            }
-            CreateRiver();
-            bool growing = true;
-            while (growing)
-            {
-                growing = false;
-                foreach (var river in Rivers)
+                while (worldInstance.LoadedChunkCount == 0)
                 {
-                    river.Grow();
-                    growing |= river.Growing;
+                    System.Threading.Thread.Sleep(5000);
                 }
-                //System.Threading.Thread.Sleep(500);
+                CreateRiver();
+                bool growing = true;
+                while (growing)
+                {
+                    growing = false;
+                    foreach (var river in Rivers)
+                    {
+                        river.Grow();
+                        growing |= river.Growing;
+                    }
+                    //System.Threading.Thread.Sleep(500);
+                }
+            }
+            catch (Exception ex) {
+                Log.WriteError ($"Water thread crashed - {ex.Message}");
             }
         }
     }

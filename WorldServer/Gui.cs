@@ -36,31 +36,37 @@ namespace Sean.WorldServer
 
         private void StartThread()
         {
-            MainClass.WorldInstance.GetChunk(new ChunkCoords(112,54)); // Get Something
-            while (true)
+            try
             {
-                Render();
-                var key = Console.ReadKey();
-                switch (key.Key)
+                MainClass.WorldInstance.GetChunk(new ChunkCoords(112,54)); // Get Something
+                while (true)
                 {
-                    case ConsoleKey.PageUp:
-                        y++;
-                        break;
-                    case ConsoleKey.PageDown:
-                        y--;
-                        break;
-                    case ConsoleKey.DownArrow:
-                        selectedChunk = Math.Min(numChunks, ++selectedChunk);
-                        break;
-                    case ConsoleKey.UpArrow:
-                        selectedChunk = Math.Max(1, --selectedChunk);
-                        break;
-                case ConsoleKey.Escape:
-                        IsRunning = false;
-                        return;
-                        break;
+                    Render();
+                    var key = Console.ReadKey();
+                    switch (key.Key)
+                    {
+                        case ConsoleKey.PageUp:
+                            y++;
+                            break;
+                        case ConsoleKey.PageDown:
+                            y--;
+                            break;
+                        case ConsoleKey.DownArrow:
+                            selectedChunk = Math.Min(numChunks, ++selectedChunk);
+                            break;
+                        case ConsoleKey.UpArrow:
+                            selectedChunk = Math.Max(1, --selectedChunk);
+                            break;
+                    case ConsoleKey.Escape:
+                            IsRunning = false;
+                            return;
+                            break;
+                    }
+                    //System.Threading.Thread.Sleep(1000);
                 }
-                //System.Threading.Thread.Sleep(1000);
+            }
+            catch (Exception ex) {
+                Log.WriteError ($"Gui Thread crashed - {ex.Message}");
             }
         }
 

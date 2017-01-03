@@ -49,7 +49,7 @@ namespace Sean.WorldServer
                 Log.WriteInfo("Ending Listening Server");
             }
             catch (Exception e) {
-                Log.WriteError($"Exception caught in ServerSocketListener - {e.ToString()}");
+                Log.WriteError($"ServerSockerListener thread crashed - {e.Message}");
             }
 	    }
 	}

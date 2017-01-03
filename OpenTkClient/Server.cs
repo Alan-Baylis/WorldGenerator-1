@@ -14,11 +14,11 @@ namespace OpenTkClient
     public class Server
     {
         private static Thread thread;
-        private static IServer server;
+        private static IServer serverInstance;
 
         public static void Run(IServer server)
         {
-            server = server;
+            serverInstance = server;
             thread = new Thread(new ThreadStart(Start));
             thread.Start();
         }
@@ -29,33 +29,33 @@ namespace OpenTkClient
 
             try
             {
-                server.Start();
+                serverInstance.Start();
 
 		        Thread.Sleep (2000);
 
-                server.GetWorldMap();
+                serverInstance.GetWorldMap();
 				while(true)
 				{
                     int x = Global.LookingAt.X / Global.CHUNK_SIZE;
 					int z = Global.LookingAt.Z / Global.CHUNK_SIZE;
                     if (Global.Scale < 4)
                     {
-                        server.GetMap(x, z);
-                        server.GetMap(x + 1, z);
-                        server.GetMap(x - 1, z);
-                        server.GetMap(x, z + 1);
-                        server.GetMap(x, z - 1);
-                        server.GetMap(x + 1, z + 1);
-                        server.GetMap(x + 1, z - 1);
-                        server.GetMap(x - 1, z + 1);
-                        server.GetMap(x - 1, z - 1);
+                        serverInstance.GetMap(x, z);
+                        serverInstance.GetMap(x + 1, z);
+                        serverInstance.GetMap(x - 1, z);
+                        serverInstance.GetMap(x, z + 1);
+                        serverInstance.GetMap(x, z - 1);
+                        serverInstance.GetMap(x + 1, z + 1);
+                        serverInstance.GetMap(x + 1, z - 1);
+                        serverInstance.GetMap(x - 1, z + 1);
+                        serverInstance.GetMap(x - 1, z - 1);
                     }
 					Thread.Sleep (2000);
 				}
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exception caught in Server thread - {0}", e.ToString());
+                Console.WriteLine($"Server thread crashed - {e.Message}");
             }
         }
     }
