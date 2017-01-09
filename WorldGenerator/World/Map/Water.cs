@@ -19,7 +19,7 @@ namespace Sean.WorldGenerator
 
         private const int WATER = 2; // TODO - stick these somewhere
         private const int GRASS = 4;
-        private const int RIVER = 5;
+        private const int RIVER = 31;
 
         public River(IWorld world, Position source)
         {
@@ -48,7 +48,7 @@ namespace Sean.WorldGenerator
 
             var block = new Block(Block.BlockType.Water1);
             worldInstance.SetBlock(pos.X, pos.Y, pos.Z, block);
-            worldInstance.GlobalMap.Set(pos.X, pos.Z, RIVER);
+            worldInstance.GlobalMapTerrain.Set(pos.X, pos.Z, RIVER);
             //Log.WriteInfo($"[River.Add] Adding {pos}");
 
             AddIfEmpty(pos.X, pos.Y - 1, pos.Z);
