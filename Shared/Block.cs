@@ -164,10 +164,11 @@ namespace Sean.Shared
 		{
 			switch (type)
 			{
-				case BlockType.Air:
+                case BlockType.Air:
 				case BlockType.Leaves:
 				case BlockType.SnowLeaves:
 				case BlockType.Ocean:
+                case BlockType.Water1:
 				case BlockType.PrisonBars:
 				case BlockType.SteelDoorTop:
 					return true;

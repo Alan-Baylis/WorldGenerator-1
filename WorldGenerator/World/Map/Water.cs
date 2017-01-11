@@ -61,7 +61,7 @@ namespace Sean.WorldGenerator
             if (_minPos == pos)
                 FindNextLowest();
         }
-        
+
         private void AddIfEmpty(int x,int y,int z)
         {
             if (!worldInstance.IsValidBlockLocation (x, y, z)) {
@@ -83,6 +83,21 @@ namespace Sean.WorldGenerator
                 var pos = new Position(x,y,z);
                 _emptyCoords.Add(pos);
                 CalcScore(pos);
+
+//                // Add solid block down form lower riverbed
+//                var blockBelow = worldInstance.GetBlock (x, y-1, z);
+//                if (blockBelow.IsSolid) {
+//                    if (blockBelow.IsWater) {
+//                        if (!Coords.Contains (new Position (x, y-1, z))) {
+//                            // Have reached another river or the ocean
+//                            Growing = false;
+//                        }
+//                        return;
+//                    }
+//                    pos = new Position(x,y-1,z);
+//                    _emptyCoords.Add(pos);
+//                    CalcScore(pos);
+//                }
             }
         }
         private void CalcScore(Position pos)

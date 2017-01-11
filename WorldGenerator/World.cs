@@ -197,10 +197,16 @@ namespace Sean.WorldGenerator
                 Log.WriteError("Setting Unknown block?");
 
             var chunk = localMap.Chunk(position);
+            //var replacedBlock = chunk.Blocks[position.X % Global.CHUNK_SIZE, position.Y, position.Z % Global.CHUNK_SIZE];
             chunk.Blocks[position.X % Global.CHUNK_SIZE, position.Y, position.Z % Global.CHUNK_SIZE] = block;
 
             if (chunk.FinishedGeneration)
             {
+                // TODO - move, tidy up, ???
+                if (block.IsTransparent) {
+                    generator.GenerateSurroundingCells (position.X, position.Y, position.Z);
+                }
+
                 FireWorldEvent(position, ItemAction.Add, block);
             }
         }

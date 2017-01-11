@@ -231,7 +231,7 @@ namespace Sean.WorldGenerator
                 }
             }
                 
-            GenerateChunkCells(chunk, generateQueue);
+            GenerateChunkCells(generateQueue);
 
             chunk.BuildHeightMap();
 
@@ -239,7 +239,7 @@ namespace Sean.WorldGenerator
             chunk.FinishedGeneration = true;
         }
 
-        private void GenerateChunkCells(Chunk chunk, UniqueQueue<Position> generateQueue)
+        private void GenerateChunkCells(UniqueQueue<Position> generateQueue)
         {
             while (generateQueue.Count > 0)
             {
@@ -272,6 +272,17 @@ namespace Sean.WorldGenerator
                     }
                 }
             }
+        }
+        public void GenerateSurroundingCells(int x, int y, int z)
+        {
+            var generateQueue = new UniqueQueue<Position>();
+            generateQueue.Enqueue (new Position (x+1, y, z));
+            generateQueue.Enqueue (new Position (x-1, y, z));
+            generateQueue.Enqueue (new Position (x, y+1, z));
+            generateQueue.Enqueue (new Position (x, y-1, z));
+            generateQueue.Enqueue (new Position (x, y, z+1));
+            generateQueue.Enqueue (new Position (x, y, z-1));
+            GenerateChunkCells (generateQueue);
         }
         private void ExpandSearchCheckBlock(int x,int y,int z, UniqueQueue<Position> generateQueue)
         {

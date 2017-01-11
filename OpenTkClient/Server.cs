@@ -55,7 +55,7 @@ namespace OpenTkClient
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Server thread crashed - {e.Message}");
+               Console.WriteLine($"Server thread crashed - {e.Message}");
             }
         }
     }

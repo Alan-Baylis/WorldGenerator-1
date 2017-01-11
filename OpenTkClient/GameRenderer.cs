@@ -70,12 +70,12 @@ namespace OpenTkClient
             }
             else if (Global.CHUNK_SIZE == 16)
             {
-                largeTextures[(int)Block.BlockType.Rock] = LoadTexture("rock_32.png");
-                largeTextures[(int)Block.BlockType.Grass] = LoadTexture("grass_32.png");
-                largeTextures[(int)Block.BlockType.Dirt] = LoadTexture("grass_32.png");
-                largeTextures[(int)Block.BlockType.Ocean] = LoadTexture("water_32.png");
-                largeTextures[(int)Block.BlockType.Water1] = LoadTexture("water_32.png");
-                largeTextures[(int)BlockTypeCursor] = LoadTexture("cursor_32.png");
+                largeTextures[(int)Block.BlockType.Rock] = LoadTexture("rock_16.png");
+                largeTextures[(int)Block.BlockType.Grass] = LoadTexture("grass_16.png");
+                largeTextures[(int)Block.BlockType.Dirt] = LoadTexture("grass_16.png");
+                largeTextures[(int)Block.BlockType.Ocean] = LoadTexture("water_16.png");
+                largeTextures[(int)Block.BlockType.Water1] = LoadTexture("water_16.png");
+                largeTextures[(int)BlockTypeCursor] = LoadTexture("cursor_16.png");
             }
 
             renderer = new TextRenderer(Width, Height);
