@@ -101,7 +101,7 @@
     <None Include="Resources\grass_slope_w.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Resources\grass_slope_ws.png">
+    <None Include="Resources\grass_slope_sw.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

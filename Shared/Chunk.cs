@@ -144,14 +144,21 @@ namespace Sean.Shared
                     var sw = HeightMap [x, z + 1];
 
                     // TODO - define random slope sprites
-                    if (y == ne + 1)
-                        Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeNE);
-                    else if (y == se + 1)
-                        Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeSE);
-                    else if (y == nw + 1)
+                    if (y == ne + 1 && y == nw + 1 && y == se + 1 && y == sw + 1)
+                        continue;
+                    if (y <= ne && y <= nw && y <= se && y == sw + 1)
                         Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeNW);
-                    else if (y == sw + 1)
+                    if (y <= ne && y <= nw && y == se + 1 && y <= sw)
+                        Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeSE);
+                    if (y == ne + 1 && y <= nw && y <= se && y <= sw )
                         Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeSW);
+                    if (y <= ne && y == nw + 1 && y <= se && y <= sw )
+                        Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeNE);
+                    
+                    if (y <= ne && y <= nw && y == se + 1 && y == sw + 1)
+                        Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeNEW);
+                    if (y == ne +1 && y == nw+1 && y <= se && y <= sw )
+                        Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeESW);
                 }
             }
 
