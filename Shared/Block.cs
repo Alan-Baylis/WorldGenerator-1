@@ -49,7 +49,7 @@ namespace Sean.Shared
 			SnowLeaves,
 			Lava,
 			LavaRock,
-			
+
             // Water
             WaterSource = 30,
             Water1,
@@ -60,11 +60,24 @@ namespace Sean.Shared
             Water6,
             Water7,
 
+            GrassSlopeN = 40,
+            GrassSlopeS,
+            GrassSlopeE,
+            GrassSlopeW,
+            GrassSlopeNW,
+            GrassSlopeNE,
+            GrassSlopeSE,
+            GrassSlopeSW,
+            GrassSlopeNEW,
+            GrassSlopeNES,
+            GrassSlopeESW,
+            GrassSlopeNWS,
+
 			//Crafted Material
-			WoodTile1 = 50,
+			WoodTile1 = 60,
 			WoodTile2,
 			Bricks,
-			Cobble = 54,
+			Cobble = 64,
 
 			//Crafted Item
 			PlaceholderWorkBench = 100,

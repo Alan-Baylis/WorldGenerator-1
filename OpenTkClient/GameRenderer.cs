@@ -57,6 +57,20 @@ namespace OpenTkClient
             textures[(int)Block.BlockType.Water1] = LoadTexture("water.png");
             textures[(int)Block.BlockType.WaterSource] = LoadTexture("water.png");
 			textures[(int)Block.BlockType.Placeholder1] = LoadTexture("character.png");
+
+            textures[(int)Block.BlockType.GrassSlopeN] = LoadTexture("grass_slope_n.png");
+            textures[(int)Block.BlockType.GrassSlopeS] = LoadTexture("grass_slope_s.png");
+            textures[(int)Block.BlockType.GrassSlopeE] = LoadTexture("grass_slope_e.png");
+            textures[(int)Block.BlockType.GrassSlopeW] = LoadTexture("grass_slope_w.png");
+            textures[(int)Block.BlockType.GrassSlopeNW] = LoadTexture("grass_slope_nw.png");
+            textures[(int)Block.BlockType.GrassSlopeNE] = LoadTexture("grass_slope_ne.png");
+            textures[(int)Block.BlockType.GrassSlopeSE] = LoadTexture("grass_slope_se.png");
+            textures[(int)Block.BlockType.GrassSlopeSW] = LoadTexture("grass_slope_sw.png");
+            textures[(int)Block.BlockType.GrassSlopeNEW] = LoadTexture("grass_slope_new.png");
+            textures[(int)Block.BlockType.GrassSlopeNES] = LoadTexture("grass_slope_nes.png");
+            textures[(int)Block.BlockType.GrassSlopeESW] = LoadTexture("grass_slope_esw.png");
+            textures[(int)Block.BlockType.GrassSlopeNWS] = LoadTexture("grass_slope_nws.png");
+
 			textures[(int)BlockTypeCursor] = LoadTexture("cursor.png");
 
             if (Global.CHUNK_SIZE == 32)
