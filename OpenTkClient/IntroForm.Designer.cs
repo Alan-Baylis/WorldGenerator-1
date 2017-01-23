@@ -31,11 +31,12 @@
             this.connectButton = new System.Windows.Forms.Button();
             this.serverLabel = new System.Windows.Forms.Label();
             this.serverTextBox = new System.Windows.Forms.TextBox();
+            this.deleteChunksCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // connectButton
             // 
-            this.connectButton.Location = new System.Drawing.Point(211, 50);
+            this.connectButton.Location = new System.Drawing.Point(211, 59);
             this.connectButton.Name = "connectButton";
             this.connectButton.Size = new System.Drawing.Size(75, 23);
             this.connectButton.TabIndex = 0;
@@ -59,12 +60,23 @@
             this.serverTextBox.Size = new System.Drawing.Size(148, 20);
             this.serverTextBox.TabIndex = 2;
             // 
+            // deleteChunksCheckBox
+            // 
+            this.deleteChunksCheckBox.AutoSize = true;
+            this.deleteChunksCheckBox.Location = new System.Drawing.Point(12, 39);
+            this.deleteChunksCheckBox.Name = "deleteChunksCheckBox";
+            this.deleteChunksCheckBox.Size = new System.Drawing.Size(158, 17);
+            this.deleteChunksCheckBox.TabIndex = 3;
+            this.deleteChunksCheckBox.Text = "Clear existing saved chunks";
+            this.deleteChunksCheckBox.UseVisualStyleBackColor = true;
+            // 
             // IntroForm
             // 
             this.AcceptButton = this.connectButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(298, 85);
+            this.ClientSize = new System.Drawing.Size(298, 94);
+            this.Controls.Add(this.deleteChunksCheckBox);
             this.Controls.Add(this.serverTextBox);
             this.Controls.Add(this.serverLabel);
             this.Controls.Add(this.connectButton);
@@ -80,5 +92,6 @@
         private System.Windows.Forms.Button connectButton;
         private System.Windows.Forms.Label serverLabel;
         private System.Windows.Forms.TextBox serverTextBox;
+        private System.Windows.Forms.CheckBox deleteChunksCheckBox;
     }
 }

@@ -14,6 +14,11 @@ namespace OpenTkClient
             Console.WriteLine ("Local Server starting");
         }
 
+        public void ClearExistingChunks()
+        {
+            WorldInstance.ClearExistingChunks();
+        }
+
         public void GetWorldMap()
         {
             MapManager.SetWorldMapHeight(WorldInstance.GlobalMap);

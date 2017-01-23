@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Sean.Shared;
+using System.IO;
 
 namespace Sean.WorldGenerator
 {
@@ -130,7 +131,16 @@ namespace Sean.WorldGenerator
         public Array<byte> GlobalMapTerrain { get { return worldMap.GlobalMapTerrain; } }
         public Array<byte> GlobalTemperatureMap { get { return worldMap.TemperatureMap; } }
         public Array<byte> GlobalBiosphereMap { get { return worldMap.BiosphereMap; } }
+
         public int LoadedChunkCount { get { return localMap.LoadedChunksCount(); } }
+
+        public void ClearExistingChunks()
+        {
+            string directory = "Chunks";
+            if (Directory.Exists(directory))
+                Directory.Delete(directory, recursive: true);
+            Directory.CreateDirectory(directory);
+        }
 
         public bool IsChunkLoaded(ChunkCoords chunkCoords)
         { return localMap.IsChunkLoaded(chunkCoords); }

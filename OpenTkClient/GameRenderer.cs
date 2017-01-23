@@ -36,7 +36,7 @@ namespace OpenTkClient
 			this.MouseWheel += OnMouseWheel;
             this.MouseDown += OnMouseDown;
             this.MouseMove += OnMouseMove;
-		}
+        }
 
 
         protected override void OnLoad(EventArgs e)
@@ -395,7 +395,7 @@ namespace OpenTkClient
 
             //GL.Scale (0.1, 0.1, 1.0);
             float halfSprSize = 16;
-			GL.Begin (PrimitiveType.Quads);
+            GL.Begin (PrimitiveType.Quads);
             GL.TexCoord2(0.0f, 1.0f); GL.Vertex2(-halfSprSize, -halfSprSize);
             GL.TexCoord2(1.0f, 1.0f); GL.Vertex2(halfSprSize, -halfSprSize);
             GL.TexCoord2(1.0f, 0.0f); GL.Vertex2(halfSprSize, halfSprSize);

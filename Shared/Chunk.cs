@@ -138,10 +138,10 @@ namespace Sean.Shared
                     var s = HeightMap [x + 1, z + 1];
                     var e = HeightMap [x + 1, z - 1];
                     var w = HeightMap [x - 1, z + 1];
-                    var ne = HeightMap [x + 1, z];
+                    var ne = HeightMap [x, z-1];
                     var nw = HeightMap [x - 1, z];
-                    var se = HeightMap [x, z - 1];
-                    var sw = HeightMap [x, z + 1];
+                    var se = HeightMap [x+1, z ];
+                    var sw = HeightMap [x, z +1];
 
                     // TODO - define random slope sprites
                     if (y == ne + 1 && y == nw + 1 && y == se + 1 && y == sw + 1)

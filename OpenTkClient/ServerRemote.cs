@@ -41,6 +41,11 @@ namespace OpenTkClient
             }
         }
 
+        public void ClearExistingChunks()
+        {
+            // NoOp
+        }
+
         public void GetWorldMap()
         {
             ClientConnection.BroadcastMessage(new Message()

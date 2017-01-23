@@ -9,6 +9,8 @@
                 introForm.ShowDialog();
                 Global.ServerName = introForm.ServerName;
                 Global.IsLocalServer = introForm.IsLocalServer;
+                if (introForm.ClearExistingChunks && Global.IsLocalServer)
+                    Global.ClearExistingChunks = true;
             }
             using (GameRenderer gameRenderer = new GameRenderer())
             {

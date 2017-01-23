@@ -8,6 +8,7 @@ namespace OpenTkClient
     {
         void Start ();
         void GetWorldMap();
+        void ClearExistingChunks();
         void GetMap(int x, int z);
     }
 
@@ -32,7 +33,8 @@ namespace OpenTkClient
                 serverInstance.Start();
 
 		        Thread.Sleep (2000);
-
+                if (Global.ClearExistingChunks)
+                    serverInstance.ClearExistingChunks();
                 serverInstance.GetWorldMap();
 				while(true)
 				{

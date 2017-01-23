@@ -7,6 +7,7 @@ namespace OpenTkClient
     public partial class IntroForm : Form
     {
         public string ServerName { get; set; }
+        public bool ClearExistingChunks { get; set; }
         public bool IsLocalServer { get { return string.Compare(ServerName, localName, ignoreCase:true) == 0; } }
         private string localName;
 
@@ -21,6 +22,7 @@ namespace OpenTkClient
         private void connectButton_Click(object sender, EventArgs e)
         {
             ServerName = serverTextBox.Text;
+            ClearExistingChunks = deleteChunksCheckBox.Checked;
             this.Close();
         }
     }

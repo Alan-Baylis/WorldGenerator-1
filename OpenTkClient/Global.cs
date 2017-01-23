@@ -13,6 +13,7 @@ namespace OpenTkClient
 		public static int MaxChunkLimit = (int)Math.Sqrt(int.MaxValue);
         public static string ServerName = "localhost";
         public static bool IsLocalServer;
+        public static bool ClearExistingChunks;
     }
 }
 
