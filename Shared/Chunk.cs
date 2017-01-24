@@ -156,23 +156,45 @@ namespace Sean.Shared
             for (var x = 1; x < Global.CHUNK_SIZE-1; x++) {
                 for (var z = 1; z < Global.CHUNK_SIZE-1; z++) {
                     var y = HeightMap [x, z];
-                    //var n = HeightMap [x - 1, z - 1];
-                    //var s = HeightMap [x + 1, z + 1];
-                    //var e = HeightMap [x + 1, z - 1];
-                    //var w = HeightMap [x - 1, z + 1];
+                    var n = HeightMap [x - 1, z - 1];
+                    var s = HeightMap [x + 1, z + 1];
+                    var e = HeightMap [x + 1, z - 1];
+                    var w = HeightMap [x - 1, z + 1];
                     var ne = HeightMap [x, z-1];
                     var nw = HeightMap [x - 1, z];
                     var se = HeightMap [x+1, z ];
                     var sw = HeightMap [x, z +1];
 
-                    if (y == nw && y == ne && y == se+1 && y == sw+1)
-                    {
-                        if (Blocks[x,ne,z-1].Type == Block.BlockType.GrassSlopeNW
-                         && Blocks[x-1,nw,z].Type == Block.BlockType.Grass)
+                    if (Blocks [x, y, z].Type == Block.BlockType.Grass) {
+                        if (y <= nw && y <= ne && y <= se && y <= sw) {
+                            if (y <= n && y <= e && y > s && y <= w)
+                                Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeNEW);
+                            if (y <= n && y <= e && y <= s && y > w)
+                                Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeNES);
+                            if (y > n && y <= e && y <= s && y <= w)
+                                Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeESW);
+                            if (y <= n && y > e && y <= s && y <= w)
+                                Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeNWS);
+                        }
+
+                        /*
+                        if (y == nw && y == ne && y == se + 1 && y == sw + 1) 
                             Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeN);
-                        if (Blocks[x,ne,z-1].Type == Block.BlockType.GrassSlopeNW
-                         && Blocks[x-1,nw,z].Type == Block.BlockType.GrassSlopeNE)
-                            Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeNEW);
+                        if (y == nw +1 && y == ne +1 && y == se && y == sw) 
+                            Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeN);
+                        if (y == nw && y == ne && y == se + 1 && y == sw + 1) 
+                            Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeN);
+                        if (y == nw && y == ne && y == se + 1 && y == sw + 1) 
+                            Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeN);
+                        */
+                        /*
+                            if (Blocks [x, ne, z - 1].Type == Block.BlockType.GrassSlopeNW
+                            && Blocks [x - 1, nw, z].Type == Block.BlockType.Grass)
+                                Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeN);
+                            if (Blocks [x, ne, z - 1].Type == Block.BlockType.GrassSlopeNW
+                            && Blocks [x - 1, nw, z].Type == Block.BlockType.GrassSlopeNE)
+                                Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeNEW);
+                        */
                     }
                 }
             }
