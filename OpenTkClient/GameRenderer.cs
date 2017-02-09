@@ -251,7 +251,7 @@ namespace OpenTkClient
             var count = 0;
             foreach (var poly in MapManager.GetWorldMapBlocks(Global.Direction))
             {
-                var scrPos = WorldToScreen(poly.Item1.X, poly.Item1.Y, poly.Item1.Z);
+                var scrPos = WorldToScreen (poly.Item1.X, poly.Item1.Y, poly.Item1.Z, largeBlock:true);
                 RenderLargeBlock((float)e.Time,poly.Item2, scrPos.Item1, scrPos.Item2, scrPos.Item3,poly.Item1);
                 if (Math.Abs(poly.Item1.Z - Global.LookingAt.Z) <= 100 && Math.Abs(poly.Item1.X - Global.LookingAt.X) <= 100)
                 {
@@ -276,7 +276,7 @@ namespace OpenTkClient
             {
                 var pos = blockInfo.Item1;
                 var blockType = blockInfo.Item2;
-                var scrPos = WorldToScreen(pos.X, pos.Y, pos.Z);
+                var scrPos = WorldToScreen (pos.X, pos.Y, pos.Z);
 				if (scrPos.Item1 < 0 || scrPos.Item1 > (this.Width * Global.Scale) 
 					|| scrPos.Item2 < 0 || scrPos.Item2 > (this.Height * Global.Scale)) {
 					//Console.WriteLine($"{x1},{y1},{z1}=>{x2},{y2},{z2}");
@@ -304,13 +304,14 @@ namespace OpenTkClient
             SwapBuffers();
 		}
 
-        private Tuple<float,float,float> WorldToScreen(int x, int y, int z)
+        private Tuple<float,float,float> WorldToScreen(int x, int y, int z, bool largeBlock=false)
         {
             int midWidth = (int)(this.Width * Global.Scale / 2);
             int midHeight = (int)(this.Height * Global.Scale / 2);
             const int sprXOffset = 16;
             const int sprYOffset = 8;
             const int sprHeight = 16;
+            int blockOffset = largeBlock ? 0 : 128 - sprHeight;
 
             float x1 = x - Global.LookingAt.X;
             float y1 = y - Global.LookingAt.Y;
@@ -323,19 +324,19 @@ namespace OpenTkClient
             {
                 case Facing.North:
                     x2 = midWidth + (z1 - x1) * sprXOffset;
-                    y2 = midHeight + (y1 * sprHeight) + (-x1 - z1) * sprYOffset;
+                    y2 = midHeight + (y1 * sprHeight) + (-x1 - z1) * sprYOffset + blockOffset;
                     break;
                 case Facing.South:
                     x2 = midWidth + (x1 - z1) * sprXOffset;
-                    y2 = midHeight + (y1 * sprHeight) + (x1 + z1) * sprYOffset;
+                    y2 = midHeight + (y1 * sprHeight) + (x1 + z1) * sprYOffset + blockOffset;
                     break;
                 case Facing.East:
                     x2 = midWidth + (-x1 - z1) * sprXOffset;
-                    y2 = midHeight + (y1 * sprHeight) + (x1 - z1) * sprYOffset;
+                    y2 = midHeight + (y1 * sprHeight) + (x1 - z1) * sprYOffset + blockOffset;
                     break;
                 case Facing.West:
                     x2 = midWidth + (x1 + z1) * sprXOffset;
-                    y2 = midHeight + (y1 * sprHeight) + (-x1 + z1) * sprYOffset;
+                    y2 = midHeight + (y1 * sprHeight) + (-x1 + z1) * sprYOffset + blockOffset;
                     break;
             }
             z2 = 0.0f;// (x1 + z1 + y1) / (32+32+128);

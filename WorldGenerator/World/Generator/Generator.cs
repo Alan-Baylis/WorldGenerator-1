@@ -141,10 +141,11 @@ namespace Sean.WorldGenerator
                 scale = Global.CHUNK_SIZE,
             };
 
+            var halfscale = worldSize.scale / 2;
             var heightMap = new Array<byte>(worldSize);
-            for (int z = worldSize.minZ; z < worldSize.maxZ; z += worldSize.scale)
+            for (int z = worldSize.minZ; z < worldSize.maxZ-worldSize.scale; z += worldSize.scale)
             {
-                for (int x = worldSize.minX; x < worldSize.maxX; x += worldSize.scale)
+                for (int x = worldSize.minX; x < worldSize.maxX-worldSize.scale; x += worldSize.scale)
                 {
                     int d = worldSize.maxY;
                     int y = d/2;
@@ -152,7 +153,7 @@ namespace Sean.WorldGenerator
                     {
                         d /= 2;
                         //var p = terrainGenerator.get ((double)x / Settings.FRACTAL_SIZE, (double)y / Settings.maxNoiseHeight, (double)z / Settings.FRACTAL_SIZE);
-                        var block = GenerateCell(x, y, z);
+                        var block = GenerateCell(x+halfscale, y, z+halfscale);
                         if (block.IsTransparent)
                             y -= d;
                         else

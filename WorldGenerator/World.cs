@@ -140,6 +140,8 @@ namespace Sean.WorldGenerator
             if (Directory.Exists(directory))
                 Directory.Delete(directory, recursive: true);
             Directory.CreateDirectory(directory);
+            if (File.Exists("global.map"))
+                File.Delete("global.map");
         }
 
         public bool IsChunkLoaded(ChunkCoords chunkCoords)
