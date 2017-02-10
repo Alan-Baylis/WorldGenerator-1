@@ -38,7 +38,10 @@ namespace Sean.WorldGenerator
         {
             try
             {
-                Log.WriteInfo ($"[WorldMap.Saving] Saving '{fileName}'...");
+                const string directory = "Map";
+                string file = Path.Combine(directory, fileName);
+                Log.WriteInfo ($"[WorldMap.Saving] Saving '{file}'...");
+                if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
                 using (FileStream stream = File.Create(fileName))
                 {
                     var formatter = new BinaryFormatter();
@@ -57,12 +60,13 @@ namespace Sean.WorldGenerator
 
         private void Load()
         {
+            string file = Path.Combine("Map", fileName);
             try
             {
-                if (File.Exists(fileName))
+                if (File.Exists(file))
                 {
-                    Log.WriteInfo ($"[WorldMap.Load] Loading '{fileName}'...");
-                    using (var stream = File.OpenRead(fileName))
+                    Log.WriteInfo ($"[WorldMap.Load] Loading '{file}'...");
+                    using (var stream = File.OpenRead(file))
                     {
                         var formatter = new BinaryFormatter();
                         GlobalMap = (Array<byte>)formatter.Deserialize( stream );
@@ -71,14 +75,14 @@ namespace Sean.WorldGenerator
                         BiosphereMap = (Array<byte>)formatter.Deserialize( stream );
                         stream.Close();
                     }
-                    Log.WriteInfo ($"[WorldMap.Load] Loaded '{fileName}'");
+                    Log.WriteInfo ($"[WorldMap.Load] Loaded '{file}'");
                 }
             }
             catch (Exception e)
             {
                 Log.WriteError ($"[WorldMap.Load] Failed - {e.Message}");
                 GlobalMap = null;
-                File.Delete (fileName);
+                File.Delete (file);
             }
         }
 

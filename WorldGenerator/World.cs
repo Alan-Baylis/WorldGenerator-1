@@ -139,9 +139,9 @@ namespace Sean.WorldGenerator
             string directory = "Chunks";
             if (Directory.Exists(directory))
                 Directory.Delete(directory, recursive: true);
-            Directory.CreateDirectory(directory);
-            if (File.Exists("global.map"))
-                File.Delete("global.map");
+            directory = "Map";
+            if (Directory.Exists(directory))
+                Directory.Delete(directory, recursive: true);
         }
 
         public bool IsChunkLoaded(ChunkCoords chunkCoords)
