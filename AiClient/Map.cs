@@ -80,6 +80,19 @@ namespace AiClient
                 world[rnd.Next(MAPSIZE), rnd.Next(MAPSIZE)].AddItem(Item.Tree);
         }
 
+        public void Add (int x, int y, Item item)
+        {
+            world [x, y].AddItem (item);
+        }
+        public void Remove (int x, int y, Item item)
+        {
+            world [x, y].RemoveItem (item);
+        }
+        public void Move (int x, int y, Item item, int x1, int y1)
+        {
+            Add (x1, y1, item);
+            Remove (x, y, item);
+        }
         public void Render()
         {
             Console.Clear();
