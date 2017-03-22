@@ -82,12 +82,12 @@ namespace Sean.WorldServer
                     {
                         var block = chunk.Blocks[x, y, z];
                         char c = block.IsSolid ? '#' : ' ';
-                        if (block.Type == Block.BlockType.Unknown) c = '.';
-                        else if (block.Type == Block.BlockType.Water1) c = '~';
-                        else if (block.Type == Block.BlockType.WaterSource) c = '~';
-                        else if (block.Type == Block.BlockType.Ocean) c = '~';
-                        else if (block.Type == Block.BlockType.Tree) c = '$';
-                        else if (block.Type == Block.BlockType.Leaves) c = '%';
+                        if (block.Type == BlockType.Unknown) c = '.';
+                        else if (block.Type == BlockType.Water1) c = '~';
+                        else if (block.Type == BlockType.WaterSource) c = '~';
+                        else if (block.Type == BlockType.Ocean) c = '~';
+                        else if (block.Type == BlockType.Tree) c = '$';
+                        else if (block.Type == BlockType.Leaves) c = '%';
 
                         gridWindow.WriteChar(x, z, c);
                     }

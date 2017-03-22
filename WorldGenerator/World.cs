@@ -172,7 +172,7 @@ namespace Sean.WorldGenerator
             return localMap.LoadedChunks();
         }
 
-        public void PutBlock(Position position, Block.BlockType blockType)
+        public void PutBlock(Position position, BlockType blockType)
         {
             PlaceBlock(position, blockType);
         }
@@ -205,7 +205,7 @@ namespace Sean.WorldGenerator
         }
         public void SetBlock(Position position, Block block)
         {
-            if (block.Type == Block.BlockType.Unknown)
+            if (block.Type == BlockType.Unknown)
                 Log.WriteError("Setting Unknown block?");
 
             var chunk = localMap.Chunk(position);
@@ -388,7 +388,7 @@ namespace Sean.WorldGenerator
         /// <param name="position">position to place the block at</param>
         /// <param name="type">type of block to place</param>
         /// <param name="isMultipleBlockPlacement">Use this when placing multiple blocks at once so lighting and chunk queueing only happens once.</param>
-        internal void PlaceBlock(Position position, Block.BlockType type, bool isMultipleBlockPlacement = false)
+        internal void PlaceBlock(Position position, BlockType type, bool isMultipleBlockPlacement = false)
         {
             if (!IsLoadedBlockLocation(position) || position.Y <= 0) return;
 
@@ -396,10 +396,10 @@ namespace Sean.WorldGenerator
             //only check in single player for now because in multiplayer this could allow the blocks on different clients to get out of sync and placements of multiple blocks in multiplayer will be rare
             //if (Config.IsSinglePlayer && isMultipleBlockPlacement && (position.IsOnBlock(ref Game.Player.Coords) || position == Game.Player.CoordsHead.ToPosition())) return;
 
-            if (type == Block.BlockType.Air)
+            if (type == BlockType.Air)
             {
                 //if destroying a block under water, fill with water instead of air
-                if (position.Y + 1 < Global.CHUNK_HEIGHT && GetBlock(position.X, position.Y + 1, position.Z).Type == Block.BlockType.Ocean) type = Block.BlockType.Ocean;
+                if (position.Y + 1 < Global.CHUNK_HEIGHT && GetBlock(position.X, position.Y + 1, position.Z).Type == BlockType.Ocean) type = BlockType.Ocean;
             }
 
             var chunk = localMap.Chunk(position);
@@ -412,14 +412,14 @@ namespace Sean.WorldGenerator
             chunk.Blocks[position] = block; //insert the new block
             chunk.UpdateHeightMap(ref block, position.X % Global.CHUNK_SIZE, position.Y, position.Z % Global.CHUNK_SIZE);
 
-            if (!isTransparentBlock || type == Block.BlockType.Ocean)
+            if (!isTransparentBlock || type == BlockType.Ocean)
             {
                 var below = new Position(position.X, position.Y - 1, position.Z);
                 if (below.Y > 0)
                 {
-                    if (GetBlock(below).Type == Block.BlockType.Grass || GetBlock(below).Type == Block.BlockType.Snow)
+                    if (GetBlock(below).Type == BlockType.Grass || GetBlock(below).Type == BlockType.Snow)
                     {
-                        PlaceBlock(below, Block.BlockType.Dirt, true); //dont queue with this dirt block change, the source block changing takes care of it, prevents double queueing the chunk and playing sound twice
+                        PlaceBlock(below, BlockType.Dirt, true); //dont queue with this dirt block change, the source block changing takes care of it, prevents double queueing the chunk and playing sound twice
                     }
                 }
             }
@@ -428,10 +428,10 @@ namespace Sean.WorldGenerator
             {
                 switch (type)
                 {
-                case Block.BlockType.Ocean:
+                case BlockType.Ocean:
                     chunk.WaterExpanding = true;
                     break;
-                case Block.BlockType.Air:
+                case BlockType.Air:
                     for (var q = 0; q < 5; q++)
                     {
                         Position adjacent;
@@ -453,7 +453,7 @@ namespace Sean.WorldGenerator
                             adjacent = new Position(position.X, position.Y, position.Z - 1);
                             break;
                         }
-                        if (IsLoadedBlockLocation(adjacent) && GetBlock(adjacent).Type == Block.BlockType.Ocean)
+                        if (IsLoadedBlockLocation(adjacent) && GetBlock(adjacent).Type == BlockType.Ocean)
                         {
                             localMap.Chunk(adjacent).WaterExpanding = true;
                         }
@@ -467,7 +467,7 @@ namespace Sean.WorldGenerator
             //now it can only check once on the grass grow interval and turn it back off
             //gm: an additional optimization, grass could never start growing unless this is an air block and its replacing a non transparent block
             //OR this is a non transparent block filling in a previously transparent block to cause grass to die
-            if (!isTransparentBlock || (type == Block.BlockType.Air && !isTransparentOldBlock))
+            if (!isTransparentBlock || (type == BlockType.Air && !isTransparentOldBlock))
             {
                 chunk.GrassGrowing = true;
                 if (IsOnChunkBorder(position))
@@ -477,7 +477,7 @@ namespace Sean.WorldGenerator
             }
 
             //determine if any static game items need to be removed as a result of this block placement
-            if (type != Block.BlockType.Air)
+            if (type != BlockType.Air)
             {
                 //lock (chunk.Clutters) //lock because clutter is stored in a HashSet
                 //{
@@ -536,7 +536,7 @@ namespace Sean.WorldGenerator
         /// <param name="endPosition">stop placing blocks at</param>
         /// <param name="type">type of block to place</param>
         /// <param name="isMultipleCuboidPlacement">Use this when placing multiple cuboids at once so lighting and chunk queueing only happens once.</param>
-        internal void PlaceCuboid(Position startPosition, Position endPosition, Block.BlockType type, bool isMultipleCuboidPlacement = false)
+        internal void PlaceCuboid(Position startPosition, Position endPosition, BlockType type, bool isMultipleCuboidPlacement = false)
         {
             for (var x = Math.Min(startPosition.X, endPosition.X); x <= Math.Max(startPosition.X, endPosition.X); x++)
             {

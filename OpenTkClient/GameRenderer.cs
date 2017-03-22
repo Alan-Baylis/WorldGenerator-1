@@ -47,48 +47,48 @@ namespace OpenTkClient
             GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
             GL.Hint(HintTarget.LineSmoothHint, HintMode.Nicest);
 
-			textures[(int)Block.BlockType.Unknown] = LoadTexture("block.png");
-			textures[(int)Block.BlockType.Rock] = LoadTexture("rock.png");
-			textures[(int)Block.BlockType.Grass] = LoadTexture("grass.png");
-			textures[(int)Block.BlockType.Dirt] = LoadTexture("grass.png");
-			textures[(int)Block.BlockType.Tree] = LoadTexture("tree.png");
-			textures[(int)Block.BlockType.Leaves] = LoadTexture("leaves.png");
-            textures[(int)Block.BlockType.Ocean] = LoadTexture("water.png");
-            textures[(int)Block.BlockType.Water1] = LoadTexture("water.png");
-            textures[(int)Block.BlockType.WaterSource] = LoadTexture("water.png");
-			textures[(int)Block.BlockType.Placeholder1] = LoadTexture("character.png");
+			textures[(int)BlockType.Unknown] = LoadTexture("block.png");
+			textures[(int)BlockType.Rock] = LoadTexture("rock.png");
+			textures[(int)BlockType.Grass] = LoadTexture("grass.png");
+			textures[(int)BlockType.Dirt] = LoadTexture("grass.png");
+			textures[(int)BlockType.Tree] = LoadTexture("tree.png");
+			textures[(int)BlockType.Leaves] = LoadTexture("leaves.png");
+            textures[(int)BlockType.Ocean] = LoadTexture("water.png");
+            textures[(int)BlockType.Water1] = LoadTexture("water.png");
+            textures[(int)BlockType.WaterSource] = LoadTexture("water.png");
+			textures[(int)BlockType.Placeholder1] = LoadTexture("character.png");
 
-            textures[(int)Block.BlockType.GrassSlopeN] = LoadTexture("grass_slope_n.png");
-            textures[(int)Block.BlockType.GrassSlopeS] = LoadTexture("grass_slope_s.png");
-            textures[(int)Block.BlockType.GrassSlopeE] = LoadTexture("grass_slope_e.png");
-            textures[(int)Block.BlockType.GrassSlopeW] = LoadTexture("grass_slope_w.png");
-            textures[(int)Block.BlockType.GrassSlopeNW] = LoadTexture("grass_slope_nw.png");
-            textures[(int)Block.BlockType.GrassSlopeNE] = LoadTexture("grass_slope_ne.png");
-            textures[(int)Block.BlockType.GrassSlopeSE] = LoadTexture("grass_slope_se.png");
-            textures[(int)Block.BlockType.GrassSlopeSW] = LoadTexture("grass_slope_sw.png");
-            textures[(int)Block.BlockType.GrassSlopeNEW] = LoadTexture("grass_slope_new.png");
-            textures[(int)Block.BlockType.GrassSlopeNES] = LoadTexture("grass_slope_nes.png");
-            textures[(int)Block.BlockType.GrassSlopeESW] = LoadTexture("grass_slope_esw.png");
-            textures[(int)Block.BlockType.GrassSlopeNWS] = LoadTexture("grass_slope_nws.png");
+            textures[(int)BlockType.GrassSlopeN] = LoadTexture("grass_slope_n.png");
+            textures[(int)BlockType.GrassSlopeS] = LoadTexture("grass_slope_s.png");
+            textures[(int)BlockType.GrassSlopeE] = LoadTexture("grass_slope_e.png");
+            textures[(int)BlockType.GrassSlopeW] = LoadTexture("grass_slope_w.png");
+            textures[(int)BlockType.GrassSlopeNW] = LoadTexture("grass_slope_nw.png");
+            textures[(int)BlockType.GrassSlopeNE] = LoadTexture("grass_slope_ne.png");
+            textures[(int)BlockType.GrassSlopeSE] = LoadTexture("grass_slope_se.png");
+            textures[(int)BlockType.GrassSlopeSW] = LoadTexture("grass_slope_sw.png");
+            textures[(int)BlockType.GrassSlopeNEW] = LoadTexture("grass_slope_new.png");
+            textures[(int)BlockType.GrassSlopeNES] = LoadTexture("grass_slope_nes.png");
+            textures[(int)BlockType.GrassSlopeESW] = LoadTexture("grass_slope_esw.png");
+            textures[(int)BlockType.GrassSlopeNWS] = LoadTexture("grass_slope_nws.png");
 
 			textures[(int)BlockTypeCursor] = LoadTexture("cursor.png");
 
             if (Global.CHUNK_SIZE == 32)
             {
-                largeTextures[(int)Block.BlockType.Rock] = LoadTexture("rock_32.png");
-                largeTextures[(int)Block.BlockType.Grass] = LoadTexture("grass_32.png");
-                largeTextures[(int)Block.BlockType.Dirt] = LoadTexture("grass_32.png");
-                largeTextures[(int)Block.BlockType.Ocean] = LoadTexture("water_32.png");
-                largeTextures[(int)Block.BlockType.Water1] = LoadTexture("water_32.png");
+                largeTextures[(int)BlockType.Rock] = LoadTexture("rock_32.png");
+                largeTextures[(int)BlockType.Grass] = LoadTexture("grass_32.png");
+                largeTextures[(int)BlockType.Dirt] = LoadTexture("grass_32.png");
+                largeTextures[(int)BlockType.Ocean] = LoadTexture("water_32.png");
+                largeTextures[(int)BlockType.Water1] = LoadTexture("water_32.png");
                 largeTextures[(int)BlockTypeCursor] = LoadTexture("cursor_32.png");
             }
             else if (Global.CHUNK_SIZE == 16)
             {
-                largeTextures[(int)Block.BlockType.Rock] = LoadTexture("rock_16.png");
-                largeTextures[(int)Block.BlockType.Grass] = LoadTexture("grass_16.png");
-                largeTextures[(int)Block.BlockType.Dirt] = LoadTexture("grass_16.png");
-                largeTextures[(int)Block.BlockType.Ocean] = LoadTexture("water_16.png");
-                largeTextures[(int)Block.BlockType.Water1] = LoadTexture("water_16.png");
+                largeTextures[(int)BlockType.Rock] = LoadTexture("rock_16.png");
+                largeTextures[(int)BlockType.Grass] = LoadTexture("grass_16.png");
+                largeTextures[(int)BlockType.Dirt] = LoadTexture("grass_16.png");
+                largeTextures[(int)BlockType.Ocean] = LoadTexture("water_16.png");
+                largeTextures[(int)BlockType.Water1] = LoadTexture("water_16.png");
                 largeTextures[(int)BlockTypeCursor] = LoadTexture("cursor_16.png");
             }
 
@@ -295,9 +295,9 @@ namespace OpenTkClient
             {
 				drawCount++;
                 var scrPos = WorldToScreen(character.Item1.X, character.Item1.Y, character.Item1.Z);
-				RenderBlock((float)e.Time, Block.BlockType.Placeholder1, scrPos.Item1, scrPos.Item2, scrPos.Item3, character.Item1); // TODO - sprite block type
+				RenderBlock((float)e.Time, BlockType.Placeholder1, scrPos.Item1, scrPos.Item2, scrPos.Item3, character.Item1); // TODO - sprite block type
                 scrPos = WorldToScreen(character.Item1.X, character.Item1.Y + 1, character.Item1.Z);
-				RenderBlock((float)e.Time, Block.BlockType.Placeholder1, scrPos.Item1, scrPos.Item2, scrPos.Item3, character.Item1); // TODO - sprite block type
+				RenderBlock((float)e.Time, BlockType.Placeholder1, scrPos.Item1, scrPos.Item2, scrPos.Item3, character.Item1); // TODO - sprite block type
             }
             //Console.WriteLine ($"DrawCount:{drawCount}, Culled:{cullCount}");
 
@@ -342,7 +342,7 @@ namespace OpenTkClient
             z2 = 0.0f;// (x1 + z1 + y1) / (32+32+128);
             return new Tuple<float, float, float>(x2, y2, z2);
         }
-        void RenderBlock(float time, Block.BlockType blockType, float x, float y, float z, Position pos)
+        void RenderBlock(float time, BlockType blockType, float x, float y, float z, Position pos)
         {
 			int texture = textures [(int)blockType];
 			if (texture == 0)
@@ -363,7 +363,7 @@ namespace OpenTkClient
             }
             GL.PopMatrix();
         }
-        void RenderLargeBlock(float time, Block.BlockType blockType, float x, float y, float z, Position pos)
+        void RenderLargeBlock(float time, BlockType blockType, float x, float y, float z, Position pos)
         {
             int texture = largeTextures[(int)blockType];
             if (texture == 0)

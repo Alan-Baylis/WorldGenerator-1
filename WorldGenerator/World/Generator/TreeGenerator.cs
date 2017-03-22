@@ -26,7 +26,7 @@ namespace Sean.WorldGenerator
 				int yProposed = chunk.HeightMap[xProposedInChunk, zProposedInChunk];
 
 				var block = chunk.Blocks[xProposedInChunk, yProposed, zProposedInChunk];
-				if (block.Type != Block.BlockType.Grass && block.Type != Block.BlockType.Snow) continue;
+				if (block.Type != BlockType.Grass && block.Type != BlockType.Snow) continue;
 				int xProposedInWorld = chunk.ChunkCoords.WorldCoordsX + xProposedInChunk;
 				int zProposedInWorld = chunk.ChunkCoords.WorldCoordsZ + zProposedInChunk;
 
@@ -46,11 +46,11 @@ namespace Sean.WorldGenerator
 					var trunkPosition = new Position(xProposedInWorld, yProposed + yTrunkLevel, zProposedInWorld);
 					if (yTrunkLevel < treeHeight) //place the trunk
 					{
-                        chunk.Blocks[trunkPosition] = new Block(Block.BlockType.Tree);// isElmTree ? Block.BlockType.ElmTree : Block.BlockType.Tree);
+                        chunk.Blocks[trunkPosition] = new Block(BlockType.Tree);// isElmTree ? Block.BlockType.ElmTree : Block.BlockType.Tree);
 					}
 					else //place leaves on the top 2 blocks of the trunk instead of more trunk pieces
 					{
-                        chunk.Blocks[trunkPosition] = new Block(Block.BlockType.Leaves);
+                        chunk.Blocks[trunkPosition] = new Block(BlockType.Leaves);
                             //new Block(world.WorldType == WorldType.Winter ? Block.BlockType.SnowLeaves : Block.BlockType.Leaves);
                     }
 
@@ -63,10 +63,10 @@ namespace Sean.WorldGenerator
 							if (leafX == 0 && leafZ == 0) continue; //dont replace the trunk
 							if (Math.Sqrt(leafX * leafX + leafZ * leafZ + Math.Pow(treeHeight - leafRadius - yTrunkLevel + 1, 2)) > leafRadius) continue;
 							var leafPosition = new Position(xProposedInWorld + leafX, yProposed + yTrunkLevel, zProposedInWorld + leafZ);
-                            if (world.IsLoadedBlockLocation(leafPosition) && world.GetBlock(leafPosition).Type == Block.BlockType.Air)
+                            if (world.IsLoadedBlockLocation(leafPosition) && world.GetBlock(leafPosition).Type == BlockType.Air)
 							{
                                 //need to get the chunk because this block could be expanding into an adjacent chunk
-                                world.SetBlock(leafPosition, new Block(Block.BlockType.Leaves));
+                                world.SetBlock(leafPosition, new Block(BlockType.Leaves));
                                 // World.WorldType == WorldType.Winter ? Block.BlockType.SnowLeaves : Block.BlockType.Leaves);
 							}
 						}

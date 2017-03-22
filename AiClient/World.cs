@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sean.Shared;
 
 namespace AiClient
 {
@@ -52,17 +53,37 @@ namespace AiClient
         }
     }
 
-    public class Map
+    public class World : IWorld
     {
+        #region IWorld
+        public bool IsValidBlockLocation (int x, int y, int z) { throw new NotImplementedException (); }
+        public bool IsLoadedBlockLocation(Position position) { throw new NotImplementedException (); }
+        public bool IsLoadedBlockLocation(int x, int y, int z) { throw new NotImplementedException (); }
+
+        public Block GetBlock(Position position) { throw new NotImplementedException (); }
+        public Block GetBlock(int x, int y, int z) { throw new NotImplementedException (); }
+
+        public void SetBlock(Position position, Block block) { throw new NotImplementedException (); }
+        public void SetBlock(int x, int y, int z, Block block) { throw new NotImplementedException (); }
+
+        public bool IsChunkLoaded(ChunkCoords coords) { throw new NotImplementedException (); }
+        public Chunk GetChunk(ChunkCoords coords) { throw new NotImplementedException (); }
+
+        public Array<byte> GlobalMap { get; }
+        public Array<byte> GlobalMapTerrain { get; }
+
+        public Position GetRandomLocationOnLoadedChunk() { throw new NotImplementedException (); }
+
+        public int LoadedChunkCount { get; }
+        #endregion
+    
         private const int MAPSIZE = 70;
-        int[,] array = new int[4, 2];
-        private Cell[,] world;
+        Array<Cell> world = new Array<Cell>(MAPSIZE,MAPSIZE);
         int timeslice = 1;
         Random rnd = new Random();
 
-        public Map()
+        public World()
         {
-            world = new Cell[MAPSIZE, MAPSIZE];
             for (int y = 0; y < MAPSIZE; y++)
             {
                 for (int x = 0; x < MAPSIZE; x++)

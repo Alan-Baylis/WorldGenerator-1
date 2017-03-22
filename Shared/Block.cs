@@ -2,7 +2,101 @@
 
 namespace Sean.Shared
 {
-	public struct Block
+    public interface IBlock
+    {
+        bool IsSolid { get; }
+        bool IsTransparent { get; }
+        BlockType Type { get; }
+    }
+
+    /// <summary>Block types starting with 'Placeholder' are not included in the action picker buttons grid and will appear white because they dont have associated textures.</summary>
+    public enum BlockType : byte
+    {
+        Unknown = 0,
+
+        //Naturally occurring
+        Air = 1,
+        Ocean = 2,
+        Dirt = 3,
+        Grass,
+        Snow,
+        Sand,
+        SandDark,
+        Ice,
+        Gravel,
+        Rock,
+        Coal,
+        Copper,
+        Iron,
+        Gold,
+        Oil,
+        Tree,
+        ElmTree,
+        Leaves,
+        SnowLeaves,
+        Lava,
+        LavaRock,
+
+        // Water
+        WaterSource = 30,
+        Water1,
+        Water2,
+        Water3,
+        Water4,
+        Water5,
+        Water6,
+        Water7,
+
+        GrassSlopeN = 40,
+        GrassSlopeS,
+        GrassSlopeE,
+        GrassSlopeW,
+        GrassSlopeNW,
+        GrassSlopeNE,
+        GrassSlopeSE,
+        GrassSlopeSW,
+        GrassSlopeNEW,
+        GrassSlopeNES,
+        GrassSlopeESW,
+        GrassSlopeNWS,
+
+        //Crafted Material
+        WoodTile1 = 60,
+        WoodTile2,
+        Bricks,
+        Cobble = 64,
+
+        //Crafted Item
+        PlaceholderWorkBench = 100,
+        PlaceholderStove,
+        PlaceholderFurnace,
+        PlaceholderPipeline,
+        Crate,
+        Placeholder2, //removed, leaving placeholder to not break worlds
+        Shelf1,
+        SteelDoorTop,
+        SteelDoorBottom,
+        Placeholder3, //removed, leaving placeholder to not break worlds
+        Speaker,
+        PrisonBars,
+
+        //Other
+        Placeholder4 = 220, //removed, leaving placeholder to not break worlds
+        Placeholder5, //removed, leaving placeholder to not break worlds
+        Placeholder1, //removed, leaving placeholder to not break worlds
+        Placeholder6, //removed, leaving placeholder to not break worlds
+        Placeholder7, //removed, leaving placeholder to not break worlds
+        Placeholder8, //removed, leaving placeholder to not break worlds
+        FancyBlack,
+        FancyGreen,
+        FancyRed,
+        FancyWhite,
+        Placeholder9, //removed, leaving placeholder to not break worlds
+        SteelPlate,
+        SteelPlate2,
+    }
+
+	public struct Block : IBlock
 	{
         public ushort BlockData;
 
@@ -20,93 +114,6 @@ namespace Sean.Shared
 		{
 			get { return (BlockType)(BlockData & 0xFF); }
 			set { BlockData = (ushort)(BlockData & 0xFF00 | (byte)value); }
-		}
-
-		/// <summary>Block types starting with 'Placeholder' are not included in the action picker buttons grid and will appear white because they dont have associated textures.</summary>
-		public enum BlockType : byte
-		{
-			Unknown = 0,
-
-			//Naturally occurring
-			Air = 1,
-			Ocean = 2,
-			Dirt = 3,
-			Grass,
-			Snow,
-			Sand,
-			SandDark,
-			Ice,
-			Gravel,
-			Rock,
-			Coal,
-			Copper,
-			Iron,
-			Gold,
-			Oil,
-			Tree,
-			ElmTree,
-			Leaves,
-			SnowLeaves,
-			Lava,
-			LavaRock,
-
-            // Water
-            WaterSource = 30,
-            Water1,
-            Water2,
-            Water3,
-            Water4,
-            Water5,
-            Water6,
-            Water7,
-
-            GrassSlopeN = 40,
-            GrassSlopeS,
-            GrassSlopeE,
-            GrassSlopeW,
-            GrassSlopeNW,
-            GrassSlopeNE,
-            GrassSlopeSE,
-            GrassSlopeSW,
-            GrassSlopeNEW,
-            GrassSlopeNES,
-            GrassSlopeESW,
-            GrassSlopeNWS,
-
-			//Crafted Material
-			WoodTile1 = 60,
-			WoodTile2,
-			Bricks,
-			Cobble = 64,
-
-			//Crafted Item
-			PlaceholderWorkBench = 100,
-			PlaceholderStove,
-			PlaceholderFurnace,
-			PlaceholderPipeline,
-			Crate,
-			Placeholder2, //removed, leaving placeholder to not break worlds
-			Shelf1,
-			SteelDoorTop,
-			SteelDoorBottom,
-			Placeholder3, //removed, leaving placeholder to not break worlds
-			Speaker,
-			PrisonBars,
-			
-			//Other
-			Placeholder4 = 220, //removed, leaving placeholder to not break worlds
-			Placeholder5, //removed, leaving placeholder to not break worlds
-			Placeholder1, //removed, leaving placeholder to not break worlds
-			Placeholder6, //removed, leaving placeholder to not break worlds
-			Placeholder7, //removed, leaving placeholder to not break worlds
-			Placeholder8, //removed, leaving placeholder to not break worlds
-			FancyBlack,
-			FancyGreen,
-			FancyRed,
-			FancyWhite,
-			Placeholder9, //removed, leaving placeholder to not break worlds
-			SteelPlate,
-			SteelPlate2,
 		}
 
         public Facing Orientation

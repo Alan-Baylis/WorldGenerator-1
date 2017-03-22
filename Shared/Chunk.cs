@@ -79,11 +79,11 @@ namespace Sean.Shared
             return chunk;
         }
 
-        public IEnumerable<Tuple<Position, Block.BlockType>> GetVisibleIterator(Facing direction)
+        public IEnumerable<Tuple<Position, BlockType>> GetVisibleIterator(Facing direction)
         {
             foreach (var item in Blocks.GetVisibleIterator(direction))
             {
-                yield return new Tuple<Position, Block.BlockType>
+                yield return new Tuple<Position, BlockType>
                     (new Position(item.Item1.X + ChunkCoords.WorldCoordsX, item.Item1.Y, item.Item1.Z + ChunkCoords.WorldCoordsZ), 
                     item.Item2);
             }
@@ -113,11 +113,11 @@ namespace Sean.Shared
                     for (var y = Global.CHUNK_HEIGHT - 1; y >= 0; y--) //loop from the highest block position downward until we find a solid block
                     {
                         var block = Blocks[x, y, z];
-                        if (y > HighestNonAirLevel && block.Type != Block.BlockType.Air) HighestNonAirLevel = y;
+                        if (y > HighestNonAirLevel && block.Type != BlockType.Air) HighestNonAirLevel = y;
                         if (block.IsTransparent) continue;
                         HeightMap[x, z] = y;
-                        if (block.Type == Block.BlockType.Dirt)
-                            Blocks[x, y, z] = new Block(Block.BlockType.Grass);
+                        if (block.Type == BlockType.Dirt)
+                            Blocks[x, y, z] = new Block(BlockType.Grass);
                         break;
                     }
 
@@ -143,13 +143,13 @@ namespace Sean.Shared
                     if (y == ne + 1 && y == nw + 1 && y == se + 1 && y == sw + 1)
                         continue;
                     if (y <= ne && y <= nw && y <= se && y == sw + 1)
-                        Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeNW);
+                        Blocks [x, y, z] = new Block (BlockType.GrassSlopeNW);
                     if (y <= ne && y <= nw && y == se + 1 && y <= sw)
-                        Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeNE);
+                        Blocks [x, y, z] = new Block (BlockType.GrassSlopeNE);
                     if (y == ne + 1 && y <= nw && y <= se && y <= sw )
-                        Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeSE);
+                        Blocks [x, y, z] = new Block (BlockType.GrassSlopeSE);
                     if (y <= ne && y == nw + 1 && y <= se && y <= sw )
-                        Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeSW);
+                        Blocks [x, y, z] = new Block (BlockType.GrassSlopeSW);
                 }
             }
 
@@ -165,16 +165,16 @@ namespace Sean.Shared
                     var se = HeightMap [x+1, z ];
                     var sw = HeightMap [x, z +1];
 
-                    if (Blocks [x, y, z].Type == Block.BlockType.Grass) {
+                    if (Blocks [x, y, z].Type == BlockType.Grass) {
                         if (y <= nw && y <= ne && y <= se && y <= sw) {
                             if (y <= n && y <= e && y > s && y <= w)
-                                Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeNEW);
+                                Blocks [x, y, z] = new Block (BlockType.GrassSlopeNEW);
                             if (y <= n && y <= e && y <= s && y > w)
-                                Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeNES);
+                                Blocks [x, y, z] = new Block (BlockType.GrassSlopeNES);
                             if (y > n && y <= e && y <= s && y <= w)
-                                Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeESW);
+                                Blocks [x, y, z] = new Block (BlockType.GrassSlopeESW);
                             if (y <= n && y > e && y <= s && y <= w)
-                                Blocks [x, y, z] = new Block (Block.BlockType.GrassSlopeNWS);
+                                Blocks [x, y, z] = new Block (BlockType.GrassSlopeNWS);
                         }
 
                         /*
@@ -243,7 +243,7 @@ namespace Sean.Shared
             //update HighestNonAirLevel property
             //1. if placing air (removing block), is it at same level as previous HighestNonAir?, just rebuild HeightMap in this case, otherwise do nothing
             //2. if placing anything other then air, simply check if its > HighestNonAirLevel and set it
-            if (block.Type == Block.BlockType.Air) //removing a block
+            if (block.Type == BlockType.Air) //removing a block
             {
                 if (yLevel == HighestNonAirLevel) BuildHeightMap();
             }

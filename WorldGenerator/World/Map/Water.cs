@@ -46,7 +46,7 @@ namespace Sean.WorldGenerator
             _emptyCoords.Remove(pos);
             _heights.Remove(pos);
 
-            var block = new Block(Block.BlockType.Water1);
+            var block = new Block(BlockType.Water1);
             worldInstance.SetBlock(pos.X, pos.Y, pos.Z, block);
             worldInstance.GlobalMapTerrain.Set(pos.X, pos.Z, RIVER);
             //Log.WriteInfo($"[River.Add] Adding {pos}");

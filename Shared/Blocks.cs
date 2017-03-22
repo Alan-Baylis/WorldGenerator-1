@@ -13,19 +13,19 @@ namespace Sean.Shared
 
         private class ArrayItem
         {
-            public ArrayItem(Block.BlockType blockType, int count)
+            public ArrayItem(BlockType blockType, int count)
             {
                 this.BlockType = blockType;
                 this.Count = count;
             }
-            public Block.BlockType BlockType;
+            public BlockType BlockType;
             public int Count; // TODO - fix to byte size
         }
         public BlocksColumn(int chunkHeight)
         {
             _chunkHeight = chunkHeight;
             _array = new ArrayList();
-            _array.Add (new ArrayItem(Block.BlockType.Unknown, chunkHeight));
+            _array.Add (new ArrayItem(BlockType.Unknown, chunkHeight));
         }
         public Block this[int y]
         {
@@ -111,18 +111,18 @@ namespace Sean.Shared
             }
         }
 
-        public IEnumerable<Tuple<int, Block.BlockType>> GetVisibleIterator()
+        public IEnumerable<Tuple<int, BlockType>> GetVisibleIterator()
         {
             int h = 0;
             int height = 0;
             foreach (ArrayItem item in _array)
             {
                 height += item.Count;
-                if (item.BlockType == Block.BlockType.Unknown || item.BlockType == Block.BlockType.Air)
+                if (item.BlockType == BlockType.Unknown || item.BlockType == BlockType.Air)
                     h = height;
                 while (h < height)
                 {
-                    yield return new Tuple<int, Block.BlockType> (h, item.BlockType);
+                    yield return new Tuple<int, BlockType> (h, item.BlockType);
                     h++;
                 }
             }
@@ -150,7 +150,7 @@ namespace Sean.Shared
                 //var blockType = (Block.BlockType)(memoryStream.ReadByte() << 8 + memoryStream.ReadByte());
                 var a = memoryStream.ReadByte();
                 var b = memoryStream.ReadByte();
-                var blockType = (Block.BlockType)((a << 8) + b);
+                var blockType = (BlockType)((a << 8) + b);
                 var count = memoryStream.ReadByte();
                 _array.Add (new ArrayItem(blockType, count));
                 height += count;
@@ -211,16 +211,16 @@ namespace Sean.Shared
             set { _array[position.X % Global.CHUNK_SIZE, position.Z % Global.CHUNK_SIZE][position.Y] = value; }
         }
 
-        private IEnumerable<Tuple<Position, Block.BlockType>> GetVisibleIterator(int x, int z)
+        private IEnumerable<Tuple<Position, BlockType>> GetVisibleIterator(int x, int z)
         {
             foreach (var item in _array[x,z].GetVisibleIterator()) {
                 var y = item.Item1;
                 var block = item.Item2;
-                yield return new Tuple<Position, Block.BlockType> (
+                yield return new Tuple<Position, BlockType> (
                     new Position (x, y, z), block);
             }
         }
-        public IEnumerable<Tuple<Position, Block.BlockType>> GetVisibleIterator(Facing direction)
+        public IEnumerable<Tuple<Position, BlockType>> GetVisibleIterator(Facing direction)
         {
             switch (direction) {
             case Facing.North:

@@ -254,12 +254,12 @@ namespace Sean.WorldGenerator
                 var y = pos.Y;
                 var z = pos.Z;
                   
-                if (worldInstance.GetBlock(x,y,z).Type == Block.BlockType.Unknown)
+                if (worldInstance.GetBlock(x,y,z).Type == BlockType.Unknown)
                 {
                     var block = GenerateCell(x, y, z);
-                    if (block.Type == Block.BlockType.Unknown) Log.WriteError("Unknown block type generated?");
+                    if (block.Type == BlockType.Unknown) Log.WriteError("Unknown block type generated?");
                     worldInstance.SetBlock (x, y, z, block);
-                    if (worldInstance.GetBlock (x, y, z).Type == Block.BlockType.Unknown) Log.WriteError("Block not set?");
+                    if (worldInstance.GetBlock (x, y, z).Type == BlockType.Unknown) Log.WriteError("Block not set?");
                     if (block.IsTransparent)
                     {
                         ExpandSearchCheckBlock (x - 1, y, z, generateQueue);
@@ -287,14 +287,14 @@ namespace Sean.WorldGenerator
         }
         private void ExpandSearchCheckBlock(int x,int y,int z, UniqueQueue<Position> generateQueue)
         {
-            if (worldInstance.IsLoadedBlockLocation(x, y, z) && worldInstance.GetBlock(x,y,z).Type == Block.BlockType.Unknown)
+            if (worldInstance.IsLoadedBlockLocation(x, y, z) && worldInstance.GetBlock(x,y,z).Type == BlockType.Unknown)
                 generateQueue.Enqueue (new Position (x, y, z));
         }
         private Block GenerateCell(int x, int y, int z)
         {
             //double p = perlinNoise.OctavePerlin(worldSize, x, y, z, octaveCount, persistence);
             double p = terrainGenerator.get((double)x / Settings.FRACTAL_SIZE, (double)(Settings.maxNoiseHeight - y) / Settings.maxNoiseHeight, (double)z / Settings.FRACTAL_SIZE);
-            var blockType = p > 0.5 ? Block.BlockType.Dirt : Block.BlockType.Air;
+            var blockType = p > 0.5 ? BlockType.Dirt : BlockType.Air;
             return new Block(blockType);
         }
 

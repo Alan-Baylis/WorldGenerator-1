@@ -42,7 +42,7 @@ namespace OpenTkClient
             _chunksN[coords].Blocks[position] = newBlock;
         }
 
-		public static IEnumerable<Tuple<Position, Block.BlockType>> GetBlocks(Facing direction)
+		public static IEnumerable<Tuple<Position, BlockType>> GetBlocks(Facing direction)
         {
 			lock (_lock) {
 				var list = _chunksN;
@@ -68,7 +68,7 @@ namespace OpenTkClient
 			}
         }
 
-        public static IEnumerable<Tuple<Position, Block.BlockType>> GetWorldMapBlocks(Facing direction)        {
+        public static IEnumerable<Tuple<Position, BlockType>> GetWorldMapBlocks(Facing direction)        {
             lock (_lock)
             {
                 if (worldMapHeight != null && worldMapTerrain != null)
@@ -81,9 +81,9 @@ namespace OpenTkClient
                         {
                             //if (Math.Abs(z - Global.LookingAt.Z) <= 100 && Math.Abs(x - Global.LookingAt.X) <= 100)
                             yield return 
-                                new Tuple<Position, Block.BlockType>(
+                                new Tuple<Position, BlockType>(
                                     new Position(x+chunkMidpoint, worldMapHeight[x,z], z+chunkMidpoint), 
-                                    (Block.BlockType)worldMapTerrain[x,z]);
+                                    (BlockType)worldMapTerrain[x,z]);
                         }
                     }
                 }

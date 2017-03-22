@@ -3,34 +3,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sean.Shared;
 
 namespace AiClient
 {
-    class Character
+    public class Character
     {
-        Character()
+        public Character()
         {
         }
 
         public int Id { get;set;}
-        public int X { get;set;}
-        public int Y { get;set;}
+
+        public Queue<Position> WalkPath { get; set;}
+        public Position Location { get; set; }
+        public Position Destination { get ; set;}
     }
 
-    class Characters
+    public class Characters
     {
         Dictionary<int, Character> chars = new Dictionary<int, Character>();
-        Characters(Map map)
+        public Characters(World map)
         {
             this.map = map;
         }
 
-        Map map;
+        World map;
 
         public void AddCharacter(Character chr)
         {
             chars.Add (chr.Id, chr);
-            map.Add (chr.X, chr.Y, Item.Character);
+            map.Add (chr.Location.X, chr.Location.Y, Item.Character);
         }
     }
 }

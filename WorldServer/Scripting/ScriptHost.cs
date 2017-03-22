@@ -13,17 +13,17 @@ namespace Sean.WorldServer.Scripting
     // A class to share context between our ScriptDriver and Mono's Evaluator
     public static class ScriptHost// : IScriptHost
     {
-        public static void AddBlock (int characterId, Position position, Block.BlockType blockType)
+        public static void AddBlock (int characterId, Position position, BlockType blockType)
         {
             Log.WriteInfo("AddBlock");
         }
 
-        public static void AddBlockItem (int characterId, Coords coords, Vector3 velocity, Block.BlockType blockType, int gameObjectId)
+        public static void AddBlockItem (int characterId, Coords coords, Vector3 velocity, BlockType blockType, int gameObjectId)
         {
             Log.WriteInfo("AddBlockItem");
         }
 
-        public static void AddProjectile (int characterId, Coords coords, Vector3 velocity, Block.BlockType blockType, bool allowBounce, int gameObjectId)
+        public static void AddProjectile (int characterId, Coords coords, Vector3 velocity, BlockType blockType, bool allowBounce, int gameObjectId)
         {
             Log.WriteInfo("AddProjectile");
         }

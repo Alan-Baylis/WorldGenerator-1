@@ -221,7 +221,7 @@ namespace Sean.PathFinding
             return route;
         }
 
-        public List<Position> FindPaths (Position start, Block.BlockType stopAtType = Block.BlockType.Air, int maxSearch = 100)
+        public List<Position> FindPaths (Position start, BlockType stopAtType = BlockType.Air, int maxSearch = 100)
 		{
 			int searched = 0;
 			Position current = start;
@@ -328,7 +328,7 @@ namespace Sean.PathFinding
 			return (diff.X <= 1 && diff.Z <= 1 && diff.Y<=3);
 		}
 
-        public IEnumerable<Position> FindNearestBlock(Position start, Block.BlockType target)
+        public IEnumerable<Position> FindNearestBlock(Position start, BlockType target)
         {
             foreach (Position check in ListBlocksByRange(start))
             {
@@ -518,7 +518,7 @@ namespace Sean.PathFinding
             }
         }
 
-        public Queue<Position> FindPathToNearestBlock(Position start, Block.BlockType target)
+        public Queue<Position> FindPathToNearestBlock(Position start, BlockType target)
         {
             foreach(Position pos in FindNearestBlock(start, target))
             {
@@ -530,7 +530,7 @@ namespace Sean.PathFinding
             return null;
         }
 
-        private bool NextToTarget(Position loc, Block.BlockType target)
+        private bool NextToTarget(Position loc, BlockType target)
         {
             return
                 ((world.GetBlock(loc.X -1, loc.Y, loc.Z -1).Type == target)
