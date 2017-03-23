@@ -22,6 +22,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTkClient", "OpenTkClient\OpenTkClient.csproj", "{41F1AACF-807C-42F6-B8D8-F8F244589122}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AiClient", "AiClient\AiClient.csproj", "{24D92817-55A4-4A9A-A1F7-F0562A151BEA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CBD66195-E5CC-4ADA-8717-1900BA0082DB} = {CBD66195-E5CC-4ADA-8717-1900BA0082DB}
+		{4D280CA6-39A9-4400-B365-688930CE654D} = {4D280CA6-39A9-4400-B365-688930CE654D}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

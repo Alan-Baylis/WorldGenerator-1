@@ -222,7 +222,19 @@ namespace Sean.WorldGenerator
                 FireWorldEvent(position, ItemAction.Add, block);
             }
         }
-       
+
+
+
+        public bool IsLocationSolid(Position position)
+        {
+            return GetBlock(position).IsSolid;
+        }
+
+        public bool IsLocationTransparent(Position position)
+        {
+            return GetBlock(position).IsTransparent;
+        }
+
 
         private void FireWorldEvent(Position blockLocation, ItemAction action, Block block)
         {

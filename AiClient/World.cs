@@ -60,6 +60,9 @@ namespace AiClient
         public bool IsLoadedBlockLocation(Position position) { throw new NotImplementedException (); }
         public bool IsLoadedBlockLocation(int x, int y, int z) { throw new NotImplementedException (); }
 
+        public bool IsLocationSolid(Position position) { throw new NotImplementedException(); }
+        public bool IsLocationTransparent(Position position) { throw new NotImplementedException(); }
+
         public Block GetBlock(Position position) { throw new NotImplementedException (); }
         public Block GetBlock(int x, int y, int z) { throw new NotImplementedException (); }
 

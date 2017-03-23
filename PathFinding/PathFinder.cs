@@ -637,31 +637,31 @@ namespace Sean.PathFinding
 			Position dn2 = pos + new Position (0, -2, 0);
 			Position dn3 = pos + new Position(0,-3,0);
 
-			if (world.GetBlock(up3).IsSolid)
+			if (world.IsLocationSolid(up3))
 				yield return up3;
-			if (world.GetBlock(up2).IsSolid)
+			if (world.IsLocationSolid(up2))
 				yield return up2;
-			if (world.GetBlock(up1).IsSolid)
+			if (world.IsLocationSolid(up1))
 				yield return up1;
-			if (world.GetBlock(pos).IsSolid)
+			if (world.IsLocationSolid(pos))
 			{
 				yield return pos;
 				yield break;
 			} 
 
-			if (world.GetBlock(dn1).IsSolid)
+			if (world.IsLocationSolid(dn1))
 			{
 				yield return dn1;
 				yield break;
 			}
 
-		  	if (world.GetBlock(dn2).IsSolid)
+		  	if (world.IsLocationSolid(dn2))
 			{
 				yield return dn2;
 				yield break;
 			}
 
-			if (world.GetBlock(dn3).IsSolid)
+			if (world.IsLocationSolid(dn3))
 			{
 				yield return dn3;
 				yield break;
@@ -696,19 +696,19 @@ namespace Sean.PathFinding
             Position dn2 = pos + new Position(0,-2,0);
             //Position dn3 = pos + new Position(0,-3,0);
 
-            if (world.GetBlock(dn1).IsSolid && world.GetBlock(pos).IsTransparent && world.GetBlock(up1).IsTransparent)
+            if (world.IsLocationSolid(dn1) && world.IsLocationTransparent(pos) && world.IsLocationTransparent(up1))
             {
                 // Walk straight
                 neighbours.Add(pos);
                 return;
             }
-            if (world.GetBlock(pos).IsSolid && world.GetBlock(up1).IsTransparent && world.GetBlock(up2).IsTransparent)
+            if (world.IsLocationSolid(pos) && world.IsLocationTransparent(up1) && world.IsLocationTransparent(up2))
             {
                 // Jump up one
                 neighbours.Add(up1);
                 return;               
             }
-            if (world.GetBlock(dn2).IsSolid && world.GetBlock(dn1).IsTransparent && world.GetBlock(pos).IsTransparent)
+            if (world.IsLocationSolid(dn2) && world.IsLocationTransparent(dn1) && world.IsLocationTransparent(pos))
             {
                 // Drop down one
                 neighbours.Add(dn1);

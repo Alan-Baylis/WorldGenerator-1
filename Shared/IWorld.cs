@@ -6,6 +6,9 @@
         bool IsLoadedBlockLocation(Position position);
         bool IsLoadedBlockLocation(int x, int y, int z);
 
+        bool IsLocationSolid(Position position);
+        bool IsLocationTransparent(Position position);
+
         Block GetBlock(Position position);
         Block GetBlock(int x, int y, int z);
 
