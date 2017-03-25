@@ -34,6 +34,24 @@ namespace AiClient
         {
             items.Remove(item);
         }
+        public bool IsLocationSolid()
+        {
+            foreach (var i in items) {
+                if (i != Item.Water)
+                    return true;
+            }
+            return false;
+        }
+        public bool IsLocationTransparent()
+        {
+            if (items.Count == 0)
+                return true;
+            foreach (var i in items) {
+                if (i != Item.Water)
+                    return false;
+            }
+            return true;
+        }
 
         public string Render(int timeslice)
         {
@@ -56,12 +74,26 @@ namespace AiClient
     public class World : IWorld
     {
         #region IWorld
-        public bool IsValidBlockLocation (int x, int y, int z) { throw new NotImplementedException (); }
-        public bool IsLoadedBlockLocation(Position position) { throw new NotImplementedException (); }
-        public bool IsLoadedBlockLocation(int x, int y, int z) { throw new NotImplementedException (); }
+        public bool IsValidBlockLocation (int x, int y, int z) {
+            return x >= 0 && z >= 0 && x < mapsize && z < mapsize;
+        }
+        public bool IsLoadedBlockLocation(Position position) { 
+            return IsValidBlockLocation(position.X, position.Y, position.Z);
+        }
+        public bool IsLoadedBlockLocation(int x, int y, int z) {
+            return IsValidBlockLocation (x, y, z);
+        }
 
-        public bool IsLocationSolid(Position position) { throw new NotImplementedException(); }
-        public bool IsLocationTransparent(Position position) { throw new NotImplementedException(); }
+        public bool IsLocationSolid(Position position)
+        { 
+            if (position.Y == 0)
+                return true;
+            return world [position.X, position.Z].IsLocationSolid ();
+        }
+        public bool IsLocationTransparent(Position position)
+        { 
+            return world [position.X, position.Z].IsLocationTransparent ();
+        }
 
         public Block GetBlock(Position position) { throw new NotImplementedException (); }
         public Block GetBlock(int x, int y, int z) { throw new NotImplementedException (); }
@@ -80,18 +112,21 @@ namespace AiClient
         public int LoadedChunkCount { get; }
         #endregion
     
-        private const int MAPSIZE = 70;
-        Array<Cell> world = new Array<Cell>(MAPSIZE,MAPSIZE);
+        readonly int mapsize;
+        Array<Cell> world;
         int timeslice = 1;
         Random rnd = new Random();
 
-        public World()
+        public World(int mapsize)
         {
-            for (int y = 0; y < MAPSIZE; y++)
+            this.mapsize = mapsize;
+            world = new Array<Cell>(mapsize,mapsize);
+
+            for (int z = 0; z < mapsize; z++)
             {
-                for (int x = 0; x < MAPSIZE; x++)
+                for (int x = 0; x < mapsize; x++)
                 {
-                    world[x, y] = new Cell();
+                    world[x, z] = new Cell();
                 }
             }
             world[10, 10].AddItem(Item.Water);
@@ -101,33 +136,32 @@ namespace AiClient
             world[11, 11].AddItem(Item.Water);
 
             for (int i = 0; i < 20; i++)
-                world[rnd.Next(MAPSIZE), rnd.Next(MAPSIZE)].AddItem(Item.Tree);
+                world[rnd.Next(mapsize), rnd.Next(mapsize)].AddItem(Item.Tree);
         }
 
-        public void Add (int x, int y, Item item)
+        public void Add (int x, int z, Item item)
         {
-            world [x, y].AddItem (item);
+            world [x, z].AddItem (item);
         }
-        public void Remove (int x, int y, Item item)
+        public void Remove (int x, int z, Item item)
         {
-            world [x, y].RemoveItem (item);
+            world [x, z].RemoveItem (item);
         }
-        public void Move (int x, int y, Item item, int x1, int y1)
+        public void Move (int x, int z, Item item, int x1, int z1)
         {
-            Add (x1, y1, item);
-            Remove (x, y, item);
+            Add (x1, z1, item);
+            Remove (x, z, item);
         }
-        public void Render()
+        public void Render(DisplayConsoleWindow gridWindow)
         {
-            Console.Clear();
-            for (int y = 0; y < MAPSIZE; y++)
+            for (int z = 0; z < mapsize; z++)
             {
                 var str = new StringBuilder();
-                for (int x = 0; x < MAPSIZE; x++)
+                for (int x = 0; x < mapsize; x++)
                 {
-                    str.Append(world[x, y].Render(timeslice));
+                    str.Append(world[x, z].Render(timeslice));
                 }
-                Console.WriteLine(str);
+                gridWindow.WriteLine(str.ToString());
             }
             timeslice++;
         }

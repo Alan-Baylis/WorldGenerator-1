@@ -14,35 +14,40 @@ namespace AiClient
         private Characters characters;
         private PathFinder pathFinder;
 
+        DisplayConsole console;
+        DisplayConsoleWindow gridWindow;
+
         public Engine()
         {
-            world = new World();
+            world = new World(38);
             characters = new Characters(world);
             pathFinder = new PathFinder (world);
+
+            console = new DisplayConsole();
+            gridWindow = console.AddWindow("grid", 2, 2, 40, 40);
         }
 
         public void Run()
         {
             var chr = new Character ();
             chr.Id = 1;
-            chr.Location = new Position(20,0,20);
-            chr.Destination = new Position(30,0,30);
+            chr.Location = new Position(20,1,20);
+            chr.Destination = new Position(30,1,30);
 
             characters.AddCharacter (chr);
             chr.WalkPath = pathFinder.FindPath (chr.Location, chr.Destination);
 
-            world.Render();
-            System.Threading.Thread.Sleep(1000);
+            for(int i=0; i<20; i++) {
+                gridWindow.Clear ();
+                world.Render (gridWindow);
+                System.Threading.Thread.Sleep (1000);
 
-            if (chr.WalkPath.Count != 0) {
-                Position newPosition = chr.WalkPath.Dequeue();
-                chr.Location = newPosition;
+                if (chr.WalkPath.Count != 0) {
+                    Position newPosition = chr.WalkPath.Dequeue ();
+                    world.Move (chr.Location.X, chr.Location.Z, Item.Character, newPosition.X, newPosition.Z);
+                    chr.Location = newPosition;
+                }
             }
-
-            world.Render();
-            System.Threading.Thread.Sleep(1000);
-
-            Console.ReadKey();
         }
     }
 }
