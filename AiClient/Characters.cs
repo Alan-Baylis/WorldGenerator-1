@@ -15,7 +15,7 @@ namespace AiClient
 
         public int Id { get;set;}
 
-        public Queue<Position> WalkPath { get; set;}
+        public Stack<Position> WalkPath { get; set;}
         public Position Location { get; set; }
         public Position Destination { get ; set;}
     }
@@ -33,7 +33,7 @@ namespace AiClient
         public void AddCharacter(Character chr)
         {
             chars.Add (chr.Id, chr);
-            map.Add (chr.Location.X, chr.Location.Y, Item.Character);
+            map.Add (chr.Location.X, chr.Location.Z, Item.Character);
         }
     }
 }

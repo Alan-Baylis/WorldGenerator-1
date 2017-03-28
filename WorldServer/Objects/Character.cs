@@ -8,14 +8,14 @@ namespace Sean.WorldServer
     {
         public Character ()
         {
-            WalkPath = new Queue<Position>();
+            WalkPath = new Stack<Position>();
         }
 
         public int Id { get; set; }
         public string Name { get; set; }
         public Position Location { get; set; }
         public Position Destination { get; set; }
-        public Queue<Position> WalkPath { get; set; }
+        public Stack<Position> WalkPath { get; set; }
     }
 }
 

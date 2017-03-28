@@ -157,13 +157,13 @@ namespace Sean.PathFinding
             return (int)(xzy * 10);
         }
 
-        public Queue<Position> FindPath (Position start, Position goal)
+        public Stack<Position> FindPath (Position start, Position goal)
 		{
-			var route = new Queue<Position> ();
+			var route = new Stack<Position> ();
 			int maxSearch = 100;
 			int searched = 0;
 			Position current = start;
-			route.Enqueue(goal);
+			route.Push(goal);
 			scores.Clear ();
 			openset.Clear ();
 
@@ -204,7 +204,7 @@ namespace Sean.PathFinding
 			if (searched >= maxSearch) 
 			{
                 Log.WriteInfo($"Could not find path from {start} to {goal}");
-				return new Queue<Position>();
+				return new Stack<Position>();
 			}
 			else
             //if (GetFScore (goal) > 0) // Found path
@@ -214,7 +214,7 @@ namespace Sean.PathFinding
                 //Position current = goal;
                 while (current != start)
                 {
-                    route.Enqueue(current);
+                    route.Push(current);
                     current = GetCameFrom (current);
                 }
             }
@@ -518,7 +518,7 @@ namespace Sean.PathFinding
             }
         }
 
-        public Queue<Position> FindPathToNearestBlock(Position start, BlockType target)
+        public Stack<Position> FindPathToNearestBlock(Position start, BlockType target)
         {
             foreach(Position pos in FindNearestBlock(start, target))
             {

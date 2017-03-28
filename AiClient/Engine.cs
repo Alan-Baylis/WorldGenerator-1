@@ -43,7 +43,7 @@ namespace AiClient
                 System.Threading.Thread.Sleep (1000);
 
                 if (chr.WalkPath.Count != 0) {
-                    Position newPosition = chr.WalkPath.Dequeue ();
+                    Position newPosition = chr.WalkPath.Pop();
                     world.Move (chr.Location.X, chr.Location.Z, Item.Character, newPosition.X, newPosition.Z);
                     chr.Location = newPosition;
                 }

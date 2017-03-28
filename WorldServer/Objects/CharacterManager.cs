@@ -91,7 +91,7 @@ namespace Sean.WorldServer
             foreach (var character in _characters.Values)
             {
                 if (character.WalkPath.Count != 0) {
-                    Position newPosition = character.WalkPath.Dequeue();
+                    Position newPosition = character.WalkPath.Pop();
                     character.Location = newPosition;
                 }
             }
