@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace AiClient
 {
-
     public class JobManager
     {
         private List<IJob> jobs;
 
-        JobManager()
+        public JobManager()
         {
             jobs = new List<IJob>();
         }
@@ -20,6 +19,7 @@ namespace AiClient
         {
             jobs.Add(newJob);
         }
+
 
     }
 }

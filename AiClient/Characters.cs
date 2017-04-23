@@ -13,27 +13,18 @@ namespace AiClient
         {
         }
 
+        public int health { get; set; } = 100;
+        public int tiredness { get; set; }
+        public int hunger { get; set; }
+        public int thirst { get; set; }
+
+
         public int Id { get;set;}
 
         public Stack<Position> WalkPath { get; set;}
         public Position Location { get; set; }
         public Position Destination { get ; set;}
+
     }
 
-    public class Characters
-    {
-        Dictionary<int, Character> chars = new Dictionary<int, Character>();
-        public Characters(World map)
-        {
-            this.map = map;
-        }
-
-        World map;
-
-        public void AddCharacter(Character chr)
-        {
-            chars.Add (chr.Id, chr);
-            map.Add (chr.Location.X, chr.Location.Z, Item.Character);
-        }
-    }
 }
