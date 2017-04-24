@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Xml.Serialization;
-using Sean.Shared;
 
-namespace Sean.WorldGenerator
+namespace Sean.Shared
 {
     /// <summary>
     /// Represents a 3D vector using three single-precision floating-point numbers.

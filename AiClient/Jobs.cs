@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Sean.WorldGenerator;
+﻿using System.Collections.Generic;
 using Sean.Shared;
 
 namespace AiClient

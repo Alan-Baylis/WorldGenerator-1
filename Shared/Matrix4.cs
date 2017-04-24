@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Sean.WorldGenerator
+namespace Sean.Shared
 {
     /// <summary>
     /// Represents a 4x4 Matrix
