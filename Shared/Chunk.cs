@@ -96,6 +96,11 @@ namespace Sean.Shared
         /// <summary>Y level of the highest non air block. Improves chunk build times. Nothing is rendered higher then this so when building the chunk vbo theres no need to go any higher.</summary>
         public int HighestNonAirLevel { get; set; }
 
+        public int GetHeight (int x, int z)
+        {
+            return HeightMap [x % Global.CHUNK_SIZE, z % Global.CHUNK_SIZE];
+        }
+
         /// <summary>
         /// Build a heightmap for this chunk. This is the highest non transparent block in each vertical column.
         /// Leaves, water and other transparent blocks that light can shine through do not count.
@@ -129,6 +134,8 @@ namespace Sean.Shared
                     }
                 }
             }
+
+            return; // TODO - reenable slopes
 
             // Create slopes
             for (var x = 1; x < Global.CHUNK_SIZE-1; x++) {

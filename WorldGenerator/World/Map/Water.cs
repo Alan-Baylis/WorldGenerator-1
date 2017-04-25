@@ -16,6 +16,7 @@ namespace Sean.WorldGenerator
         private Dictionary<Position, float> _heights;
         private float _minScore;
         private Position _minPos;
+        private int _maxLength;
 
         private const int WATER = 2; // TODO - stick these somewhere
         private const int GRASS = 4;
@@ -25,6 +26,7 @@ namespace Sean.WorldGenerator
         {
             worldInstance = world;
             Growing = true;
+            _maxLength = 128;
             _minPos = new Position(0, Global.CHUNK_HEIGHT, 0);
             _minScore = Global.CHUNK_HEIGHT;
             Coords = new HashSet<Position>();
@@ -47,7 +49,17 @@ namespace Sean.WorldGenerator
             _heights.Remove(pos);
 
             var block = new Block(BlockType.Water1);
+            var airBlock = new Block(BlockType.Air);
             worldInstance.SetBlock(pos.X, pos.Y, pos.Z, block);
+            var above = worldInstance.GetBlock (pos.X, pos.Y + 1, pos.Z);
+            if (above.Type == BlockType.Dirt || above.Type == BlockType.Grass)
+            {
+                worldInstance.SetBlock(pos.X, pos.Y+1, pos.Z, airBlock);
+            }
+            above = worldInstance.GetBlock (pos.X, pos.Y + 2, pos.Z);
+            if (above.Type == BlockType.Dirt || above.Type == BlockType.Grass) {
+                worldInstance.SetBlock(pos.X, pos.Y+2, pos.Z, airBlock);
+            }
             worldInstance.GlobalMapTerrain.Set(pos.X, pos.Z, RIVER);
             //Log.WriteInfo($"[River.Add] Adding {pos}");
 
@@ -64,6 +76,12 @@ namespace Sean.WorldGenerator
 
         private void AddIfEmpty(int x,int y,int z)
         {
+            if (Source.GetDistanceExact (new Position (x, y, z)) > _maxLength) {
+                // Temporary code to limit length of river
+                Growing = false;
+                return;
+            }
+
             if (!worldInstance.IsValidBlockLocation (x, y, z)) {
                 // Have reached edge of map
                 Growing = false;
@@ -78,7 +96,8 @@ namespace Sean.WorldGenerator
                 }
                 return;
             }
-            if (!block.IsSolid)
+            //if (!block.IsSolid)
+            if (block.Type == BlockType.Air || block.Type == BlockType.Dirt || block.Type == BlockType.Grass)
             {
                 var pos = new Position(x,y,z);
                 _emptyCoords.Add(pos);
@@ -103,14 +122,19 @@ namespace Sean.WorldGenerator
         private void CalcScore(Position pos)
         {
             var chunk = new ChunkCoords(pos);
-            var loc = chunk.NormLocOnChunk(pos);
+            //var loc = chunk.NormLocOnChunk(pos);
             float score;
+            const int comp = 5; // compare range
             try
             {
-                var a = worldInstance.GlobalMap[pos.X+Global.CHUNK_SIZE,pos.Z] * (1-loc.Item1);
-                var b = worldInstance.GlobalMap[pos.X-Global.CHUNK_SIZE,pos.Z] * loc.Item1;
-                var c = worldInstance.GlobalMap[pos.X,pos.Z+Global.CHUNK_SIZE] * (1-loc.Item2);
-                var d = worldInstance.GlobalMap[pos.X,pos.Z-Global.CHUNK_SIZE] * loc.Item2;
+                var a = worldInstance.GetBlockHeight(pos.X+comp,pos.Z);
+                var b = worldInstance.GetBlockHeight(pos.X-comp,pos.Z);
+                var c = worldInstance.GetBlockHeight(pos.X,pos.Z+comp);
+                var d = worldInstance.GetBlockHeight(pos.X,pos.Z-comp);
+                //var a = worldInstance.GlobalMap[pos.X+Global.CHUNK_SIZE,pos.Z] * (1-loc.Item1);
+                //var b = worldInstance.GlobalMap[pos.X-Global.CHUNK_SIZE,pos.Z] * loc.Item1;
+                //var c = worldInstance.GlobalMap[pos.X,pos.Z+Global.CHUNK_SIZE] * (1-loc.Item2);
+                //var d = worldInstance.GlobalMap[pos.X,pos.Z-Global.CHUNK_SIZE] * loc.Item2;
                 score = pos.Y + ((a+b+c+d) / 4) / Global.CHUNK_HEIGHT;
                 var block = worldInstance.GetBlock (pos.X, pos.Y-1, pos.Z);
                 if (!block.IsSolid)

@@ -16,6 +16,7 @@ namespace Sean.WorldGenerator
 		public static void Generate(IWorld world, Chunk chunk)
         {
             Log.WriteInfo("Generating Trees");
+            return; // TODO - re enable
             var takenPositions = new List <Position>();
 			int numberOfTreesToGenerate = Settings.Random.Next(MIN_TREES_PER_CHUNK, MAX_TREES_PER_CHUNK + 1);
 			for (int tree = 0; tree < numberOfTreesToGenerate; tree++)

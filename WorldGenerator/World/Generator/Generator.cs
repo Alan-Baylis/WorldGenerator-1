@@ -294,7 +294,11 @@ namespace Sean.WorldGenerator
         {
             //double p = perlinNoise.OctavePerlin(worldSize, x, y, z, octaveCount, persistence);
             double p = terrainGenerator.get((double)x / Settings.FRACTAL_SIZE, (double)(Settings.maxNoiseHeight - y) / Settings.maxNoiseHeight, (double)z / Settings.FRACTAL_SIZE);
-            var blockType = p > 0.5 ? BlockType.Dirt : BlockType.Air;
+            var blockType = BlockType.Air;
+            if (p > 0.54)
+                blockType = BlockType.Rock;
+            else if (p > 0.5)
+                blockType = BlockType.Dirt;
             return new Block(blockType);
         }
 

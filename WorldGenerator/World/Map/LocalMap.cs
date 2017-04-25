@@ -130,8 +130,10 @@ namespace Sean.WorldGenerator
                 }
 
                 chunk = LoadChunk(new ChunkCoords(x, z));
-                if (chunk != null)
+                if (chunk != null) {
+                    chunk.BuildHeightMap ();
                     loaded = true;
+                }
 
                 // Create Chunk
                 Log.WriteInfo($"Generating {x},{z}");

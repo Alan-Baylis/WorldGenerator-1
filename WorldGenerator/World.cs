@@ -184,6 +184,11 @@ namespace Sean.WorldGenerator
             return localMap.Chunk(coords).Blocks[coords];
         }
 
+        public int GetBlockHeight(int x, int z)
+        {
+            return localMap.Chunk (new Position (x, 0, z)).GetHeight (x, z);
+        }
+
         /// <summary>
         /// Get a block using world coords. Looks up the chunk from the world chunks array and then the block in the chunk blocks array.
         /// Therefore if you have a chunk and chunk relative xyz its faster to get the block straight from the chunk blocks array.

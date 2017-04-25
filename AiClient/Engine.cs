@@ -68,7 +68,7 @@ namespace AiClient
                 chr.tiredness++;
                 chr.hunger++;
 
-                if (chr.tiredness = 80)
+                if (chr.tiredness == 80)
                     jobManager.AddJob(new SleepTask (chr));
                 if (chr.hunger == 80)
                     jobManager.AddJob(new EatTask (chr));

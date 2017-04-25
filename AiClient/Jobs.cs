@@ -32,7 +32,7 @@ namespace AiClient
 
     class AddToStore : IJob
     {
-        Store storeLocation;
+        //Store storeLocation;
     }
 
     class Find : IJob
