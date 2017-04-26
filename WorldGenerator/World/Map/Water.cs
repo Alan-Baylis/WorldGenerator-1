@@ -57,11 +57,11 @@ namespace Sean.WorldGenerator
                 case BlockType.Water4: block = new Block(BlockType.Water5); break;
                 case BlockType.Water5: block = new Block(BlockType.Water6); break;
                 case BlockType.Water6: block = new Block(BlockType.Water7); break;
+                case BlockType.Water7: block = new Block(BlockType.Water); break;
                 default: block = new Block(BlockType.Water1); break;
             }
-            block = new Block(BlockType.Water1);
             worldInstance.SetBlock(pos.X, pos.Y, pos.Z, block);
-            if (block.Type != BlockType.Water7)
+            if (block.Type != BlockType.Water)
                 CalcScore(pos); // re-adds to _heights
 
             var airBlock = new Block(BlockType.Air);
@@ -257,7 +257,7 @@ namespace Sean.WorldGenerator
                         river.Grow();
                         growing |= river.Growing;
                     }
-                    //System.Threading.Thread.Sleep(500);
+                    System.Threading.Thread.Sleep(300);
                 }
             }
             catch (Exception ex) {

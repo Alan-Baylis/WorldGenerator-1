@@ -54,7 +54,14 @@ namespace OpenTkClient
 			textures[(int)BlockType.Tree] = LoadTexture("tree.png");
 			textures[(int)BlockType.Leaves] = LoadTexture("leaves.png");
             textures[(int)BlockType.Ocean] = LoadTexture("water.png");
-            textures[(int)BlockType.Water1] = LoadTexture("water.png");
+            textures[(int)BlockType.Water] = LoadTexture("water.png");
+            textures[(int)BlockType.Water1] = LoadTexture("water1.png");
+            textures[(int)BlockType.Water2] = LoadTexture("water2.png");
+            textures[(int)BlockType.Water3] = LoadTexture("water3.png");
+            textures[(int)BlockType.Water4] = LoadTexture("water4.png");
+            textures[(int)BlockType.Water5] = LoadTexture("water5.png");
+            textures[(int)BlockType.Water6] = LoadTexture("water6.png");
+            textures[(int)BlockType.Water7] = LoadTexture("water7.png");
             textures[(int)BlockType.WaterSource] = LoadTexture("water.png");
 			textures[(int)BlockType.Placeholder1] = LoadTexture("character.png");
 

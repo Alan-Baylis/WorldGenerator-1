@@ -39,13 +39,14 @@ namespace Sean.Shared
 
         // Water
         WaterSource = 30,
-        Water7, // Puddle
-        Water6,
-        Water5,
-        Water4,
-        Water3,
+        Water1, // Puddle
         Water2,
-        Water1, // fill 1 block deep
+        Water3,
+        Water4,
+        Water5,
+        Water6,
+        Water7,
+        Water,// fill 1 block deep
 
         GrassSlopeN = 40,
         GrassSlopeS,
@@ -157,6 +158,7 @@ namespace Sean.Shared
             case BlockType.Water5:
             case BlockType.Water6:
             case BlockType.Water7:
+            case BlockType.Water:
             case BlockType.WaterSource:
             case BlockType.Ocean:
                 return true;
@@ -175,6 +177,7 @@ namespace Sean.Shared
                 case BlockType.Water5: return 5;
                 case BlockType.Water6: return 6;
                 case BlockType.Water7: return 7;
+                case BlockType.Water: return 8;
                 case BlockType.WaterSource: return 8;
                 case BlockType.Ocean: return 8;
                 default: return 0;
