@@ -97,6 +97,7 @@ namespace AiClient
 
         public Block GetBlock(Position position) { throw new NotImplementedException (); }
         public Block GetBlock(int x, int y, int z) { throw new NotImplementedException (); }
+        public int GetBlockHeight(int x, int z) { throw new NotImplementedException(); }
 
         public void SetBlock(Position position, Block block) { throw new NotImplementedException (); }
         public void SetBlock(int x, int y, int z, Block block) { throw new NotImplementedException (); }
@@ -165,5 +166,6 @@ namespace AiClient
             }
             timeslice++;
         }
+
     }
 }

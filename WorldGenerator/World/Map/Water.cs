@@ -48,9 +48,23 @@ namespace Sean.WorldGenerator
             _emptyCoords.Remove(pos);
             _heights.Remove(pos);
 
-            var block = new Block(BlockType.Water1);
-            var airBlock = new Block(BlockType.Air);
+            var block = worldInstance.GetBlock (pos.X, pos.Y, pos.Z);
+            switch (block.Type)
+            {
+                case BlockType.Water1: block = new Block(BlockType.Water2); break;
+                case BlockType.Water2: block = new Block(BlockType.Water3); break;
+                case BlockType.Water3: block = new Block(BlockType.Water4); break;
+                case BlockType.Water4: block = new Block(BlockType.Water5); break;
+                case BlockType.Water5: block = new Block(BlockType.Water6); break;
+                case BlockType.Water6: block = new Block(BlockType.Water7); break;
+                default: block = new Block(BlockType.Water1); break;
+            }
+            block = new Block(BlockType.Water1);
             worldInstance.SetBlock(pos.X, pos.Y, pos.Z, block);
+            if (block.Type != BlockType.Water7)
+                CalcScore(pos); // re-adds to _heights
+
+            var airBlock = new Block(BlockType.Air);
             var above = worldInstance.GetBlock (pos.X, pos.Y + 1, pos.Z);
             if (above.Type == BlockType.Dirt || above.Type == BlockType.Grass)
             {
@@ -127,17 +141,23 @@ namespace Sean.WorldGenerator
             const int comp = 5; // compare range
             try
             {
-                var a = worldInstance.GetBlockHeight(pos.X+comp,pos.Z);
-                var b = worldInstance.GetBlockHeight(pos.X-comp,pos.Z);
-                var c = worldInstance.GetBlockHeight(pos.X,pos.Z+comp);
-                var d = worldInstance.GetBlockHeight(pos.X,pos.Z-comp);
                 //var a = worldInstance.GlobalMap[pos.X+Global.CHUNK_SIZE,pos.Z] * (1-loc.Item1);
                 //var b = worldInstance.GlobalMap[pos.X-Global.CHUNK_SIZE,pos.Z] * loc.Item1;
                 //var c = worldInstance.GlobalMap[pos.X,pos.Z+Global.CHUNK_SIZE] * (1-loc.Item2);
                 //var d = worldInstance.GlobalMap[pos.X,pos.Z-Global.CHUNK_SIZE] * loc.Item2;
-                score = pos.Y + ((a+b+c+d) / 4) / Global.CHUNK_HEIGHT;
-                var block = worldInstance.GetBlock (pos.X, pos.Y-1, pos.Z);
-                if (!block.IsSolid)
+
+                //var a = worldInstance.GetBlockHeight(pos.X+comp,pos.Z);
+                //var b = worldInstance.GetBlockHeight(pos.X-comp,pos.Z);
+                //var c = worldInstance.GetBlockHeight(pos.X,pos.Z+comp);
+                //var d = worldInstance.GetBlockHeight(pos.X,pos.Z-comp);
+
+                //score = pos.Y + ((a+b+c+d) / 4) / Global.CHUNK_HEIGHT;
+                var block = worldInstance.GetBlock (pos.X, pos.Y, pos.Z);
+                var currentWaterHeight = block.WaterHeight;
+                score = (pos.Y + (currentWaterHeight / 8)) / Global.CHUNK_HEIGHT;
+
+                var blockBelow = worldInstance.GetBlock (pos.X, pos.Y-1, pos.Z);
+                if (!blockBelow.IsSolid)
                 {
                     score -= 0.5f;
                 }

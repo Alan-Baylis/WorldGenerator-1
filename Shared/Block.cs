@@ -39,13 +39,13 @@ namespace Sean.Shared
 
         // Water
         WaterSource = 30,
-        Water1,
-        Water2,
-        Water3,
-        Water4,
-        Water5,
+        Water7, // Puddle
         Water6,
-        Water7,
+        Water5,
+        Water4,
+        Water3,
+        Water2,
+        Water1, // fill 1 block deep
 
         GrassSlopeN = 40,
         GrassSlopeS,
@@ -131,6 +131,10 @@ namespace Sean.Shared
         public bool IsWater {
             get { return IsBlockTypeWater (Type); }
         }
+        public int WaterHeight
+        {
+            get { return GetWaterHeight(Type); }
+        }
 
 		public static bool IsBlockTypeSolid(BlockType type)
 		{
@@ -159,6 +163,23 @@ namespace Sean.Shared
             default:
                 return false;
             }
+        }
+        public static int GetWaterHeight(BlockType type)
+        {
+            switch (type)
+            {
+                case BlockType.Water1: return 1;
+                case BlockType.Water2: return 2;
+                case BlockType.Water3: return 3;
+                case BlockType.Water4: return 4;
+                case BlockType.Water5: return 5;
+                case BlockType.Water6: return 6;
+                case BlockType.Water7: return 7;
+                case BlockType.WaterSource: return 8;
+                case BlockType.Ocean: return 8;
+                default: return 0;
+            }
+
         }
 
         public static bool IsBlockTypeTree(BlockType type)
