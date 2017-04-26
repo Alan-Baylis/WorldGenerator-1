@@ -62,7 +62,10 @@ namespace Sean.WorldGenerator
             }
             worldInstance.SetBlock(pos.X, pos.Y, pos.Z, block);
             if (block.Type != BlockType.Water)
+            {
+                _emptyCoords.Add(pos);
                 CalcScore(pos); // re-adds to _heights
+            }
 
             var airBlock = new Block(BlockType.Air);
             var above = worldInstance.GetBlock (pos.X, pos.Y + 1, pos.Z);
@@ -154,13 +157,13 @@ namespace Sean.WorldGenerator
                 //score = pos.Y + ((a+b+c+d) / 4) / Global.CHUNK_HEIGHT;
                 var block = worldInstance.GetBlock (pos.X, pos.Y, pos.Z);
                 var currentWaterHeight = block.WaterHeight;
-                score = (pos.Y + (currentWaterHeight / 8)) / Global.CHUNK_HEIGHT;
+                score = ((float)pos.Y + ((float)currentWaterHeight / 16)) / Global.CHUNK_HEIGHT;
 
                 var blockBelow = worldInstance.GetBlock (pos.X, pos.Y-1, pos.Z);
-                if (!blockBelow.IsSolid)
-                {
-                    score -= 0.5f;
-                }
+                //if (!blockBelow.IsSolid)
+                //{
+                //    score -= 0.5f;
+                //}
             }
             catch (Exception) { // TODO Handle out of array bounds errors better
                 score = pos.Y;
@@ -257,7 +260,7 @@ namespace Sean.WorldGenerator
                         river.Grow();
                         growing |= river.Growing;
                     }
-                    System.Threading.Thread.Sleep(300);
+                    //System.Threading.Thread.Sleep(300);
                 }
             }
             catch (Exception ex) {
