@@ -67,16 +67,17 @@ namespace Sean.WorldGenerator
                 CalcScore(pos); // re-adds to _heights
             }
 
-            var airBlock = new Block(BlockType.Air);
-            var above = worldInstance.GetBlock (pos.X, pos.Y + 1, pos.Z);
-            if (above.Type == BlockType.Dirt || above.Type == BlockType.Grass)
-            {
-                worldInstance.SetBlock(pos.X, pos.Y+1, pos.Z, airBlock);
-            }
-            above = worldInstance.GetBlock (pos.X, pos.Y + 2, pos.Z);
-            if (above.Type == BlockType.Dirt || above.Type == BlockType.Grass) {
-                worldInstance.SetBlock(pos.X, pos.Y+2, pos.Z, airBlock);
-            }
+            ClearBlockAboveWater(pos.X, pos.Y+1, pos.Z);
+            ClearBlockAboveWater(pos.X, pos.Y+2, pos.Z);
+            ClearBlockAboveWater(pos.X+1, pos.Y+1, pos.Z);
+            ClearBlockAboveWater(pos.X-1, pos.Y+1, pos.Z);
+            ClearBlockAboveWater(pos.X, pos.Y+1, pos.Z+1);
+            ClearBlockAboveWater(pos.X, pos.Y+1, pos.Z-1);
+            ClearBlockAboveWater(pos.X+1, pos.Y+1, pos.Z+1);
+            ClearBlockAboveWater(pos.X+1, pos.Y+1, pos.Z-1);
+            ClearBlockAboveWater(pos.X-1, pos.Y+1, pos.Z+1);
+            ClearBlockAboveWater(pos.X-1, pos.Y+1, pos.Z-1);
+
             worldInstance.GlobalMapTerrain.Set(pos.X, pos.Z, RIVER);
             //Log.WriteInfo($"[River.Add] Adding {pos}");
 
@@ -89,6 +90,14 @@ namespace Sean.WorldGenerator
 
             if (_minPos == pos)
                 FindNextLowest();
+        }
+        private void ClearBlockAboveWater(int x,int y,int z)
+        {
+            var airBlock = new Block(BlockType.Air);
+            var above = worldInstance.GetBlock (x, y, z);
+            if (above.Type == BlockType.Dirt || above.Type == BlockType.Grass) {
+                worldInstance.SetBlock (x, y, z, airBlock);
+            }
         }
 
         private void AddIfEmpty(int x,int y,int z)
