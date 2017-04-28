@@ -26,7 +26,7 @@ namespace Sean.WorldGenerator
         {
             worldInstance = world;
             Growing = true;
-            _maxLength = 128;
+            _maxLength = int.MaxValue; //128;
             _minPos = new Position(0, Global.CHUNK_HEIGHT, 0);
             _minScore = Global.CHUNK_HEIGHT;
             Coords = new HashSet<Position>();
@@ -36,6 +36,51 @@ namespace Sean.WorldGenerator
             Add(source, _minScore);
             CalcScore(source);
         }
+        public void FindGoodSourceSpot()
+        {
+            for (int z = worldInstance.GlobalMap.Size.minZ; z < worldInstance.GlobalMap.Size.maxZ; z += worldInstance.GlobalMap.Size.scale)
+            {
+                for (int x = worldInstance.GlobalMap.Size.minX; x < worldInstance.GlobalMap.Size.maxX; x += worldInstance.GlobalMap.Size.scale)
+                {
+                    var length = PotentialRiverLength(x, z);
+                }
+            }
+        }
+        private int PotentialRiverLength(int x, int z)
+        {
+            List<Position> river = new List<Position>();
+            var here = new Position(x, 0, z);
+            river.Add(here);
+            while (x>worldInstance.GlobalMap.Size.minX && z>worldInstance.GlobalMap.Size.minZ && x<worldInstance.GlobalMap.Size.maxX-1 && z<worldInstance.GlobalMap.Size.maxZ-1)
+            {
+                int h = worldInstance.GlobalMap[x, z];
+
+                TestRiverLocation(river, ref here, ref h, x+1, z);
+                TestRiverLocation(river, ref here, ref h, x-1, z);
+                TestRiverLocation(river, ref here, ref h, x, z+1);
+                TestRiverLocation(river, ref here, ref h, x, z-1);
+
+                if (here.X == x && here.Z == z)
+                    break;
+
+                river.Add(new Position(x, 0, z));
+            }
+            return river.Count;
+        }
+        private void TestRiverLocation(List<Position> river, ref Position minPosition, ref int minHeight, int x, int z)
+        {
+            var a = new Position(x + 1, 0, z);
+            if (river.Contains(a))
+                return;
+            var aa = worldInstance.GlobalMap[x + 1, z];
+            if (aa < minHeight)
+            {
+                minPosition = a;
+                minHeight = aa;
+            }
+        }
+
+
         public void Grow()
         {
             Add(_minPos, _minScore);
@@ -51,11 +96,11 @@ namespace Sean.WorldGenerator
             var block = worldInstance.GetBlock (pos.X, pos.Y, pos.Z);
             switch (block.Type)
             {
-                case BlockType.Water1: block = new Block(BlockType.Water2); break;
-                case BlockType.Water2: block = new Block(BlockType.Water3); break;
+                case BlockType.Water1: block = new Block(BlockType.Water4); break;
+                case BlockType.Water2: block = new Block(BlockType.Water4); break;
                 case BlockType.Water3: block = new Block(BlockType.Water4); break;
-                case BlockType.Water4: block = new Block(BlockType.Water5); break;
-                case BlockType.Water5: block = new Block(BlockType.Water6); break;
+                case BlockType.Water4: block = new Block(BlockType.Water7); break;
+                case BlockType.Water5: block = new Block(BlockType.Water7); break;
                 case BlockType.Water6: block = new Block(BlockType.Water7); break;
                 case BlockType.Water7: block = new Block(BlockType.Water); break;
                 default: block = new Block(BlockType.Water1); break;
@@ -150,7 +195,7 @@ namespace Sean.WorldGenerator
             var chunk = new ChunkCoords(pos);
             //var loc = chunk.NormLocOnChunk(pos);
             float score;
-            const int comp = 5; // compare range
+            const int comp = 7; // compare range
             try
             {
                 //var a = worldInstance.GlobalMap[pos.X+Global.CHUNK_SIZE,pos.Z] * (1-loc.Item1);
@@ -158,17 +203,22 @@ namespace Sean.WorldGenerator
                 //var c = worldInstance.GlobalMap[pos.X,pos.Z+Global.CHUNK_SIZE] * (1-loc.Item2);
                 //var d = worldInstance.GlobalMap[pos.X,pos.Z-Global.CHUNK_SIZE] * loc.Item2;
 
-                //var a = worldInstance.GetBlockHeight(pos.X+comp,pos.Z);
-                //var b = worldInstance.GetBlockHeight(pos.X-comp,pos.Z);
-                //var c = worldInstance.GetBlockHeight(pos.X,pos.Z+comp);
-                //var d = worldInstance.GetBlockHeight(pos.X,pos.Z-comp);
+                var a = worldInstance.GetBlockHeight(pos.X+comp,pos.Z);
+                var b = worldInstance.GetBlockHeight(pos.X-comp,pos.Z);
+                var c = worldInstance.GetBlockHeight(pos.X,pos.Z+comp);
+                var d = worldInstance.GetBlockHeight(pos.X,pos.Z-comp);
+                var e = worldInstance.GetBlockHeight(pos.X+comp,pos.Z+comp);
+                var f = worldInstance.GetBlockHeight(pos.X-comp,pos.Z+comp);
+                var g = worldInstance.GetBlockHeight(pos.X+comp,pos.Z-comp);
+                var h = worldInstance.GetBlockHeight(pos.X-comp,pos.Z-comp);
+                var neighbours = Math.Max(((a + b + c + d+e+f+g+h) / 8) - (float)pos.Y, 0);
 
                 //score = pos.Y + ((a+b+c+d) / 4) / Global.CHUNK_HEIGHT;
                 var block = worldInstance.GetBlock (pos.X, pos.Y, pos.Z);
                 var currentWaterHeight = block.WaterHeight;
-                score = ((float)pos.Y + ((float)currentWaterHeight / 16)) / Global.CHUNK_HEIGHT;
+                score = ((float)pos.Y + ((float)currentWaterHeight / 16) + (neighbours / 20)) / Global.CHUNK_HEIGHT;
 
-                var blockBelow = worldInstance.GetBlock (pos.X, pos.Y-1, pos.Z);
+                //var blockBelow = worldInstance.GetBlock (pos.X, pos.Y-1, pos.Z);
                 //if (!blockBelow.IsSolid)
                 //{
                 //    score -= 0.5f;
@@ -188,7 +238,7 @@ namespace Sean.WorldGenerator
         private void FindNextLowest()
         {
             _minScore = Global.CHUNK_HEIGHT;
-            foreach(var pos in _emptyCoords)
+            foreach (var pos in _emptyCoords)
             {
                 var score = _heights[pos];
                 if (score < _minScore)
@@ -198,6 +248,41 @@ namespace Sean.WorldGenerator
                 }
             }
         }
+        /*
+        // Find next lowest, which is also next to current min
+        private void FindNextLowest()
+        {
+            var potentials = new List<Position>();
+            _minScore = Global.CHUNK_HEIGHT;
+            foreach(var pos in _emptyCoords)
+            {
+                var score = _heights[pos];
+                if (score < _minScore)
+                {
+                    potentials.Clear();
+                    potentials.Add(pos);
+                    _minScore = score;
+                }
+                else if (score == _minScore)
+                {
+                    potentials.Add(pos);
+                }
+            }
+            if (potentials.Count == 0)
+                return;
+            foreach(var pos in potentials)
+            {
+                if (Math.Abs(pos.X - _minPos.X) == 1
+                    || Math.Abs(pos.Y - _minPos.Y) == 1
+                    || Math.Abs(pos.Z - _minPos.Z) == 1)
+                {
+                    _minPos = pos;
+                    return;
+                }
+            }
+            _minPos = potentials[0];
+        }
+        */
     }
 
     public class Water
@@ -269,7 +354,7 @@ namespace Sean.WorldGenerator
                         river.Grow();
                         growing |= river.Growing;
                     }
-                    //System.Threading.Thread.Sleep(300);
+                    System.Threading.Thread.Sleep(5);
                 }
             }
             catch (Exception ex) {

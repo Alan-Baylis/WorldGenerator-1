@@ -5,8 +5,8 @@ namespace OpenTkClient
 {
 	public static class Global
 	{
-		public const int CHUNK_SIZE = 16;
-		public const int CHUNK_HEIGHT = 128;
+		public const int CHUNK_SIZE = 16; // TODO - move to common location
+		public const int CHUNK_HEIGHT = 256; // TODO - move to common location
 		public static float Scale = 2.0f;
 		public static Position LookingAt = new Position((56*32)+14, 157, (27*32)+15);
 		public static Facing Direction;

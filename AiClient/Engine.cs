@@ -30,14 +30,16 @@ namespace AiClient
             gridWindow = console.AddWindow("grid", 2, 2, 40, 40);
         }
 
+        /*
         private void AddCharacter(Character chr)
         {
             chars.Add (chr.Id, chr);
-            map.Add (chr.Location.X, chr.Location.Z, Item.Character);
+            map.Add(chr.Location.X, chr.Location.Z, Item.Character);
         }
-
+        */
         public void Run()
         {
+            /*
             var chr = new Character ();
             chr.Id = 1;
             chr.Location = new Position(20,1,20);
@@ -59,10 +61,12 @@ namespace AiClient
                     chr.Location = newPosition;
                 }
             }
+            */
         }
 
         private void ProcessCharacters()
         {
+            /*
             foreach (var chr in chars.Values) {
                 chr.thirst++;
                 chr.tiredness++;
@@ -88,6 +92,7 @@ namespace AiClient
                     chr.hunger = 100;
                 }
             }
+            */
         }
     }
 }

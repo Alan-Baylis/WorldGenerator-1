@@ -13,7 +13,7 @@ namespace OpenTkClient
 	{
 		TextRenderer renderer;
 		MouseState mouseState;
-		float trimHeight;
+		float trimHeight = Global.CHUNK_HEIGHT;
 		Font serif = new Font(FontFamily.GenericSerif, 24);
 		Font sans = new Font(FontFamily.GenericSansSerif, 24);
 		Font mono = new Font(FontFamily.GenericMonospace, 24);
@@ -147,10 +147,10 @@ namespace OpenTkClient
 			GL.Viewport(ClientRectangle);
 		}
 
-		void OnMouseWheel (object sender, MouseWheelEventArgs e)
-		{
-			trimHeight = e.ValuePrecise + Global.CHUNK_HEIGHT;
-		}
+        void OnMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            trimHeight = e.ValuePrecise + Global.CHUNK_HEIGHT;
+        }
 
         private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -177,15 +177,15 @@ namespace OpenTkClient
 
         void OnKeyPress (object sender, KeyPressEventArgs e)
 		{
-			if (e.KeyChar == '1') {
-				Global.Direction = Facing.North;
-			} else if (e.KeyChar == '2') {
-				Global.Direction = Facing.East;
-			} else if (e.KeyChar == '3') {
-				Global.Direction = Facing.South;
-			} else if (e.KeyChar == '4') {
-				Global.Direction = Facing.West;
-			}
+            if (e.KeyChar == '1') {
+                Global.Direction = Facing.North;
+            } else if (e.KeyChar == '2') {
+                Global.Direction = Facing.East;
+            } else if (e.KeyChar == '3') {
+                Global.Direction = Facing.South;
+            } else if (e.KeyChar == '4') {
+                Global.Direction = Facing.West;
+            }
 		}
 			
 		protected override void OnUpdateFrame(FrameEventArgs e)
