@@ -15,6 +15,7 @@ namespace OpenTkClient
     public class Server
     {
         private static Thread thread;
+        private static Thread updateThread;
         private static IServer serverInstance;
 
         public static void Run(IServer server)
@@ -22,8 +23,18 @@ namespace OpenTkClient
             serverInstance = server;
             thread = new Thread(new ThreadStart(Start));
             thread.Start();
+            updateThread = new Thread(new ThreadStart(UpdateStart));
+            updateThread.Start();
         }
 
+        private static void UpdateStart()
+        {
+            Console.WriteLine ("Server update thread starting");
+            while (true) {
+                serverInstance.GetWorldMap ();
+                Thread.Sleep (60000);
+            }
+        }
         private static void Start()
         {
             Console.WriteLine ("Server thread starting");
@@ -35,7 +46,6 @@ namespace OpenTkClient
 		        Thread.Sleep (2000);
                 if (Global.ClearExistingChunks)
                     serverInstance.ClearExistingChunks();
-                serverInstance.GetWorldMap();
 				while(true)
 				{
                     int x = Global.LookingAt.X / Global.CHUNK_SIZE;

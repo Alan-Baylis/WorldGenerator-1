@@ -38,27 +38,27 @@ namespace Sean.WorldGenerator
         }
         public Position FindGoodSourceSpot()
         {
-            var bestLength = int.MaxValue;
+            var bestLength = 0;
             var best = new Position(0,0,0);
             var bestRiver = new List<Position>();
             //for (int z = worldInstance.GlobalMap.Size.minZ; z < worldInstance.GlobalMap.Size.maxZ; z += worldInstance.GlobalMap.Size.scale)
             //{
             //    for (int x = worldInstance.GlobalMap.Size.minX; x < worldInstance.GlobalMap.Size.maxX; x += worldInstance.GlobalMap.Size.scale)
             //    {
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 60; i++)
             {
                 int x = Settings.Random.Next(worldInstance.GlobalMap.Size.minX, worldInstance.GlobalMap.Size.maxX);
                 int z = Settings.Random.Next(worldInstance.GlobalMap.Size.minZ, worldInstance.GlobalMap.Size.maxZ);
 
                 var river = PotentialRiver(x, z);
-                if (river.Count < bestLength)
+                Log.WriteInfo($"[River.FindGoodSourceSpot] '{x},{z}' = {river.Count}");
+                if (river.Count > bestLength)
                 {
                     bestLength = river.Count;
                     bestRiver = river;
                     best = new Position(x, 0, z);
                 }
             }
-            
 
             // TODO Test Code, remove
             foreach (var pos in bestRiver)
@@ -74,25 +74,38 @@ namespace Sean.WorldGenerator
             var here = new Position(x, 0, z);
             river.Add(here);
             var step = worldInstance.GlobalMap.Size.scale;
+            int rising = 0;
+            var lastHeight = int.MaxValue;
             while (here.X>worldInstance.GlobalMap.Size.minX && here.Z>worldInstance.GlobalMap.Size.minZ && here.X<worldInstance.GlobalMap.Size.maxX-1 && here.Z<worldInstance.GlobalMap.Size.maxZ-1)
             {
                 //Log.WriteInfo($"[River.PotentialRiver] '{here.X},{here.Z}'");
                 if (!worldInstance.GlobalMap.IsValidCoord(here.X, here.Z))
                     break;
-                int minHeight = worldInstance.GlobalMap[here.X, here.Z];
+                int currentHeight = worldInstance.GlobalMap[here.X, here.Z];
+                int minHeight = int.MaxValue;
                 var minPosition = here;
                 TestRiverLocation(river, ref minPosition, ref minHeight, here.X + step, here.Z);
                 TestRiverLocation(river, ref minPosition, ref minHeight, here.X - step, here.Z);
                 TestRiverLocation(river, ref minPosition, ref minHeight, here.X, here.Z + step);
                 TestRiverLocation(river, ref minPosition, ref minHeight, here.X, here.Z - step);
 
-                if (here.X == minPosition.X && here.Z == minPosition.Z)
-                {
-                    // Nope
-                    //river.Clear();
+                if (minHeight >= currentHeight) {
+                    rising++;
+                    if (minHeight > lastHeight){
+                      break;
+                    }
+                }
+
+                if (worldInstance.GlobalMapTerrain [minPosition.X, minPosition.Z] == WATER) {
                     break;
                 }
+
+//                if (here.X == minPosition.X && here.Z == minPosition.Z)
+//                {
+//                    break;
+//                }
                 here = minPosition;
+                lastHeight = minHeight;
                 river.Add(here);
             }
             return river;
@@ -380,11 +393,14 @@ namespace Sean.WorldGenerator
                 bool growing = true;
                 while (growing)
                 {
-                    growing = false;
-                    foreach (var river in Rivers)
+                    if (Rivers.Count != 0)
                     {
-                        river.Grow();
-                        growing |= river.Growing;
+                        growing = false;
+                        foreach (var river in Rivers)
+                        {
+                            river.Grow();
+                            growing |= river.Growing;
+                        }
                     }
                     Thread.Sleep(5);
                 }
