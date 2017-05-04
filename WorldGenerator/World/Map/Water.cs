@@ -38,91 +38,36 @@ namespace Sean.WorldGenerator
         }
         public Position FindGoodSourceSpot()
         {
-            var bestLength = 0;
+            var bestScore = 0.0;
             var best = new Position(0,0,0);
             var bestRiver = new List<Position>();
-            //for (int z = worldInstance.GlobalMap.Size.minZ; z < worldInstance.GlobalMap.Size.maxZ; z += worldInstance.GlobalMap.Size.scale)
-            //{
-            //    for (int x = worldInstance.GlobalMap.Size.minX; x < worldInstance.GlobalMap.Size.maxX; x += worldInstance.GlobalMap.Size.scale)
-            //    {
-            for (int i = 0; i < 60; i++)
+            for (int i = 0; i < 30; i++)
             {
                 int x = Settings.Random.Next(worldInstance.GlobalMap.Size.minX, worldInstance.GlobalMap.Size.maxX);
                 int z = Settings.Random.Next(worldInstance.GlobalMap.Size.minZ, worldInstance.GlobalMap.Size.maxZ);
 
-                var river = PotentialRiver(x, z);
-                Log.WriteInfo($"[River.FindGoodSourceSpot] '{x},{z}' = {river.Count}");
-                if (river.Count > bestLength)
+                var riverScore = PotentialRiver(x, z);
+                Log.WriteInfo($"[River.FindGoodSourceSpot] '{x},{z}' = {riverScore}");
+                if (riverScore > bestScore)
                 {
-                    bestLength = river.Count;
-                    bestRiver = river;
+                    bestScore = riverScore;
                     best = new Position(x, 0, z);
                 }
             }
-
-            // TODO Test Code, remove
-            foreach (var pos in bestRiver)
-            {
-                worldInstance.GlobalMapTerrain.Set(pos.X, pos.Z, RIVER);
-            }
-
             return best;
         }
-        private List<Position> PotentialRiver(int x, int z)
+        private float PotentialRiver(int x, int z)
         {
-            List<Position> river = new List<Position>();
             var here = new Position(x, 0, z);
-            river.Add(here);
-            var step = worldInstance.GlobalMap.Size.scale;
             int rising = 0;
             var lastHeight = int.MaxValue;
-            while (here.X>worldInstance.GlobalMap.Size.minX && here.Z>worldInstance.GlobalMap.Size.minZ && here.X<worldInstance.GlobalMap.Size.maxX-1 && here.Z<worldInstance.GlobalMap.Size.maxZ-1)
-            {
-                //Log.WriteInfo($"[River.PotentialRiver] '{here.X},{here.Z}'");
-                if (!worldInstance.GlobalMap.IsValidCoord(here.X, here.Z))
-                    break;
-                int currentHeight = worldInstance.GlobalMap[here.X, here.Z];
-                int minHeight = int.MaxValue;
-                var minPosition = here;
-                TestRiverLocation(river, ref minPosition, ref minHeight, here.X + step, here.Z);
-                TestRiverLocation(river, ref minPosition, ref minHeight, here.X - step, here.Z);
-                TestRiverLocation(river, ref minPosition, ref minHeight, here.X, here.Z + step);
-                TestRiverLocation(river, ref minPosition, ref minHeight, here.X, here.Z - step);
 
-                if (minHeight >= currentHeight) {
-                    rising++;
-                    if (minHeight > lastHeight){
-                      break;
-                    }
-                }
-
-                if (worldInstance.GlobalMapTerrain [minPosition.X, minPosition.Z] == WATER) {
-                    break;
-                }
-
-//                if (here.X == minPosition.X && here.Z == minPosition.Z)
-//                {
-//                    break;
-//                }
-                here = minPosition;
-                lastHeight = minHeight;
-                river.Add(here);
-            }
-            return river;
-        }
-        private void TestRiverLocation(List<Position> river, ref Position minPosition, ref int minHeight, int x, int z)
-        {
-            var a = new Position(x + 1, 0, z);
-            if (river.Contains(a))
-                return;
-            if (!worldInstance.GlobalMap.IsValidCoord(x, z))
-                return;
-            var aa = worldInstance.GlobalMap[x, z];
-            if (aa <= minHeight)
-            {
-                minPosition = a;
-                minHeight = aa;
-            }
+            var heightScore = (double)(worldInstance.GlobalMap[x, z] - Global.waterLevel) / Global.CHUNK_HEIGHT;
+            var midX = (worldInstance.GlobalMap.Size.maxX / 2);
+            var midZ = (worldInstance.GlobalMap.Size.maxZ / 2);
+            var max = Math.Max(midX, midZ);
+            var posScore = (max - (Math.Sqrt((midX - x) * (midX - x) + (midZ - z) * (midZ - z)))) / max;
+            return (float)(heightScore + posScore);
         }
 
         public void Grow()

@@ -6,6 +6,7 @@ namespace Sean.Shared
     {
         public const int CHUNK_SIZE = 16;
         public const int CHUNK_HEIGHT = 256;
+        public const int waterLevel = 140;
     }
 }
 
