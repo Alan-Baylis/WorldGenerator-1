@@ -59,9 +59,6 @@ namespace Sean.WorldGenerator
         private float PotentialRiver(int x, int z)
         {
             var here = new Position(x, 0, z);
-            int rising = 0;
-            var lastHeight = int.MaxValue;
-
             var heightScore = (double)(worldInstance.GlobalMap[x, z] - Global.waterLevel) / Global.CHUNK_HEIGHT;
             var midX = (worldInstance.GlobalMap.Size.maxX / 2);
             var midZ = (worldInstance.GlobalMap.Size.maxZ / 2);
@@ -82,6 +79,7 @@ namespace Sean.WorldGenerator
             _emptyCoords.Remove(pos);
             _heights.Remove(pos);
 
+            var newWaterBlock = false;
             var block = worldInstance.GetBlock (pos.X, pos.Y, pos.Z);
             switch (block.Type)
             {
@@ -92,13 +90,35 @@ namespace Sean.WorldGenerator
                 case BlockType.Water5: block = new Block(BlockType.Water7); break;
                 case BlockType.Water6: block = new Block(BlockType.Water7); break;
                 case BlockType.Water7: block = new Block(BlockType.Water); break;
-                default: block = new Block(BlockType.Water1); break;
+                default:
+                    block = new Block(BlockType.Water1);
+                    newWaterBlock = true;
+                    break;
             }
             worldInstance.SetBlock(pos.X, pos.Y, pos.Z, block);
             if (block.Type != BlockType.Water)
             {
                 _emptyCoords.Add(pos);
                 CalcScore(pos); // re-adds to _heights
+            }
+
+            if (newWaterBlock)
+            {
+                var below = worldInstance.GetBlock (pos.X, pos.Y-1, pos.Z);
+                if (below.Type == BlockType.Water)
+                {
+                    // Mark so we don't render it
+                    // TODO - check surrounding blocks
+                    worldInstance.SetBlock(pos.X, pos.Y, pos.Z, new Block(BlockType.UnderWater));
+                }
+
+                if (worldInstance.GetBlock(pos.X-1, pos.Y - 1, pos.Z).IsWater
+                    && worldInstance.GetBlock(pos.X+1, pos.Y - 1, pos.Z).IsWater
+                    && worldInstance.GetBlock(pos.X, pos.Y - 1, pos.Z-1).IsWater
+                    && worldInstance.GetBlock(pos.X, pos.Y - 1, pos.Z+1).IsWater)
+                {
+                    // Lake detected
+                }
             }
 
             ClearBlockAboveWater(pos.X, pos.Y+1, pos.Z);
@@ -182,16 +202,10 @@ namespace Sean.WorldGenerator
         private void CalcScore(Position pos)
         {
             var chunk = new ChunkCoords(pos);
-            //var loc = chunk.NormLocOnChunk(pos);
             float score;
             const int comp = 7; // compare range
             try
             {
-                //var a = worldInstance.GlobalMap[pos.X+Global.CHUNK_SIZE,pos.Z] * (1-loc.Item1);
-                //var b = worldInstance.GlobalMap[pos.X-Global.CHUNK_SIZE,pos.Z] * loc.Item1;
-                //var c = worldInstance.GlobalMap[pos.X,pos.Z+Global.CHUNK_SIZE] * (1-loc.Item2);
-                //var d = worldInstance.GlobalMap[pos.X,pos.Z-Global.CHUNK_SIZE] * loc.Item2;
-
                 var a = worldInstance.GetBlockHeight(pos.X+comp,pos.Z);
                 var b = worldInstance.GetBlockHeight(pos.X-comp,pos.Z);
                 var c = worldInstance.GetBlockHeight(pos.X,pos.Z+comp);
@@ -303,22 +317,6 @@ namespace Sean.WorldGenerator
         {
             for (var i = 0; i < Settings.RiverCount; i++)
             {
-                //var pos = worldInstance.GetRandomLocationOnLoadedChunk();
-                //bool isWater = true;
-                //while (isWater)
-                //{
-                //    pos = worldInstance.GetRandomLocationOnLoadedChunk();
-                //    isWater = (worldInstance.GlobalMapTerrain[pos.X, pos.Z] == WATER);
-                //}
-
-                //var y = 255;
-                //var b = worldInstance.GetBlock(pos.X, y, pos.Z);
-                //while (b.IsTransparent)
-                //{
-                //    y--;
-                //    b = worldInstance.GetBlock(pos.X, y, pos.Z);
-                //}
-                //var river = new River(worldInstance, new Position(pos.X, y , pos.Z));
                 var river = new River(worldInstance);
                 var chunkCoords = new ChunkCoords (river.Source);
                 Log.WriteInfo ($"Creating river from chunk {chunkCoords}");
@@ -330,10 +328,6 @@ namespace Sean.WorldGenerator
         {
             try
             {
-                //while (worldInstance.LoadedChunkCount == 0)
-                //{
-                //    Thread.Sleep(5000);
-                //}
                 CreateRiver();
                 bool growing = true;
                 while (growing)

@@ -47,6 +47,7 @@ namespace Sean.Shared
         Water6,
         Water7,
         Water,// fill 1 block deep
+        UnderWater,
 
         GrassSlopeN = 40,
         GrassSlopeS,
@@ -161,6 +162,7 @@ namespace Sean.Shared
             case BlockType.Water:
             case BlockType.WaterSource:
             case BlockType.Ocean:
+            case BlockType.UnderWater:
                 return true;
             default:
                 return false;
@@ -179,6 +181,7 @@ namespace Sean.Shared
                 case BlockType.Water7: return 7;
                 case BlockType.Water: return 8;
                 case BlockType.WaterSource: return 8;
+                case BlockType.UnderWater: return 8;
                 case BlockType.Ocean: return 8;
                 default: return 0;
             }
@@ -211,9 +214,18 @@ namespace Sean.Shared
                 case BlockType.Air:
 				case BlockType.Leaves:
 				case BlockType.SnowLeaves:
-				case BlockType.Ocean:
                 case BlockType.Water1:
-				case BlockType.PrisonBars:
+                case BlockType.Water2:
+                case BlockType.Water3:
+                case BlockType.Water4:
+                case BlockType.Water5:
+                case BlockType.Water6:
+                case BlockType.Water7:
+                case BlockType.Water:
+                case BlockType.WaterSource:
+                case BlockType.UnderWater:
+                case BlockType.Ocean:
+                case BlockType.PrisonBars:
 				case BlockType.SteelDoorTop:
 					return true;
 				default:
