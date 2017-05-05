@@ -223,10 +223,8 @@ namespace OpenTkClient
 
             } else if (keyState.IsKeyDown(Key.PageUp)) {
                 Global.Scale = Global.Scale - Global.Scale / 10;
-                Console.WriteLine($"Scale. {Global.Scale}");
             } else if (keyState.IsKeyDown(Key.PageDown)) {
                 Global.Scale = Global.Scale + Global.Scale / 10;
-                Console.WriteLine($"Scale. {Global.Scale}");
             }
 
 //			if (keyState.IsKeyDown (Key.Number1)) {

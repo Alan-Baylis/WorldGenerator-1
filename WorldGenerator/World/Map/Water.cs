@@ -40,25 +40,24 @@ namespace Sean.WorldGenerator
         {
             var bestScore = 0.0;
             var best = new Position(0,0,0);
-            var bestRiver = new List<Position>();
             for (int i = 0; i < 30; i++)
             {
                 int x = Settings.Random.Next(worldInstance.GlobalMap.Size.minX, worldInstance.GlobalMap.Size.maxX);
                 int z = Settings.Random.Next(worldInstance.GlobalMap.Size.minZ, worldInstance.GlobalMap.Size.maxZ);
 
                 var riverScore = PotentialRiver(x, z);
-                Log.WriteInfo($"[River.FindGoodSourceSpot] '{x},{z}' = {riverScore}");
+                //Log.WriteInfo($"[River.FindGoodSourceSpot] '{x},{z}' = {riverScore}");
                 if (riverScore > bestScore)
                 {
                     bestScore = riverScore;
                     best = new Position(x, 0, z);
                 }
             }
-            return best;
+            var y = worldInstance.GetBlockHeight (best.X, best.Z);
+            return new Position(best.X, y, best.Z);
         }
         private float PotentialRiver(int x, int z)
         {
-            var here = new Position(x, 0, z);
             var heightScore = (double)(worldInstance.GlobalMap[x, z] - Global.waterLevel) / Global.CHUNK_HEIGHT;
             var midX = (worldInstance.GlobalMap.Size.maxX / 2);
             var midZ = (worldInstance.GlobalMap.Size.maxZ / 2);
@@ -109,7 +108,7 @@ namespace Sean.WorldGenerator
                 {
                     // Mark so we don't render it
                     // TODO - check surrounding blocks
-                    worldInstance.SetBlock(pos.X, pos.Y, pos.Z, new Block(BlockType.UnderWater));
+                    worldInstance.SetBlock(pos.X, pos.Y-1, pos.Z, new Block(BlockType.UnderWater));
                 }
 
                 if (worldInstance.GetBlock(pos.X-1, pos.Y - 1, pos.Z).IsWater
@@ -201,7 +200,7 @@ namespace Sean.WorldGenerator
         }
         private void CalcScore(Position pos)
         {
-            var chunk = new ChunkCoords(pos);
+//            var chunk = new ChunkCoords(pos);
             float score;
             const int comp = 7; // compare range
             try
