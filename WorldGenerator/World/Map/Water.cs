@@ -58,7 +58,7 @@ namespace Sean.WorldGenerator
         }
         private float PotentialRiver(int x, int z)
         {
-            var heightScore = (double)(worldInstance.GlobalMap[x, z] - Global.waterLevel) / Global.CHUNK_HEIGHT;
+            var heightScore = (Global.CHUNK_HEIGHT - (double)(worldInstance.GlobalMap[x, z] - Global.waterLevel)) / Global.CHUNK_HEIGHT;
             var midX = (worldInstance.GlobalMap.Size.maxX / 2);
             var midZ = (worldInstance.GlobalMap.Size.maxZ / 2);
             var max = Math.Max(midX, midZ);
@@ -202,29 +202,41 @@ namespace Sean.WorldGenerator
         {
 //            var chunk = new ChunkCoords(pos);
             float score;
-            const int comp = 7; // compare range
+            //const int comp = 7; // compare range
             try
             {
-                var a = worldInstance.GetBlockHeight(pos.X+comp,pos.Z);
-                var b = worldInstance.GetBlockHeight(pos.X-comp,pos.Z);
-                var c = worldInstance.GetBlockHeight(pos.X,pos.Z+comp);
-                var d = worldInstance.GetBlockHeight(pos.X,pos.Z-comp);
-                var e = worldInstance.GetBlockHeight(pos.X+comp,pos.Z+comp);
-                var f = worldInstance.GetBlockHeight(pos.X-comp,pos.Z+comp);
-                var g = worldInstance.GetBlockHeight(pos.X+comp,pos.Z-comp);
-                var h = worldInstance.GetBlockHeight(pos.X-comp,pos.Z-comp);
-                var neighbours = Math.Max(((a + b + c + d+e+f+g+h) / 8) - (float)pos.Y, 0);
+                float neighbours = 0;
+                var h =  worldInstance.GetBlockHeight(pos.X,pos.Z);
+                for (var i=1;i<8;i++)
+                {
+                    neighbours += TestCalcScore(h, i, pos.X+i,pos.Z);
+                    neighbours += TestCalcScore(h, i, pos.X-i,pos.Z);
+                    neighbours += TestCalcScore(h, i, pos.X,pos.Z+i);
+                    neighbours += TestCalcScore(h, i, pos.X,pos.Z-i);
+                    neighbours += TestCalcScore(h, i, pos.X+i,pos.Z+i);
+                    neighbours += TestCalcScore(h, i, pos.X+i,pos.Z-i);
+                    neighbours += TestCalcScore(h, i, pos.X-i,pos.Z+i);
+                    neighbours += TestCalcScore(h, i, pos.X-i,pos.Z-i);
+                }
 
-                //score = pos.Y + ((a+b+c+d) / 4) / Global.CHUNK_HEIGHT;
+                //var a = worldInstance.GetBlockHeight(pos.X+comp,pos.Z);
+                //var b = worldInstance.GetBlockHeight(pos.X-comp,pos.Z);
+                //var c = worldInstance.GetBlockHeight(pos.X,pos.Z+comp);
+                //var d = worldInstance.GetBlockHeight(pos.X,pos.Z-comp);
+                //var e = worldInstance.GetBlockHeight(pos.X+comp,pos.Z+comp);
+                //var f = worldInstance.GetBlockHeight(pos.X-comp,pos.Z+comp);
+                //var g = worldInstance.GetBlockHeight(pos.X+comp,pos.Z-comp);
+                //var h = worldInstance.GetBlockHeight(pos.X-comp,pos.Z-comp);
+                //var neighbours = Math.Max(((a + b + c + d+e+f+g+h) / 8) - (float)pos.Y, 0);
+
                 var block = worldInstance.GetBlock (pos.X, pos.Y, pos.Z);
                 var currentWaterHeight = block.WaterHeight;
-                score = ((float)pos.Y + ((float)currentWaterHeight / 16) + (neighbours / 20)) / Global.CHUNK_HEIGHT;
 
-                //var blockBelow = worldInstance.GetBlock (pos.X, pos.Y-1, pos.Z);
-                //if (!blockBelow.IsSolid)
-                //{
-                //    score -= 0.5f;
-                //}
+                score = ((float)pos.Y 
+                    + ((float)currentWaterHeight / 16) 
+                    + (neighbours / 20)
+                    //+ (slope / 10)
+                    ) / Global.CHUNK_HEIGHT;
             }
             catch (Exception) { // TODO Handle out of array bounds errors better
                 score = pos.Y;
@@ -236,6 +248,13 @@ namespace Sean.WorldGenerator
                 _minScore = score;
                 _minPos = pos;
             }
+        }
+        private float TestCalcScore(int h, int i, int x,int z)
+        {
+            float a = worldInstance.GetBlockHeight(x,z);
+            if (a >= h)
+                return 0.0f;
+            return (a - h) / (float)(Math.Pow(2,i));
         }
         private void FindNextLowest()
         {
