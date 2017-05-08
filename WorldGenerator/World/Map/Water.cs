@@ -156,12 +156,14 @@ namespace Sean.WorldGenerator
         {
             if (Source.GetDistanceExact (new Position (x, y, z)) > _maxLength) {
                 // Temporary code to limit length of river
+                Log.WriteInfo ($"[Water.AddIfEmpty] River limit reached");
                 Growing = false;
                 return;
             }
 
             if (!worldInstance.IsValidBlockLocation (x, y, z)) {
                 // Have reached edge of map
+                Log.WriteInfo ($"[Water.AddIfEmpty] Reached edge of map");
                 Growing = false;
                 return;
             }
@@ -170,6 +172,7 @@ namespace Sean.WorldGenerator
             if (block.IsWater || y < Global.waterLevel) {
                 if (!Coords.Contains (new Position (x, y, z))) {
                     // Have reached another river or the ocean
+                    Log.WriteInfo ($"[Water.AddIfEmpty] Met another river or ocean");
                     Growing = false;
                 }
                 return;
@@ -226,11 +229,14 @@ namespace Sean.WorldGenerator
                 {
                     current = current + ((float)block.WaterHeight / 8);
                 }
+                var below = worldInstance.GetBlock (pos.X, pos.Y-1, pos.Z);
+                if (!below.IsSolid)
+                    current -= 0.5f;
 
                 score = (current + (neighbours / 64) ) / Global.CHUNK_HEIGHT;
             }
             catch (Exception) { // TODO Handle out of array bounds errors better
-                score = pos.Y;
+                score = pos.Y / Global.CHUNK_HEIGHT;
             }
             if (!_heights.ContainsKey(pos))
                 _heights.Add(pos, score);
