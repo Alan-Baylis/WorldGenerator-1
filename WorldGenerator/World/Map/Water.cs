@@ -32,26 +32,27 @@ namespace Sean.WorldGenerator
             Coords = new HashSet<Position>();
             _emptyCoords = new HashSet<Position>();
             _heights = new Dictionary<Position, float>();
-            Source = FindGoodSourceSpot();
+            Source = FindGoodSourceSpot ();
             Add(Source, _minScore);
             CalcScore(Source);
         }
         public Position FindGoodSourceSpot()
         {
-            var bestScore = 0.0;
-            var best = new Position(0,0,0);
-            for (int i = 0; i < 30; i++)
-            {
-                int x = Settings.Random.Next(worldInstance.GlobalMap.Size.minX, worldInstance.GlobalMap.Size.maxX);
-                int z = Settings.Random.Next(worldInstance.GlobalMap.Size.minZ, worldInstance.GlobalMap.Size.maxZ);
-
-                var riverScore = PotentialRiver(x, z);
-                if (riverScore > bestScore)
-                {
-                    bestScore = riverScore;
-                    best = new Position(x, 0, z);
-                }
-            }
+            var best = worldInstance.GetRandomLocationOnLoadedChunk ();
+//            var bestScore = 0.0;
+//            var best = new Position(0,0,0);
+//            for (int i = 0; i < 30; i++)
+//            {
+//                int x = Settings.Random.Next(worldInstance.GlobalMap.Size.minX, worldInstance.GlobalMap.Size.maxX);
+//                int z = Settings.Random.Next(worldInstance.GlobalMap.Size.minZ, worldInstance.GlobalMap.Size.maxZ);
+//
+//                var riverScore = PotentialRiver(x, z);
+//                if (riverScore > bestScore)
+//                {
+//                    bestScore = riverScore;
+//                    best = new Position(x, 0, z);
+//                }
+//            }
             var y = worldInstance.GetBlockHeight (best.X, best.Z);
             return new Position(best.X, y, best.Z);
         }
@@ -109,14 +110,20 @@ namespace Sean.WorldGenerator
                     // TODO - check surrounding blocks
                     worldInstance.SetBlock(pos.X, pos.Y-1, pos.Z, new Block(BlockType.UnderWater));
                 }
-
-                if (worldInstance.GetBlock(pos.X-1, pos.Y - 1, pos.Z).IsWater
-                    && worldInstance.GetBlock(pos.X+1, pos.Y - 1, pos.Z).IsWater
-                    && worldInstance.GetBlock(pos.X, pos.Y - 1, pos.Z-1).IsWater
-                    && worldInstance.GetBlock(pos.X, pos.Y - 1, pos.Z+1).IsWater)
-                {
-                    // Lake detected
+                var above = worldInstance.GetBlock (pos.X, pos.Y+1, pos.Z);
+                if (above.IsWater) {
+                    worldInstance.SetBlock (pos.X, pos.Y, pos.Z, new Block (BlockType.Water));
+                    _heights.Remove(pos);
+                    _emptyCoords.Remove(pos);
                 }
+
+//                if (worldInstance.GetBlock(pos.X-1, pos.Y - 1, pos.Z).IsWater
+//                    && worldInstance.GetBlock(pos.X+1, pos.Y - 1, pos.Z).IsWater
+//                    && worldInstance.GetBlock(pos.X, pos.Y - 1, pos.Z-1).IsWater
+//                    && worldInstance.GetBlock(pos.X, pos.Y - 1, pos.Z+1).IsWater)
+//                {
+//                    // Lake detected
+//                }
             }
 
             ClearBlockAboveWater(pos.X, pos.Y+1, pos.Z);
@@ -231,7 +238,7 @@ namespace Sean.WorldGenerator
                 }
                 var below = worldInstance.GetBlock (pos.X, pos.Y-1, pos.Z);
                 if (!below.IsSolid)
-                    current -= 0.5f;
+                    current -= 0.2f;
 
                 score = (current + (neighbours / 64) ) / Global.CHUNK_HEIGHT;
             }
@@ -356,6 +363,7 @@ namespace Sean.WorldGenerator
         {
             try
             {
+                Thread.Sleep(7000);
                 CreateRiver();
                 bool growing = true;
                 while (growing)
@@ -369,7 +377,7 @@ namespace Sean.WorldGenerator
                             growing |= river.Growing;
                         }
                     }
-                    Thread.Sleep(5);
+                    Thread.Sleep(1000);
                 }
             }
             catch (Exception ex) {
