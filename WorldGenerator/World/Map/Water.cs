@@ -46,7 +46,6 @@ namespace Sean.WorldGenerator
                 int z = Settings.Random.Next(worldInstance.GlobalMap.Size.minZ, worldInstance.GlobalMap.Size.maxZ);
 
                 var riverScore = PotentialRiver(x, z);
-                //Log.WriteInfo($"[River.FindGoodSourceSpot] '{x},{z}' = {riverScore}");
                 if (riverScore > bestScore)
                 {
                     bestScore = riverScore;
@@ -168,7 +167,7 @@ namespace Sean.WorldGenerator
             }
                 
             var block = worldInstance.GetBlock (x, y, z);
-            if (block.IsWater) {
+            if (block.IsWater || y < Global.waterLevel) {
                 if (!Coords.Contains (new Position (x, y, z))) {
                     // Have reached another river or the ocean
                     Growing = false;
@@ -176,7 +175,7 @@ namespace Sean.WorldGenerator
                 return;
             }
             //if (!block.IsSolid)
-            if (block.Type == BlockType.Air || block.Type == BlockType.Dirt || block.Type == BlockType.Grass)
+            if (CanPlaceWater(block))
             {
                 var pos = new Position(x,y,z);
                 _emptyCoords.Add(pos);
@@ -198,11 +197,13 @@ namespace Sean.WorldGenerator
 //                }
             }
         }
+        private bool CanPlaceWater(Block block)
+        {
+            return block.Type == BlockType.Air || block.Type == BlockType.Dirt || block.Type == BlockType.Grass;
+        }
         private void CalcScore(Position pos)
         {
-//            var chunk = new ChunkCoords(pos);
             float score;
-            //const int comp = 7; // compare range
             try
             {
                 float neighbours = 0;
@@ -219,24 +220,14 @@ namespace Sean.WorldGenerator
                     neighbours += TestCalcScore(h, i, pos.X-i,pos.Z-i);
                 }
 
-                //var a = worldInstance.GetBlockHeight(pos.X+comp,pos.Z);
-                //var b = worldInstance.GetBlockHeight(pos.X-comp,pos.Z);
-                //var c = worldInstance.GetBlockHeight(pos.X,pos.Z+comp);
-                //var d = worldInstance.GetBlockHeight(pos.X,pos.Z-comp);
-                //var e = worldInstance.GetBlockHeight(pos.X+comp,pos.Z+comp);
-                //var f = worldInstance.GetBlockHeight(pos.X-comp,pos.Z+comp);
-                //var g = worldInstance.GetBlockHeight(pos.X+comp,pos.Z-comp);
-                //var h = worldInstance.GetBlockHeight(pos.X-comp,pos.Z-comp);
-                //var neighbours = Math.Max(((a + b + c + d+e+f+g+h) / 8) - (float)pos.Y, 0);
-
                 var block = worldInstance.GetBlock (pos.X, pos.Y, pos.Z);
-                var currentWaterHeight = block.WaterHeight;
+                float current = pos.Y;
+                if (block.IsWater)
+                {
+                    current = current + ((float)block.WaterHeight / 8);
+                }
 
-                score = ((float)pos.Y 
-                    + ((float)currentWaterHeight / 16) 
-                    + (neighbours / 20)
-                    //+ (slope / 10)
-                    ) / Global.CHUNK_HEIGHT;
+                score = (current + (neighbours / 64) ) / Global.CHUNK_HEIGHT;
             }
             catch (Exception) { // TODO Handle out of array bounds errors better
                 score = pos.Y;
@@ -251,10 +242,23 @@ namespace Sean.WorldGenerator
         }
         private float TestCalcScore(int h, int i, int x,int z)
         {
-            float a = worldInstance.GetBlockHeight(x,z);
-            if (a >= h)
-                return 0.0f;
-            return (a - h) / (float)(Math.Pow(2,i));
+            int y = worldInstance.GetBlockHeight(x,z);
+            var block = worldInstance.GetBlock(x, y, z);
+            while (CanPlaceWater(block) && y>0)
+            {
+                y--;
+                block = worldInstance.GetBlock(x, y, z);
+            }
+            y++; // location to place water
+            float waterHeight = 0;
+            if (block.IsWater)
+            {
+                y--;
+                waterHeight = (float)block.WaterHeight / 8;
+            }
+            //if (y >= h)
+            //    return 0.0f;
+            return ((float)(y - h) + waterHeight) / (float)(Math.Pow(2,i));
         }
         private void FindNextLowest()
         {

@@ -42,7 +42,7 @@ namespace Sean.WorldGenerator
                 string file = Path.Combine(directory, fileName);
                 Log.WriteInfo ($"[WorldMap.Saving] Saving '{file}'...");
                 if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
-                using (FileStream stream = File.Create(fileName))
+                using (FileStream stream = File.Create(file))
                 {
                     var formatter = new BinaryFormatter();
                     formatter.Serialize( stream, GlobalMap );
