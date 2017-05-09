@@ -27,14 +27,15 @@ namespace Sean.WorldGenerator
             worldInstance = world;
             Growing = true;
             _maxLength = int.MaxValue; //128;
-            _minPos = new Position(0, Global.CHUNK_HEIGHT, 0);
-            _minScore = Global.CHUNK_HEIGHT;
             Coords = new HashSet<Position>();
             _emptyCoords = new HashSet<Position>();
             _heights = new Dictionary<Position, float>();
             Source = FindGoodSourceSpot ();
             Add(Source, _minScore);
-            CalcScore(Source);
+            var score = CalcScore(Source);
+            _heights.Add(Source, score);
+            _minScore = score;
+            _minPos = Source;
         }
         public Position FindGoodSourceSpot()
         {
@@ -98,7 +99,15 @@ namespace Sean.WorldGenerator
             if (block.Type != BlockType.Water)
             {
                 _emptyCoords.Add(pos);
-                CalcScore(pos); // re-adds to _heights
+
+                var newScore = CalcScore(pos);
+                if (!_heights.ContainsKey(pos))
+                    _heights.Add(pos, newScore);
+                if (newScore < _minScore)
+                {
+                    _minScore = newScore;
+                    _minPos = pos;
+                }
             }
 
             if (newWaterBlock)
@@ -189,29 +198,37 @@ namespace Sean.WorldGenerator
             {
                 var pos = new Position(x,y,z);
                 _emptyCoords.Add(pos);
-                CalcScore(pos);
 
-//                // Add solid block down form lower riverbed
-//                var blockBelow = worldInstance.GetBlock (x, y-1, z);
-//                if (blockBelow.IsSolid) {
-//                    if (blockBelow.IsWater) {
-//                        if (!Coords.Contains (new Position (x, y-1, z))) {
-//                            // Have reached another river or the ocean
-//                            Growing = false;
-//                        }
-//                        return;
-//                    }
-//                    pos = new Position(x,y-1,z);
-//                    _emptyCoords.Add(pos);
-//                    CalcScore(pos);
-//                }
+                var newScore = CalcScore(pos);
+                if (!_heights.ContainsKey(pos))
+                    _heights.Add(pos, newScore);
+                if (newScore < _minScore)
+                {
+                    _minScore = newScore;
+                    _minPos = pos;
+                }
+
+                //                // Add solid block down form lower riverbed
+                //                var blockBelow = worldInstance.GetBlock (x, y-1, z);
+                //                if (blockBelow.IsSolid) {
+                //                    if (blockBelow.IsWater) {
+                //                        if (!Coords.Contains (new Position (x, y-1, z))) {
+                //                            // Have reached another river or the ocean
+                //                            Growing = false;
+                //                        }
+                //                        return;
+                //                    }
+                //                    pos = new Position(x,y-1,z);
+                //                    _emptyCoords.Add(pos);
+                //                    CalcScore(pos);
+                //                }
             }
         }
         private bool CanPlaceWater(Block block)
         {
             return block.Type == BlockType.Air || block.Type == BlockType.Dirt || block.Type == BlockType.Grass;
         }
-        private void CalcScore(Position pos)
+        private float CalcScore(Position pos)
         {
             float score;
             try
@@ -241,17 +258,12 @@ namespace Sean.WorldGenerator
                     current -= 0.2f;
 
                 score = (current + (neighbours / 64) ) / Global.CHUNK_HEIGHT;
+                Log.WriteInfo($"[Water.CalcScore] Position {pos} = {score}");
             }
             catch (Exception) { // TODO Handle out of array bounds errors better
                 score = pos.Y / Global.CHUNK_HEIGHT;
             }
-            if (!_heights.ContainsKey(pos))
-                _heights.Add(pos, score);
-            if (score < _minScore)
-            {
-                _minScore = score;
-                _minPos = pos;
-            }
+            return score;
         }
         private float TestCalcScore(int h, int i, int x,int z)
         {
