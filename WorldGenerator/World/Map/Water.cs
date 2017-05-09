@@ -30,12 +30,11 @@ namespace Sean.WorldGenerator
             Coords = new HashSet<Position>();
             _emptyCoords = new HashSet<Position>();
             _heights = new Dictionary<Position, float>();
+            _minScore = int.MaxValue;
             Source = FindGoodSourceSpot ();
             Add(Source, _minScore);
             var score = CalcScore(Source);
-            _heights.Add(Source, score);
-            _minScore = score;
-            _minPos = Source;
+            //_heights.Add(Source, score);
         }
         public Position FindGoodSourceSpot()
         {
@@ -75,7 +74,8 @@ namespace Sean.WorldGenerator
         {
             if (pos.X == 0 && pos.Z == 0) return;
 
-            Coords.Add(pos);
+            if (!Coords.Contains(pos))
+                Coords.Add(pos);
             _emptyCoords.Remove(pos);
             _heights.Remove(pos);
 
@@ -95,10 +95,12 @@ namespace Sean.WorldGenerator
                     newWaterBlock = true;
                     break;
             }
+            Log.WriteInfo ($"[Water.Add] Adding {pos}");
             worldInstance.SetBlock(pos.X, pos.Y, pos.Z, block);
             if (block.Type != BlockType.Water)
             {
-                _emptyCoords.Add(pos);
+                if (!_emptyCoords.Contains(pos))
+                    _emptyCoords.Add(pos);
 
                 var newScore = CalcScore(pos);
                 if (!_heights.ContainsKey(pos))
@@ -197,7 +199,8 @@ namespace Sean.WorldGenerator
             if (CanPlaceWater(block))
             {
                 var pos = new Position(x,y,z);
-                _emptyCoords.Add(pos);
+                if (!_emptyCoords.Contains(pos))
+                    _emptyCoords.Add(pos);
 
                 var newScore = CalcScore(pos);
                 if (!_heights.ContainsKey(pos))
