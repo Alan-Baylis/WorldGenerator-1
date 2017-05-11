@@ -38,21 +38,21 @@ namespace Sean.WorldGenerator
         }
         public Position FindGoodSourceSpot()
         {
-            var best = worldInstance.GetRandomLocationOnLoadedChunk ();
-//            var bestScore = 0.0;
-//            var best = new Position(0,0,0);
-//            for (int i = 0; i < 30; i++)
-//            {
-//                int x = Settings.Random.Next(worldInstance.GlobalMap.Size.minX, worldInstance.GlobalMap.Size.maxX);
-//                int z = Settings.Random.Next(worldInstance.GlobalMap.Size.minZ, worldInstance.GlobalMap.Size.maxZ);
-//
-//                var riverScore = PotentialRiver(x, z);
-//                if (riverScore > bestScore)
-//                {
-//                    bestScore = riverScore;
-//                    best = new Position(x, 0, z);
-//                }
-//            }
+            //var best = worldInstance.GetRandomLocationOnLoadedChunk ();
+            var bestScore = 0.0;
+            var best = new Position(0,0,0);
+            for (int i = 0; i < 30; i++)
+            {
+                int x = Settings.Random.Next(worldInstance.GlobalMap.Size.minX, worldInstance.GlobalMap.Size.maxX);
+                int z = Settings.Random.Next(worldInstance.GlobalMap.Size.minZ, worldInstance.GlobalMap.Size.maxZ);
+
+                var riverScore = PotentialRiver(x, z);
+                if (riverScore > bestScore)
+                {
+                    bestScore = riverScore;
+                    best = new Position(x, 0, z);
+                }
+            }
             var y = worldInstance.GetBlockHeight (best.X, best.Z);
             return new Position(best.X, y, best.Z);
         }
@@ -95,7 +95,7 @@ namespace Sean.WorldGenerator
                     newWaterBlock = true;
                     break;
             }
-            Log.WriteInfo ($"[Water.Add] Adding {pos}");
+            //Log.WriteInfo ($"[Water.Add] Adding {pos}");
             worldInstance.SetBlock(pos.X, pos.Y, pos.Z, block);
             if (block.Type != BlockType.Water)
             {
@@ -187,7 +187,7 @@ namespace Sean.WorldGenerator
             }
                 
             var block = worldInstance.GetBlock (x, y, z);
-            if (block.IsWater || y < Global.waterLevel) {
+            if (block.IsWater){// || y < Global.waterLevel) {
                 if (!Coords.Contains (new Position (x, y, z))) {
                     // Have reached another river or the ocean
                     Log.WriteInfo ($"[Water.AddIfEmpty] Met another river or ocean");
@@ -229,7 +229,7 @@ namespace Sean.WorldGenerator
         }
         private bool CanPlaceWater(Block block)
         {
-            return block.Type == BlockType.Air || block.Type == BlockType.Dirt || block.Type == BlockType.Grass;
+            return block.Type == BlockType.Air;// || block.Type == BlockType.Dirt || block.Type == BlockType.Grass;
         }
         private float CalcScore(Position pos)
         {
@@ -261,7 +261,7 @@ namespace Sean.WorldGenerator
                     current -= 0.2f;
 
                 score = (current + (neighbours / 64) ) / Global.CHUNK_HEIGHT;
-                Log.WriteInfo($"[Water.CalcScore] Position {pos} = {score}");
+                //Log.WriteInfo($"[Water.CalcScore] Position {pos} = {score}");
             }
             catch (Exception) { // TODO Handle out of array bounds errors better
                 score = pos.Y / Global.CHUNK_HEIGHT;
@@ -392,7 +392,7 @@ namespace Sean.WorldGenerator
                             growing |= river.Growing;
                         }
                     }
-                    Thread.Sleep(1000);
+                    Thread.Sleep(100);
                 }
             }
             catch (Exception ex) {
