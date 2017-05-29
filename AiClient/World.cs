@@ -1,71 +1,70 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Sean.Shared;
 
 namespace AiClient
 {
-    public enum Item
-    {
-        Wall,
-        Water,
-        Table,
-        Tree,
-
-        Character = 100,
-    }
-
     public class Cell
     {
-        List<Item> items;
+        List<BlockType> items;
+        Block block;
 
         public Cell()
         {
-            items = new List<Item>();
+            items = new List<BlockType>();
         }
 
-        public void AddItem(Item item)
+        public void AddBlock(Block block)
+        {
+            this.block = block;
+        }
+        public Block GetBlock()
+        {
+            return block;
+        }
+        public void AddItem(BlockType item)
         {
             items.Add(item);
         }
-        public void RemoveItem(Item item)
+        public void RemoveItem(BlockType item)
         {
             items.Remove(item);
         }
         public bool IsLocationSolid()
         {
-            foreach (var i in items) {
-                if (i != Item.Water)
-                    return true;
-            }
-            return false;
+            return block.IsSolid ;
         }
         public bool IsLocationTransparent()
         {
-            if (items.Count == 0)
-                return true;
-            foreach (var i in items) {
-                if (i != Item.Water)
-                    return false;
-            }
-            return true;
+            return block.IsTransparent ;
         }
 
         public string Render(int timeslice)
         {
-            if (items.Count == 0) return ".";
-            var i = items[timeslice % items.Count];
             var c = ".";
-            switch (i)
-            {
-                case Item.Wall: c = "#"; break;
-                case Item.Water: c = "~"; break;
-                case Item.Table: c = "O"; break;
-                case Item.Tree: c = "^"; break;
-                case Item.Character: c = "@"; break;
-                default: c = "?"; break;
+            switch (block.Type) {
+            case BlockType.Unknown:
+                c = ".";
+                break;
+            case BlockType.Wall:
+                c = "#";
+                break;
+            case BlockType.Water:
+                c = "~";
+                break;
+            case BlockType.Tree:
+                c = "^";
+                break;
+            case BlockType.Food:
+                c = "+";
+                break;
+            case BlockType.Character:
+                c = "@";
+                break;
+            default:
+                c = "?";
+                break;
             }
             return c;
         }
@@ -95,12 +94,21 @@ namespace AiClient
             return world [position.X, position.Z].IsLocationTransparent ();
         }
 
-        public Block GetBlock(Position position) { throw new NotImplementedException (); }
-        public Block GetBlock(int x, int y, int z) { throw new NotImplementedException (); }
+        public Block GetBlock(Position position)
+        {
+            return GetBlock (position.X, position.Y, position.Z);
+        }
+        public Block GetBlock(int x, int y, int z) {
+            return world [x, z].GetBlock ();
+        }
         public int GetBlockHeight(int x, int z) { throw new NotImplementedException(); }
 
-        public void SetBlock(Position position, Block block) { throw new NotImplementedException (); }
-        public void SetBlock(int x, int y, int z, Block block) { throw new NotImplementedException (); }
+        public void SetBlock(Position position, Block block) { 
+            SetBlock (position.X, position.Y, position.Z, block);
+        }
+        public void SetBlock(int x, int y, int z, Block block){
+            world[x,z].AddBlock(block);
+        }
 
         public bool IsChunkLoaded(ChunkCoords coords) { throw new NotImplementedException (); }
         public Chunk GetChunk(ChunkCoords coords) { throw new NotImplementedException (); }
@@ -130,25 +138,27 @@ namespace AiClient
                     world[x, z] = new Cell();
                 }
             }
-            world[10, 10].AddItem(Item.Water);
-            world[10, 11].AddItem(Item.Water);
-            world[10, 12].AddItem(Item.Water);
-            world[9, 11].AddItem(Item.Water);
-            world[11, 11].AddItem(Item.Water);
+            world[10, 10].AddBlock(new Block(BlockType.Water));
+            world[10, 11].AddBlock(new Block(BlockType.Water));
+            world[10, 12].AddBlock(new Block(BlockType.Water));
+            world[9, 11].AddBlock(new Block(BlockType.Water));
+            world[11, 11].AddBlock(new Block(BlockType.Water));
 
             for (int i = 0; i < 20; i++)
-                world[rnd.Next(mapsize), rnd.Next(mapsize)].AddItem(Item.Tree);
+                world[rnd.Next(mapsize), rnd.Next(mapsize)].AddBlock(new Block(BlockType.Tree));
+            for (int i = 0; i < 20; i++)
+                world[rnd.Next(mapsize), rnd.Next(mapsize)].AddBlock(new Block(BlockType.Food));
         }
 
-        public void Add (int x, int z, Item item)
+        public void Add (int x, int z, BlockType item)
         {
             world [x, z].AddItem (item);
         }
-        public void Remove (int x, int z, Item item)
+        public void Remove (int x, int z, BlockType item)
         {
             world [x, z].RemoveItem (item);
         }
-        public void Move (int x, int z, Item item, int x1, int z1)
+        public void Move (int x, int z, BlockType item, int x1, int z1)
         {
             Add (x1, z1, item);
             Remove (x, z, item);

@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace AiClient
 {
-    class Program
+    public class Program
     {
+        public static Engine Engine { get; private set; }
+
         static void Main(string[] args)
         {
-            var engine = new Engine();
-            engine.Run();
+            Engine = new Engine();
+            Engine.Run();
         }
     }
 }

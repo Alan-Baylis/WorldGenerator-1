@@ -21,10 +21,7 @@ namespace AiClient
 
         public int Id { get;set;}
 
-        public Stack<Position> WalkPath { get; set;}
         public Position Location { get; set; }
-        public Position Destination { get ; set;}
-
     }
 
 }

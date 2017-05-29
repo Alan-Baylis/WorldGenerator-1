@@ -3,39 +3,67 @@ using Sean.Shared;
 
 namespace AiClient
 {
-    public class IJob
+    public abstract class BaseJob
     {
-        
-    }
-
-    class Build : IJob
-    {
-        Position roughPosition;
-        Vector3 dimensions;
-        Dictionary<Item, int> requiredItems;
-
-        void Process()
+        protected BaseJob(Character taskOwner = null)
         {
-            FindLocation (roughPosition, dimensions);
+            this.TaskOwner = taskOwner;
+        }
+        protected Stack<Position> FindPathToNearestItem(Position start, BlockType item)
+        {
+            return Program.Engine.PathFinder.FindPathToNearestBlock (start, item);
         }
 
-        void FindLocation(Position position, Vector3 dimensions)
+        public bool ProcessJob()
         {
-            
+            Process();
+            return TaskComplete;
+        }
+
+        protected abstract void Process();
+
+        public bool TaskComplete;
+        protected Character TaskOwner;
+    }
+
+    public class FindFood : BaseJob
+    {
+        public FindFood(Character taskOwner) : base(taskOwner)
+        {
+            Log.WriteInfo("Adding FindFood job");
+        }
+        protected override void Process()
+        {
+            var path = FindPathToNearestItem (TaskOwner.Location, BlockType.Food);
+            if (path.Count == 1) {
+                TaskComplete = true;
+            }
+            Program.Engine.JobManager.AddJob (new WalkTo (TaskOwner, path));
         }
     }
 
-    class Gather : IJob
+    public class WalkTo : BaseJob
     {
-        Item itemToGather;
+        public WalkTo(Character taskOwner, Stack<Position> path) : base(taskOwner)
+        {
+            Log.WriteInfo("Adding WalkTo job");
+            Path = path;
+        }
+        protected override void Process()
+        {
+            if (Path.Count == 0) {
+                TaskComplete = true;
+                return;
+            }
+            var next = Path.Peek ();
+            if (Program.Engine.World.IsLocationSolid (next)) {
+                Program.Engine.World.SetBlock (next, new Block (BlockType.Character));
+                Program.Engine.World.SetBlock (TaskOwner.Location, new Block (BlockType.Air));
+                TaskOwner.Location = next;
+            }
+            Path.Pop ();
+        }
+        Stack<Position> Path;
     }
 
-    class AddToStore : IJob
-    {
-        //Store storeLocation;
-    }
-
-    class Find : IJob
-    {
-    }
 }

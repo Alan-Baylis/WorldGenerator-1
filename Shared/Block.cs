@@ -37,6 +37,10 @@ namespace Sean.Shared
         Lava,
         LavaRock,
 
+        Wall,
+        Food,
+        Character,
+
         // Water
         WaterSource = 30,
         Water1, // Puddle
