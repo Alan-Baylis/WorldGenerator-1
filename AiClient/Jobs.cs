@@ -23,14 +23,13 @@ namespace AiClient
         protected abstract void Process();
 
         public bool TaskComplete;
-        protected Character TaskOwner;
+        public Character TaskOwner;
     }
 
     public class FindFood : BaseJob
     {
         public FindFood(Character taskOwner) : base(taskOwner)
         {
-            Log.WriteInfo("Adding FindFood job");
         }
         protected override void Process()
         {
@@ -46,7 +45,6 @@ namespace AiClient
     {
         public WalkTo(Character taskOwner, Stack<Position> path) : base(taskOwner)
         {
-            Log.WriteInfo("Adding WalkTo job");
             Path = path;
         }
         protected override void Process()
@@ -55,13 +53,13 @@ namespace AiClient
                 TaskComplete = true;
                 return;
             }
-            var next = Path.Peek ();
-            if (Program.Engine.World.IsLocationSolid (next)) {
-                Program.Engine.World.SetBlock (next, new Block (BlockType.Character));
-                Program.Engine.World.SetBlock (TaskOwner.Location, new Block (BlockType.Air));
-                TaskOwner.Location = next;
+            var next = Path.Pop();
+            if (Program.Engine.World.IsLocationSolid(next))
+            {
+                TaskComplete = true;
+                return;
             }
-            Path.Pop ();
+            TaskOwner.Location = next;
         }
         Stack<Position> Path;
     }

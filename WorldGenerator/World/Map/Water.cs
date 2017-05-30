@@ -26,7 +26,7 @@ namespace Sean.WorldGenerator
         {
             worldInstance = world;
             Growing = true;
-            _maxLength = int.MaxValue; //128;
+            _maxLength = 32;// int.MaxValue; 
             Coords = new HashSet<Position>();
             _emptyCoords = new HashSet<Position>();
             _heights = new Dictionary<Position, float>();
@@ -39,6 +39,8 @@ namespace Sean.WorldGenerator
         public Position FindGoodSourceSpot()
         {
             //var best = worldInstance.GetRandomLocationOnLoadedChunk ();
+            var best = new Position(112*16, 0, 54*16);
+            /*
             var bestScore = 0.0;
             var best = new Position(0,0,0);
             for (int i = 0; i < 30; i++)
@@ -53,6 +55,7 @@ namespace Sean.WorldGenerator
                     best = new Position(x, 0, z);
                 }
             }
+            */
             var y = worldInstance.GetBlockHeight (best.X, best.Z);
             return new Position(best.X, y, best.Z);
         }

@@ -170,7 +170,10 @@ namespace AiClient
                 var str = new StringBuilder();
                 for (int x = 0; x < mapsize; x++)
                 {
-                    str.Append(world[x, z].Render(timeslice));
+                    if (Program.Engine.CharacterAt(x, z))
+                        str.Append('@');
+                    else
+                        str.Append(world[x, z].Render(timeslice));
                 }
                 gridWindow.WriteLine(str.ToString());
             }

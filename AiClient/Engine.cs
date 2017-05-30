@@ -9,10 +9,11 @@ namespace AiClient
         public World World { get; private set; }
         public PathFinder PathFinder { get; private set; }
         public JobManager JobManager { get; private set; }
+        public Dictionary<int, Character> Characters { get; private set; }
 
-        private Dictionary<int, Character> chars;
         private DisplayConsole console;
         private DisplayConsoleWindow gridWindow;
+        private DisplayConsoleWindow logWindow;
 
         public Engine()
         {
@@ -20,12 +21,17 @@ namespace AiClient
             PathFinder = new PathFinder (World);
             JobManager = new JobManager ();
 
-            chars = new Dictionary<int, Character>();
+            Characters = new Dictionary<int, Character>();
 
             console = new DisplayConsole();
             gridWindow = console.AddWindow("grid", 2, 2, 40, 40);
+            logWindow = console.AddWindow("log", 44, 2, 30, 40);
         }
 
+        public void WriteLog(string message)
+        {
+            logWindow.WriteLine(message);
+        }
 
         public void Run()
         {
@@ -33,7 +39,7 @@ namespace AiClient
             chr.Id = 1;
             chr.Location = new Position(20,1,20);
 
-            chars.Add (chr.Id, chr);
+            Characters.Add (chr.Id, chr);
             World.SetBlock (chr.Location, new Block (BlockType.Character));
 
 
@@ -46,14 +52,23 @@ namespace AiClient
             }
         }
 
+        public bool CharacterAt(int x,int z)
+        {
+            foreach (var chr in Characters.Values)
+            {
+                if (chr.Location.X == x && chr.Location.Z == z)
+                    return true;
+            }
+            return false;
+        }
         private void ProcessCharacters()
         {
-            foreach (var chr in chars.Values) {
+            foreach (var chr in Characters.Values) {
                 chr.thirst++;
                 chr.tiredness++;
                 chr.hunger+=20;
 
-                if (chr.hunger > 100) {
+                if (chr.hunger > 100 && !JobManager.HasJob(typeof(FindFood), chr)) {
                     chr.hunger = 100;
                     JobManager.AddJob (new FindFood (chr));
                 }
