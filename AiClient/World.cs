@@ -37,6 +37,8 @@ namespace AiClient
         }
         public bool IsLocationTransparent()
         {
+            if (block.Type == BlockType.Unknown)
+                return true;
             return block.IsTransparent ;
         }
 
@@ -85,7 +87,7 @@ namespace AiClient
 
         public bool IsLocationSolid(Position position)
         { 
-            if (position.Y == 0)
+            if (position.Y <= 0)
                 return true;
             return world [position.X, position.Z].IsLocationSolid ();
         }
@@ -99,6 +101,8 @@ namespace AiClient
             return GetBlock (position.X, position.Y, position.Z);
         }
         public Block GetBlock(int x, int y, int z) {
+            if (y <= 0)
+                return new Block(BlockType.Rock);
             return world [x, z].GetBlock ();
         }
         public int GetBlockHeight(int x, int z) { throw new NotImplementedException(); }

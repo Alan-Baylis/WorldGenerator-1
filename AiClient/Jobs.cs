@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Sean.Shared;
 
 namespace AiClient
@@ -16,6 +17,7 @@ namespace AiClient
 
         public bool ProcessJob()
         {
+            if (WaitingOn != null && !WaitingOn.TaskComplete) return false;
             Process();
             return TaskComplete;
         }
@@ -24,6 +26,7 @@ namespace AiClient
 
         public bool TaskComplete;
         public Character TaskOwner;
+        public BaseJob WaitingOn;
     }
 
     public class FindFood : BaseJob
@@ -36,8 +39,11 @@ namespace AiClient
             var path = FindPathToNearestItem (TaskOwner.Location, BlockType.Food);
             if (path.Count == 1) {
                 TaskComplete = true;
+                WaitingOn = new EatFood(TaskOwner, path.Pop());
+                Program.Engine.JobManager.AddJob (WaitingOn);
             }
-            Program.Engine.JobManager.AddJob (new WalkTo (TaskOwner, path));
+            WaitingOn = new WalkTo(TaskOwner, path);
+            Program.Engine.JobManager.AddJob (WaitingOn);
         }
     }
 
@@ -54,14 +60,22 @@ namespace AiClient
                 return;
             }
             var next = Path.Pop();
-            if (Program.Engine.World.IsLocationSolid(next))
-            {
-                TaskComplete = true;
-                return;
-            }
             TaskOwner.Location = next;
         }
         Stack<Position> Path;
     }
 
+    public class EatFood : BaseJob
+    {
+        public EatFood(Character taskOwner, Position pos) : base(taskOwner)
+        {
+            Pos = pos;
+        }
+        Position Pos;
+        protected override void Process()
+        {
+            Program.Engine.World.SetBlock(Pos, new Block(BlockType.Unknown));
+            TaskComplete = true;
+        }
+    }
 }
