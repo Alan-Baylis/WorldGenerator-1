@@ -43,8 +43,8 @@ namespace AiClient
         public void ProcessJobs()
         {
             foreach (var job in jobs) {
-                var finished = job.ProcessJob ();
-                if (finished) RemoveJob(job);
+                job.ProcessJob ();
+                if (job.State == JobState.Complete) RemoveJob(job);
             }
             foreach (var job in addJobs)
                 jobs.Add(job);

@@ -4,6 +4,15 @@ using Sean.Shared;
 
 namespace AiClient
 {
+    public enum JobState
+    {
+        Free,
+        InProgress,
+        WaitingOnJob,
+        Complete,
+        Failed
+    }
+
     public abstract class BaseJob
     {
         protected BaseJob(Character taskOwner = null)
@@ -15,19 +24,52 @@ namespace AiClient
             return Program.Engine.PathFinder.FindPathToNearestBlock (start, item);
         }
 
-        public bool ProcessJob()
+        public void ProcessJob(Character taskOwner = null)
         {
-            if (WaitingOn != null && !WaitingOn.TaskComplete) return false;
-            Process();
-            return TaskComplete;
+            switch (State)
+            {
+                case JobState.Free:
+                    State = JobState.InProgress;
+                    this.TaskOwner = taskOwner;
+                    break;
+                case JobState.InProgress:
+                    Process();
+                    break;
+                case JobState.WaitingOnJob:
+                case JobState.Complete:
+                case JobState.Failed:
+                default:
+                    break;
+            }
         }
 
         protected abstract void Process();
 
-        public bool TaskComplete;
+        public JobState State;
         public Character TaskOwner;
         public BaseJob WaitingOn;
     }
+
+
+    struct RequireItem
+    {
+        string Item;
+        int Count;
+    }
+
+    public class BuildFire
+    {
+        List<RequireItem> Requires { { Wood, 1} }
+
+        bool CanProceed()
+        {
+        }
+    }
+
+
+
+
+
 
     public class FindFood : BaseJob
     {
@@ -38,7 +80,7 @@ namespace AiClient
         {
             var path = FindPathToNearestItem (TaskOwner.Location, BlockType.Food);
             if (path.Count == 1) {
-                TaskComplete = true;
+                State = JobState.Complete;
                 WaitingOn = new EatFood(TaskOwner, path.Pop());
                 Program.Engine.JobManager.AddJob (WaitingOn);
             }
@@ -56,7 +98,7 @@ namespace AiClient
         protected override void Process()
         {
             if (Path.Count == 0) {
-                TaskComplete = true;
+                State = JobState.Complete;
                 return;
             }
             var next = Path.Pop();
@@ -75,7 +117,7 @@ namespace AiClient
         protected override void Process()
         {
             Program.Engine.World.SetBlock(Pos, new Block(BlockType.Unknown));
-            TaskComplete = true;
+            State = JobState.Complete;
         }
     }
 }
