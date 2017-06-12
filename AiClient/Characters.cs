@@ -11,7 +11,10 @@ namespace AiClient
     {
         public Character()
         {
+            JobManager = new JobManager(this);
         }
+
+        public JobManager JobManager { get; private set; }
 
         public int health { get; set; } = 100;
         public int tiredness { get; set; }
@@ -22,6 +25,22 @@ namespace AiClient
         public int Id { get;set;}
 
         public Position Location { get; set; }
+
+
+        public void Process()
+        {
+            thirst++;
+            tiredness++;
+            hunger += 20;
+
+            if (hunger > 100 && !JobManager.HasJob(typeof(FindFood), this))
+            {
+                hunger = 100;
+                JobManager.AddJob(new FindFood(this));
+            }
+
+            JobManager.ProcessJobs();
+        }
     }
 
 }

@@ -8,7 +8,6 @@ namespace AiClient
     {
         public World World { get; private set; }
         public PathFinder PathFinder { get; private set; }
-        public JobManager JobManager { get; private set; }
         public Dictionary<int, Character> Characters { get; private set; }
 
         private DisplayConsole console;
@@ -19,7 +18,6 @@ namespace AiClient
         {
             World = new World(38);
             PathFinder = new PathFinder (World);
-            JobManager = new JobManager ();
 
             Characters = new Dictionary<int, Character>();
 
@@ -44,8 +42,7 @@ namespace AiClient
 
 
             for(int i=0; i<20; i++) {
-                JobManager.ProcessJobs ();
-                ProcessCharacters();
+                chr.Process ();
                 gridWindow.Clear ();
                 World.Render (gridWindow);
                 System.Threading.Thread.Sleep (1000);
@@ -61,18 +58,6 @@ namespace AiClient
             }
             return false;
         }
-        private void ProcessCharacters()
-        {
-            foreach (var chr in Characters.Values) {
-                chr.thirst++;
-                chr.tiredness++;
-                chr.hunger+=20;
 
-                if (chr.hunger > 100 && !JobManager.HasJob(typeof(FindFood), chr)) {
-                    chr.hunger = 100;
-                    JobManager.AddJob (new FindFood (chr));
-                }
-            }
-        }
     }
 }

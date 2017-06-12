@@ -15,6 +15,11 @@ namespace AiClient
 
     public abstract class BaseJob
     {
+        public int Priority;
+        public JobState State;
+        public Character TaskOwner;
+        public BaseJob WaitingOn;
+
         protected BaseJob(Character taskOwner = null)
         {
             this.TaskOwner = taskOwner;
@@ -45,9 +50,6 @@ namespace AiClient
 
         protected abstract void Process();
 
-        public JobState State;
-        public Character TaskOwner;
-        public BaseJob WaitingOn;
     }
 
 

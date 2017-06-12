@@ -8,11 +8,12 @@ namespace AiClient
 {
     public class JobManager
     {
+        private Character Owner;
         private List<BaseJob> jobs;
         private List<BaseJob> removeJobs;
         private List<BaseJob> addJobs;
 
-        public JobManager()
+        public JobManager(Character Owner)
         {
             jobs = new List<BaseJob>();
             addJobs = new List<BaseJob>();
@@ -42,8 +43,9 @@ namespace AiClient
 
         public void ProcessJobs()
         {
-            foreach (var job in jobs) {
-                job.ProcessJob ();
+            foreach (var job in jobs)
+            {
+                job.ProcessJob();
                 if (job.State == JobState.Complete) RemoveJob(job);
             }
             foreach (var job in addJobs)
