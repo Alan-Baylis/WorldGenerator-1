@@ -6,7 +6,6 @@ namespace AiClient
 {
     public enum JobState
     {
-        Free,
         InProgress,
         WaitingOnJob,
         Complete,
@@ -20,7 +19,7 @@ namespace AiClient
         public Character TaskOwner;
         public BaseJob WaitingOn;
 
-        protected BaseJob(Character taskOwner = null)
+        protected BaseJob(Character taskOwner)
         {
             this.TaskOwner = taskOwner;
         }
@@ -29,14 +28,10 @@ namespace AiClient
             return Program.Engine.PathFinder.FindPathToNearestBlock (start, item);
         }
 
-        public void ProcessJob(Character taskOwner = null)
+        public void ProcessJob()
         {
             switch (State)
             {
-                case JobState.Free:
-                    State = JobState.InProgress;
-                    this.TaskOwner = taskOwner;
-                    break;
                 case JobState.InProgress:
                     Process();
                     break;
@@ -49,29 +44,27 @@ namespace AiClient
         }
 
         protected abstract void Process();
-
     }
 
 
-    struct RequireItem
-    {
-        string Item;
-        int Count;
-    }
 
-    public class BuildFire
-    {
-        List<RequireItem> Requires { { Wood, 1} }
 
-        bool CanProceed()
+    public class EatFood : BaseJob
+    {
+        public EatFood(Character taskOwner) : base(taskOwner)
         {
         }
+        protected override void Process()
+        {
+            if (TaskOwner.RemoveItem(BlockType.Food))
+            {
+                Program.Engine.WriteLog($"=Eating food");
+                State = JobState.Complete;
+            }
+            else
+                TaskOwner.AddJob(new FindFood(TaskOwner));
+        }
     }
-
-
-
-
-
 
     public class FindFood : BaseJob
     {
@@ -80,46 +73,81 @@ namespace AiClient
         }
         protected override void Process()
         {
-            var path = FindPathToNearestItem (TaskOwner.Location, BlockType.Food);
-            if (path.Count == 1) {
-                State = JobState.Complete;
-                WaitingOn = new EatFood(TaskOwner, path.Pop());
-                Program.Engine.JobManager.AddJob (WaitingOn);
+            var path = FindPathToNearestItem(TaskOwner.Location, BlockType.Food);
+            if (path == null)
+            {
+                TaskOwner.AddJob(new CantFindFood(TaskOwner));
             }
-            WaitingOn = new WalkTo(TaskOwner, path);
-            Program.Engine.JobManager.AddJob (WaitingOn);
+            else if (path.Count > 0)
+            {
+                TaskOwner.AddJob(new WalkTo(TaskOwner, path));
+            }
+            else
+            {
+                Program.Engine.WriteLog($"=Found food");
+                TaskOwner.AddJob(new Pickup(TaskOwner, BlockType.Food));
+                State = JobState.Complete;
+            }
+        }
+    }
+
+    public class CantFindFood : BaseJob
+    {
+        public CantFindFood(Character taskOwner) : base(taskOwner)
+        {
+        }
+        protected override void Process()
+        {
+           Program.Engine.WriteLog($"=Can't find food");
+           // TODO hmmmm
+        }
+    }
+
+    public class Pickup : BaseJob
+    {
+        BlockType item;
+        public Pickup(Character taskOwner, BlockType item) : base(taskOwner)
+        {
+            this.item = item;
+        }
+        protected override void Process()
+        {
+            var here = Program.Engine.World.GetBlock(TaskOwner.Location);
+            if (here.Type == item)
+            {
+                Program.Engine.WriteLog($"=Picking up item");
+                Program.Engine.World.SetBlock(TaskOwner.Location, new Block(BlockType.Air));
+                TaskOwner.AddItem(item);
+                State = JobState.Complete;
+            }
+            else
+            {
+                Program.Engine.WriteLog($"=Can't pickup item as no longer here");
+                State = JobState.Complete;
+            }
         }
     }
 
     public class WalkTo : BaseJob
     {
+        Stack<Position> Path;
         public WalkTo(Character taskOwner, Stack<Position> path) : base(taskOwner)
         {
             Path = path;
         }
         protected override void Process()
         {
-            if (Path.Count == 0) {
+            if (Path.Count == 0)
+            {
+                Program.Engine.WriteLog($"=Walked to target");
                 State = JobState.Complete;
-                return;
             }
-            var next = Path.Pop();
-            TaskOwner.Location = next;
-        }
-        Stack<Position> Path;
-    }
-
-    public class EatFood : BaseJob
-    {
-        public EatFood(Character taskOwner, Position pos) : base(taskOwner)
-        {
-            Pos = pos;
-        }
-        Position Pos;
-        protected override void Process()
-        {
-            Program.Engine.World.SetBlock(Pos, new Block(BlockType.Unknown));
-            State = JobState.Complete;
+            else
+            {
+                Program.Engine.WriteLog($"=Walking to target");
+                var next = Path.Pop();
+                TaskOwner.Location = next;
+            }
         }
     }
 }

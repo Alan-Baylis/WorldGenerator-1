@@ -1,24 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AiClient
 {
     public class JobManager
     {
         private Character Owner;
-        private List<BaseJob> jobs;
-        private List<BaseJob> removeJobs;
-        private List<BaseJob> addJobs;
+        private Stack<BaseJob> jobs;
 
         public JobManager(Character Owner)
         {
-            jobs = new List<BaseJob>();
-            addJobs = new List<BaseJob>();
-            removeJobs = new List<BaseJob>();
+            jobs = new Stack<BaseJob>();
         }
+
+        public int JobCount {  get { return jobs.Count; } }
 
         public bool HasJob(Type jobType, Character chr)
         {
@@ -32,26 +27,19 @@ namespace AiClient
 
         public void AddJob(BaseJob newJob)
         {
-            addJobs.Add(newJob);
-            Program.Engine.WriteLog($"Adding job {newJob}");
-        }
-        public void RemoveJob(BaseJob job)
-        {
-            removeJobs.Add(job);
-            Program.Engine.WriteLog($"Removing job {job}");
+            jobs.Push(newJob);
+            Program.Engine.WriteLog($">Adding job {newJob}");
         }
 
         public void ProcessJobs()
         {
-            foreach (var job in jobs)
+            var job = jobs.Peek();
+            job.ProcessJob();
+            if (job.State == JobState.Complete)
             {
-                job.ProcessJob();
-                if (job.State == JobState.Complete) RemoveJob(job);
+                Program.Engine.WriteLog($"<Completed job {job}");
+                jobs.Pop();
             }
-            foreach (var job in addJobs)
-                jobs.Add(job);
-            foreach (var job in removeJobs)
-                jobs.Remove(job);
         }
 
     }

@@ -1,9 +1,5 @@
-﻿using System;
+﻿using Sean.Shared;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Sean.Shared;
 
 namespace AiClient
 {
@@ -12,6 +8,7 @@ namespace AiClient
         public Character()
         {
             JobManager = new JobManager(this);
+            items = new Dictionary<BlockType, int>();
         }
 
         public JobManager JobManager { get; private set; }
@@ -26,17 +23,40 @@ namespace AiClient
 
         public Position Location { get; set; }
 
+        Dictionary<BlockType, int> items;
+
+        public bool HasItem(BlockType item, int count = 1)
+        {
+            return items.ContainsKey(item) && items[item] >= count;
+        }
+        public void AddItem(BlockType item)
+        {
+            if (items.ContainsKey(item))
+                items[item]++;
+            else
+                items[item] = 1;
+        }
+        public bool RemoveItem(BlockType item, int count = 1)
+        {
+            if (!items.ContainsKey(item) || items[item] < count)
+                return false;
+            if (items[item] == count)
+                items.Remove(item);
+            else
+                items[item] -= count;
+            return true;
+        }
+
+        public void AddJob(BaseJob job)
+        {
+            JobManager.AddJob(job);
+        }
 
         public void Process()
         {
-            thirst++;
-            tiredness++;
-            hunger += 20;
-
-            if (hunger > 100 && !JobManager.HasJob(typeof(FindFood), this))
+            if (JobManager.JobCount == 0)
             {
-                hunger = 100;
-                JobManager.AddJob(new FindFood(this));
+                AddJob(new EatFood(this));
             }
 
             JobManager.ProcessJobs();
