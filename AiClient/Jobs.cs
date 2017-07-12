@@ -4,18 +4,10 @@ using Sean.Shared;
 
 namespace AiClient
 {
-    public enum JobState
-    {
-        InProgress,
-        WaitingOnJob,
-        Complete,
-        Failed
-    }
-
     public abstract class BaseJob
     {
         public int Priority;
-        public JobState State;
+        public bool Complete;
         public Character TaskOwner;
         public BaseJob WaitingOn;
 
@@ -30,17 +22,7 @@ namespace AiClient
 
         public void ProcessJob()
         {
-            switch (State)
-            {
-                case JobState.InProgress:
-                    Process();
-                    break;
-                case JobState.WaitingOnJob:
-                case JobState.Complete:
-                case JobState.Failed:
-                default:
-                    break;
-            }
+            if (!Complete) Process();
         }
 
         protected abstract void Process();
@@ -58,8 +40,7 @@ namespace AiClient
         {
             if (TaskOwner.RemoveItem(BlockType.Food))
             {
-                Program.Engine.WriteLog($"=Eating food");
-                State = JobState.Complete;
+                Complete = true;
             }
             else
                 TaskOwner.AddJob(new FindFood(TaskOwner));
@@ -78,15 +59,19 @@ namespace AiClient
             {
                 TaskOwner.AddJob(new CantFindFood(TaskOwner));
             }
-            else if (path.Count > 0)
+            else if (path.Count == 0)
             {
-                TaskOwner.AddJob(new WalkTo(TaskOwner, path));
+                TaskOwner.AddJob(new Pickup(TaskOwner, TaskOwner.Location, BlockType.Food));
+                Complete = true;
+            }
+            else if (path.Count == 1)
+            {
+                TaskOwner.AddJob(new Pickup(TaskOwner, path.Pop(), BlockType.Food));
+                Complete = true;
             }
             else
             {
-                Program.Engine.WriteLog($"=Found food");
-                TaskOwner.AddJob(new Pickup(TaskOwner, BlockType.Food));
-                State = JobState.Complete;
+                TaskOwner.AddJob(new WalkTo(TaskOwner, path));
             }
         }
     }
@@ -98,32 +83,31 @@ namespace AiClient
         }
         protected override void Process()
         {
-           Program.Engine.WriteLog($"=Can't find food");
            // TODO hmmmm
         }
     }
 
     public class Pickup : BaseJob
     {
+        Position loc;
         BlockType item;
-        public Pickup(Character taskOwner, BlockType item) : base(taskOwner)
+        public Pickup(Character taskOwner, Position loc, BlockType item) : base(taskOwner)
         {
+            this.loc = loc;
             this.item = item;
         }
         protected override void Process()
         {
-            var here = Program.Engine.World.GetBlock(TaskOwner.Location);
+            var here = Program.Engine.World.GetBlock(loc);
             if (here.Type == item)
             {
-                Program.Engine.WriteLog($"=Picking up item");
-                Program.Engine.World.SetBlock(TaskOwner.Location, new Block(BlockType.Air));
+                Program.Engine.World.SetBlock(loc, new Block(BlockType.Air));
                 TaskOwner.AddItem(item);
-                State = JobState.Complete;
+                Complete = true;
             }
             else
             {
-                Program.Engine.WriteLog($"=Can't pickup item as no longer here");
-                State = JobState.Complete;
+                Complete = true;
             }
         }
     }
@@ -137,14 +121,12 @@ namespace AiClient
         }
         protected override void Process()
         {
-            if (Path.Count == 0)
+            if (Path.Count == 1)
             {
-                Program.Engine.WriteLog($"=Walked to target");
-                State = JobState.Complete;
+                Complete = true;
             }
             else
             {
-                Program.Engine.WriteLog($"=Walking to target");
                 var next = Path.Pop();
                 TaskOwner.Location = next;
             }

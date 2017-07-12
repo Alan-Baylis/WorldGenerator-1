@@ -46,6 +46,7 @@ namespace AiClient
         {
             var c = ".";
             switch (block.Type) {
+            case BlockType.Air:
             case BlockType.Unknown:
                 c = ".";
                 break;
@@ -60,9 +61,6 @@ namespace AiClient
                 break;
             case BlockType.Food:
                 c = "+";
-                break;
-            case BlockType.Character:
-                c = "@";
                 break;
             default:
                 c = "?";

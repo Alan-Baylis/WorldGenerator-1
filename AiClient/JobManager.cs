@@ -31,14 +31,21 @@ namespace AiClient
             Program.Engine.WriteLog($">Adding job {newJob}");
         }
 
+
         public void ProcessJobs()
         {
-            var job = jobs.Peek();
-            job.ProcessJob();
-            if (job.State == JobState.Complete)
-            {
-                Program.Engine.WriteLog($"<Completed job {job}");
-                jobs.Pop();
+            while (jobs.Count > 0)
+            { 
+                var job = jobs.Peek();
+                if (job.Complete)
+                {
+                    jobs.Pop();
+                }
+                else
+                {
+                    job.ProcessJob();
+                    return;
+                }
             }
         }
 

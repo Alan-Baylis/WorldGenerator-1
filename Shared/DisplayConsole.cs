@@ -70,7 +70,7 @@ namespace Sean.Shared
         {
             foreach(var chr in str)
             {
-                if (cursorX >= Width)
+                if (cursorX >= (Width-2))
                 {
                     cursorX = 0; cursorY++;
                 }

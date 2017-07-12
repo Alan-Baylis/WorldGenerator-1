@@ -38,14 +38,13 @@ namespace AiClient
             chr.Location = new Position(20,1,20);
 
             Characters.Add (chr.Id, chr);
-            World.SetBlock (chr.Location, new Block (BlockType.Character));
 
-
-            for(int i=0; i<20; i++) {
-                chr.Process ();
-                gridWindow.Clear ();
-                World.Render (gridWindow);
-                System.Threading.Thread.Sleep (1000);
+            for (int i = 0; i < 40; i++)
+            {
+                chr.Process();
+                gridWindow.Clear();
+                World.Render(gridWindow);
+                System.Threading.Thread.Sleep(1000);
             }
         }
 

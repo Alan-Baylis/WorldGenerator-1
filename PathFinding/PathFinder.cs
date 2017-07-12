@@ -203,14 +203,14 @@ namespace Sean.PathFinding
 
 			if (searched >= maxSearch) 
 			{
-                Log.WriteInfo($"Could not find path from {start} to {goal}");
+                //Log.WriteInfo($"Could not find path from {start} to {goal}");
 				return new Stack<Position>();
 			}
 			else
             //if (GetFScore (goal) > 0) // Found path
             //if (DistBetween(current, goal) < WithinRangeScore)
             {
-                Log.WriteInfo($"Found route from {start} to {goal} after checking {searched} locations");
+                //Log.WriteInfo($"Found route from {start} to {goal} after checking {searched} locations");
                 //Position current = goal;
                 while (current != start)
                 {
@@ -292,7 +292,7 @@ namespace Sean.PathFinding
 
                 if (current == destination)
                 {
-                    Log.WriteInfo("Found route from {start} to {current} after checking {searched} locations");
+                    //Log.WriteInfo("Found route from {start} to {current} after checking {searched} locations");
                     List<Position> route = new List<Position>();
                     while (current != start)
                     {
@@ -524,7 +524,7 @@ namespace Sean.PathFinding
             {
                 //Log.WriteInfo ("Block at {0}", pos);
                 var route = FindPath (start, pos);
-                if (route != null)
+                if (route != null && route.Count > 0)
                     return route;
             }
             return null;
