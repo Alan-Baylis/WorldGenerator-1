@@ -10,20 +10,11 @@ namespace AiClient
 
         public JobManager(Character Owner)
         {
+            this.Owner = Owner;
             jobs = new Stack<BaseJob>();
         }
 
         public int JobCount {  get { return jobs.Count; } }
-
-        public bool HasJob(Type jobType, Character chr)
-        {
-            foreach (var job in jobs)
-            {
-                if (job.TaskOwner == chr && job.GetType() == jobType)
-                    return true;
-            }
-            return false;
-        }
 
         public void AddJob(BaseJob newJob)
         {
@@ -43,7 +34,7 @@ namespace AiClient
                 }
                 else
                 {
-                    job.ProcessJob();
+                    job.ProcessJob(Owner);
                     return;
                 }
             }

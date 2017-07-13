@@ -13,11 +13,6 @@ namespace AiClient
 
         public JobManager JobManager { get; private set; }
 
-        public int health { get; set; } = 100;
-        public int tiredness { get; set; }
-        public int hunger { get; set; }
-        public int thirst { get; set; }
-
 
         public int Id { get;set;}
 
@@ -25,10 +20,6 @@ namespace AiClient
 
         Dictionary<BlockType, int> items;
 
-        public bool HasItem(BlockType item, int count = 1)
-        {
-            return items.ContainsKey(item) && items[item] >= count;
-        }
         public void AddItem(BlockType item)
         {
             if (items.ContainsKey(item))
@@ -56,7 +47,7 @@ namespace AiClient
         {
             if (JobManager.JobCount == 0)
             {
-                AddJob(new EatFood(this));
+                AddJob(new EatFood());
             }
 
             JobManager.ProcessJobs();

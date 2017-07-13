@@ -6,26 +6,14 @@ namespace AiClient
 {
     public abstract class BaseJob
     {
-        public int Priority;
         public bool Complete;
-        public Character TaskOwner;
-        public BaseJob WaitingOn;
 
-        protected BaseJob(Character taskOwner)
+        public void ProcessJob(Character character)
         {
-            this.TaskOwner = taskOwner;
-        }
-        protected Stack<Position> FindPathToNearestItem(Position start, BlockType item)
-        {
-            return Program.Engine.PathFinder.FindPathToNearestBlock (start, item);
+            if (!Complete) Process(character);
         }
 
-        public void ProcessJob()
-        {
-            if (!Complete) Process();
-        }
-
-        protected abstract void Process();
+        protected abstract void Process(Character character);
     }
 
 
@@ -33,55 +21,50 @@ namespace AiClient
 
     public class EatFood : BaseJob
     {
-        public EatFood(Character taskOwner) : base(taskOwner)
+        public EatFood() { }
+        protected override void Process(Character character)
         {
-        }
-        protected override void Process()
-        {
-            if (TaskOwner.RemoveItem(BlockType.Food))
+            if (character.RemoveItem(BlockType.Food))
             {
                 Complete = true;
             }
             else
-                TaskOwner.AddJob(new FindFood(TaskOwner));
+                character.AddJob(new FindItem(BlockType.Food));
         }
     }
 
-    public class FindFood : BaseJob
+    public class FindItem : BaseJob
     {
-        public FindFood(Character taskOwner) : base(taskOwner)
+        public FindItem(BlockType item) { this.item = item; }
+        BlockType item;
+        protected override void Process(Character character)
         {
-        }
-        protected override void Process()
-        {
-            var path = FindPathToNearestItem(TaskOwner.Location, BlockType.Food);
+            var path = Program.Engine.PathFinder.FindPathToNearestBlock(character.Location, item);
             if (path == null)
             {
-                TaskOwner.AddJob(new CantFindFood(TaskOwner));
+                character.AddJob(new CantFindItem());
             }
             else if (path.Count == 0)
             {
-                TaskOwner.AddJob(new Pickup(TaskOwner, TaskOwner.Location, BlockType.Food));
+                character.AddJob(new Pickup(character.Location, item));
                 Complete = true;
             }
             else if (path.Count == 1)
             {
-                TaskOwner.AddJob(new Pickup(TaskOwner, path.Pop(), BlockType.Food));
+                character.AddJob(new Pickup(path.Pop(), item));
                 Complete = true;
             }
             else
             {
-                TaskOwner.AddJob(new WalkTo(TaskOwner, path));
+                character.AddJob(new WalkTo(path));
             }
         }
     }
 
-    public class CantFindFood : BaseJob
+    public class CantFindItem : BaseJob
     {
-        public CantFindFood(Character taskOwner) : base(taskOwner)
-        {
-        }
-        protected override void Process()
+        public CantFindItem() { }
+        protected override void Process(Character character)
         {
            // TODO hmmmm
         }
@@ -91,18 +74,18 @@ namespace AiClient
     {
         Position loc;
         BlockType item;
-        public Pickup(Character taskOwner, Position loc, BlockType item) : base(taskOwner)
+        public Pickup(Position loc, BlockType item)
         {
             this.loc = loc;
             this.item = item;
         }
-        protected override void Process()
+        protected override void Process(Character character)
         {
             var here = Program.Engine.World.GetBlock(loc);
             if (here.Type == item)
             {
                 Program.Engine.World.SetBlock(loc, new Block(BlockType.Air));
-                TaskOwner.AddItem(item);
+                character.AddItem(item);
                 Complete = true;
             }
             else
@@ -115,11 +98,11 @@ namespace AiClient
     public class WalkTo : BaseJob
     {
         Stack<Position> Path;
-        public WalkTo(Character taskOwner, Stack<Position> path) : base(taskOwner)
+        public WalkTo(Stack<Position> path)
         {
             Path = path;
         }
-        protected override void Process()
+        protected override void Process(Character character)
         {
             if (Path.Count == 1)
             {
@@ -128,7 +111,7 @@ namespace AiClient
             else
             {
                 var next = Path.Pop();
-                TaskOwner.Location = next;
+                character.Location = next;
             }
         }
     }
