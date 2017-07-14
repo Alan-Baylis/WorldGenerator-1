@@ -12,6 +12,7 @@
         Block GetBlock(Position position);
         Block GetBlock(int x, int y, int z);
         int GetBlockHeight(int x, int z);
+        int GetHeightMapLevel(int x, int z);
 
         void SetBlock(Position position, Block block);
         void SetBlock(int x, int y, int z, Block block);

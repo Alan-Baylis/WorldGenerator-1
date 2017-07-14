@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Sean.Shared;
 
-namespace AiClient
+namespace Sean.Characters
 {
     public abstract class BaseJob
     {
@@ -17,6 +17,23 @@ namespace AiClient
     }
 
 
+    public class GetWood : BaseJob
+    {
+        public GetWood() { }
+        protected override void Process(Character character)
+        {
+            var path = _pathFinder.FindPathToNearestBlock(character.Location, BlockType.Tree);
+            if (path == null)
+            {
+                character.AddJob(new CantFindItem());
+            }
+            else if (path.Count <= 1)
+            {
+                character.AddJob(new Pickup(path.Count == 1 ? path.Pop() : character.Location, BlockType.Tree));
+                Complete = true;
+            }
+        }
+    }
 
 
     public class EatFood : BaseJob
@@ -39,19 +56,14 @@ namespace AiClient
         BlockType item;
         protected override void Process(Character character)
         {
-            var path = Program.Engine.PathFinder.FindPathToNearestBlock(character.Location, item);
+            var path = _pathFinder.FindPathToNearestBlock(character.Location, item);
             if (path == null)
             {
                 character.AddJob(new CantFindItem());
             }
-            else if (path.Count == 0)
+            else if (path.Count <= 1)
             {
-                character.AddJob(new Pickup(character.Location, item));
-                Complete = true;
-            }
-            else if (path.Count == 1)
-            {
-                character.AddJob(new Pickup(path.Pop(), item));
+                character.AddJob(new Pickup(path.Count == 1 ? path.Pop() : character.Location, item));
                 Complete = true;
             }
             else
@@ -81,10 +93,10 @@ namespace AiClient
         }
         protected override void Process(Character character)
         {
-            var here = Program.Engine.World.GetBlock(loc);
+            var here = _world.GetBlock(loc);
             if (here.Type == item)
             {
-                Program.Engine.World.SetBlock(loc, new Block(BlockType.Air));
+                _world.SetBlock(loc, new Block(BlockType.Air));
                 character.AddItem(item);
                 Complete = true;
             }

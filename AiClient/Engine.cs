@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Sean.PathFinding;
 using Sean.Shared;
+using Sean.Characters;
 
 namespace AiClient
 {
@@ -8,6 +9,7 @@ namespace AiClient
     {
         public World World { get; private set; }
         public PathFinder PathFinder { get; private set; }
+        public CharacterManager CharacterManager { get; private set; }
         public Dictionary<int, Character> Characters { get; private set; }
 
         private DisplayConsole console;

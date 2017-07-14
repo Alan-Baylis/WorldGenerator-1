@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Sean.Shared;
+using System;
 using System.Collections.Generic;
 
-namespace AiClient
+namespace Sean.Characters
 {
     public class JobManager
     {
@@ -19,7 +20,7 @@ namespace AiClient
         public void AddJob(BaseJob newJob)
         {
             jobs.Push(newJob);
-            Program.Engine.WriteLog($">Adding job {newJob}");
+            Log.WriteInfo($">Adding job {newJob}");
         }
 
 

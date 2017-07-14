@@ -2,6 +2,7 @@
 using Sean.Shared.Comms;
 using Sean.WorldGenerator;
 using Sean.Shared;
+using Sean.Characters;
 
 namespace Sean.WorldServer
 {

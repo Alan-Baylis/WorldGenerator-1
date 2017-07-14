@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AiClient", "AiClient\AiClie
 		{4D280CA6-39A9-4400-B365-688930CE654D} = {4D280CA6-39A9-4400-B365-688930CE654D}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Characters", "Characters\Characters.csproj", "{28E81461-6D32-4ACE-8ED5-60D1027E2075}"
+EndProject
 Global
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true
@@ -118,6 +120,14 @@ Global
 		{24D92817-55A4-4A9A-A1F7-F0562A151BEA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{24D92817-55A4-4A9A-A1F7-F0562A151BEA}.Release|x86.ActiveCfg = Release|Any CPU
 		{24D92817-55A4-4A9A-A1F7-F0562A151BEA}.Release|x86.Build.0 = Release|Any CPU
+		{28E81461-6D32-4ACE-8ED5-60D1027E2075}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28E81461-6D32-4ACE-8ED5-60D1027E2075}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28E81461-6D32-4ACE-8ED5-60D1027E2075}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{28E81461-6D32-4ACE-8ED5-60D1027E2075}.Debug|x86.Build.0 = Debug|Any CPU
+		{28E81461-6D32-4ACE-8ED5-60D1027E2075}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28E81461-6D32-4ACE-8ED5-60D1027E2075}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28E81461-6D32-4ACE-8ED5-60D1027E2075}.Release|x86.ActiveCfg = Release|Any CPU
+		{28E81461-6D32-4ACE-8ED5-60D1027E2075}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

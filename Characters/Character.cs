@@ -1,7 +1,8 @@
 ﻿using Sean.Shared;
+using System;
 using System.Collections.Generic;
 
-namespace AiClient
+namespace Sean.Characters
 {
     public class Character
     {
@@ -12,13 +13,13 @@ namespace AiClient
         }
 
         public JobManager JobManager { get; private set; }
-
-
-        public int Id { get;set;}
-
+        public int Id { get; set; }
+        public string Name { get; set; }
         public Position Location { get; set; }
 
         Dictionary<BlockType, int> items;
+
+
 
         public void AddItem(BlockType item)
         {
@@ -47,7 +48,7 @@ namespace AiClient
         {
             if (JobManager.JobCount == 0)
             {
-                AddJob(new EatFood());
+                AddJob(new GetWood());
             }
 
             JobManager.ProcessJobs();
@@ -55,3 +56,4 @@ namespace AiClient
     }
 
 }
+
